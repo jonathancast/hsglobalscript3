@@ -1,0 +1,7 @@
+#! /home/jcast/plan9/bin/rc -e
+
+ghc --make Test.hs
+./Test
+
+. $GLOBALSCRIPT/bin/test-fns
+
