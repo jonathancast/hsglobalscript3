@@ -3,3 +3,6 @@
 \.hi$
 \.o$
 ^src/gsi/Test$
+^src/gsi/test-gsi$
+-actual$
+-errors$

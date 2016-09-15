@@ -5,3 +5,6 @@ ghc --make Test.hs
 
 . $GLOBALSCRIPT/bin/test-fns
 
+ghc --make test-gsi.hs
+
+GLOBALSCRIPT=$HSGLOBALSCRIPT
