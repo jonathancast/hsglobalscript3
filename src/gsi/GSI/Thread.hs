@@ -1,6 +1,6 @@
 {-# LANGUAGE RecursiveDo, TemplateHaskell #-}
 
-module GSI.Thread (createThread) where
+module GSI.Thread (createThread, execMainThread) where
 
 import Control.Concurrent(forkIO)
 
@@ -19,3 +19,6 @@ createThread v = do
 
 runThread :: Thread a -> IO ()
 runThread t = return ()
+
+execMainThread :: Thread a -> IO ()
+execMainThread t = $gsfatal "execMainThread next"
