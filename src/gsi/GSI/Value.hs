@@ -1,9 +1,14 @@
-module GSI.Value (GSValue(..), gsvCode) where
+{-# LANGUAGE TemplateHaskell #-}
+module GSI.Value (GSValue(..), gsundefined, gsvCode) where
 
-import GSI.Util (Pos)
+import Language.Haskell.TH.Lib (appE, conE)
+
+import GSI.Util (Pos, gshere)
 
 data GSValue a
   = GSUndefined Pos
+
+gsundefined = conE 'GSUndefined `appE` gshere
 
 gsvCode :: GSValue a -> String
 gsvCode GSUndefined{} = "GSUndefined"
