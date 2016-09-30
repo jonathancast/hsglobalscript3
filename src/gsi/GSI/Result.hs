@@ -5,7 +5,7 @@ module GSI.Result (GSError(..), GSResult(..), implementationFailure, stCode) whe
 import Language.Haskell.TH.Syntax (location)
 import Language.Haskell.TH.Lib (appE, conE)
 
-import GSI.Util (Pos, gsfmtLocation)
+import GSI.Util (Pos, gshere)
 
 data GSResult a
   = GSImplementationFailure Pos String
@@ -17,6 +17,4 @@ stCode :: GSResult a -> String
 stCode GSImplementationFailure{} = "GSImplementationFailure"
 stCode GSError{} = "GSError"
 
-implementationFailure = do
-    loc <- location
-    conE 'GSImplementationFailure `appE` gsfmtLocation loc
+implementationFailure = conE 'GSImplementationFailure `appE` gshere
