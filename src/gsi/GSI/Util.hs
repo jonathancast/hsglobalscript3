@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Util (Pos(Pos), gsfatal, gsfmtLocation, fmtPos) where
+module GSI.Util (Pos(Pos), gshere, gsfatal, gsfmtLocation, fmtPos) where
 
 import Language.Haskell.TH.Syntax (Lit(IntegerL), Loc, location, loc_filename, loc_start)
 import Language.Haskell.TH.Lib (ExpQ, appE, conE, litE, stringE, varE)
@@ -10,8 +10,11 @@ data Pos = Pos {
   }
   deriving (Eq, Show)
 
+gshere :: ExpQ
+gshere = location >>= gsfmtLocation
+
 gsfatal :: ExpQ
-gsfatal = varE 'gsfatal_w `appE` (location >>= gsfmtLocation)
+gsfatal = varE 'gsfatal_w `appE` gshere
 
 gsfatal_w :: Pos -> String -> a
 gsfatal_w pos msg = error $ fmtPos pos $ msg
