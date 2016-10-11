@@ -1,12 +1,15 @@
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
+
+import Control.Exception (displayException, fromException, try)
 
 import Test.HUnit
 
-import GSI.Util (Pos(Pos), fmtPos)
+import GSI.Util (Pos(Pos), gsfatal, fmtPos)
 import GSI.Value (GSValue(GSUndefined))
-import GSI.Result (GSError(..), GSResult(..), stCode)
+import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
 import GSI.Eval (eval)
-import GSI.Thread (createThread)
+import GSI.Thread (createThread, execMainThread)
 
 main = runTestTT $ TestList $ [
     TestCase $ do
@@ -23,4 +26,15 @@ main = runTestTT $ TestList $ [
       let line = 1
       t <- createThread $ GSUndefined (Pos file line)
       return ()
+  ,
+  TestCase $ do
+      let file = "test-file.gs"
+      let line = 1
+      t <- createThread $ GSUndefined (Pos file line)
+      mb <- try $ execMainThread t
+      case mb of
+          Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"
+          Left e -> case fromException e of
+              Just (GSExcUndefined pos) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line)
+              _ -> assertFailure $ "execMainThread should throw a GSExcUndefined error, but instead threw " ++ displayException e
   ]
