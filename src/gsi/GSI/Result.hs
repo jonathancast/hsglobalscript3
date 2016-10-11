@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.Result (GSError(..), GSResult(..), GSException(..), implementationFailure, stCode) where
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
+module GSI.Result (GSError(..), GSResult(..), GSException(..), implementationFailure, stCode, throwGSerror) where
 
-import Control.Exception (Exception(..))
+import Control.Exception (Exception(..), throw)
 
 import Data.Typeable (Typeable)
 
@@ -16,6 +16,7 @@ data GSResult a
   | GSError GSError
 
 data GSError = GSErrUnimpl Pos
+  deriving (Show)
 
 data GSException
   = GSExcUndefined Pos
@@ -28,5 +29,8 @@ instance Exception GSException where
 stCode :: GSResult a -> String
 stCode GSImplementationFailure{} = "GSImplementationFailure"
 stCode GSError{} = "GSError"
+
+throwGSerror (GSErrUnimpl pos) = throw $ GSExcUndefined pos
+throwGSerror err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
 
 implementationFailure = conE 'GSImplementationFailure `appE` gshere
