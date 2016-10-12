@@ -1,6 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import GSI.Util (gsfatal)
+import GSI.Value (gsundefined)
+import GSI.Thread (createThread, execMainThread)
 
 main = do
-    $gsfatal "test-gsi next"
+    t <- createThread $gsundefined -- =<< $gsapply gsrun [gsmain]
+    execMainThread t
