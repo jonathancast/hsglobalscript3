@@ -15,6 +15,7 @@ data GSValue a
 
 data GSThunkState a
   = GSApply Pos (GSValue a) [GSValue a]
+  | GSTSStack
   | GSTSIndirection (GSValue a)
 
 gsundefined = conE 'GSUndefined `appE` gshere
@@ -30,4 +31,6 @@ gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSThunk{} = "GSThunk"
 
 gstsCode :: GSThunkState a -> String
-gstsCode = $gsfatal "gstsCode next"
+gstsCode GSApply{} = "GSApply"
+gstsCode GSTSStack{} = "GSTSStack"
+gstsCode GSTSIndirection{} = "GSTSIndirection"

@@ -15,6 +15,7 @@ import GSI.Value (GSValue)
 data GSResult a
   = GSImplementationFailure Pos String
   | GSError GSError
+  | GSStack
   | GSIndirection (GSValue a)
 
 data GSError = GSErrUnimpl Pos
@@ -31,6 +32,7 @@ instance Exception GSException where
 stCode :: GSResult a -> String
 stCode GSImplementationFailure{} = "GSImplementationFailure"
 stCode GSError{} = "GSError"
+stCode GSStack{} = "GSStack"
 stCode GSIndirection{} = "GSIndirection"
 
 throwGSerror (GSErrUnimpl pos) = throw $ GSExcUndefined pos
