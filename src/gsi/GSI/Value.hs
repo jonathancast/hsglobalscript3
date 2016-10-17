@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.Value (GSValue(..), gsapply, gsundefined, gsimplementationFailure, gsvCode) where
+module GSI.Value (GSValue(..), GSThunkState(..), gsapply, gsapply_w, gsundefined, gsimplementationFailure, gsvCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -15,6 +15,7 @@ data GSValue a
 
 data GSThunkState a
   = GSApply Pos (GSValue a) [GSValue a]
+  | GSTSIndirection (GSValue a)
 
 gsundefined = conE 'GSUndefined `appE` gshere
 gsimplementationFailure = conE 'GSImplementationFailure `appE` gshere

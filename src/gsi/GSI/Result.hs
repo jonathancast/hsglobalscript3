@@ -10,10 +10,12 @@ import Language.Haskell.TH.Syntax (location)
 import Language.Haskell.TH.Lib (appE, conE)
 
 import GSI.Util (Pos, fmtPos, gshere)
+import GSI.Value (GSValue)
 
 data GSResult a
   = GSImplementationFailure Pos String
   | GSError GSError
+  | GSIndirection (GSValue a)
 
 data GSError = GSErrUnimpl Pos
   deriving (Show)
@@ -29,6 +31,7 @@ instance Exception GSException where
 stCode :: GSResult a -> String
 stCode GSImplementationFailure{} = "GSImplementationFailure"
 stCode GSError{} = "GSError"
+stCode GSIndirection{} = "GSIndirection"
 
 throwGSerror (GSErrUnimpl pos) = throw $ GSExcUndefined pos
 throwGSerror err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
