@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.Value (GSValue(..), gsapply, gsundefined, gsvCode) where
 
 import Control.Concurrent (MVar, newMVar)
@@ -22,6 +23,7 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
 gsvCode :: GSValue a -> String
 gsvCode GSUndefined{} = "GSUndefined"
+gsvCode GSThunk{} = "GSThunk"
 
 gstsCode :: GSThunkState a -> String
 gstsCode = $gsfatal "gstsCode next"
