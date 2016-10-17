@@ -1,5 +1,5 @@
 {-# LANGUAGE RecursiveDo, TemplateHaskell #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Thread (createThread, execMainThread) where
 
 import Control.Monad (join)
@@ -24,11 +24,13 @@ data Thread a = Thread {
 data ThreadState
   = ThreadStateRunning
   | ThreadStateError GSError
+  | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
 
 threadStateCode :: ThreadState -> String
 threadStateCode ThreadStateRunning{} = "ThreadStateRunning"
 threadStateCode ThreadStateError{} = "ThreadStateError"
+threadStateCode ThreadStateImplementationFailure{} = "ThreadStateImplementationFailure"
 threadStateCode ThreadStateUnimpl{} = "ThreadStateUnimpl"
 
 createThread :: GSValue a -> IO (Thread a)
@@ -57,6 +59,7 @@ runThread t = do
                     r <- eval v
                     case r of
                         GSError e -> return (ThreadStateError e, finishThread t)
+                        GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
                         _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; eval returns " ++ stCode r ++ ") next", finishThread t)
         _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is " ++ threadStateCode st ++ ") next", finishThread t)
 
@@ -71,4 +74,5 @@ execMainThread t = do
     case st of
         ThreadStateUnimpl pos err -> throw $ GSExcImplementationFailure pos err
         ThreadStateError err -> throwGSerror err
+        ThreadStateImplementationFailure pos err -> throw $ GSExcImplementationFailure pos err
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
