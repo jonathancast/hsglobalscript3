@@ -7,6 +7,7 @@ import Control.Concurrent (MVar, newMVar)
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, gshere, gsfatal)
+import GSI.RTS (Event)
 
 data GSValue a
   = GSUndefined Pos
@@ -15,7 +16,7 @@ data GSValue a
 
 data GSThunkState a
   = GSApply Pos (GSValue a) [GSValue a]
-  | GSTSStack
+  | GSTSStack Event
   | GSTSIndirection (GSValue a)
 
 gsundefined = conE 'GSUndefined `appE` gshere
