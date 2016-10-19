@@ -20,6 +20,7 @@ eval (GSThunk mv) = modifyMVar mv $ \ st -> case st of
         e <- newEvent
         forkIO $ aceEnter pos fn [ StApp args, StUpdate mv ]
         return (GSTSStack e, GSStack e)
+    GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 eval v = return $ $implementationFailure $ "eval " ++ gsvCode v ++ " next"
 
