@@ -12,7 +12,7 @@ data Stack a
   = StApp [GSValue a]
   | StUpdate (MVar (GSThunkState a))
 
-aceEnter pos fn st = aceUnimpl_w $gshere "aceEnter next" st
+aceEnter pos fn stack = aceUnimpl_w $gshere "aceEnter next" stack
 
 aceUnimpl_w pos err [] = return ()
 aceUnimpl_w pos err (StUpdate mv:st) = do
