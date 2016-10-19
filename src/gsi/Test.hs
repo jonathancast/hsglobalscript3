@@ -27,7 +27,7 @@ main = runTestTT $ TestList $ [
         st <- eval =<< gsapply_w (Pos file line) (GSUndefined (Pos file line)) []
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSStack -> return ()
+            GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
     ,
     TestCase $ do

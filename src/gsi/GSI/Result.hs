@@ -10,12 +10,13 @@ import Language.Haskell.TH.Syntax (location)
 import Language.Haskell.TH.Lib (appE, conE)
 
 import GSI.Util (Pos, fmtPos, gshere)
+import GSI.RTS (Event)
 import GSI.Value (GSValue)
 
 data GSResult a
   = GSImplementationFailure Pos String
   | GSError GSError
-  | GSStack
+  | GSStack Event
   | GSIndirection (GSValue a)
 
 data GSError = GSErrUnimpl Pos
