@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
-module GSI.Eval (eval) where
+module GSI.Eval (eval, evalSync) where
 
 import Control.Concurrent (forkIO, modifyMVar)
 
 import GSI.Util (gshere)
 import GSI.RTS (newEvent)
 import GSI.Value (GSValue(..), GSThunkState(..), gsvCode, gstsCode)
-import GSI.Result (GSError(..), GSResult(..), implementationFailure)
+import GSI.Result (GSError(..), GSResult(..), implementationFailure, stCode)
 
 import ACE (Stack(..), aceEnter)
 
@@ -20,3 +20,9 @@ eval (GSThunk mv) = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 eval v = return $ $implementationFailure $ "eval " ++ gsvCode v ++ " next"
+
+evalSync :: GSValue a -> IO (GSResult a)
+evalSync v = do
+    st <- eval v
+    case st of
+        _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
