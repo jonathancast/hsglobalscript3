@@ -5,7 +5,7 @@ module GSI.Eval (eval, evalSync) where
 import Control.Concurrent (forkIO, modifyMVar)
 
 import GSI.Util (gshere)
-import GSI.RTS (newEvent)
+import GSI.RTS (newEvent, await)
 import GSI.Value (GSValue(..), GSThunkState(..), gsvCode, gstsCode)
 import GSI.Result (GSError(..), GSResult(..), implementationFailure, stCode)
 
@@ -26,4 +26,5 @@ evalSync v = do
     st <- eval v
     case st of
         GSError e -> return $ GSError e
+        GSStack b -> await b *> evalSync v
         _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
