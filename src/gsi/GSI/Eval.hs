@@ -9,6 +9,7 @@ import GSI.RTS (newEvent, await)
 import GSI.Value (GSValue(..), GSThunkState(..), gsvCode, gstsCode)
 import GSI.Result (GSError(..), GSResult(..), implementationFailure, stCode)
 
+import qualified GSI.Value as GSV
 import qualified GSI.Result as GSR
 
 import ACE (Stack(..), aceEnter)
@@ -22,6 +23,7 @@ eval (GSThunk mv) = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
+eval (GSV.GSImplementationFailure pos err) = return $ GSR.GSImplementationFailure pos err
 eval v = return $ $implementationFailure $ "eval " ++ gsvCode v ++ " next"
 
 evalSync :: GSValue a -> IO (GSResult a)
