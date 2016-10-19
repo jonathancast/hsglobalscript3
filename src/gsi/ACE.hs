@@ -16,12 +16,15 @@ aceEnter pos fn st = aceUnimpl_w $gshere "aceEnter next" st
 
 aceUnimpl_w pos err [] = return ()
 aceUnimpl_w pos err (StUpdate mv:st) = do
-    mbb <- modifyMVar mv $ \ s -> case s of
-        GSTSStack b -> return (GSTSIndirection $ GSImplementationFailure pos err, Just b)
-        _ -> return (GSTSIndirection $ GSImplementationFailure pos err, Nothing)
-    maybe (return ()) wakeup mbb
+    aceUpdate mv $ GSImplementationFailure pos err
     aceUnimpl_w pos err st
 aceUnimpl_w pos err (_:st) = aceUnimpl_w pos err st
+
+aceUpdate mv v = do
+    mbb <- modifyMVar mv $ \ s -> case s of
+        GSTSStack b -> return (GSTSIndirection v, Just b)
+        _ -> return (GSTSIndirection v, Nothing)
+    maybe (return ()) wakeup mbb
 
 stackCode :: Stack a -> String
 stackCode StApp{} = "StApp"
