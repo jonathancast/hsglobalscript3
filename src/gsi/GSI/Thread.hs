@@ -11,7 +11,7 @@ import Control.Exception (throw)
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Value (GSValue)
 import GSI.Result (GSResult(..), GSError, GSException(..), stCode, throwGSerror)
-import GSI.Eval (eval)
+import GSI.Eval (evalSync)
 
 data Promise a = Promise (MVar (GSValue a))
 
@@ -56,7 +56,7 @@ runThread t = do
             case c of
                 [] -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is empty) next", finishThread t)
                 (v, p) : c' -> do
-                    r <- eval v
+                    r <- evalSync v
                     case r of
                         GSError e -> return (ThreadStateError e, finishThread t)
                         GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
