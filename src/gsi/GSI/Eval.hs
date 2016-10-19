@@ -31,4 +31,5 @@ evalSync v = do
         GSError e -> return $ GSError e
         GSR.GSImplementationFailure pos e -> return $ GSR.GSImplementationFailure pos e
         GSStack b -> await b *> evalSync v
+        GSIndirection v -> evalSync v
         _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
