@@ -9,6 +9,8 @@ import GSI.RTS (newEvent, await)
 import GSI.Value (GSValue(..), GSThunkState(..), gsvCode, gstsCode)
 import GSI.Result (GSError(..), GSResult(..), implementationFailure, stCode)
 
+import qualified GSI.Result as GSR
+
 import ACE (Stack(..), aceEnter)
 
 eval :: GSValue a -> IO (GSResult a)
@@ -26,5 +28,6 @@ evalSync v = do
     st <- eval v
     case st of
         GSError e -> return $ GSError e
+        GSR.GSImplementationFailure pos e -> return $ GSR.GSImplementationFailure pos e
         GSStack b -> await b *> evalSync v
         _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
