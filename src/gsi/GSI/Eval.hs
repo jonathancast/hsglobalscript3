@@ -25,4 +25,5 @@ evalSync :: GSValue a -> IO (GSResult a)
 evalSync v = do
     st <- eval v
     case st of
+        GSError e -> return $ GSError e
         _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
