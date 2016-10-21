@@ -2,6 +2,8 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module ACE (Stack(..), aceEnter) where
 
+import Control.Monad (forM_)
+
 import Control.Concurrent (MVar, modifyMVar)
 
 import GSI.Util (gshere)
@@ -14,11 +16,9 @@ data Stack a
 
 aceEnter pos fn stack = aceUnimpl_w $gshere "aceEnter next" stack
 
-aceUnimpl_w pos err [] = return ()
-aceUnimpl_w pos err (StUpdate mv:st) = do
-    aceUpdate mv $ GSImplementationFailure pos err
-    aceUnimpl_w pos err st
-aceUnimpl_w pos err (_:st) = aceUnimpl_w pos err st
+aceUnimpl_w pos err stack = forM_ stack $ \ cont -> case cont of
+    StUpdate mv -> aceUpdate mv $ GSImplementationFailure pos err
+    _ -> return ()
 
 aceUpdate mv v = do
     mbb <- modifyMVar mv $ \ s -> case s of
