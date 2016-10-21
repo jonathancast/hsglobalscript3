@@ -16,8 +16,10 @@ data Stack a
 
 aceEnter pos fn stack = aceUnimpl_w $gshere "aceEnter next" stack
 
-aceUnimpl_w pos err stack = forM_ stack $ \ cont -> case cont of
-    StUpdate mv -> aceUpdate mv $ GSImplementationFailure pos err
+aceUnimpl_w pos err = aceThrow (GSImplementationFailure pos err)
+
+aceThrow err stack= forM_ stack $ \ cont -> case cont of
+    StUpdate mv -> aceUpdate mv err
     _ -> return ()
 
 aceUpdate mv v = do
