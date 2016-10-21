@@ -1,7 +1,10 @@
 \.dyn_hi$
+\.dyn_hi-boot$
 \.dyn_o$
 \.hi$
+\.hi-boot$
 \.o$
+\.o-boot$
 ^src/gsi/Test$
 ^src/gsi/test-gsi$
 -actual$

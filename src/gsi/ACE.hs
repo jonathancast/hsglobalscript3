@@ -9,14 +9,21 @@ import Control.Concurrent (MVar, modifyMVar)
 import GSI.Util (gshere)
 import GSI.RTS (wakeup)
 import GSI.Value (GSValue(..), GSThunkState(..))
+import qualified GSI.Value as GSV
+import GSI.Result (GSResult(..), stCode)
+import {-# SOURCE #-} GSI.Eval (evalSync)
 
 data Stack a
   = StApp [GSValue a]
   | StUpdate (MVar (GSThunkState a))
 
-aceEnter pos fn stack = aceUnimpl_w $gshere "aceEnter next" stack
+aceEnter pos fn stack = do
+    st <- evalSync fn
+    case st of
+        GSError{} -> aceThrow fn stack
+        _ -> aceUnimpl_w $gshere ("aceEnter (state = " ++ stCode st ++ ") next") stack
 
-aceUnimpl_w pos err = aceThrow (GSImplementationFailure pos err)
+aceUnimpl_w pos err = aceThrow (GSV.GSImplementationFailure pos err)
 
 aceThrow err stack= forM_ stack $ \ cont -> case cont of
     StUpdate mv -> aceUpdate mv err
