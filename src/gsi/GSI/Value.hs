@@ -8,11 +8,13 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, gshere, gsfatal)
 import GSI.RTS (Event)
+import GSI.ByteCode (GSBCO)
 
 data GSValue a
   = GSUndefined Pos
   | GSImplementationFailure Pos String
   | GSThunk (MVar (GSThunkState a))
+  | GSClosure Pos (GSBCO a)
 
 data GSThunkState a
   = GSApply Pos (GSValue a) [GSValue a]
@@ -35,6 +37,7 @@ gsvCode :: GSValue a -> String
 gsvCode GSUndefined{} = "GSUndefined"
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSThunk{} = "GSThunk"
+gsvCode GSClosure{} = "GSClosure"
 
 gstsCode :: GSThunkState a -> String
 gstsCode GSApply{} = "GSApply"
