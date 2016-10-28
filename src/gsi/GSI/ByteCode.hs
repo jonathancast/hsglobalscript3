@@ -1,7 +1,8 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (GSBCO, ToGSBCO(..)) where
 
-data GSBCO
+data GSBCO a
 
-class ToGSBCO a where
-    gsbco :: a -> GSBCO
+class ToGSBCO r a where
+    gsbco :: r -> GSBCO a
