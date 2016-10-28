@@ -18,6 +18,7 @@ data GSResult a
   | GSError GSError
   | GSStack Event
   | GSIndirection (GSValue a)
+  | GSWHNF
 
 data GSError = GSErrUnimpl Pos
   deriving (Show)
@@ -35,6 +36,7 @@ stCode GSImplementationFailure{} = "GSImplementationFailure"
 stCode GSError{} = "GSError"
 stCode GSStack{} = "GSStack"
 stCode GSIndirection{} = "GSIndirection"
+stCode GSWHNF{} = "GSWHNF"
 
 throwGSerror (GSErrUnimpl pos) = throw $ GSExcUndefined pos
 throwGSerror err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
