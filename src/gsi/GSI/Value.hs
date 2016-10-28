@@ -28,7 +28,7 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
 gstoplevelclosure = varE 'gstoplevelclosure_w `appE` gshere
 
-gstoplevelclosure_w :: (GSValue a -> bc) -> GSValue a
+gstoplevelclosure_w :: Pos -> (GSValue a -> bc) -> GSValue a
 gstoplevelclosure_w = $gsfatal "gstoplevelclosure_w next"
 
 gsvCode :: GSValue a -> String
