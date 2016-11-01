@@ -8,7 +8,7 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, gshere, gsfatal)
 import GSI.RTS (Event)
-import GSI.ByteCode (GSBCO)
+import {-# SOURCE #-} GSI.ByteCode (GSBCO, ToGSBCO(..))
 
 data GSValue a
   = GSUndefined Pos
@@ -30,8 +30,8 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
 gstoplevelclosure = varE 'gstoplevelclosure_w `appE` gshere
 
-gstoplevelclosure_w :: Pos -> (GSValue a -> bc) -> GSValue a
-gstoplevelclosure_w = $gsfatal "gstoplevelclosure_w next"
+gstoplevelclosure_w :: ToGSBCO bc a => Pos -> (GSValue a -> bc) -> GSValue a
+gstoplevelclosure_w pos f = GSClosure pos (gsbco f)
 
 gsvCode :: GSValue a -> String
 gsvCode GSUndefined{} = "GSUndefined"
