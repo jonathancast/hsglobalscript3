@@ -24,6 +24,7 @@ eval (GSThunk mv) = modifyMVar mv $ \ st -> case st of
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 eval (GSV.GSImplementationFailure pos err) = return $ GSR.GSImplementationFailure pos err
+eval (GSClosure pos bco) = return $ GSWHNF
 eval v = return $ $implementationFailure $ "eval " ++ gsvCode v ++ " next"
 
 evalSync :: GSValue a -> IO (GSResult a)
