@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
 
 import Control.Exception (displayException, fromException, try)
@@ -9,7 +9,7 @@ import GSI.Util (Pos(Pos), gsfatal, fmtPos)
 import GSI.Value (GSValue(GSUndefined), gsapply_w, gstoplevelclosure_w)
 import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
 import GSI.Eval (eval, evalSync)
-import GSI.ByteCode (GSBCO)
+import GSI.ByteCode (GSBCO, gsbcundefined_w)
 import GSI.Thread (createThread, execMainThread)
 
 main = runTestTT $ TestList $ [
@@ -48,6 +48,14 @@ main = runTestTT $ TestList $ [
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSWHNF -> return ()
+            _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
+    ,
+    TestCase $ do
+        let file = "test-file.gs"
+        st <- eval =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue ()) -> gsbcundefined_w (Pos file 3) :: GSBCO ())) [GSUndefined (Pos file 4)]
+        case st of
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
     ,
     -- §section Threads
