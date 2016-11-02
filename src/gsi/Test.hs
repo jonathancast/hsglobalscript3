@@ -47,7 +47,6 @@ main = runTestTT $ TestList $ [
         st <- eval $ gstoplevelclosure_w (Pos file line) $ ($gsfatal "Evalling a known closure shouldn't touch the function" :: GSValue () -> GSBCO ())
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
             GSWHNF -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
     ,
