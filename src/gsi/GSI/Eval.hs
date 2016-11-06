@@ -29,7 +29,7 @@ evalSync mv = do
     case st of
         GSStack b -> await b *> evalSync mv
         GSIndirection v -> case v of
-            GSV.GSImplementationFailure pos err -> return v
+            GSImplementationFailure pos err -> return v
             GSV.GSError err -> return v
             _ -> return $ $gsimplementationFailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
         _ -> return $ $gsimplementationFailure $ "evalSync " ++ stCode st ++ " next"

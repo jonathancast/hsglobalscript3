@@ -28,7 +28,7 @@ aceEnter pos fn stack = aceUnimpl_w $gshere ("aceEnter (function = " ++ gsvCode 
 -- >         GSR.GSImplementationFailure{} -> aceThrow fn stack
 -- >         _ -> aceUnimpl_w $gshere ("aceEnter (state = " ++ stCode st ++ ") next") stack
 
-aceUnimpl_w pos err = aceThrow (GSV.GSImplementationFailure pos err)
+aceUnimpl_w pos err = aceThrow (GSImplementationFailure pos err)
 
 aceThrow err stack= forM_ stack $ \ cont -> case cont of
     StUpdate mv -> aceUpdate mv err

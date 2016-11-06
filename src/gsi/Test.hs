@@ -6,7 +6,7 @@ import Control.Exception (displayException, fromException, try)
 import Test.HUnit
 
 import GSI.Util (Pos(Pos), gsfatal, fmtPos)
-import GSI.Value (GSValue(GSThunk), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsvCode)
+import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsvCode)
 import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
 import GSI.Eval (eval, evalSync)
 import GSI.ByteCode (GSBCO, gsbcundefined_w)
@@ -34,7 +34,7 @@ main = runTestTT $ TestList $ [
         let line = 1
         v <- evalSync =<< getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
         case v of
-            GSV.GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSV.GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
