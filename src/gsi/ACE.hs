@@ -18,8 +18,6 @@ data Stack
 aceApply pos fn@GSError{} args = return fn
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
 
-aceUnimpl_w pos err = aceThrow (GSImplementationFailure pos err)
-
 aceThrow err stack= forM_ stack $ \ cont -> case cont of
     StUpdate mv -> aceUpdate mv err
     _ -> return ()
