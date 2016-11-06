@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
 module GSI.Eval (eval, evalSync) where
 
-import Control.Concurrent (forkIO, modifyMVar)
+import Control.Concurrent (MVar, forkIO, modifyMVar)
 
 import GSI.Util (gshere)
 import GSI.RTS (newEvent, await)
@@ -14,25 +14,25 @@ import qualified GSI.Result as GSR
 
 import ACE (Stack(..), aceEnter)
 
-eval :: GSValue -> IO (GSResult a)
-eval (GSV.GSError err) = return $ GSR.GSError err
-eval (GSThunk mv) = modifyMVar mv $ \ st -> case st of
+eval :: MVar (GSThunkState) -> IO (GSResult a)
+eval mv = modifyMVar mv $ \ st -> case st of
     GSApply pos fn args -> do
         e <- newEvent
         forkIO $ aceEnter pos fn [ StApp args, StUpdate mv ]
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
-eval (GSV.GSImplementationFailure pos err) = return $ GSR.GSImplementationFailure pos err
-eval (GSClosure pos bco) = return $ GSWHNF
-eval v = return $ $implementationFailure $ "eval " ++ gsvCode v ++ " next"
 
 evalSync :: GSValue -> IO (GSResult a)
-evalSync v = do
-    st <- eval v
+evalSync (GSV.GSImplementationFailure pos err) = return $ GSR.GSImplementationFailure pos err
+evalSync (GSV.GSError err) = return $ GSR.GSError err
+evalSync v@(GSThunk mv) = do
+    st <- eval mv
     case st of
         GSR.GSError e -> return $ GSR.GSError e
         GSR.GSImplementationFailure pos e -> return $ GSR.GSImplementationFailure pos e
         GSStack b -> await b *> evalSync v
         GSIndirection v -> evalSync v
         _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
+evalSync (GSClosure pos bco) = return $ GSWHNF
+evalSync v = return ($implementationFailure $ "evalSync " ++ gsvCode v ++ " next")

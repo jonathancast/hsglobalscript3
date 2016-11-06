@@ -6,7 +6,7 @@ import Control.Exception (displayException, fromException, try)
 import Test.HUnit
 
 import GSI.Util (Pos(Pos), gsfatal, fmtPos)
-import GSI.Value (GSValue, gsundefined_w, gsapply_w, gstoplevelclosure_w)
+import GSI.Value (GSValue(GSThunk), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsvCode)
 import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
 import GSI.Eval (eval, evalSync)
 import GSI.ByteCode (GSBCO, gsbcundefined_w)
@@ -17,16 +17,11 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        st <- eval $ gsundefined_w (Pos file line)
-        case st of
-            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
-            _ -> assertFailure $ "Got " ++ stCode st ++ "; expected error"
-    ,
-    TestCase $ do
-        let file = "test-file.gs"
-        let line = 1
-        st <- eval =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
+        v <- gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
+        th <- case v of
+            GSThunk th -> return th
+            _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
+        st <- eval th
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSStack _ -> return ()
@@ -43,16 +38,11 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        let line = 1
-        st <- eval $ gstoplevelclosure_w (Pos file line) $ ($gsfatal "Evalling a known closure shouldn't touch the function" :: GSValue -> GSBCO)
-        case st of
-            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSWHNF -> return ()
-            _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
-    ,
-    TestCase $ do
-        let file = "test-file.gs"
-        st <- eval =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
+        v <- gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
+        th <- case v of
+            GSThunk th -> return th
+            _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
+        st <- eval th
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSStack _ -> return ()
