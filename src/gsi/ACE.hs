@@ -23,6 +23,7 @@ aceEnter pos fn stack = do
     st <- evalSync fn
     case st of
         GSR.GSError{} -> aceThrow fn stack
+        GSR.GSImplementationFailure{} -> aceThrow fn stack
         _ -> aceUnimpl_w $gshere ("aceEnter (state = " ++ stCode st ++ ") next") stack
 
 aceUnimpl_w pos err = aceThrow (GSV.GSImplementationFailure pos err)
