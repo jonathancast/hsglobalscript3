@@ -12,8 +12,6 @@ import GSI.Value (GSValue(..), GSThunkState(..), gsvCode)
 import GSI.Result (GSResult(..), stCode)
 import {-# SOURCE #-} GSI.Eval (evalSync)
 
-import qualified GSI.Result as GSR
-
 data Stack
   = StApp [GSValue]
   | StUpdate (MVar GSThunkState)

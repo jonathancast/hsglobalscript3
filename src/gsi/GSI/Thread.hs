@@ -13,8 +13,6 @@ import GSI.Value (GSValue(..), gsvCode)
 import GSI.Result (GSResult(..), GSError, GSException(..), stCode, throwGSerror)
 import GSI.Eval (evalSync)
 
-import qualified GSI.Result as GSR
-
 data Promise = Promise (MVar GSValue)
 
 data Thread = Thread {
