@@ -44,7 +44,7 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        st <- eval $ gstoplevelclosure_w (Pos file line) $ ($gsfatal "Evalling a known closure shouldn't touch the function" :: GSValue () -> GSBCO ())
+        st <- eval $ gstoplevelclosure_w (Pos file line) $ ($gsfatal "Evalling a known closure shouldn't touch the function" :: GSValue -> GSBCO)
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSWHNF -> return ()
@@ -52,7 +52,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        st <- eval =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue ()) -> gsbcundefined_w (Pos file 3) :: GSBCO ())) [GSUndefined (Pos file 4)]
+        st <- eval =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [GSUndefined (Pos file 4)]
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSStack _ -> return ()

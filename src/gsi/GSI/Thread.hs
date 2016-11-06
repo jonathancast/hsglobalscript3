@@ -13,11 +13,11 @@ import GSI.Value (GSValue)
 import GSI.Result (GSResult(..), GSError, GSException(..), stCode, throwGSerror)
 import GSI.Eval (evalSync)
 
-data Promise a = Promise (MVar (GSValue a))
+data Promise = Promise (MVar GSValue)
 
-data Thread a = Thread {
+data Thread = Thread {
     state :: MVar ThreadState,
-    code :: MVar [(GSValue a, Promise a)], -- Always take §hs{state} first!
+    code :: MVar [(GSValue, Promise)], -- Always take §hs{state} first!
     wait :: MVar ()
   }
 
@@ -33,7 +33,7 @@ threadStateCode ThreadStateError{} = "ThreadStateError"
 threadStateCode ThreadStateImplementationFailure{} = "ThreadStateImplementationFailure"
 threadStateCode ThreadStateUnimpl{} = "ThreadStateUnimpl"
 
-createThread :: GSValue a -> IO (Thread a)
+createThread :: GSValue -> IO Thread
 createThread v = do
     rec
         w <- newEmptyMVar
@@ -48,7 +48,7 @@ createThread v = do
         tid <- forkIO $ runThread t
     return t
 
-runThread :: Thread a -> IO ()
+runThread :: Thread -> IO ()
 runThread t = do
     join $ state t `modifyMVar` \ st -> case st of
         ThreadStateRunning -> do
@@ -67,7 +67,7 @@ finishThread t = do
     wait t `putMVar` ()
     return ()
 
-execMainThread :: Thread a -> IO ()
+execMainThread :: Thread -> IO ()
 execMainThread t = do
     readMVar $ wait t
     st <- readMVar $ state t

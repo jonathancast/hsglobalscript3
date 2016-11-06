@@ -13,9 +13,9 @@ import qualified GSI.Value as GSV
 import GSI.Result (GSResult(..), stCode)
 import {-# SOURCE #-} GSI.Eval (evalSync)
 
-data Stack a
-  = StApp [GSValue a]
-  | StUpdate (MVar (GSThunkState a))
+data Stack
+  = StApp [GSValue]
+  | StUpdate (MVar GSThunkState)
 
 aceEnter pos fn stack = do
     st <- evalSync fn
@@ -35,6 +35,6 @@ aceUpdate mv v = do
         _ -> return (GSTSIndirection v, Nothing)
     maybe (return ()) wakeup mbb
 
-stackCode :: Stack a -> String
+stackCode :: Stack -> String
 stackCode StApp{} = "StApp"
 stackCode StUpdate{} = "StUpdate"

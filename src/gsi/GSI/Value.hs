@@ -10,16 +10,16 @@ import GSI.Util (Pos, gshere, gsfatal)
 import GSI.RTS (Event)
 import {-# SOURCE #-} GSI.ByteCode (GSBCO, ToGSBCO(..))
 
-data GSValue a
+data GSValue
   = GSUndefined Pos
   | GSImplementationFailure Pos String
-  | GSThunk (MVar (GSThunkState a))
-  | GSClosure Pos (GSBCO a)
+  | GSThunk (MVar GSThunkState)
+  | GSClosure Pos GSBCO
 
-data GSThunkState a
-  = GSApply Pos (GSValue a) [GSValue a]
+data GSThunkState
+  = GSApply Pos GSValue [GSValue]
   | GSTSStack Event
-  | GSTSIndirection (GSValue a)
+  | GSTSIndirection GSValue
 
 gsundefined = conE 'GSUndefined `appE` gshere
 gsimplementationFailure = conE 'GSImplementationFailure `appE` gshere
@@ -30,16 +30,16 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
 gstoplevelclosure = varE 'gstoplevelclosure_w `appE` gshere
 
-gstoplevelclosure_w :: ToGSBCO bc a => Pos -> (GSValue a -> bc) -> GSValue a
+gstoplevelclosure_w :: ToGSBCO bc => Pos -> (GSValue -> bc) -> GSValue
 gstoplevelclosure_w pos f = GSClosure pos (gsbco f)
 
-gsvCode :: GSValue a -> String
+gsvCode :: GSValue -> String
 gsvCode GSUndefined{} = "GSUndefined"
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"
 
-gstsCode :: GSThunkState a -> String
+gstsCode :: GSThunkState -> String
 gstsCode GSApply{} = "GSApply"
 gstsCode GSTSStack{} = "GSTSStack"
 gstsCode GSTSIndirection{} = "GSTSIndirection"

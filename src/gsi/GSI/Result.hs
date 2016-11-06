@@ -17,7 +17,7 @@ data GSResult a
   = GSImplementationFailure Pos String
   | GSError GSError
   | GSStack Event
-  | GSIndirection (GSValue a)
+  | GSIndirection GSValue
   | GSWHNF
 
 data GSError = GSErrUnimpl Pos
