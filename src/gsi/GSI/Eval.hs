@@ -14,7 +14,7 @@ import qualified GSI.Result as GSR
 
 import ACE (Stack(..), aceEnter)
 
-eval :: MVar (GSThunkState) -> IO (GSResult a)
+eval :: MVar (GSThunkState) -> IO GSResult
 eval mv = modifyMVar mv $ \ st -> case st of
     GSApply pos fn args -> do
         e <- newEvent
@@ -23,7 +23,7 @@ eval mv = modifyMVar mv $ \ st -> case st of
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 
-evalSync :: MVar (GSThunkState) -> IO (GSResult a)
+evalSync :: MVar (GSThunkState) -> IO GSResult
 evalSync mv = do
     st <- eval mv
     case st of

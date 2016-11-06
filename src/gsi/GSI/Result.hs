@@ -13,7 +13,7 @@ import GSI.Util (Pos, fmtPos, gshere)
 import GSI.RTS (Event)
 import GSI.Value (GSValue, GSError(..))
 
-data GSResult a
+data GSResult
   = GSImplementationFailure Pos String
   | GSError GSError
   | GSStack Event
@@ -28,7 +28,7 @@ instance Exception GSException where
     displayException (GSExcUndefined pos) = fmtPos pos "undefined"
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
 
-stCode :: GSResult a -> String
+stCode :: GSResult -> String
 stCode GSImplementationFailure{} = "GSImplementationFailure"
 stCode GSError{} = "GSError"
 stCode GSStack{} = "GSStack"

@@ -5,4 +5,4 @@ import Control.Concurrent (MVar)
 import GSI.Value (GSThunkState)
 import GSI.Result (GSResult)
 
-evalSync :: MVar (GSThunkState) -> IO (GSResult a)
+evalSync :: MVar (GSThunkState) -> IO GSResult
