@@ -14,8 +14,7 @@ import GSI.RTS (Event)
 import GSI.Value (GSValue, GSError(..))
 
 data GSResult
-  = GSError GSError
-  | GSStack Event
+  = GSStack Event
   | GSIndirection GSValue
   | GSWHNF
 
@@ -28,7 +27,6 @@ instance Exception GSException where
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
 
 stCode :: GSResult -> String
-stCode GSError{} = "GSError"
 stCode GSStack{} = "GSStack"
 stCode GSIndirection{} = "GSIndirection"
 stCode GSWHNF{} = "GSWHNF"

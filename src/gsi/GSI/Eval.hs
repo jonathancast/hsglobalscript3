@@ -27,7 +27,6 @@ evalSync :: MVar (GSThunkState) -> IO GSValue
 evalSync mv = do
     st <- eval mv
     case st of
-        GSR.GSError e -> return $ GSV.GSError e
         GSStack b -> await b *> evalSync mv
         GSIndirection v -> case v of
             GSV.GSImplementationFailure pos err -> return v
