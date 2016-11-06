@@ -2,11 +2,8 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module ACE (Stack(..), aceApply, aceUpdate) where
 
-import Control.Monad (forM_)
-
 import Control.Concurrent (MVar, modifyMVar)
 
-import GSI.Util (gshere)
 import GSI.RTS (wakeup)
 import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode)
 import GSI.Result (GSResult(..), stCode)
