@@ -12,15 +12,16 @@ import GSI.Eval (eval, evalSync)
 import GSI.ByteCode (GSBCO, gsbcundefined_w)
 import GSI.Thread (createThread, execMainThread)
 
+getThunk v = case v of
+    GSThunk th -> return th
+    _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
+
 main = runTestTT $ TestList $ [
     -- §section Expressions
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        v <- gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
-        th <- case v of
-            GSThunk th -> return th
-            _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
+        th <- getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
         st <- eval th
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
@@ -38,10 +39,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        v <- gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
-        th <- case v of
-            GSThunk th -> return th
-            _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
+        th <- getThunk =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
         st <- eval th
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
