@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Result (GSError(..), GSResult(..), GSException(..), implementationFailure, stCode, throwGSerror) where
+module GSI.Result (GSError(..), GSResult(..), GSException(..), stCode, throwGSerror) where
 
 import Control.Exception (Exception(..), throw)
 
@@ -37,5 +37,3 @@ stCode GSWHNF{} = "GSWHNF"
 
 throwGSerror (GSErrUnimpl pos) = throw $ GSExcUndefined pos
 throwGSerror err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
-
-implementationFailure = conE 'GSImplementationFailure `appE` gshere
