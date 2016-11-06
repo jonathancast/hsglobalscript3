@@ -12,6 +12,8 @@ import GSI.Eval (eval, evalSync)
 import GSI.ByteCode (GSBCO, gsbcundefined_w)
 import GSI.Thread (createThread, execMainThread)
 
+import qualified GSI.Value as GSV
+
 getThunk v = case v of
     GSThunk th -> return th
     _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
@@ -31,11 +33,11 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        st <- evalSync =<< getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
-        case st of
-            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
-            _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
+        v <- evalSync =<< getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
+        case v of
+            GSV.GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSV.GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
+            _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do
         let file = "test-file.gs"

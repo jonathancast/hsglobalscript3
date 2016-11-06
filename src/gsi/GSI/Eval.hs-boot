@@ -2,7 +2,6 @@ module GSI.Eval (evalSync) where
 
 import Control.Concurrent (MVar)
 
-import GSI.Value (GSThunkState)
-import GSI.Result (GSResult)
+import GSI.Value (GSValue, GSThunkState)
 
-evalSync :: MVar (GSThunkState) -> IO GSResult
+evalSync :: MVar (GSThunkState) -> IO GSValue

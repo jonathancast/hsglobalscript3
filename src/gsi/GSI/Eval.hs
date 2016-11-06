@@ -6,7 +6,7 @@ import Control.Concurrent (MVar, forkIO, modifyMVar)
 
 import GSI.Util (gshere)
 import GSI.RTS (newEvent, await)
-import GSI.Value (GSValue(..), GSThunkState(..), gsvCode, gstsCode)
+import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode, gstsCode)
 import GSI.Result (GSError(..), GSResult(..), implementationFailure, stCode)
 
 import qualified GSI.Value as GSV
@@ -23,15 +23,15 @@ eval mv = modifyMVar mv $ \ st -> case st of
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 
-evalSync :: MVar (GSThunkState) -> IO GSResult
+evalSync :: MVar (GSThunkState) -> IO GSValue
 evalSync mv = do
     st <- eval mv
     case st of
-        GSR.GSError e -> return $ GSR.GSError e
-        GSR.GSImplementationFailure pos e -> return $ GSR.GSImplementationFailure pos e
+        GSR.GSError e -> return $ GSV.GSError e
+        GSR.GSImplementationFailure pos e -> return $ GSV.GSImplementationFailure pos e
         GSStack b -> await b *> evalSync mv
         GSIndirection v -> case v of
-            GSV.GSImplementationFailure pos err -> return $ GSR.GSImplementationFailure pos err
-            GSV.GSError err -> return $ GSR.GSError err
-            _ -> return $ $implementationFailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
-        _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
+            GSV.GSImplementationFailure pos err -> return v
+            GSV.GSError err -> return v
+            _ -> return $ $gsimplementationFailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
+        _ -> return $ $gsimplementationFailure $ "evalSync " ++ stCode st ++ " next"

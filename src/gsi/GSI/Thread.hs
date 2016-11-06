@@ -63,8 +63,8 @@ runThread t = do
                     GSThunk th -> do
                         r <- evalSync th
                         case r of
-                            GSR.GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
-                            _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; eval returns " ++ stCode r ++ ") next", finishThread t)
+                            GSV.GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
+                            _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; eval returns " ++ gsvCode r ++ ") next", finishThread t)
                     _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next", finishThread t)
         _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is " ++ threadStateCode st ++ ") next", finishThread t)
 
