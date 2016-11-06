@@ -9,7 +9,7 @@ import GSI.RTS (newEvent, await)
 import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode, gstsCode)
 import GSI.Result (GSError(..), GSResult(..), stCode)
 
-import ACE (Stack(..), aceApply, aceUpdate)
+import ACE (aceApply, aceUpdate)
 
 eval :: MVar (GSThunkState) -> IO GSResult
 eval mv = modifyMVar mv $ \ st -> case st of
