@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (Stack(..), aceApply, aceUpdate, aceEnter) where
+module ACE (Stack(..), aceApply, aceUpdate) where
 
 import Control.Monad (forM_)
 
@@ -14,9 +14,6 @@ import {-# SOURCE #-} GSI.Eval (evalSync)
 
 data Stack
   = StUpdate (MVar GSThunkState)
-
-aceEnter pos fn@(GSError e) stack = aceThrow fn stack
-aceEnter pos fn stack = aceUnimpl_w $gshere ("aceEnter (function = " ++ gsvCode fn ++ ") next") stack
 
 aceApply pos fn@GSError{} args = return fn
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
