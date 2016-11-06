@@ -23,16 +23,15 @@ eval mv = modifyMVar mv $ \ st -> case st of
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     _ -> return (st, $implementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 
-evalSync :: GSValue -> IO (GSResult a)
-evalSync (GSV.GSImplementationFailure pos err) = return $ GSR.GSImplementationFailure pos err
-evalSync (GSV.GSError err) = return $ GSR.GSError err
-evalSync v@(GSThunk mv) = do
+evalSync :: MVar (GSThunkState) -> IO (GSResult a)
+evalSync mv = do
     st <- eval mv
     case st of
         GSR.GSError e -> return $ GSR.GSError e
         GSR.GSImplementationFailure pos e -> return $ GSR.GSImplementationFailure pos e
-        GSStack b -> await b *> evalSync v
-        GSIndirection v -> evalSync v
+        GSStack b -> await b *> evalSync mv
+        GSIndirection v -> case v of
+            GSV.GSImplementationFailure pos err -> return $ GSR.GSImplementationFailure pos err
+            GSV.GSError err -> return $ GSR.GSError err
+            _ -> return $ $implementationFailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
         _ -> return $ $implementationFailure $ "evalSync " ++ stCode st ++ " next"
-evalSync (GSClosure pos bco) = return $ GSWHNF
-evalSync v = return ($implementationFailure $ "evalSync " ++ gsvCode v ++ " next")

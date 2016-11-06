@@ -31,7 +31,7 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        st <- evalSync =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
+        st <- evalSync =<< getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
         case st of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)

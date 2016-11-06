@@ -9,9 +9,11 @@ import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, putMVar
 import Control.Exception (throw)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.Value (GSValue)
+import GSI.Value (GSValue, gsvCode)
 import GSI.Result (GSResult(..), GSError, GSException(..), stCode, throwGSerror)
 import GSI.Eval (evalSync)
+
+import qualified GSI.Value as GSV
 
 data Promise = Promise (MVar GSValue)
 
@@ -55,12 +57,14 @@ runThread t = do
             c <- readMVar $ code t
             case c of
                 [] -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is empty) next", finishThread t)
-                (v, p) : c' -> do
-                    r <- evalSync v
-                    case r of
-                        GSError e -> return (ThreadStateError e, finishThread t)
-                        GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
-                        _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; eval returns " ++ stCode r ++ ") next", finishThread t)
+                (v, p) : c' -> case v of
+                    GSV.GSError err -> return (ThreadStateError err, finishThread t)
+                    _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next", finishThread t)
+-- >                     do
+-- >                         r <- evalSync v
+-- >                         case r of
+-- >                             GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
+-- >                             _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; eval returns " ++ stCode r ++ ") next", finishThread t)
         _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is " ++ threadStateCode st ++ ") next", finishThread t)
 
 finishThread t = do
