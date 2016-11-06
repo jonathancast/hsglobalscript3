@@ -15,7 +15,7 @@ import qualified GSI.Result as GSR
 import ACE (Stack(..), aceEnter)
 
 eval :: GSValue -> IO (GSResult a)
-eval (GSUndefined pos) = return $ GSError (GSErrUnimpl pos)
+eval (GSV.GSError err) = return $ GSR.GSError err
 eval (GSThunk mv) = modifyMVar mv $ \ st -> case st of
     GSApply pos fn args -> do
         e <- newEvent
@@ -31,7 +31,7 @@ evalSync :: GSValue -> IO (GSResult a)
 evalSync v = do
     st <- eval v
     case st of
-        GSError e -> return $ GSError e
+        GSR.GSError e -> return $ GSR.GSError e
         GSR.GSImplementationFailure pos e -> return $ GSR.GSImplementationFailure pos e
         GSStack b -> await b *> evalSync v
         GSIndirection v -> evalSync v

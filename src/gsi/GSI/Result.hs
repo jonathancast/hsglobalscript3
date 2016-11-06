@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, conE)
 
 import GSI.Util (Pos, fmtPos, gshere)
 import GSI.RTS (Event)
-import GSI.Value (GSValue)
+import GSI.Value (GSValue, GSError(..))
 
 data GSResult a
   = GSImplementationFailure Pos String
@@ -19,9 +19,6 @@ data GSResult a
   | GSStack Event
   | GSIndirection GSValue
   | GSWHNF
-
-data GSError = GSErrUnimpl Pos
-  deriving (Show)
 
 data GSException
   = GSExcUndefined Pos

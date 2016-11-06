@@ -13,6 +13,8 @@ import qualified GSI.Value as GSV
 import GSI.Result (GSResult(..), stCode)
 import {-# SOURCE #-} GSI.Eval (evalSync)
 
+import qualified GSI.Result as GSR
+
 data Stack
   = StApp [GSValue]
   | StUpdate (MVar GSThunkState)
@@ -20,7 +22,7 @@ data Stack
 aceEnter pos fn stack = do
     st <- evalSync fn
     case st of
-        GSError{} -> aceThrow fn stack
+        GSR.GSError{} -> aceThrow fn stack
         _ -> aceUnimpl_w $gshere ("aceEnter (state = " ++ stCode st ++ ") next") stack
 
 aceUnimpl_w pos err = aceThrow (GSV.GSImplementationFailure pos err)
