@@ -59,7 +59,7 @@ runThread t = do
             case c of
                 [] -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is empty) next", finishThread t)
                 (v, p) : c' -> case v of
-                    GSV.GSError err -> return (ThreadStateError err, finishThread t)
+                    GSError err -> return (ThreadStateError err, finishThread t)
                     GSThunk th -> do
                         r <- evalSync th
                         case r of

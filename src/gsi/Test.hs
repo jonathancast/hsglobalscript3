@@ -35,7 +35,7 @@ main = runTestTT $ TestList $ [
         v <- evalSync =<< getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSV.GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
+            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do

@@ -19,7 +19,7 @@ data Stack
   = StApp [GSValue]
   | StUpdate (MVar GSThunkState)
 
-aceEnter pos fn@(GSV.GSError e) stack = aceThrow fn stack
+aceEnter pos fn@(GSError e) stack = aceThrow fn stack
 aceEnter pos fn stack = aceUnimpl_w $gshere ("aceEnter (function = " ++ gsvCode fn ++ ") next") stack
 -- > aceEnter pos fn stack = do
 -- >     st <- evalSync fn
