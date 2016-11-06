@@ -9,7 +9,6 @@ import GSI.RTS (newEvent, await)
 import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode, gstsCode)
 import GSI.Result (GSError(..), GSResult(..), stCode)
 
-import qualified GSI.Value as GSV
 import qualified GSI.Result as GSR
 
 import ACE (Stack(..), aceEnter)

@@ -9,7 +9,6 @@ import Control.Concurrent (MVar, modifyMVar)
 import GSI.Util (gshere)
 import GSI.RTS (wakeup)
 import GSI.Value (GSValue(..), GSThunkState(..), gsvCode)
-import qualified GSI.Value as GSV
 import GSI.Result (GSResult(..), stCode)
 import {-# SOURCE #-} GSI.Eval (evalSync)
 

@@ -12,8 +12,6 @@ import GSI.Eval (eval, evalSync)
 import GSI.ByteCode (GSBCO, gsbcundefined_w)
 import GSI.Thread (createThread, execMainThread)
 
-import qualified GSI.Value as GSV
-
 getThunk v = case v of
     GSThunk th -> return th
     _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
