@@ -13,11 +13,13 @@ import {-# SOURCE #-} GSI.ByteCode (GSBCO, ToGSBCO(..))
 data GSValue
   = GSImplementationFailure Pos String
   | GSError GSError
-  | GSThunk (MVar GSThunkState)
+  | GSThunk GSThunk
   | GSClosure Pos GSBCO
 
 data GSError = GSErrUnimpl Pos
   deriving (Show)
+
+type GSThunk = MVar GSThunkState
 
 data GSThunkState
   = GSApply Pos GSValue [GSValue]
