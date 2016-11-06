@@ -18,10 +18,6 @@ data Stack
 aceApply pos fn@GSError{} args = return fn
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
 
-aceThrow err stack= forM_ stack $ \ cont -> case cont of
-    StUpdate mv -> aceUpdate mv err
-    _ -> return ()
-
 aceUpdate mv v = do
     mbb <- modifyMVar mv $ \ s -> case s of
         GSTSStack b -> return (GSTSIndirection v, Just b)
