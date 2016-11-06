@@ -20,12 +20,6 @@ data Stack
 
 aceEnter pos fn@(GSError e) stack = aceThrow fn stack
 aceEnter pos fn stack = aceUnimpl_w $gshere ("aceEnter (function = " ++ gsvCode fn ++ ") next") stack
--- > aceEnter pos fn stack = do
--- >     st <- evalSync fn
--- >     case st of
--- >         GSR.GSError{} -> aceThrow fn stack
--- >         GSR.GSImplementationFailure{} -> aceThrow fn stack
--- >         _ -> aceUnimpl_w $gshere ("aceEnter (state = " ++ stCode st ++ ") next") stack
 
 aceUnimpl_w pos err = aceThrow (GSImplementationFailure pos err)
 
