@@ -28,7 +28,6 @@ evalSync mv = do
     st <- eval mv
     case st of
         GSR.GSError e -> return $ GSV.GSError e
-        GSR.GSImplementationFailure pos e -> return $ GSV.GSImplementationFailure pos e
         GSStack b -> await b *> evalSync mv
         GSIndirection v -> case v of
             GSV.GSImplementationFailure pos err -> return v
