@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (gsundefined)
-import GSI.ByteCode ()
+import GSI.Value (gstoplevelclosure)
+import GSI.ByteCode (gsbcundefined)
 
-gsmain = $gsundefined
+gsmain = $gstoplevelclosure $ \ gsrun -> $gsbcundefined
