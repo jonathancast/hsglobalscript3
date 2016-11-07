@@ -5,7 +5,7 @@ module GSI.Thread (createThread, execMainThread) where
 import Control.Monad (join)
 
 import Control.Concurrent (forkIO)
-import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, putMVar, readMVar)
+import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, modifyMVar_, putMVar, readMVar)
 import Control.Exception (throw)
 
 import GSI.Util (Pos, gsfatal, gshere)
@@ -55,17 +55,25 @@ runThread t = do
             c <- readMVar $ code t
             case c of
                 [] -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is empty) next", finishThread t)
-                (v, p) : c' -> case v of
-                    GSError err -> return (ThreadStateError err, finishThread t)
-                    GSThunk th -> do
-                        r <- evalSync th
-                        case r of
-                            GSImplementationFailure pos e -> return (ThreadStateImplementationFailure pos e, finishThread t)
-                            _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; eval returns " ++ gsvCode r ++ ") next", finishThread t)
-                    _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next", finishThread t)
+                (v, p) : c' -> do
+                    code t `modifyMVar_` \ _ -> return c'
+                    return (ThreadStateRunning, execInstr v p t)
         _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is " ++ threadStateCode st ++ ") next", finishThread t)
 
+execInstr (GSImplementationFailure pos e) p t = do
+    state t `modifyMVar_` \ _ -> return $ ThreadStateImplementationFailure pos e
+execInstr (GSError err) p t = do
+    state t `modifyMVar_` \ _ -> return $ ThreadStateError err
+    finishThread t
+execInstr (GSThunk th) p t = do
+    v <- evalSync th
+    execInstr v p t
+execInstr v p t = do
+    state t `modifyMVar_` \ _ -> return $ ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
+    finishThread t
+
 finishThread t = do
+    code t `modifyMVar_` \ _ -> return []
     wait t `putMVar` ()
     return ()
 
