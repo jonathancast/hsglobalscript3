@@ -5,10 +5,11 @@ module GSI.ByteCode (GSBCO(..), ToGSBCO(..), gsbcundefined, gsbcundefined_w, bco
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.Value (GSValue)
+import GSI.Value (GSValue, gsundefined_w)
 
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
+  | GSBCOExpr (IO GSValue)
 
 class ToGSBCO r where
     gsbco :: r -> GSBCO
@@ -22,7 +23,8 @@ instance ToGSBCO GSBCO where
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSBCO
-gsbcundefined_w = $gsfatal "gsbcundefined_w next"
+gsbcundefined_w pos = GSBCOExpr $ return $ gsundefined_w pos
 
 bcoCode :: GSBCO -> String
 bcoCode GSBCOFun{} = "GSBCOFun"
+bcoCode GSBCOExpr{} = "GSBCOExpr"
