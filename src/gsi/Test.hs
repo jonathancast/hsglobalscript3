@@ -44,6 +44,14 @@ main = runTestTT $ TestList $ [
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
     ,
+    TestCase $ do
+        let file = "test-file.gs"
+        v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
+        case v of
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3)
+            _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected stack"
+    ,
     -- §section Threads
     TestCase $ do
         let file = "test-file.gs"
