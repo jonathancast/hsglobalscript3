@@ -9,6 +9,7 @@ import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, modifyM
 import Control.Exception (throw)
 
 import GSI.Util (Pos, gsfatal, gshere)
+import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Value (GSValue(..), gsvCode)
 import GSI.Result (GSResult(..), GSError, GSException(..), stCode, throwGSerror)
 import GSI.Eval (evalSync)
@@ -18,7 +19,7 @@ data Promise = Promise (MVar GSValue)
 data Thread = Thread {
     state :: MVar ThreadState,
     code :: MVar [(GSValue, Promise)], -- Always take §hs{state} first!
-    wait :: MVar ()
+    wait :: Event
   }
 
 data ThreadState
@@ -36,7 +37,7 @@ threadStateCode ThreadStateUnimpl{} = "ThreadStateUnimpl"
 createThread :: GSValue -> IO Thread
 createThread v = do
     rec
-        w <- newEmptyMVar
+        w <- newEvent
         sv <- newMVar ThreadStateRunning
         p <- newEmptyMVar
         c <- newMVar [(v, Promise p)]
@@ -74,12 +75,12 @@ execInstr v p t = do
 
 finishThread t = do
     code t `modifyMVar_` \ _ -> return []
-    wait t `putMVar` ()
+    wakeup $ wait t
     return ()
 
 execMainThread :: Thread -> IO ()
 execMainThread t = do
-    readMVar $ wait t
+    await $ wait t
     st <- readMVar $ state t
     case st of
         ThreadStateUnimpl pos err -> throw $ GSExcImplementationFailure pos err
