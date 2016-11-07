@@ -18,6 +18,9 @@ aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function =
 
 aceCall pos0 pos1 (GSBCOFun f) (arg:args) = aceCall pos0 pos1 (f arg) args
 aceCall pos0 pos1 (GSBCOFun f) [] = return $ $gsimplementationFailure $ "aceCall (function = GSBCOFun; no args) next"
+aceCall pos0 pos1 (GSBCOExpr e) args = do
+    v <- e
+    aceApply pos0 v args
 aceCall pos0 pos1 bco args = return $ $gsimplementationFailure $ "aceCall (function = " ++ bcoCode bco ++ ") next"
 
 aceUpdate mv v = do
