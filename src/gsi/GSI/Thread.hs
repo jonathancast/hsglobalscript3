@@ -18,7 +18,6 @@ data Promise = Promise (MVar GSValue)
 
 data Thread = Thread {
     state :: MVar ThreadState,
-    code :: MVar [(GSValue, Promise)], -- Always take §hs{state} first!
     wait :: Event
   }
 
@@ -40,41 +39,36 @@ createThread v = do
         w <- newEvent
         sv <- newMVar ThreadStateRunning
         p <- newEmptyMVar
-        c <- newMVar [(v, Promise p)]
         let t = Thread{
             state = sv,
-            code = c,
             wait = w
           }
-        tid <- forkIO $ runThread t
+        tid <- forkIO $ runThread [(v, Promise p)] t
     return t
 
-runThread :: Thread -> IO ()
-runThread t = do
+runThread :: [(GSValue, Promise)] -> Thread -> IO ()
+runThread c t = do
     join $ state t `modifyMVar` \ st -> case st of
         ThreadStateRunning -> do
-            c <- readMVar $ code t
             case c of
                 [] -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is empty) next", finishThread t)
                 (v, p) : c' -> do
-                    code t `modifyMVar_` \ _ -> return c'
-                    return (ThreadStateRunning, execInstr v p t)
+                    return (ThreadStateRunning, execInstr v p c' t)
         _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is " ++ threadStateCode st ++ ") next", finishThread t)
 
-execInstr (GSImplementationFailure pos e) p t = do
+execInstr (GSImplementationFailure pos e) p c t = do
     state t `modifyMVar_` \ _ -> return $ ThreadStateImplementationFailure pos e
-execInstr (GSError err) p t = do
+execInstr (GSError err) p c t = do
     state t `modifyMVar_` \ _ -> return $ ThreadStateError err
     finishThread t
-execInstr (GSThunk th) p t = do
+execInstr (GSThunk th) p c t = do
     v <- evalSync th
-    execInstr v p t
-execInstr v p t = do
+    execInstr v p c t
+execInstr v p c t = do
     state t `modifyMVar_` \ _ -> return $ ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
     finishThread t
 
 finishThread t = do
-    code t `modifyMVar_` \ _ -> return []
     wakeup $ wait t
     return ()
 
