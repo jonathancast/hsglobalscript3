@@ -1,4 +1,4 @@
-{-# LANGUAGE RecursiveDo, TemplateHaskell #-}
+{-# LANGUAGE ViewPatterns, RecursiveDo, ScopedTypeVariables, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Thread (createThread, execMainThread) where
 
@@ -6,11 +6,11 @@ import Control.Monad (join)
 
 import Control.Concurrent (forkIO)
 import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, modifyMVar_, putMVar, readMVar)
-import Control.Exception (throw)
+import Control.Exception (SomeException, Exception(..), throwIO, try)
 
-import GSI.Util (Pos, gsfatal, gshere)
+import GSI.Util (Pos, gsfatal, gshere, fmtPos)
 import GSI.RTS (Event, newEvent, wakeup, await)
-import GSI.Value (GSValue(..), gsvCode)
+import GSI.Value (GSValue(..), fmtError, gsvCode)
 import GSI.Result (GSResult(..), GSError, GSException(..), stCode, throwGSerror)
 import GSI.Eval (evalSync)
 
@@ -38,46 +38,44 @@ createThread v = do
     rec
         w <- newEvent
         sv <- newMVar ThreadStateRunning
-        p <- newEmptyMVar
         let t = Thread{
             state = sv,
             wait = w
           }
-        tid <- forkIO $ runThread [(v, Promise p)] t
+        tid <- forkIO $ do
+            mb <- try $ execInstr v t
+            state t `modifyMVar_` \ _ -> case mb of
+                Left (e :: SomeException) -> case fromException e of
+                    Just (TEError err) -> return $ ThreadStateError err
+                    Just (TEImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
+                    _ -> return $ ThreadStateUnimpl $gshere $ "Thread execution threw unknown exception " ++ displayException e
+                Right _ -> return $ ThreadStateUnimpl $gshere $ "Successful execution of a thread next"
+            wakeup $ wait t
     return t
 
-runThread :: [(GSValue, Promise)] -> Thread -> IO ()
-runThread c t = do
-    join $ state t `modifyMVar` \ st -> case st of
-        ThreadStateRunning -> do
-            case c of
-                [] -> return (ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is empty) next", finishThread t)
-                (v, p) : c' -> do
-                    return (ThreadStateRunning, execInstr v p c' t)
-        _ -> return (ThreadStateUnimpl $gshere $ "runThread (state is " ++ threadStateCode st ++ ") next", finishThread t)
+data ThreadException
+  = TEImplementationFailure Pos String
+  | TEError GSError
+  deriving Show
 
-execInstr (GSImplementationFailure pos e) p c t = do
-    state t `modifyMVar_` \ _ -> return $ ThreadStateImplementationFailure pos e
-execInstr (GSError err) p c t = do
-    state t `modifyMVar_` \ _ -> return $ ThreadStateError err
-    finishThread t
-execInstr (GSThunk th) p c t = do
+instance Exception ThreadException where
+    displayException (TEImplementationFailure pos err) = fmtPos pos err
+    displayException (TEError err) = fmtError err
+
+execInstr (GSImplementationFailure pos e) t = throwIO $ TEImplementationFailure pos e
+execInstr (GSError err) t = throwIO $ TEError err
+execInstr (GSThunk th) t = do
     v <- evalSync th
-    execInstr v p c t
-execInstr v p c t = do
-    state t `modifyMVar_` \ _ -> return $ ThreadStateUnimpl $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
-    finishThread t
-
-finishThread t = do
-    wakeup $ wait t
-    return ()
+    execInstr v t
+execInstr v t = do
+    throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
 execMainThread :: Thread -> IO ()
 execMainThread t = do
     await $ wait t
     st <- readMVar $ state t
     case st of
-        ThreadStateUnimpl pos err -> throw $ GSExcImplementationFailure pos err
+        ThreadStateUnimpl pos err -> throwIO $ GSExcImplementationFailure pos err
         ThreadStateError err -> throwGSerror err
-        ThreadStateImplementationFailure pos err -> throw $ GSExcImplementationFailure pos err
+        ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
