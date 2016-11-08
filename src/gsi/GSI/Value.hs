@@ -1,12 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.Value (GSValue(..), GSError(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsvCode, gstsCode) where
+module GSI.Value (GSValue(..), GSError(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, fmtError, gsvCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
-import GSI.Util (Pos, gshere, gsfatal)
+import GSI.Util (Pos, gshere, gsfatal, fmtPos)
 import GSI.RTS (Event)
 import {-# SOURCE #-} GSI.ByteCode (GSBCO, ToGSBCO(..))
 
@@ -39,6 +39,9 @@ gstoplevelclosure = varE 'gstoplevelclosure_w `appE` gshere
 
 gstoplevelclosure_w :: ToGSBCO bc => Pos -> (GSValue -> bc) -> GSValue
 gstoplevelclosure_w pos f = GSClosure pos (gsbco f)
+
+fmtError :: GSError -> String
+fmtError (GSErrUnimpl pos) = fmtPos pos "Undefined"
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
