@@ -13,6 +13,10 @@ import ACE (aceApply, aceUpdate)
 
 eval :: MVar (GSThunkState) -> IO GSResult
 eval mv = modifyMVar mv $ \ st -> case st of
+    GSTSExpr expr -> do
+        e <- newEvent
+        forkIO $ expr >>= aceUpdate mv
+        return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
         forkIO $ aceApply pos fn args >>= aceUpdate mv
