@@ -1,9 +1,11 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, RoleAnnotations #-}
-module GSI.ByteCode (GSBCO, ToGSBCO(..), bcoCode) where
+module GSI.ByteCode (GSBCO(..), ToGSBCO(..), bcoCode) where
 
 import {-# SOURCE #-} GSI.Value (GSValue)
 
 data GSBCO
+  = GSBCOFun (GSValue -> GSBCO)
+  | GSBCOExpr (IO GSValue)
 
 class ToGSBCO r where
     gsbco :: r -> GSBCO

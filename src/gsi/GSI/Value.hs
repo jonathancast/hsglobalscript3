@@ -8,7 +8,7 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, gshere, gsfatal, fmtPos)
 import GSI.RTS (Event)
-import {-# SOURCE #-} GSI.ByteCode (GSBCO, ToGSBCO(..), bcoCode)
+import {-# SOURCE #-} GSI.ByteCode (GSBCO(..), ToGSBCO(..), bcoCode)
 
 data GSValue
   = GSImplementationFailure Pos String
@@ -22,7 +22,8 @@ data GSError = GSErrUnimpl Pos
 type GSThunk = MVar GSThunkState
 
 data GSThunkState
-  = GSApply Pos GSValue [GSValue]
+  = GSTSExpr (IO GSValue)
+  | GSApply Pos GSValue [GSValue]
   | GSTSStack Event
   | GSTSIndirection GSValue
 
@@ -44,6 +45,7 @@ gsclosure = varE 'gsclosure_w `appE` gshere
 
 gsclosure_w :: ToGSBCO bc => Pos -> bc -> IO GSValue
 gsclosure_w pos bc = case gsbco bc of
+    GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
 
 fmtError :: GSError -> String
@@ -56,6 +58,7 @@ gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"
 
 gstsCode :: GSThunkState -> String
+gstsCode GSTSExpr{} = "GSTSExpr"
 gstsCode GSApply{} = "GSApply"
 gstsCode GSTSStack{} = "GSTSStack"
 gstsCode GSTSIndirection{} = "GSTSIndirection"
