@@ -6,7 +6,7 @@ import Control.Exception (displayException, fromException, try)
 import Test.HUnit
 
 import GSI.Util (Pos(Pos), gsfatal, fmtPos)
-import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsvCode)
+import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
 import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
 import GSI.Eval (eval, evalSync)
 import GSI.ByteCode (GSBCO, gsbcundefined_w)
@@ -14,6 +14,7 @@ import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of
     GSThunk th -> return th
+    GSImplementationFailure pos err -> do assertFailure $ fmtPos pos err; $gsfatal "oops"
     _ -> do assertFailure $ "Got " ++ gsvCode v ++ " from gsapply; expected thunk"; $gsfatal "oops"
 
 main = runTestTT $ TestList $ [
@@ -35,6 +36,17 @@ main = runTestTT $ TestList $ [
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
+    ,
+    TestCase $ do
+        let file = "test-file.gs"
+        th <- getThunk =<< (gsclosure_w (Pos file 2) $ gsbcundefined_w (Pos file 3))
+        st <- eval th
+        case st of
+            GSIndirection v -> case v of
+                GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
+                _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected stack"
+            GSStack _ -> return ()
+            _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
     ,
     TestCase $ do
         let file = "test-file.gs"
