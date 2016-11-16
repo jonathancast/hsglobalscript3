@@ -21,4 +21,7 @@ apiCall pos v t = do
     throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
 apiCallBCO :: Pos -> GSBCO -> Thread -> IO GSValue
+apiCallBCO pos (GSBCOExpr e) t = do
+    v <- e
+    apiCall pos v t
 apiCallBCO pos bco t = throwIO $ TEImplementationFailure $gshere $ "apiCallBCO " ++ bcoCode bco ++ " next"
