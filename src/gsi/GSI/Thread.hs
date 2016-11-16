@@ -9,29 +9,13 @@ import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, modifyM
 import Control.Exception (SomeException, Exception(..), throwIO, try)
 
 import GSI.Util (Pos, gsfatal, gshere, fmtPos)
-import GSI.RTS (Event, newEvent, wakeup, await)
+import GSI.RTS (newEvent, wakeup, await)
 import GSI.Error (GSError, GSException(..), throwGSerror, fmtError)
 import GSI.Value (GSValue(..), gsvCode)
 import GSI.Eval (GSResult(..), evalSync, stCode)
+import GSI.ThreadType (Thread(..), ThreadState(..), threadStateCode)
 
 data Promise = Promise (MVar GSValue)
-
-data Thread = Thread {
-    state :: MVar ThreadState,
-    wait :: Event
-  }
-
-data ThreadState
-  = ThreadStateRunning
-  | ThreadStateError GSError
-  | ThreadStateImplementationFailure Pos String
-  | ThreadStateUnimpl Pos String
-
-threadStateCode :: ThreadState -> String
-threadStateCode ThreadStateRunning{} = "ThreadStateRunning"
-threadStateCode ThreadStateError{} = "ThreadStateError"
-threadStateCode ThreadStateImplementationFailure{} = "ThreadStateImplementationFailure"
-threadStateCode ThreadStateUnimpl{} = "ThreadStateUnimpl"
 
 createThread :: GSValue -> IO Thread
 createThread v = do
