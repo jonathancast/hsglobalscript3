@@ -1,15 +1,20 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
-module GSI.Eval (eval, evalSync) where
+module GSI.Eval (GSResult(..), eval, evalSync, stCode) where
 
 import Control.Concurrent (MVar, forkIO, modifyMVar)
 
 import GSI.Util (gshere)
-import GSI.RTS (newEvent, await)
+import GSI.RTS (Event, newEvent, await)
 import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode, gstsCode)
-import GSI.Result (GSError(..), GSResult(..), stCode)
+import GSI.Result (GSError(..))
 
 import ACE (aceApply, aceUpdate)
+
+data GSResult
+  = GSStack Event
+  | GSIndirection GSValue
+  | GSWHNF
 
 eval :: MVar (GSThunkState) -> IO GSResult
 eval mv = modifyMVar mv $ \ st -> case st of
@@ -35,3 +40,8 @@ evalSync mv = do
             GSClosure{} -> return v
             _ -> return $ $gsimplementationFailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
         _ -> return $ $gsimplementationFailure $ "evalSync " ++ stCode st ++ " next"
+
+stCode :: GSResult -> String
+stCode GSStack{} = "GSStack"
+stCode GSIndirection{} = "GSIndirection"
+stCode GSWHNF{} = "GSWHNF"

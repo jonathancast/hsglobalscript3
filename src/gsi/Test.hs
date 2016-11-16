@@ -7,8 +7,8 @@ import Test.HUnit
 
 import GSI.Util (Pos(Pos), gsfatal, fmtPos)
 import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
-import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
-import GSI.Eval (eval, evalSync)
+import GSI.Result (GSError(..), GSException(..))
+import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (GSBCO, gsbcundefined_w, gsbcbody_w)
 import GSI.Thread (createThread, execMainThread)
 

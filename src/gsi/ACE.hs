@@ -8,8 +8,7 @@ import Control.Exception (SomeException, catch, displayException)
 import GSI.RTS (wakeup)
 import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode)
 import GSI.ByteCode (GSBCO(..), bcoCode)
-import GSI.Result (GSResult(..), stCode)
-import {-# SOURCE #-} GSI.Eval (evalSync)
+import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync, stCode)
 
 aceApply pos fn@GSError{} args = return fn
 aceApply pos0 (GSClosure pos1 bco) args = aceCall pos0 pos1 bco args
