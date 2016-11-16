@@ -2,13 +2,12 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (GSBCO(..), ToGSBCO(..), gsbcundefined, gsbcundefined_w, gsbcbody, gsbcbody_w, bcoCode) where
 
-import Control.Exception (throwIO)
-
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Value (GSValue(..), gsundefined_w)
-import GSI.ThreadType (Thread, ThreadException(..))
+import GSI.ThreadType (Thread)
+import API (apiCallBCO)
 
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
@@ -48,7 +47,7 @@ instance ToGSBCO (GSBCImp GSValue) where
 gsbcbody = varE 'gsbcbody_w `appE` gshere
 
 gsbcbody_w :: Pos -> GSBCO -> GSBCImp GSValue
-gsbcbody_w pos bco = GSBCImp $ \ t -> throwIO $ TEImplementationFailure $gshere $ "gsbcbody_w " ++ bcoCode bco ++ " next"
+gsbcbody_w pos bco = GSBCImp $ apiCallBCO pos bco
 
 bcoCode :: GSBCO -> String
 bcoCode GSBCOFun{} = "GSBCOFun"
