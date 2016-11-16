@@ -6,11 +6,12 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Value (GSValue(..), gsundefined_w)
+import GSI.ThreadType (Thread)
 
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
   | GSBCOExpr (IO GSValue) -- NB: return value is §emph{equal to} enclosing expression; computes and returns its own value
-  | GSBCOImp (IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
+  | GSBCOImp (Thread -> IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
 
 class ToGSBCO r where
     gsbco :: r -> GSBCO
@@ -26,8 +27,18 @@ gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 gsbcundefined_w :: Pos -> GSBCO
 gsbcundefined_w pos = GSBCOExpr $ return $ gsundefined_w pos
 
-newtype GSBCImp a = GSBCImp (IO a)
-    deriving (Monad, Applicative, Functor)
+newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
+
+instance Functor GSBCImp where
+    fmap f ax = GSBCImp $ \ t -> fmap f $ runGSBCImp ax t
+
+instance Applicative GSBCImp where
+    pure x = GSBCImp (const $ pure x)
+    af <*> ax = GSBCImp $ \ t -> runGSBCImp af t <*> runGSBCImp ax t
+
+instance Monad GSBCImp where
+    return x = GSBCImp (const $ return x)
+    a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t 
 
 instance ToGSBCO (GSBCImp GSValue) where
     gsbco (GSBCImp a) = GSBCOImp a

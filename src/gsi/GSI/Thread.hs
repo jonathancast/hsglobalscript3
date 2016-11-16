@@ -1,6 +1,6 @@
 {-# LANGUAGE ViewPatterns, RecursiveDo, ScopedTypeVariables, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Thread (createThread, execMainThread) where
+module GSI.Thread (Thread, createThread, execMainThread) where
 
 import Control.Monad (join)
 

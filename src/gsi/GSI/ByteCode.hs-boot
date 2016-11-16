@@ -2,11 +2,12 @@
 module GSI.ByteCode (GSBCO(..), ToGSBCO(..), bcoCode) where
 
 import {-# SOURCE #-} GSI.Value (GSValue)
+import GSI.ThreadType (Thread)
 
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
   | GSBCOExpr (IO GSValue)
-  | GSBCOImp (IO GSValue)
+  | GSBCOImp (Thread -> IO GSValue)
 
 class ToGSBCO r where
     gsbco :: r -> GSBCO
