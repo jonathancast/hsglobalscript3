@@ -1,6 +1,6 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.Value (GSValue(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, gsvCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, gsvCode, bcoCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -9,13 +9,27 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 import GSI.Util (Pos, gshere, gsfatal)
 import GSI.Error (GSError(..))
 import GSI.RTS (Event)
-import {-# SOURCE #-} GSI.ByteCode (GSBCO(..), ToGSBCO(..), bcoCode)
+import GSI.ThreadType (Thread)
 
 data GSValue
   = GSImplementationFailure Pos String
   | GSError GSError
   | GSThunk GSThunk
   | GSClosure Pos GSBCO
+
+data GSBCO
+  = GSBCOFun (GSValue -> GSBCO)
+  | GSBCOExpr (IO GSValue) -- NB: return value is §emph{equal to} enclosing expression; computes and returns its own value
+  | GSBCOImp (Thread -> IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
+
+class ToGSBCO r where
+    gsbco :: r -> GSBCO
+
+instance ToGSBCO r => ToGSBCO (GSValue -> r) where
+    gsbco f = GSBCOFun (\ v -> gsbco (f v))
+
+instance ToGSBCO GSBCO where
+    gsbco = id
 
 type GSThunk = MVar GSThunkState
 
@@ -52,6 +66,11 @@ gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"
+
+bcoCode :: GSBCO -> String
+bcoCode GSBCOFun{} = "GSBCOFun"
+bcoCode GSBCOExpr{} = "GSBCOExpr"
+bcoCode GSBCOImp{} = "GSBCOImp"
 
 gstsCode :: GSThunkState -> String
 gstsCode GSTSExpr{} = "GSTSExpr"

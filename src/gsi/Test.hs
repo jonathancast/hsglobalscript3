@@ -7,9 +7,9 @@ import Test.HUnit
 
 import GSI.Util (Pos(Pos), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
-import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
+import GSI.Value (GSValue(..), GSBCO, gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
-import GSI.ByteCode (GSBCO, gsbcundefined_w, gsbcbody_w)
+import GSI.ByteCode (gsbcundefined_w, gsbcbody_w)
 import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of

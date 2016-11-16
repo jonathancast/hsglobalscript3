@@ -1,27 +1,13 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.ByteCode (GSBCO(..), ToGSBCO(..), gsbcundefined, gsbcundefined_w, gsbcbody, gsbcbody_w, bcoCode) where
+module GSI.ByteCode (gsbcundefined, gsbcundefined_w, gsbcbody, gsbcbody_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.Value (GSValue(..), gsundefined_w)
+import GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), gsundefined_w)
 import GSI.ThreadType (Thread)
 import API (apiCallBCO)
-
-data GSBCO
-  = GSBCOFun (GSValue -> GSBCO)
-  | GSBCOExpr (IO GSValue) -- NB: return value is §emph{equal to} enclosing expression; computes and returns its own value
-  | GSBCOImp (Thread -> IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
-
-class ToGSBCO r where
-    gsbco :: r -> GSBCO
-
-instance ToGSBCO r => ToGSBCO (GSValue -> r) where
-    gsbco f = GSBCOFun (\ v -> gsbco (f v))
-
-instance ToGSBCO GSBCO where
-    gsbco = id
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
@@ -48,8 +34,3 @@ gsbcbody = varE 'gsbcbody_w `appE` gshere
 
 gsbcbody_w :: Pos -> GSBCO -> GSBCImp GSValue
 gsbcbody_w pos bco = GSBCImp $ apiCallBCO pos bco
-
-bcoCode :: GSBCO -> String
-bcoCode GSBCOFun{} = "GSBCOFun"
-bcoCode GSBCOExpr{} = "GSBCOExpr"
-bcoCode GSBCOImp{} = "GSBCOImp"

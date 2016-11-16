@@ -6,8 +6,7 @@ import Control.Concurrent (MVar, modifyMVar)
 import Control.Exception (SomeException, catch, displayException)
 
 import GSI.RTS (wakeup)
-import GSI.Value (GSValue(..), GSThunkState(..), gsimplementationFailure, gsvCode)
-import GSI.ByteCode (GSBCO(..), bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSThunkState(..), gsimplementationFailure, gsvCode, bcoCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync, stCode)
 
 aceApply pos fn@GSError{} args = return fn
