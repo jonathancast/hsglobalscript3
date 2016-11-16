@@ -7,7 +7,7 @@ import Control.Exception (Exception(..), throw)
 import Data.Typeable (Typeable)
 
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.Value (GSError(..))
+import GSI.Error (GSError(..))
 
 data GSException
   = GSExcUndefined Pos

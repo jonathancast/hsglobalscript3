@@ -1,12 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.Value (GSValue(..), GSError(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, fmtError, gsvCode, gstsCode) where
+module GSI.Value (GSValue(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, fmtError, gsvCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, gshere, gsfatal, fmtPos)
+import GSI.Error (GSError(..))
 import GSI.RTS (Event)
 import {-# SOURCE #-} GSI.ByteCode (GSBCO(..), ToGSBCO(..), bcoCode)
 
@@ -15,9 +16,6 @@ data GSValue
   | GSError GSError
   | GSThunk GSThunk
   | GSClosure Pos GSBCO
-
-data GSError = GSErrUnimpl Pos
-  deriving (Show)
 
 type GSThunk = MVar GSThunkState
 
