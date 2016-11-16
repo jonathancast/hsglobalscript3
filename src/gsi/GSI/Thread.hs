@@ -18,8 +18,8 @@ import GSI.ByteCode (GSBCO(..), bcoCode)
 
 data Promise = Promise (MVar GSValue)
 
-createThread :: GSValue -> IO Thread
-createThread v = do
+createThread :: Pos -> GSValue -> IO Thread
+createThread pos v = do
     rec
         w <- newEvent
         sv <- newMVar ThreadStateRunning

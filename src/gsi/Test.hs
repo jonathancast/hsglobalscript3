@@ -5,7 +5,7 @@ import Control.Exception (displayException, fromException, try)
 
 import Test.HUnit
 
-import GSI.Util (Pos(Pos), gsfatal, fmtPos)
+import GSI.Util (Pos(Pos), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
@@ -76,13 +76,13 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $ gsundefined_w (Pos file line)
+        t <- createThread $gshere $ gsundefined_w (Pos file line)
         return ()
     ,
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $ gsundefined_w (Pos file line)
+        t <- createThread $gshere $ gsundefined_w (Pos file line)
         mb <- try $ execMainThread t
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"
