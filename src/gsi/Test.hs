@@ -9,7 +9,7 @@ import GSI.Util (Pos(Pos), gsfatal, fmtPos)
 import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
 import GSI.Result (GSError(..), GSResult(..), GSException(..), stCode)
 import GSI.Eval (eval, evalSync)
-import GSI.ByteCode (GSBCO, gsbcundefined_w)
+import GSI.ByteCode (GSBCO, gsbcundefined_w, gsbcbody_w)
 import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of
@@ -62,7 +62,15 @@ main = runTestTT $ TestList $ [
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3)
-            _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected stack"
+            _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
+    ,
+    TestCase $ do
+        let file = "test-file.gs"
+        v <- gsclosure_w (Pos file 1) $ gsbcbody_w (Pos file 2) $ gsbcundefined_w (Pos file 3)
+        case v of
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
+            GSClosure pos gsbc -> assertEqual "The returned closure has the right position" pos (Pos file 1)
+            _ -> assertFailure $ "Got " ++ gsvCode v ++"; expected closure"
     ,
     -- §section Threads
     TestCase $ do
