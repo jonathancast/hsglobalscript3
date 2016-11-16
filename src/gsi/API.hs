@@ -4,7 +4,7 @@ module API (apiCallBCO) where
 import Control.Exception (throwIO)
 
 import GSI.Util (Pos, gshere)
-import {-# SOURCE #-} GSI.Value (GSValue)
+import GSI.Value (GSValue)
 import {-# SOURCE #-} GSI.ByteCode (GSBCO(..), bcoCode)
 import GSI.ThreadType (Thread, ThreadException(..))
 
