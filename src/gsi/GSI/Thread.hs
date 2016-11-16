@@ -10,9 +10,9 @@ import Control.Exception (SomeException, Exception(..), throwIO, try)
 
 import GSI.Util (Pos, gsfatal, gshere, fmtPos)
 import GSI.RTS (Event, newEvent, wakeup, await)
-import GSI.Error (GSError, fmtError)
+import GSI.Error (GSError, GSException(..), fmtError)
 import GSI.Value (GSValue(..), gsvCode)
-import GSI.Result (GSException(..), throwGSerror)
+import GSI.Result (throwGSerror)
 import GSI.Eval (GSResult(..), evalSync, stCode)
 
 data Promise = Promise (MVar GSValue)

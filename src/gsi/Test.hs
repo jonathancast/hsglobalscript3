@@ -6,9 +6,8 @@ import Control.Exception (displayException, fromException, try)
 import Test.HUnit
 
 import GSI.Util (Pos(Pos), gsfatal, fmtPos)
-import GSI.Error (GSError(..))
+import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gstoplevelclosure_w, gsclosure_w, gsvCode)
-import GSI.Result (GSException(..))
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (GSBCO, gsbcundefined_w, gsbcbody_w)
 import GSI.Thread (createThread, execMainThread)
