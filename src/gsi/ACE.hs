@@ -21,6 +21,8 @@ aceCall pos0 pos1 (GSBCOFun f) [] = return $ $gsimplementationFailure $ "aceCall
 aceCall pos0 pos1 (GSBCOExpr e) args = do
     v <- e
     aceApply pos0 v args
+aceCall pos0 pos1 (GSBCOImp a) [] = return $ GSClosure pos0 (GSBCOImp a)
+aceCall pos0 pos1 (GSBCOImp a) args = return $ $gsimplementationFailure $ "aceCall: arguments to an imperative block statement?"
 aceCall pos0 pos1 bco args = return $ $gsimplementationFailure $ "aceCall (function = " ++ bcoCode bco ++ ") next"
 
 aceUpdate mv v = do
