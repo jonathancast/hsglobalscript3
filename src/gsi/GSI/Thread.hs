@@ -14,6 +14,7 @@ import GSI.Error (GSError, GSException(..), throwGSerror, fmtError)
 import GSI.Value (GSValue(..), gsvCode)
 import GSI.Eval (GSResult(..), evalSync, stCode)
 import GSI.ThreadType (Thread(..), ThreadState(..), threadStateCode)
+import GSI.ByteCode (GSBCO(..), bcoCode)
 
 data Promise = Promise (MVar GSValue)
 
@@ -51,6 +52,9 @@ execInstr (GSError err) t = throwIO $ TEError err
 execInstr (GSThunk th) t = do
     v <- evalSync th
     execInstr v t
+execInstr (GSClosure pos bco) t = case bco of
+    GSBCOImp a -> a t
+    _ -> throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ bcoCode bco ++ ") next"
 execInstr v t = do
     throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
