@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Result (GSError(..), GSException(..), throwGSerror) where
+module GSI.Result (GSException(..), throwGSerror) where
 
 import Control.Exception (Exception(..), throw)
 
