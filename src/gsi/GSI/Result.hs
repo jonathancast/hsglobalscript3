@@ -6,12 +6,8 @@ import Control.Exception (Exception(..), throw)
 
 import Data.Typeable (Typeable)
 
-import Language.Haskell.TH.Syntax (location)
-import Language.Haskell.TH.Lib (appE, conE)
-
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.RTS (Event)
-import GSI.Value (GSValue, GSError(..))
+import GSI.Value (GSError(..))
 
 data GSException
   = GSExcUndefined Pos
