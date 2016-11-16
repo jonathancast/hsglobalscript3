@@ -6,6 +6,7 @@ import {-# SOURCE #-} GSI.Value (GSValue)
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
   | GSBCOExpr (IO GSValue)
+  | GSBCOImp (IO GSValue)
 
 class ToGSBCO r where
     gsbco :: r -> GSBCO

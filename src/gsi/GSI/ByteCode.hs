@@ -9,7 +9,8 @@ import GSI.Value (GSValue(..), gsundefined_w)
 
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
-  | GSBCOExpr (IO GSValue)
+  | GSBCOExpr (IO GSValue) -- NB: return value is §emph{equal to} enclosing expression; computes and returns its own value
+  | GSBCOImp (IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
 
 class ToGSBCO r where
     gsbco :: r -> GSBCO
@@ -28,6 +29,9 @@ gsbcundefined_w pos = GSBCOExpr $ return $ gsundefined_w pos
 newtype GSBCImp a = GSBCImp (IO a)
     deriving (Monad, Applicative, Functor)
 
+instance ToGSBCO (GSBCImp GSValue) where
+    gsbco (GSBCImp a) = GSBCOImp a
+
 gsbcbody = varE 'gsbcbody_w `appE` gshere
 
 gsbcbody_w :: Pos -> GSBCO -> GSBCImp GSValue
@@ -36,3 +40,4 @@ gsbcbody_w pos bco = return $ GSImplementationFailure pos $ "gsbcbody_w " ++ bco
 bcoCode :: GSBCO -> String
 bcoCode GSBCOFun{} = "GSBCOFun"
 bcoCode GSBCOExpr{} = "GSBCOExpr"
+bcoCode GSBCOImp{} = "GSBCOImp"
