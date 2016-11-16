@@ -11,9 +11,10 @@ import Control.Exception (SomeException, Exception(..), throwIO, try)
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.RTS (newEvent, wakeup, await)
 import GSI.Error (GSError, GSException(..), throwGSerror)
-import GSI.Value (GSValue(..), GSBCO(..), gsvCode, bcoCode)
-import GSI.Eval (GSResult(..), evalSync, stCode)
+import GSI.Value (GSValue(..), GSBCO(..))
+import GSI.Eval (GSResult(..), stCode)
 import GSI.ThreadType (Thread(..), ThreadState(..), ThreadException(..), threadStateCode)
+import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
 
@@ -27,7 +28,7 @@ createThread pos v = do
             wait = w
           }
         tid <- forkIO $ do
-            mb <- try $ execInstr v t
+            mb <- try $ apiCall pos v t
             state t `modifyMVar_` \ _ -> case mb of
                 Left (e :: SomeException) -> case fromException e of
                     Just (TEError err) -> return $ ThreadStateError err
@@ -36,17 +37,6 @@ createThread pos v = do
                 Right _ -> return $ ThreadStateUnimpl $gshere $ "Successful execution of a thread next"
             wakeup $ wait t
     return t
-
-execInstr (GSImplementationFailure pos e) t = throwIO $ TEImplementationFailure pos e
-execInstr (GSError err) t = throwIO $ TEError err
-execInstr (GSThunk th) t = do
-    v <- evalSync th
-    execInstr v t
-execInstr (GSClosure pos bco) t = case bco of
-    GSBCOImp a -> a t
-    _ -> throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ bcoCode bco ++ ") next"
-execInstr v t = do
-    throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
 execMainThread :: Thread -> IO ()
 execMainThread t = do
