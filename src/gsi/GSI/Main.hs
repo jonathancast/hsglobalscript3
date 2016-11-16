@@ -2,6 +2,8 @@
 module GSI.Main (gsmain) where
 
 import GSI.Value (gstoplevelclosure)
-import GSI.ByteCode (gsbcundefined)
+import GSI.ByteCode (gsbcundefined, gsbcbody)
 
-gsmain = $gstoplevelclosure $ \ gsrun -> $gsbcundefined
+gsmain = $gstoplevelclosure $ \ gsrun -> do
+    $gsbcbody $ $gsbcundefined
+
