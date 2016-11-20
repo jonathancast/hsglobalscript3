@@ -22,7 +22,8 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        th <- getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
+        let col = 1
+        th <- getThunk =<< gsapply_w (Pos file line col) (gsundefined_w (Pos file line col)) []
         st <- eval th
         case st of
             GSStack _ -> return ()
@@ -31,15 +32,16 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        v <- evalSync =<< getThunk =<< gsapply_w (Pos file line) (gsundefined_w (Pos file line)) []
+        let col = 1
+        v <- evalSync =<< getThunk =<< gsapply_w (Pos file line col) (gsundefined_w (Pos file line col)) []
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line)
+            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line col)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do
         let file = "test-file.gs"
-        th <- getThunk =<< (gsclosure_w (Pos file 2) $ gsbcundefined_w (Pos file 3))
+        th <- getThunk =<< (gsclosure_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1))
         st <- eval th
         case st of
             GSIndirection v -> case v of
@@ -50,7 +52,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        th <- getThunk =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
+        th <- getThunk =<< gsapply_w (Pos file 1 1) (gstoplevelclosure_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
         st <- eval th
         case st of
             GSStack _ -> return ()
@@ -58,35 +60,35 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1) (gstoplevelclosure_w (Pos file 2) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3))) [gsundefined_w (Pos file 4)]
+        v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1 1) (gstoplevelclosure_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3)
+            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do
         let file = "test-file.gs"
-        v <- gsclosure_w (Pos file 1) $ gsbcbody_w (Pos file 2) $ gsbcundefined_w (Pos file 3)
+        v <- gsclosure_w (Pos file 1 1) $ gsbcbody_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
-            GSClosure pos gsbc -> assertEqual "The returned closure has the right position" pos (Pos file 1)
+            GSClosure pos gsbc -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++"; expected closure"
     ,
     -- §section Threads
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $gshere $ gsundefined_w (Pos file line)
+        t <- createThread $gshere $ gsundefined_w (Pos file line 1)
         return ()
     ,
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $gshere $ gsundefined_w (Pos file line)
+        t <- createThread $gshere $ gsundefined_w (Pos file line 1)
         mb <- try $ execMainThread t
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"
             Left e -> case fromException e of
-                Just (GSExcUndefined pos) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line)
+                Just (GSExcUndefined pos) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line 1)
                 _ -> assertFailure $ "execMainThread should throw a GSExcUndefined error, but instead threw " ++ displayException e
   ]
