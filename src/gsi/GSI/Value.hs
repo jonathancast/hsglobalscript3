@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, gsvCode, bcoCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
@@ -59,6 +59,7 @@ gsclosure_w :: ToGSBCO bc => Pos -> bc -> IO GSValue
 gsclosure_w pos bc = case gsbco bc of
     GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
     GSBCOImp a -> return $ GSClosure pos $ GSBCOImp a
+    GSBCOFun f -> return $ GSClosure pos $ GSBCOFun f
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
 
 gsvCode :: GSValue -> String
