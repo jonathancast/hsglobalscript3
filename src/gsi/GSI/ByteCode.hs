@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcapply, gsbcapply_w, gsbcvar, gsbcvar_w,
+    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcvar, gsbcvar_w,
     gsbcimplet, gsbcimplet_w, gsbcimpbody, gsbcimpbody_w
   ) where
 
@@ -17,6 +17,11 @@ gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSBCO
 gsbcundefined_w pos = GSBCOExpr $ return $ gsundefined_w pos
+
+gsbclambda = varE 'gsbclambda_w `appE` gshere
+
+gsbclambda_w :: ToGSBCO bco => Pos -> (GSValue -> bco) -> GSBCO
+gsbclambda_w pos fn = GSBCOExpr $ gsclosure_w pos fn
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
