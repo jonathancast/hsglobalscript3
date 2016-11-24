@@ -13,6 +13,9 @@ aceApply :: Pos -> GSValue -> [GSValue] -> IO GSValue
 aceApply pos fn@GSError{} args = return fn
 aceApply pos fn@GSImplementationFailure{} args = return fn
 aceApply pos0 (GSClosure pos1 bco) args = aceCall pos0 pos1 bco args
+aceApply pos (GSThunk th) args = do
+    v <- evalSync th
+    aceApply pos v args
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
 
 aceCall pos0 pos1 (GSBCOFun f) (arg:args) = aceCall pos0 pos1 (f arg) args
