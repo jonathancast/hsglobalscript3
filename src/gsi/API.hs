@@ -1,10 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module API (apiCall, apiCallBCO) where
+module API (apiCall, apiCallBCO, apiImplementationFailure, apiImplementationFailure_w) where
 
 import Control.Exception (throwIO)
 
+import Language.Haskell.TH.Lib (appE, varE)
+
 import GSI.Util (Pos, gshere)
+import GSI.Error (GSException(..))
 import GSI.Value (GSValue(..), GSBCO(..), gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadException(..))
@@ -25,3 +28,7 @@ apiCallBCO pos (GSBCOExpr e) t = do
     v <- e
     apiCall pos v t
 apiCallBCO pos bco t = throwIO $ TEImplementationFailure $gshere $ "apiCallBCO " ++ bcoCode bco ++ " next"
+
+apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
+
+apiImplementationFailure_w pos err = throwIO $ GSExcImplementationFailure pos err
