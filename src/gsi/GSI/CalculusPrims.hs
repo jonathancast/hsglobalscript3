@@ -6,6 +6,7 @@ import GSI.Value (GSValue(..), gsimplementationFailure, gsvCode)
 import GSI.Eval (evalSync)
 
 gspriminsufficientcases :: Pos -> GSValue -> IO GSValue
+gspriminsufficientcases pos v@GSImplementationFailure{} = return v
 gspriminsufficientcases pos (GSThunk th) = do
     v <- evalSync th
     gspriminsufficientcases pos v
