@@ -5,10 +5,12 @@ module ACE (aceApply, aceUpdate) where
 import Control.Concurrent (MVar, modifyMVar)
 import Control.Exception (SomeException, catch, displayException)
 
+import GSI.Util (Pos)
 import GSI.RTS (wakeup)
 import GSI.Value (GSValue(..), GSBCO(..), GSThunkState(..), gsimplementationFailure, gsvCode, bcoCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync, stCode)
 
+aceApply :: Pos -> GSValue -> [GSValue] -> IO GSValue
 aceApply pos fn@GSError{} args = return fn
 aceApply pos0 (GSClosure pos1 bco) args = aceCall pos0 pos1 bco args
     `catch` \ (e :: SomeException) -> return $ $gsimplementationFailure $ "aceCall threw an exception: " ++ displayException e
