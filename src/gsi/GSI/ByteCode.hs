@@ -1,6 +1,9 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-module GSI.ByteCode (gsbcundefined, gsbcundefined_w, gsbcapply, gsbcapply_w, gsbcbody, gsbcbody_w) where
+module GSI.ByteCode (
+    gsbcundefined, gsbcundefined_w, gsbcapply, gsbcapply_w, gsbcvar, gsbcvar_w,
+    gsbcbody, gsbcbody_w
+  ) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -19,6 +22,11 @@ gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: ToGSBCO bco => Pos -> GSValue -> [bco] -> GSBCO
 gsbcapply_w pos f args = GSBCOExpr $ mapM (gsclosure_w pos) args >>= aceApply pos f
+
+gsbcvar = varE 'gsbcvar_w `appE` gshere
+
+gsbcvar_w :: Pos -> GSValue -> GSBCO
+gsbcvar_w pos v = GSBCOExpr $ return v
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 
