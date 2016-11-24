@@ -2,7 +2,7 @@
 module GSI.Main (gsmain) where
 
 import GSI.Value (gsundefined, gstoplevelclosure)
-import GSI.ByteCode (gsbcundefined, gsbcapply, gsbcvar, gsbcimplet, gsbcimpbody)
+import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcvar, gsbcimplet, gsbcimpbody)
 import GSI.StdLib (gsanalyze)
 
 -- Main function (call this to start your interpreter)
@@ -14,5 +14,5 @@ gsmain = $gstoplevelclosure $ \ gsrun -> do
 gsprocessargs = $gstoplevelclosure $ \ args ->
     $gsbcapply gsanalyze [
         $gsbcvar args,
-        $gsbcundefined
+        $gsbclambda $ \ args -> $gsbcundefined
     ]
