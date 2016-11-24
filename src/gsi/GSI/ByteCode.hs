@@ -31,7 +31,10 @@ gsbcapply_w pos f args = GSBCOExpr $ mapM (gsclosure_w pos) args >>= aceApply po
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
 class GSBCPrimType f r where
-    gsbcprim_w :: Pos -> f -> r
+    gsbcprim_ww :: f -> r
+
+gsbcprim_w :: GSBCPrimType f r => Pos -> (Pos -> f) -> r
+gsbcprim_w pos f = gsbcprim_ww (f pos)
 
 gsbcvar = varE 'gsbcvar_w `appE` gshere
 
