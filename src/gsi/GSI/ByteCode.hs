@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcvar, gsbcvar_w,
+    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w,
     gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w
   ) where
 
@@ -41,6 +41,14 @@ instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
 
 gsbcprim_w :: GSBCPrimType f r => Pos -> (Pos -> f) -> r
 gsbcprim_w pos f = gsbcprim_ww (f pos)
+
+gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
+
+class GSBCImpPrimType f r where
+    gsbcimpprim_ww :: (Thread -> f) -> r
+
+gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
+gsbcimpprim_w pos f = gsbcimpprim_ww (f pos)
 
 gsbcvar = varE 'gsbcvar_w `appE` gshere
 
