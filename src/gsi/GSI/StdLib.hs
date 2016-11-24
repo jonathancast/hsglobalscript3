@@ -1,6 +1,7 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.StdLib (gsanalyze) where
 
-import GSI.Value (gsundefined)
+import GSI.Value (GSValue, gsundefined, gstoplevelclosure)
+import GSI.ByteCode (gsbcundefined, gsbcapply, gsbcvar)
 
-gsanalyze = $gsundefined
+gsanalyze = $gstoplevelclosure $ \ (e :: GSValue) (cs :: GSValue) -> $gsbcapply cs [ $gsbcvar e ]
