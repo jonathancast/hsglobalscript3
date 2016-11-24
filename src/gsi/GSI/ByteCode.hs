@@ -33,6 +33,12 @@ gsbcprim = varE 'gsbcprim_w `appE` gshere
 class GSBCPrimType f r where
     gsbcprim_ww :: f -> r
 
+instance GSBCPrimType (IO GSValue) GSBCO where
+    gsbcprim_ww f = GSBCOExpr $ f
+
+instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
+    gsbcprim_ww f v = gsbcprim_ww (f v)
+
 gsbcprim_w :: GSBCPrimType f r => Pos -> (Pos -> f) -> r
 gsbcprim_w pos f = gsbcprim_ww (f pos)
 
