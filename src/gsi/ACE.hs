@@ -12,6 +12,7 @@ import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync, stCode)
 
 aceApply :: Pos -> GSValue -> [GSValue] -> IO GSValue
 aceApply pos fn@GSError{} args = return fn
+aceApply pos fn@GSImplementationFailure{} args = return fn
 aceApply pos0 (GSClosure pos1 bco) args = aceCall pos0 pos1 bco args
     `catch` \ (e :: SomeException) -> return $ $gsimplementationFailure $ "aceCall threw an exception: " ++ displayException e
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
