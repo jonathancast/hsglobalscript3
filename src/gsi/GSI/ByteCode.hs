@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcapply, gsbcapply_w, gsbcvar, gsbcvar_w,
-    gsbcimplet, gsbcimplet_w, gsbcbody, gsbcbody_w
+    gsbcimplet, gsbcimplet_w, gsbcimpbody, gsbcimpbody_w
   ) where
 
 import Language.Haskell.TH.Lib (appE, varE)
@@ -49,7 +49,7 @@ gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 gsbcimplet_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
 gsbcimplet_w pos bco = GSBCImp $ \ _ -> gsclosure_w pos bco
 
-gsbcbody = varE 'gsbcbody_w `appE` gshere
+gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
-gsbcbody_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
-gsbcbody_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
+gsbcimpbody_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
+gsbcimpbody_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
