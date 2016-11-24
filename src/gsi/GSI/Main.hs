@@ -1,8 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (gsundefined, gstoplevelclosure)
-import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcvar, gsbcimplet, gsbcimpbody)
+import GSI.Value (GSBCO, gsundefined, gstoplevelclosure)
+import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcimplet, gsbcimpbody)
+import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze)
 
 -- Main function (call this to start your interpreter)
@@ -14,5 +15,5 @@ gsmain = $gstoplevelclosure $ \ gsrun -> do
 gsprocessargs = $gstoplevelclosure $ \ args ->
     $gsbcapply gsanalyze [
         $gsbcvar args,
-        $gsbclambda $ \ args -> $gsbcundefined
+        $gsbclambda $ \ args -> $gsbcprim gspriminsufficientcases args :: GSBCO
     ]
