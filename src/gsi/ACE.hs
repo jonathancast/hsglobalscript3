@@ -3,7 +3,6 @@
 module ACE (aceApply, aceUpdate) where
 
 import Control.Concurrent (MVar, modifyMVar)
-import Control.Exception (SomeException, catch, displayException)
 
 import GSI.Util (Pos)
 import GSI.RTS (wakeup)
@@ -14,7 +13,6 @@ aceApply :: Pos -> GSValue -> [GSValue] -> IO GSValue
 aceApply pos fn@GSError{} args = return fn
 aceApply pos fn@GSImplementationFailure{} args = return fn
 aceApply pos0 (GSClosure pos1 bco) args = aceCall pos0 pos1 bco args
-    `catch` \ (e :: SomeException) -> return $ $gsimplementationFailure $ "aceCall threw an exception: " ++ displayException e
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
 
 aceCall pos0 pos1 (GSBCOFun f) (arg:args) = aceCall pos0 pos1 (f arg) args
