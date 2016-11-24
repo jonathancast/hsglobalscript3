@@ -7,7 +7,6 @@ import Control.Exception (throwIO)
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gshere)
-import GSI.Error (GSException(..))
 import GSI.Value (GSValue(..), GSBCO(..), gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadException(..))
@@ -31,4 +30,4 @@ apiCallBCO pos bco t = throwIO $ TEImplementationFailure $gshere $ "apiCallBCO "
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
 
-apiImplementationFailure_w pos err = throwIO $ GSExcImplementationFailure pos err
+apiImplementationFailure_w pos err = throwIO $ TEImplementationFailure pos err
