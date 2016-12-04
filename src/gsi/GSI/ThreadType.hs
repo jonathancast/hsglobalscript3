@@ -1,4 +1,4 @@
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadException(..), threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), threadStateCode) where
 
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
@@ -20,10 +20,10 @@ data ThreadState
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
 
-class ThreadStateComponent a where
+class ThreadDataComponent a where
 
 class ThreadData d where
-    component :: ThreadStateComponent a => d -> Maybe (MonadComponentImpl IO b a) -- accesses a component of a state object, §emph{if such a component exists}
+    component :: ThreadDataComponent a => d -> Maybe (MonadComponentImpl IO b a) -- accesses a component of a state object, §emph{if such a component exists}
     threadTypeName :: d -> String
 
 data ThreadException
