@@ -1,3 +1,4 @@
+{-# LANGUAGE ExistentialQuantification #-}
 module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), threadStateCode) where
 
 import Control.Concurrent.MVar (MVar)
@@ -9,8 +10,9 @@ import GSI.Util (Pos, fmtPos)
 import GSI.RTS (Event)
 import GSI.Error (GSError, fmtError)
 
-data Thread = Thread {
+data Thread = forall d. ThreadData d => Thread {
     state :: MVar ThreadState,
+    threadData :: d,
     wait :: Event
   }
 
@@ -25,6 +27,10 @@ class ThreadDataComponent a where
 class ThreadData d where
     component :: ThreadDataComponent a => d -> Maybe (MonadComponentImpl IO b a) -- accesses a component of a state object, §emph{if such a component exists}
     threadTypeName :: d -> String
+
+instance ThreadData () where
+    component _ = Nothing
+    threadTypeName _ = "()"
 
 data ThreadException
   = TEImplementationFailure Pos String

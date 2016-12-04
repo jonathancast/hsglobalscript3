@@ -18,13 +18,14 @@ import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
 
-createThread :: Pos -> GSValue -> IO Thread
-createThread pos v = do
+createThread :: ThreadData d => Pos -> d -> GSValue -> IO Thread
+createThread pos d v = do
     rec
         w <- newEvent
         sv <- newMVar ThreadStateRunning
         let t = Thread{
             state = sv,
+            threadData = d,
             wait = w
           }
         tid <- forkIO $ do
@@ -49,4 +50,4 @@ execMainThread t = do
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
 
 withThreadData :: Thread -> (forall s. ThreadData s => s -> a) -> a
-withThreadData t k = throw $ TEImplementationFailure $gshere $ "withThreadData next"
+withThreadData (Thread{threadData = d}) k = k d

@@ -95,13 +95,13 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $gshere $ gsundefined_w (Pos file line 1)
+        t <- createThread $gshere () $ gsundefined_w (Pos file line 1)
         return ()
     ,
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $gshere $ gsundefined_w (Pos file line 1)
+        t <- createThread $gshere () $ gsundefined_w (Pos file line 1)
         mb <- try $ execMainThread t
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"
