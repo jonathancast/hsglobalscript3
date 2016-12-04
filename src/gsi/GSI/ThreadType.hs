@@ -1,4 +1,4 @@
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadException(..), threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadException(..), threadStateCode) where
 
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
@@ -17,6 +17,8 @@ data ThreadState
   | ThreadStateError GSError
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
+
+class ThreadData d where
 
 data ThreadException
   = TEImplementationFailure Pos String
