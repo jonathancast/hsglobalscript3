@@ -3,6 +3,8 @@ module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadExcept
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
 
+import Component.Monad (MonadComponentImpl)
+
 import GSI.Util (Pos, fmtPos)
 import GSI.RTS (Event)
 import GSI.Error (GSError, fmtError)
@@ -18,7 +20,10 @@ data ThreadState
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
 
+class ThreadStateComponent a where
+
 class ThreadData d where
+    component :: ThreadStateComponent a => d -> Maybe (MonadComponentImpl IO b a) -- accesses a component of a state object, §emph{if such a component exists}
 
 data ThreadException
   = TEImplementationFailure Pos String
