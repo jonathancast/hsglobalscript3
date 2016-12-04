@@ -49,4 +49,4 @@ execMainThread t = do
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
 
 withThreadData :: Thread -> (forall s. ThreadData s => s -> a) -> a
-withThreadData t k = throw $ GSExcImplementationFailure $gshere $ "withThreadData next"
+withThreadData t k = throw $ TEImplementationFailure $gshere $ "withThreadData next"
