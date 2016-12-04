@@ -24,6 +24,7 @@ class ThreadStateComponent a where
 
 class ThreadData d where
     component :: ThreadStateComponent a => d -> Maybe (MonadComponentImpl IO b a) -- accesses a component of a state object, §emph{if such a component exists}
+    threadTypeName :: d -> String
 
 data ThreadException
   = TEImplementationFailure Pos String
