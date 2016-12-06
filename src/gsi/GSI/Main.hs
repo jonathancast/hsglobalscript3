@@ -5,10 +5,11 @@ import GSI.Value (GSBCO, gsundefined, gstoplevelclosure)
 import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze)
+import GSI.Env (gsenvGetArgs)
 
 -- Main function (call this to start your interpreter)
 gsmain = $gstoplevelclosure $ \ gsrun -> do
-    args <- $gsbcimpbind $ $gsbcundefined
+    args <- $gsbcimpbind $ $gsbcvar gsenvGetArgs
     $gsbcimpbody $ $gsbcapply gsprocessargs [ $gsbcvar args ]
 
 -- Loops over arguments to process them
