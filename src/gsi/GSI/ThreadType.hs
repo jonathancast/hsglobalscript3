@@ -1,5 +1,7 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, emptyThreadDataComponents, threadStateCode) where
+
+import qualified Data.Map as Map
 
 import Data.Map (Map)
 import Data.Typeable (TypeRep)
@@ -31,6 +33,9 @@ data ThreadDataComponentWrapper d = forall a. ThreadDataComponent a => ThreadDat
 
 fetchThreadDataComponent :: ThreadDataComponent a => ThreadDataComponents d -> d -> Maybe (MonadComponentImpl IO b a)
 fetchThreadDataComponent = $gsfatal "fetchThreadDataComponent next"
+
+emptyThreadDataComponents :: ThreadDataComponents d
+emptyThreadDataComponents = ThreadDataComponents Map.empty
 
 class ThreadDataComponent a where
 
