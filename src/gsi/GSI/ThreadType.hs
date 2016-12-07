@@ -1,12 +1,15 @@
-{-# LANGUAGE ExistentialQuantification #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), threadStateCode) where
+{-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types #-}
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, threadStateCode) where
+
+import Data.Map (Map)
+import Data.Typeable (TypeRep)
 
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
 
 import Component.Monad (MonadComponentImpl)
 
-import GSI.Util (Pos, fmtPos)
+import GSI.Util (Pos, gsfatal, fmtPos)
 import GSI.RTS (Event)
 import GSI.Error (GSError, fmtError)
 
@@ -22,10 +25,17 @@ data ThreadState
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
 
+newtype ThreadDataComponents d = ThreadDataComponents (Map TypeRep (ThreadDataComponentWrapper d))
+
+data ThreadDataComponentWrapper d = forall a. ThreadDataComponent a => ThreadDataComponentWrapper (forall b. MonadComponentImpl IO b a)
+
+fetchThreadDataComponent :: ThreadDataComponent a => ThreadDataComponents d -> d -> Maybe (MonadComponentImpl IO b a)
+fetchThreadDataComponent = $gsfatal "fetchThreadDataComponent next"
+
 class ThreadDataComponent a where
 
 class ThreadData d where
-    component :: ThreadDataComponent a => d -> Maybe (MonadComponentImpl IO b a) -- accesses a component of a state object, §emph{if such a component exists}
+    component :: ThreadDataComponent a => d -> Maybe (MonadComponentImpl IO b a)
     threadTypeName :: d -> String
 
 instance ThreadData () where
