@@ -7,7 +7,7 @@ import System.IO (hPutStrLn, stderr)
 
 import GSI.Util (fmtPos, gshere)
 import GSI.Value (gsapply, gsundefined)
-import GSI.ThreadType (ThreadData(..))
+import GSI.ThreadType (ThreadData(..), fetchThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Main (gsmain)
 
@@ -22,5 +22,8 @@ data TestGSIThread = TestGSIThread{
   }
 
 instance ThreadData TestGSIThread where
-    component d = Nothing
+    component d = fetchThreadDataComponent testGSIThreadComponents d
     threadTypeName _ = fmtPos $gshere "TestGSIThread"
+
+testGSIThreadComponents =
+    emptyThreadDataComponents
