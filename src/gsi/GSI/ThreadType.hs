@@ -1,15 +1,15 @@
-{-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types #-}
+{-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
 module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, emptyThreadDataComponents, threadStateCode) where
 
 import qualified Data.Map as Map
 
 import Data.Map (Map)
-import Data.Typeable (TypeRep)
+import Data.Typeable (Typeable, TypeRep, Proxy(..), gcast, typeRep)
 
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
 
-import Component.Monad (MonadComponentImpl)
+import Component.Monad (MonadComponentImpl, MonadComponentWrapper(..))
 
 import GSI.Util (Pos, gsfatal, fmtPos)
 import GSI.RTS (Event)
@@ -27,19 +27,25 @@ data ThreadState
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
 
-newtype ThreadDataComponents d = ThreadDataComponents (Map TypeRep (ThreadDataComponentWrapper d))
+newtype ThreadDataComponents d = ThreadDataComponents (Map TypeRep (d -> ThreadDataComponentWrapper))
 
-data ThreadDataComponentWrapper d = forall a. ThreadDataComponent a => ThreadDataComponentWrapper (forall b. MonadComponentImpl IO b a)
+data ThreadDataComponentWrapper = forall a. ThreadDataComponent a => ThreadDataComponentWrapper (MonadComponentWrapper IO a)
 
-fetchThreadDataComponent :: ThreadDataComponent a => ThreadDataComponents d -> d -> Maybe (MonadComponentImpl IO b a)
-fetchThreadDataComponent = $gsfatal "fetchThreadDataComponent next"
+fetchThreadDataComponent :: forall d a b. ThreadDataComponent a => ThreadDataComponents d -> d -> Maybe (MonadComponentImpl IO b a)
+fetchThreadDataComponent (ThreadDataComponents m) d = do
+    w <- Map.lookup (typeRep (Proxy :: Proxy a)) m
+    case w d of
+        ThreadDataComponentWrapper cw -> do
+            cw' <- gcast cw
+            case cw' of
+                MonadComponentWrapper c -> return c
 
 emptyThreadDataComponents :: ThreadDataComponents d
 emptyThreadDataComponents = ThreadDataComponents Map.empty
 
-class ThreadDataComponent a where
+class Typeable a => ThreadDataComponent a where
 
-class ThreadData d where
+class Typeable d => ThreadData d where
     component :: ThreadDataComponent a => d -> Maybe (MonadComponentImpl IO b a)
     threadTypeName :: d -> String
 
