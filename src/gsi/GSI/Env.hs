@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Env (gsenvGetArgs) where
+module GSI.Env (GSEnvArgs(..), gsenvGetArgs) where
 
 import System.IO.Unsafe (unsafePerformIO)
 
