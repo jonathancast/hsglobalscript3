@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, emptyThreadDataComponents, threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents, threadStateCode) where
 
 import qualified Data.Map as Map
 
@@ -39,6 +39,13 @@ fetchThreadDataComponent (ThreadDataComponents m) d = do
             cw' <- gcast cw
             case cw' of
                 MonadComponentWrapper c -> return c
+
+insertThreadDataComponent :: forall d a. ThreadDataComponent a => (forall b. d -> MonadComponentImpl IO b a) -> ThreadDataComponents d -> ThreadDataComponents d
+insertThreadDataComponent cf (ThreadDataComponents m) = ThreadDataComponents $
+    Map.insert
+        (typeRep (Proxy :: Proxy a))
+        (\ d -> ThreadDataComponentWrapper (MonadComponentWrapper (cf d)))
+        m
 
 emptyThreadDataComponents :: ThreadDataComponents d
 emptyThreadDataComponents = ThreadDataComponents Map.empty
