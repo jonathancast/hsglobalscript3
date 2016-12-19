@@ -9,6 +9,7 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 import GSI.Util (Pos, gshere, gsfatal)
 import GSI.Error (GSError(..))
 import GSI.RTS (Event)
+import GSI.Syn (GSVar)
 import GSI.ThreadType (Thread)
 
 data GSValue
@@ -16,6 +17,7 @@ data GSValue
   | GSError GSError
   | GSThunk GSThunk
   | GSClosure Pos GSBCO
+  | GSConstr Pos GSVar [GSValue]
 
 data GSBCO
   = GSBCOFun (GSValue -> GSBCO)
@@ -67,6 +69,7 @@ gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"
+gsvCode GSConstr{} = "GSConstr"
 
 bcoCode :: GSBCO -> String
 bcoCode GSBCOFun{} = "GSBCOFun"
