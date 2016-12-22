@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w,
+    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w, gsbcforce, gsbcforce_w,
     gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w
   ) where
 
@@ -10,7 +10,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), gsundefined_w, gsclosure_w)
 import GSI.ThreadType (Thread)
-import ACE (aceApply)
+import ACE (aceApply, aceEval)
 import API (apiCallBCO)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -57,6 +57,13 @@ gsbcvar = varE 'gsbcvar_w `appE` gshere
 
 gsbcvar_w :: Pos -> GSValue -> GSBCO
 gsbcvar_w pos v = GSBCOExpr $ return v
+
+gsbcforce = varE 'gsbcforce_w `appE` gshere
+
+gsbcforce_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
+gsbcforce_w pos e k = GSBCOExpr $ do
+    v <- aceEval pos (gsbco e)
+    aceEval pos (gsbco $ k v)
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 
