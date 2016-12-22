@@ -19,6 +19,9 @@ aceEnter :: Pos -> GSValue -> IO GSValue
 aceEnter pos v = return $ $gsimplementationFailure $ "aceEnter " ++ gsvCode v ++" next"
 
 aceEval :: Pos -> GSBCO -> IO GSValue
+aceEval pos (GSBCOExpr e) = do
+    v <- e
+    aceEnter pos v
 aceEval pos bco = return $ $gsimplementationFailure $ "aceEval " ++ bcoCode bco ++ " next"
 
 aceCall pos0 pos1 (GSBCOFun f) (arg:args) = aceCall pos0 pos1 (f arg) args
