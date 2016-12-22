@@ -10,37 +10,43 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w)
 import GSI.ThreadType (Thread)
-import ACE (aceEnter, aceEnterBCO)
+import ACE (aceEnter, aceEnterBCO, aceThrow)
 import API (apiCallBCO)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSBCO
-gsbcundefined_w pos = GSBCOExpr $ return $ gsundefined_w pos
+gsbcundefined_w pos = GSBCOExpr $ aceThrow $ gsundefined_w pos
 
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
 gsbclambda_w :: ToGSBCO bco => Pos -> (GSValue -> bco) -> GSBCO
-gsbclambda_w pos fn = GSBCOExpr $ gsclosure_w pos fn
+gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
+    v <- gsclosure_w pos fn
+    aceEnter pos v st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: ToGSBCO bco => Pos -> GSValue -> [bco] -> GSBCO
-gsbcapply_w pos f args = GSBCOExpr $ mapM (gsclosure_w pos) args >>= aceEnter pos f . map (GSStackArg pos)
+gsbcapply_w pos f args = GSBCOExpr $ \ st -> do
+    asv <- mapM (gsclosure_w pos) args
+    aceEnter pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
 class GSBCPrimType f r where
-    gsbcprim_ww :: f -> r
+    gsbcprim_ww :: Pos -> f -> r
 
 instance GSBCPrimType (IO GSValue) GSBCO where
-    gsbcprim_ww f = GSBCOExpr $ f
+    gsbcprim_ww pos f = GSBCOExpr $ \ st -> do
+        v <- f
+        aceEnter pos v st
 
 instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
-    gsbcprim_ww f v = gsbcprim_ww (f v)
+    gsbcprim_ww pos f v = gsbcprim_ww pos (f v)
 
 gsbcprim_w :: GSBCPrimType f r => Pos -> (Pos -> f) -> r
-gsbcprim_w pos f = gsbcprim_ww (f pos)
+gsbcprim_w pos f = gsbcprim_ww pos (f pos)
 
 gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
 
@@ -56,12 +62,12 @@ gsbcimpprim_w pos f = gsbcimpprim_ww (f pos)
 gsbcvar = varE 'gsbcvar_w `appE` gshere
 
 gsbcvar_w :: Pos -> GSValue -> GSBCO
-gsbcvar_w pos v = GSBCOExpr $ return v
+gsbcvar_w pos v = GSBCOExpr $ \ st -> aceEnter pos v st
 
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
-gsbcforce_w pos e k = GSBCOExpr $ aceEnterBCO pos (gsbco e) [ GSStackForce pos $ gsbco . k ]
+gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos (gsbco e) (GSStackForce pos (gsbco . k) : st)
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 
