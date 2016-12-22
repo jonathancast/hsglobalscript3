@@ -7,5 +7,5 @@ import GSI.ByteCode (gsbcundefined, gsbcapply, gsbcvar, gsbcforce)
 gsanalyze = $gstoplevelclosure $ \ (e :: GSValue) (cs :: GSValue) -> $gsbcapply cs [ $gsbcvar e ]
 
 gscase = $gstoplevelclosure $ \ (p :: GSValue) (b :: GSValue) (e :: GSValue) (x :: GSValue) ->
-    $gsbcforce $gsbcundefined $ \ c -> -- Probably §hs{$gsbcapply ($gsbcvar p) [$gsbcvar x]}
+    $gsbcforce ($gsbcapply p [$gsbcundefined]) $ \ c -> -- Probably §hs{$gsbcvar x}
         $gsbcundefined -- Probably §hs{$gsbcbranch ($gsbcvar e) ($gsbcvar b) c}
