@@ -10,7 +10,7 @@ import Control.Exception (SomeException, Exception(..), throwIO, throw, try)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.RTS (newEvent, wakeup, await)
-import GSI.Error (GSError, GSException(..), throwGSerror)
+import GSI.Error (GSError, GSException(..), throwGSError)
 import GSI.Value (GSValue(..), GSBCO(..))
 import GSI.Eval (GSResult(..), stCode)
 import GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadException(..), threadStateCode)
@@ -45,7 +45,7 @@ execMainThread t = do
     st <- readMVar $ state t
     case st of
         ThreadStateUnimpl pos err -> throwIO $ GSExcImplementationFailure pos err
-        ThreadStateError err -> throwGSerror err
+        ThreadStateError err -> throwGSError err
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
 
