@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceApply) where
+module ACE (aceEval, aceApply) where
 
 import GSI.Util (Pos)
 import GSI.Value (GSValue(..), GSBCO(..), GSThunkState(..), gsimplementationFailure, gsvCode, bcoCode)
@@ -14,6 +14,9 @@ aceApply pos (GSThunk th) args = do
     v <- evalSync th
     aceApply pos v args
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
+
+aceEval :: Pos -> GSBCO -> IO GSValue
+aceEval pos bco = return $ $gsimplementationFailure $ "aceEval (" ++ bcoCode bco ++ ") next"
 
 aceCall pos0 pos1 (GSBCOFun f) (arg:args) = aceCall pos0 pos1 (f arg) args
 aceCall pos0 pos1 (GSBCOFun f) [] = return $ GSClosure pos0 (GSBCOFun f)
