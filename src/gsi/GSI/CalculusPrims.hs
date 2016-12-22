@@ -17,6 +17,10 @@ gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos 
 gspriminsufficientcases pos e = return $ $gsimplementationFailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
 
 fmtValue :: GSValue -> IO (String -> String)
-fmtValue GSError{} = return ('_':)
-fmtValue (GSConstr pos c xn) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM fmtValue xn
+fmtValue v@GSError{} = fmtValueAtom v
+fmtValue (GSConstr pos c xn) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM fmtValueAtom xn
 fmtValue v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
+
+fmtValueAtom :: GSValue -> IO (String -> String)
+fmtValueAtom GSError{} = return ('_':)
+fmtValueAtom v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
