@@ -15,13 +15,16 @@ data GSError
 
 data GSException
   = GSExcUndefined Pos
+  | GSExcInsufficientCases Pos String
   | GSExcImplementationFailure Pos String
   deriving (Typeable, Show)
 instance Exception GSException where
     displayException (GSExcUndefined pos) = fmtPos pos "undefined"
+    displayException (GSExcInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
 
 throwGSerror (GSErrUnimpl pos) = throw $ GSExcUndefined pos
+throwGSerror (GSErrInsufficientCases pos err) = throw $ GSExcInsufficientCases pos err
 throwGSerror err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
 
 fmtError :: GSError -> String
