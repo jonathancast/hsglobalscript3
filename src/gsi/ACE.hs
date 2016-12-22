@@ -16,7 +16,7 @@ aceApply pos (GSThunk th) args = do
 aceApply pos fn args = return $ $gsimplementationFailure $ "aceApply (function = " ++ gsvCode fn ++") next"
 
 aceCall pos0 pos1 (GSBCOFun f) (arg:args) = aceCall pos0 pos1 (f arg) args
-aceCall pos0 pos1 (GSBCOFun f) [] = return $ $gsimplementationFailure $ "aceCall (function = GSBCOFun; no args) next"
+aceCall pos0 pos1 (GSBCOFun f) [] = return $ GSClosure pos0 (GSBCOFun f)
 aceCall pos0 pos1 (GSBCOExpr e) args = do
     v <- e
     aceApply pos0 v args
