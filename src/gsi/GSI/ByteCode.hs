@@ -61,7 +61,7 @@ gsbcvar_w pos v = GSBCOExpr $ return v
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
-gsbcforce_w pos e k = GSBCOExpr $ aceEnterBCO pos (gsbco e) [ GSStackForce $ gsbco . k ]
+gsbcforce_w pos e k = GSBCOExpr $ aceEnterBCO pos (gsbco e) [ GSStackForce pos $ gsbco . k ]
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 

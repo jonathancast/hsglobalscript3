@@ -34,7 +34,7 @@ instance ToGSBCO GSBCO where
     gsbco = id
 
 data GSStackFrame
-  = GSStackForce (GSValue -> GSBCO)
+  = GSStackForce Pos (GSValue -> GSBCO)
 
 type GSThunk = MVar GSThunkState
 
