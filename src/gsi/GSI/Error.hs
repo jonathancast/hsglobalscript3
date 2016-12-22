@@ -8,7 +8,9 @@ import Control.Exception (Exception(..), throw)
 
 import GSI.Util (Pos, fmtPos, gshere)
 
-data GSError = GSErrUnimpl Pos
+data GSError
+  = GSErrUnimpl Pos
+  | GSErrInsufficientCases Pos String
   deriving (Show)
 
 data GSException
@@ -24,3 +26,4 @@ throwGSerror err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror ("
 
 fmtError :: GSError -> String
 fmtError (GSErrUnimpl pos) = fmtPos pos "Undefined"
+fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
