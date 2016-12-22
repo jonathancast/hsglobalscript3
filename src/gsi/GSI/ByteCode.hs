@@ -10,7 +10,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w)
 import GSI.ThreadType (Thread)
-import ACE (aceApply, aceEnterBCO)
+import ACE (aceEnter, aceEnterBCO)
 import API (apiCallBCO)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -26,7 +26,7 @@ gsbclambda_w pos fn = GSBCOExpr $ gsclosure_w pos fn
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: ToGSBCO bco => Pos -> GSValue -> [bco] -> GSBCO
-gsbcapply_w pos f args = GSBCOExpr $ mapM (gsclosure_w pos) args >>= aceApply pos f
+gsbcapply_w pos f args = GSBCOExpr $ mapM (gsclosure_w pos) args >>= aceEnter pos f . map (GSStackArg pos)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
