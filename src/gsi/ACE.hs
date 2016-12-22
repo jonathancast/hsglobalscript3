@@ -1,20 +1,20 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceForceBCO, aceApply) where
+module ACE (aceEnterBCO, aceApply) where
 
 import GSI.Util (Pos)
-import GSI.Value (GSValue(..), GSBCO(..), GSThunkState(..), gsimplementationFailure, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSThunkState(..), gsimplementationFailure, gsvCode, bcoCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync, stCode)
 
-aceForce :: Pos -> GSValue -> (GSValue -> GSBCO) -> IO GSValue
-aceForce pos v@GSError{} k = return v
-aceForce pos e k = return $ $gsimplementationFailure $ "aceForce (expr = " ++ gsvCode e ++") next"
+aceEnter :: Pos -> GSValue -> [GSStackFrame] -> IO GSValue
+aceEnter pos v@GSError{} st = return v
+aceEnter pos e st = return $ $gsimplementationFailure $ "aceEnter (expr = " ++ gsvCode e ++") next"
 
-aceForceBCO :: Pos -> GSBCO -> (GSValue -> GSBCO) -> IO GSValue
-aceForceBCO pos (GSBCOExpr e) k = do
+aceEnterBCO :: Pos -> GSBCO -> [GSStackFrame] -> IO GSValue
+aceEnterBCO pos (GSBCOExpr e) k = do
     v <- e
-    aceForce pos v k
-aceForceBCO pos bco k = return $ $gsimplementationFailure $ "aceForceBCO (expr = " ++ bcoCode bco ++") next"
+    aceEnter pos v k
+aceEnterBCO pos bco k = return $ $gsimplementationFailure $ "aceEnterBCO (expr = " ++ bcoCode bco ++") next"
 
 aceApply :: Pos -> GSValue -> [GSValue] -> IO GSValue
 aceApply pos fn@GSError{} args = return fn

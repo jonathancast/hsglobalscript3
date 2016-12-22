@@ -8,9 +8,9 @@ module GSI.ByteCode (
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), gsundefined_w, gsclosure_w)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w)
 import GSI.ThreadType (Thread)
-import ACE (aceApply, aceForceBCO)
+import ACE (aceApply, aceEnterBCO)
 import API (apiCallBCO)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -61,7 +61,7 @@ gsbcvar_w pos v = GSBCOExpr $ return v
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
-gsbcforce_w pos e k = GSBCOExpr $ aceForceBCO pos (gsbco e) $ gsbco . k
+gsbcforce_w pos e k = GSBCOExpr $ aceEnterBCO pos (gsbco e) [ GSStackForce $ gsbco . k ]
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 

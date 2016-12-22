@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, gsvCode, bcoCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), ToGSBCO(..), GSStackFrame(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationFailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, gsvCode, bcoCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -32,6 +32,9 @@ instance ToGSBCO r => ToGSBCO (GSValue -> r) where
 
 instance ToGSBCO GSBCO where
     gsbco = id
+
+data GSStackFrame
+  = GSStackForce (GSValue -> GSBCO)
 
 type GSThunk = MVar GSThunkState
 
@@ -75,6 +78,9 @@ bcoCode :: GSBCO -> String
 bcoCode GSBCOFun{} = "GSBCOFun"
 bcoCode GSBCOExpr{} = "GSBCOExpr"
 bcoCode GSBCOImp{} = "GSBCOImp"
+
+gsstCode :: GSStackFrame -> String
+gsstCode GSStackForce{} = "GSStackForce"
 
 gstsCode :: GSThunkState -> String
 gstsCode GSTSExpr{} = "GSTSExpr"
