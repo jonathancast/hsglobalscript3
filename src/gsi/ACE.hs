@@ -8,6 +8,7 @@ import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
 aceEnter :: Pos -> GSValue -> [GSStackFrame] -> IO GSValue
 aceEnter pos v@GSError{} st = return v
+aceEnter pos v@GSImplementationFailure{} st = return v
 aceEnter pos (GSThunk th) st = do
     v <- evalSync th
     aceEnter pos v st
@@ -18,7 +19,7 @@ aceEnterBCO :: Pos -> GSBCO -> [GSStackFrame] -> IO GSValue
 aceEnterBCO pos (GSBCOExpr e) st = do
     v <- e
     aceEnter pos v st
-aceEnterBCO pos (GSBCOFun f) [] = return $ $gsimplementationFailure $ "aceEnterBCO (function; stack empty) next"
+aceEnterBCO pos bco@GSBCOFun{} [] = return $ GSClosure pos bco
 aceEnterBCO pos0 (GSBCOFun f) (GSStackArg pos1 a:st) = aceEnterBCO pos0 (f a) st
 aceEnterBCO pos (GSBCOFun f) (k:st) = return $ $gsimplementationFailure $ "aceEnterBCO (function; cont = " ++ gsstCode k ++ ") next"
 aceEnterBCO pos bco@GSBCOImp{} [] = return $ GSClosure pos bco
