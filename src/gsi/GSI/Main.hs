@@ -2,7 +2,7 @@
 module GSI.Main (gsmain) where
 
 import GSI.Value (GSBCO, gsundefined, gstoplevelclosure)
-import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcimplet, gsbcimpbind, gsbcimpbody)
+import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcviewpattern, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
 import GSI.Env (gsenvGetArgs)
@@ -16,7 +16,7 @@ gsmain = $gstoplevelclosure $ \ gsrun -> do
 gsprocessargs = $gstoplevelclosure $ \ args ->
     $gsbcapply gsanalyze [ $gsbcvar args,
         $gsbcapply gscase [
-            $gsbcundefined, -- > 'a:'as -- Probably §hs{$gsbcviewpattern ($gsbcvar gscons_view) ($gsbcvarpattern "a") ($gsbcvarpattern "as")}
+            $gsbcviewpattern $gsbcundefined $gsbcundefined $gsbcundefined, -- > 'a:'as -- Probably §hs{$gsbcvar gscons_view}, §hs{$gsbcvarpattern "a"}, and §hs{$gsbcvarpattern "as"}
             $gsbcundefined, -- Process §gs{a:as}
         $gsbclambda $ \ args -> $gsbcprim gspriminsufficientcases args :: GSBCO
         ]
