@@ -119,7 +119,7 @@ class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ sk -> gsbcimplementationfailure_w $gshere "recursion case next") -- §gs{k (λ 'η 'x. sk (η ∧ p x))}
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ sk -> k (gsbcimplementationfailure_w $gshere "recursion case next")) -- §gs{λ 'η 'x. sk (η ∧ p x)}
 
 instance ToGSViewPattern GSBCO where
     gsbcviewpattern_ww pos k = k (gsbcimplementationfailure_w $gshere "base case next") -- §gs{λ 'η. η}
