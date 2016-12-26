@@ -2,7 +2,8 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w, gsbcforce, gsbcforce_w,
-    gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w
+    gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
+    gsbcviewpattern, gsbcviewpattern_w
   ) where
 
 import Language.Haskell.TH.Lib (appE, varE)
@@ -104,3 +105,12 @@ gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
 gsbcimpbody_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
 gsbcimpbody_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
+
+gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
+
+gsbcviewpattern_w :: (ToGSBCO bco, ToGSViewPattern res) => Pos -> bco -> res
+gsbcviewpattern_w pos v =
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcundefined_w $gshere, gsbcundefined_w $gshere ]) -- §hs{fail}, §hs{sk success}
+
+class ToGSViewPattern res where
+    gsbcviewpattern_ww :: ToGSBCO bco => Pos -> (GSBCO -> bco) -> res
