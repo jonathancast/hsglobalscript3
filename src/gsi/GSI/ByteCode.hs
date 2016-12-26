@@ -113,4 +113,10 @@ gsbcviewpattern_w pos v =
     gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcundefined_w $gshere, gsbcundefined_w $gshere ]) -- §hs{fail}, §hs{sk success}
 
 class ToGSViewPattern res where
-    gsbcviewpattern_ww :: ToGSBCO bco => Pos -> (GSBCO -> bco) -> res
+    gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
+
+instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ sk -> gsbcundefined_w $gshere) -- §gs{k (λ 'η 'x. sk (η ∧ p x))}
+
+instance ToGSViewPattern GSBCO where
+    gsbcviewpattern_ww pos k = k (gsbcundefined_w $gshere) -- §gs{λ 'η. η}
