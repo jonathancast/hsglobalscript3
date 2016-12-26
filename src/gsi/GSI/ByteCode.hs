@@ -19,6 +19,9 @@ gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 gsbcundefined_w :: Pos -> GSBCO
 gsbcundefined_w pos = GSBCOExpr $ aceThrow $ gsundefined_w pos
 
+gsbcimplementationfailure_w :: Pos -> String -> GSBCO
+gsbcimplementationfailure_w pos msg = GSBCOExpr $ aceThrow $ GSImplementationFailure pos msg
+
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
 gsbclambda_w :: ToGSBCO bco => Pos -> (GSValue -> bco) -> GSBCO
