@@ -7,6 +7,7 @@ import Data.Char (isPunctuation, isSymbol)
 import GSI.Util (gsfatal)
 
 data GSVar = GSVarSym String
+    deriving (Eq)
 
 gsvar :: String -> GSVar
 gsvar [] = $gsfatal "gsvar [] called; this is very bad"
