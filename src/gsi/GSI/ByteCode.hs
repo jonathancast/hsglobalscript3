@@ -3,13 +3,15 @@
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
+    gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w
   ) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w)
+import GSI.Syn (GSVar, gsvar)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w, gsvCode)
 import GSI.ThreadType (Thread)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
 import API (apiCallBCO)
@@ -110,6 +112,14 @@ gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
 gsbcimpbody_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
 gsbcimpbody_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
+
+gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
+
+gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
+
+gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSBCO
+gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (gsbcvar_w pos x) $ \ x0 -> case x0 of
+        _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
 gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
