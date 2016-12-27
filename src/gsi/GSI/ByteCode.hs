@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
@@ -128,13 +128,13 @@ gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
 gsbcviewpattern_w :: (ToGSBCO bco, ToGSViewPattern res) => Pos -> bco -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcimplementationfailure_w $gshere "sk success next" ]) -- §hs{fail}, §hs{sk success}
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [gsbcimplementationfailure_w $gshere "success next"] ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ sk -> k (gsbcimplementationfailure_w $gshere "recursion case next")) -- §gs{λ 'η 'x. sk (η ∧ p x)}
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ sk -> k (gsbco $ \ (eta :: GSValue) (x :: GSValue) -> gsbcapp_w pos sk [gsbcimplementationfailure_w $gshere "recursion case next"])) -- §gs{η ∧ p x}
 
 instance ToGSViewPattern GSBCO where
-    gsbcviewpattern_ww pos k = k (gsbcimplementationfailure_w $gshere "base case next") -- §gs{λ 'η. η}
+    gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> gsbcvar_w pos eta)
