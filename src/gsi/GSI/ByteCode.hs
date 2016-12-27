@@ -10,7 +10,7 @@ module GSI.ByteCode (
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.Syn (GSVar, gsvar)
+import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w, gsvCode)
 import GSI.ThreadType (Thread)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
@@ -119,6 +119,9 @@ gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 
 gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSBCO
 gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (gsbcvar_w pos x) $ \ x0 -> case x0 of
+        GSConstr pos1 c' as
+            | c == c' -> gsbcapp_w pos (gsbcvar_w pos sk) (map (gsbcvar_w pos) as)
+            | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
 gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
