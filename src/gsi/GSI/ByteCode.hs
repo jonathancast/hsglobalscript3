@@ -11,8 +11,9 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsundefined_w, gsclosure_w, gsvCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsimplementationFailure, gsundefined_w, gsclosure_w, gsvCode)
 import GSI.ThreadType (Thread)
+import GSI.Prims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
 import API (apiCallBCO)
 
@@ -134,7 +135,7 @@ class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ sk -> k (gsbco $ \ (eta :: GSValue) (x :: GSValue) -> gsbcapp_w pos sk [gsbcimplementationfailure_w $gshere "recursion case next"])) -- §gs{η ∧ p x}
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ (sk :: GSBCO) -> k (gsbco $ \ (eta :: GSValue) (x :: GSValue) -> gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta ($gsimplementationFailure "recursion case next") :: GSBCO ])) -- §gs{p x}
 
 instance ToGSViewPattern GSBCO where
     gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> gsbcvar_w pos eta)
