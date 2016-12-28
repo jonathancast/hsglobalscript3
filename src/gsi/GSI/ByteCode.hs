@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcvar_w, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w
   ) where
 
-import Language.Haskell.TH.Lib (appE, varE)
+import Language.Haskell.TH.Lib (appE, varE, conE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
@@ -73,10 +73,7 @@ instance GSBCImpPrimType (IO GSValue) GSBCO where
 gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
 gsbcimpprim_w pos f = gsbcimpprim_ww (f pos)
 
-gsbcvar = varE 'gsbcvar_w `appE` gshere
-
-gsbcvar_w :: Pos -> GSValue -> GSBCO
-gsbcvar_w pos v = GSBCOExpr $ \ st -> aceEnter pos v st
+gsbcvar = conE 'GSBCOVar `appE` gshere
 
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
@@ -126,9 +123,9 @@ gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 
 gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSBCO
-gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (gsbcvar_w pos x) $ \ x0 -> case x0 of
+gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSBCOVar pos x) $ \ x0 -> case x0 of
         GSConstr pos1 c' as
-            | c == c' -> gsbcapp_w pos (gsbcvar_w pos sk) (map (gsbcvar_w pos) as)
+            | c == c' -> gsbcapp_w pos (GSBCOVar pos sk) (map (GSBCOVar pos) as)
             | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
@@ -136,15 +133,15 @@ gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
 gsbcviewpattern_w :: (ToGSBCO bco, ToGSViewPattern res) => Pos -> bco -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [gsbcvar_w pos $ GSConstr pos (gsvar "1") [$gsimplementationFailure "success next"]] ])
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationFailure "success next"]] ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
     gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbco $ \ (eta :: GSValue) (x :: GSValue) ->
-        gsbclet_w pos (gsbcapp_w pos p [ gsbcvar_w pos x ]) $ \ px -> -- §gs{p x}
+        gsbclet_w pos (gsbcapp_w pos p [ GSBCOVar pos x ]) $ \ px -> -- §gs{p x}
             gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSBCO ]
 
 instance ToGSViewPattern GSBCO where
-    gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> gsbcvar_w pos eta)
+    gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> GSBCOVar pos eta)

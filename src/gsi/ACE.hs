@@ -25,6 +25,7 @@ aceEnterBCO pos0 (GSBCOFun f) (GSStackArg pos1 a:st) = aceEnterBCO pos0 (f a) st
 aceEnterBCO pos (GSBCOFun f) (k:st) = return $ $gsimplementationFailure $ "aceEnterBCO (function; cont = " ++ gsstCode k ++ ") next"
 aceEnterBCO pos bco@GSBCOImp{} [] = return $ GSClosure pos bco
 aceEnterBCO pos (GSBCOImp a) (k:st) = return $ $gsimplementationFailure $ "aceEnterBCO (GSBCOImp; cont = " ++ gsstCode k ++ ") next"
+aceEnterBCO pos0 (GSBCOVar pos1 v) st = aceEnter pos1 v st
 aceEnterBCO pos bco st = return $ $gsimplementationFailure $ "aceEnterBCO (expr = " ++ bcoCode bco ++") next"
 
 aceThrow :: GSValue -> [GSStackFrame] -> IO GSValue

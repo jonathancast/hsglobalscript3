@@ -26,6 +26,7 @@ apiCallBCO :: Pos -> GSBCO -> Thread -> IO GSValue
 apiCallBCO pos (GSBCOExpr e) t = do
     v <- e []
     apiCall pos v t
+apiCallBCO pos0 (GSBCOVar pos1 v) t = apiCall pos0 v t
 apiCallBCO pos bco t = throwIO $ TEImplementationFailure $gshere $ "apiCallBCO " ++ bcoCode bco ++ " next"
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
