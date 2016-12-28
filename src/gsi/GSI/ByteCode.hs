@@ -29,7 +29,7 @@ gsbcimplementationfailure_w pos msg = GSBCOExpr $ aceThrow $ GSImplementationFai
 
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
-gsbclambda_w :: ToGSBCO bco => Pos -> (GSValue -> bco) -> GSBCO
+gsbclambda_w :: Pos -> (GSValue -> GSBCO) -> GSBCO
 gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
     v <- gsclosure_w pos fn
     aceEnter pos v st
