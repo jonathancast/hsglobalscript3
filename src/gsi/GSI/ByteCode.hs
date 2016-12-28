@@ -138,17 +138,17 @@ class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSViewPattern res) => ToGSViewPattern (GSBCO -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbco $ \ (eta :: GSValue) (x :: GSValue) ->
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbclambda_w pos $ \ (eta :: GSValue) (x :: GSValue) ->
         gsbclet_w pos (gsbcapp_w pos p [ GSBCOVar pos x ]) $ \ px ->
             gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSBCO ]
 
 instance ToGSViewPattern GSBCO where
-    gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> GSBCOVar pos eta)
+    gsbcviewpattern_ww pos k = k (gsbclambda_w pos $ \ eta -> GSBCOVar pos eta)
 
 gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 
 gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
 gsbcvarpattern_ww :: Pos -> GSVar -> GSBCO
-gsbcvarpattern_ww pos v = gsbco $ \ (x::GSValue) -> GSBCOVar pos $ GSConstr pos (gsvar "1")
+gsbcvarpattern_ww pos v = gsbclambda_w pos $ \ (x::GSValue) -> GSBCOVar pos $ GSConstr pos (gsvar "1")
     [$gsimplementationfailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]
