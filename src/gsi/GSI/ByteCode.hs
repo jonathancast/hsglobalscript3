@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSClosure(..), gsimplementationfailure, gsundefined_w, gsclosure_w, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSClosure(..), gsimplementationfailure, gsundefined_w, gstoplevelclosure_w, gsthunk_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
@@ -31,19 +31,18 @@ gsbclambda = varE 'gsbclambda_w `appE` gshere
 
 gsbclambda_w :: Pos -> (GSValue -> GSBCO) -> GSBCO
 gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
-    v <- gsclosure_w pos fn
-    aceEnter pos v st
+    aceEnter pos (gstoplevelclosure_w pos fn) st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: Pos -> GSValue -> [GSBCO] -> GSBCO
 gsbcapply_w pos f args = GSBCOExpr $ \ st -> do
-    asv <- mapM (gsclosure_w pos) args
+    asv <- mapM (gsthunk_w pos) args
     aceEnter pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcapp_w :: Pos -> GSBCO -> [GSBCO] -> GSBCO
 gsbcapp_w pos f args = GSBCOExpr $ \ st-> do
-    asv <- mapM (gsclosure_w pos) args
+    asv <- mapM (gsthunk_w pos) args
     aceEnterBCO pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
@@ -82,7 +81,7 @@ gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos e (GSStackForce pos k 
 
 gsbclet_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
 gsbclet_w pos e k = GSBCOExpr $ \ st -> do
-    v <- gsclosure_w pos e
+    v <- gsthunk_w pos e
     case k v of
         GSBCOExpr e' -> e' st
         bco -> return $ $gsimplementationfailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
@@ -106,7 +105,7 @@ gsbcoimpfor (GSBCImp a) = GSBCOImp a
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
 gsbcimplet_w :: Pos -> GSBCO -> GSBCImp GSValue
-gsbcimplet_w pos bco = GSBCImp $ \ _ -> gsclosure_w pos bco
+gsbcimplet_w pos bco = GSBCImp $ \ _ -> gsthunk_w pos bco
 
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 

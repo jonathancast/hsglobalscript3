@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSClosure(..), GSStackFrame(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gstoplevelclosure, gstoplevelclosure_w, gsclosure, gsclosure_w, gsvCode, bcoCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), GSClosure(..), GSStackFrame(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gstoplevelclosure, gstoplevelclosure_w, gsthunk, gsthunk_w, gsvCode, bcoCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -60,10 +60,10 @@ instance GSClosure r => GSClosure (GSValue -> r) where
 instance GSClosure GSBCO where
     gsbco = id
 
-gsclosure = varE 'gsclosure_w `appE` gshere
+gsthunk = varE 'gsthunk_w `appE` gshere
 
-gsclosure_w :: GSClosure bc => Pos -> bc -> IO GSValue
-gsclosure_w pos bc = case gsbco bc of
+gsthunk_w :: Pos -> GSBCO -> IO GSValue
+gsthunk_w pos bc = case bc of
     GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
     GSBCOImp a -> return $ GSClosure pos $ GSBCOImp a
     GSBCOFun f -> return $ GSClosure pos $ GSBCOFun f

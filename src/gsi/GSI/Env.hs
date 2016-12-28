@@ -6,13 +6,13 @@ import System.IO.Unsafe (unsafePerformIO)
 import Component.Monad (getM)
 
 import GSI.Util (Pos)
-import GSI.Value (GSValue, GSBCO, gsclosure)
+import GSI.Value (GSValue, GSBCO, gsthunk)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
 import GSI.ByteCode (gsbcimpprim)
 import API (apiImplementationFailure)
 
-gsenvGetArgs = unsafePerformIO $ $gsclosure ($gsbcimpprim gsprimenvGetArgs :: GSBCO)
+gsenvGetArgs = unsafePerformIO $ $gsthunk ($gsbcimpprim gsprimenvGetArgs :: GSBCO)
 
 gsprimenvGetArgs :: Pos -> Thread -> IO GSValue
 gsprimenvGetArgs pos t = withThreadData t (\ d -> do
