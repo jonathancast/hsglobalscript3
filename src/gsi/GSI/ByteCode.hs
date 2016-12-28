@@ -111,7 +111,7 @@ gsbcimplet_w pos bco = GSBCImp $ \ _ -> gsclosure_w pos bco
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 
 gsbcimpbind_w :: Pos -> GSBCO -> GSBCImp GSValue
-gsbcimpbind_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
+gsbcimpbind_w pos bco = GSBCImp $ apiCallBCO pos bco
 
 gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
