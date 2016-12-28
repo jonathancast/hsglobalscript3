@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSClosure(..), GSStackFrame(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsvCode, bcoCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsvCode, bcoCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -48,16 +48,16 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
 gslambda = varE 'gslambda_w `appE` gshere
 
-gslambda_w :: GSClosure bc => Pos -> (GSValue -> bc) -> GSValue
+gslambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSValue
 gslambda_w pos f = GSClosure pos (gsbco f)
 
-class GSClosure r where
+class GSLambda r where
     gsbco :: r -> GSBCO
 
-instance GSClosure r => GSClosure (GSValue -> r) where
+instance GSLambda r => GSLambda (GSValue -> r) where
     gsbco f = GSBCOFun (\ v -> gsbco (f v))
 
-instance GSClosure GSBCO where
+instance GSLambda GSBCO where
     gsbco = id
 
 gsthunk = varE 'gsthunk_w `appE` gshere
