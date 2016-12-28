@@ -1,18 +1,15 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Env (GSEnvArgs(..), gsenvGetArgs) where
 
-import System.IO.Unsafe (unsafePerformIO)
-
 import Component.Monad (getM)
 
 import GSI.Util (Pos)
-import GSI.Value (GSValue, GSBCO, gsthunk)
+import GSI.Value (GSValue, gsimpprim)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
-import GSI.ByteCode (gsbcimpprim)
 import API (apiImplementationFailure)
 
-gsenvGetArgs = unsafePerformIO $ $gsthunk ($gsbcimpprim gsprimenvGetArgs :: GSBCO)
+gsenvGetArgs = $gsimpprim gsprimenvGetArgs :: GSValue
 
 gsprimenvGetArgs :: Pos -> Thread -> IO GSValue
 gsprimenvGetArgs pos t = withThreadData t (\ d -> do
