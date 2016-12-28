@@ -51,6 +51,15 @@ gstoplevelclosure = varE 'gstoplevelclosure_w `appE` gshere
 gstoplevelclosure_w :: GSClosure bc => Pos -> (GSValue -> bc) -> GSValue
 gstoplevelclosure_w pos f = GSClosure pos (gsbco f)
 
+class GSClosure r where
+    gsbco :: r -> GSBCO
+
+instance GSClosure r => GSClosure (GSValue -> r) where
+    gsbco f = GSBCOFun (\ v -> gsbco (f v))
+
+instance GSClosure GSBCO where
+    gsbco = id
+
 gsclosure = varE 'gsclosure_w `appE` gshere
 
 gsclosure_w :: GSClosure bc => Pos -> bc -> IO GSValue
@@ -60,15 +69,6 @@ gsclosure_w pos bc = case gsbco bc of
     GSBCOFun f -> return $ GSClosure pos $ GSBCOFun f
     GSBCOVar pos v -> return v
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
-
-class GSClosure r where
-    gsbco :: r -> GSBCO
-
-instance GSClosure r => GSClosure (GSValue -> r) where
-    gsbco f = GSBCOFun (\ v -> gsbco (f v))
-
-instance GSClosure GSBCO where
-    gsbco = id
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
