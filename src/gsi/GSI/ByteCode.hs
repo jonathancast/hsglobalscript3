@@ -36,7 +36,7 @@ gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
-gsbcapply_w :: ToGSBCO bco => Pos -> GSValue -> [bco] -> GSBCO
+gsbcapply_w :: Pos -> GSValue -> [GSBCO] -> GSBCO
 gsbcapply_w pos f args = GSBCOExpr $ \ st -> do
     asv <- mapM (gsclosure_w pos) args
     aceEnter pos f (map (GSStackArg pos) asv ++ st)
