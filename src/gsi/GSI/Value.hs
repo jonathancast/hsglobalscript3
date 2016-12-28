@@ -25,15 +25,6 @@ data GSBCO
   | GSBCOImp (Thread -> IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
   | GSBCOVar Pos GSValue
 
-class ToGSBCO r where
-    gsbco :: r -> GSBCO
-
-instance ToGSBCO r => ToGSBCO (GSValue -> r) where
-    gsbco f = GSBCOFun (\ v -> gsbco (f v))
-
-instance ToGSBCO GSBCO where
-    gsbco = id
-
 data GSStackFrame
   = GSStackForce Pos (GSValue -> GSBCO)
   | GSStackArg Pos GSValue
@@ -69,6 +60,15 @@ gsclosure_w pos bc = case gsbco bc of
     GSBCOFun f -> return $ GSClosure pos $ GSBCOFun f
     GSBCOVar pos v -> return v
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
+
+class ToGSBCO r where
+    gsbco :: r -> GSBCO
+
+instance ToGSBCO r => ToGSBCO (GSValue -> r) where
+    gsbco f = GSBCOFun (\ v -> gsbco (f v))
+
+instance ToGSBCO GSBCO where
+    gsbco = id
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
