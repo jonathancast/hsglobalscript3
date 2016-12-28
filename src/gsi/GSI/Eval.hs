@@ -46,6 +46,7 @@ evalSync mv = do
             GSError{} -> return v
             GSClosure{} -> return v
             GSLambda{} -> return v
+            GSImp{} -> return v
             GSThunk th -> evalSync th
             GSConstr{} -> return v
             _ -> return $ $gsimplementationfailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"

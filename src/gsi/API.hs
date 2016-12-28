@@ -19,6 +19,7 @@ apiCall pos (GSThunk th) t = do
 apiCall pos0 (GSClosure pos1 bco) t = case bco of
     GSBCOImp a -> a t
     _ -> throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ bcoCode bco ++ ") next"
+apiCall pos0 (GSImp pos1 a) t = a t
 apiCall pos v t = do
     throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 

@@ -88,7 +88,7 @@ main = runTestTT $ TestList $ [
         v <- gsthunk_w (Pos file 1 1) $ gsbcoimpfor $ gsbcimpbody_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
-            GSClosure pos gsbc -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
+            GSImp pos a -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++"; expected closure"
     ,
     -- §section Threads

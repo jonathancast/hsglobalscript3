@@ -18,6 +18,7 @@ data GSValue
   | GSThunk GSThunk
   | GSClosure Pos GSBCO
   | GSLambda Pos (GSValue -> GSValue)
+  | GSImp Pos (Thread -> IO GSValue)
   | GSRawExpr ([GSStackFrame] -> IO GSValue)
   | GSConstr Pos GSVar [GSValue]
 
@@ -59,7 +60,7 @@ instance GSLambda r => GSLambda (GSValue -> r) where
     gslambda_ww pos f = GSLambda pos (gslambda_ww pos . f)
 
 instance GSLambda GSBCO where
-    gslambda_ww pos bc@(GSBCOImp a) = GSClosure pos bc
+    gslambda_ww pos (GSBCOImp a) = GSImp pos a
     gslambda_ww pos (GSBCOExpr e) = GSRawExpr e
     gslambda_ww pos0 (GSBCOVar pos1 v) = v
     gslambda_ww pos bco = GSImplementationFailure $gshere $ "gslambda_ww " ++ bcoCode bco ++ " next"
@@ -69,7 +70,7 @@ gsthunk = varE 'gsthunk_w `appE` gshere
 gsthunk_w :: Pos -> GSBCO -> IO GSValue
 gsthunk_w pos bc = case bc of
     GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
-    GSBCOImp a -> return $ GSClosure pos $ GSBCOImp a
+    GSBCOImp a -> return $ GSImp pos a
     GSBCOVar pos v -> return v
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
 
@@ -78,6 +79,7 @@ gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"
+gsvCode GSImp{} = "GSImp"
 gsvCode GSLambda{} = "GSLambda"
 gsvCode GSRawExpr{} = "GSRawExpr"
 gsvCode GSConstr{} = "GSConstr"

@@ -17,6 +17,8 @@ aceEnter pos0 v@GSLambda{} [] = return v
 aceEnter pos0 (GSLambda pos1 f) (GSStackArg pos2 a:st) = aceEnter pos0 (f a) st
 aceEnter pos0 (GSLambda pos1 f) (k:st) = return $ $gsimplementationfailure $ "aceEnter (lambda; cont = " ++ gsstCode k ++ ") next"
 aceEnter pos (GSRawExpr e) st = e st
+aceEnter pos0 v@GSImp{} [] = return v
+aceEnter pos0 (GSImp pos1 a) (k:st) = return $ $gsimplementationfailure $ "aceEnter (imp; cont = " ++ gsstCode k ++ ") next"
 aceEnter pos v@GSConstr{} [] = return v
 aceEnter pos0 v@GSConstr{} (GSStackForce pos1 k:st) = aceEnterBCO pos1 (k v) st
 aceEnter pos v@GSConstr{} (k:st) = return $ $gsimplementationfailure $ "aceEnter (constr; continuation is " ++ gsstCode k ++ ") next"
@@ -24,7 +26,7 @@ aceEnter pos e st = return $ $gsimplementationfailure $ "aceEnter (expr = " ++ g
 
 aceEnterBCO :: Pos -> GSBCO -> [GSStackFrame] -> IO GSValue
 aceEnterBCO pos (GSBCOExpr e) st = e st
-aceEnterBCO pos bco@GSBCOImp{} [] = return $ GSClosure pos bco
+aceEnterBCO pos (GSBCOImp a) [] = return $ GSImp pos a
 aceEnterBCO pos (GSBCOImp a) (k:st) = return $ $gsimplementationfailure $ "aceEnterBCO (GSBCOImp; cont = " ++ gsstCode k ++ ") next"
 aceEnterBCO pos0 (GSBCOVar pos1 v) st = aceEnter pos1 v st
 aceEnterBCO pos bco st = return $ $gsimplementationfailure $ "aceEnterBCO (expr = " ++ bcoCode bco ++") next"
