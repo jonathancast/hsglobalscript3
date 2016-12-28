@@ -105,7 +105,7 @@ instance ToGSBCO (GSBCImp GSValue) where
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
-gsbcimplet_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
+gsbcimplet_w :: Pos -> GSBCO -> GSBCImp GSValue
 gsbcimplet_w pos bco = GSBCImp $ \ _ -> gsclosure_w pos bco
 
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
