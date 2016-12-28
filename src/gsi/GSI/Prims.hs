@@ -2,16 +2,19 @@
 module GSI.Prims (gsparand) where
 
 import GSI.Util (Pos)
+import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), gsimplementationFailure, gsvCode)
 import GSI.Eval (evalSync)
 
 gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
--- > gsparand pos fail _ = fail
--- > gsparand pos _ fail = fail
--- > gsparand pos succeed succeed = succeed
--- > gsparand pos thunk thunk = eval both, wait for one, then loop
-gsparand pos x@GSImplementationFailure{} y@GSImplementationFailure{} = return x
-gsparand pos (GSThunk xs) y@GSImplementationFailure{} = do
+gsparand pos (GSConstr pos1 cx []) _ | cx == gsvar "0" = return $ $gsimplementationFailure $ "gsparand 0 _ next" -- > fail
+gsparand pos _ (GSConstr pos1 cy []) | cy == gsvar "0" = return $ $gsimplementationFailure $ "gsparand _ 0 next" -- > fail
+gsparand pos (GSThunk xs) (GSThunk ys) = return $ $gsimplementationFailure $ "gsparand GSThunk GSThunk next" -- eval both, wait for one, then loop
+gsparand pos (GSThunk xs) y = do
     xv <- evalSync xs
     gsparand pos xv y
+gsparand pos x (GSThunk ys) = return $ $gsimplementationFailure $ "gsparand _ GSThunk next"
+gsparand pos x@GSImplementationFailure{} _ = return x
+gsparand pos _ y@GSImplementationFailure{} = return y
+gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = return $ $gsimplementationFailure $ "gsparand 1 1 next"  -- > succeed
 gsparand pos x y = return $ $gsimplementationFailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
