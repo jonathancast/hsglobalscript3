@@ -32,7 +32,7 @@ data GSStackFrame
 type GSThunk = MVar GSThunkState
 
 data GSThunkState
-  = GSTSExpr (IO GSValue)
+  = GSTSExpr ([GSStackFrame] -> IO GSValue)
   | GSApply Pos GSValue [GSValue]
   | GSTSStack Event
   | GSTSIndirection GSValue
@@ -55,7 +55,7 @@ gsclosure = varE 'gsclosure_w `appE` gshere
 
 gsclosure_w :: ToGSBCO bc => Pos -> bc -> IO GSValue
 gsclosure_w pos bc = case gsbco bc of
-    GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr (e [])
+    GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
     GSBCOImp a -> return $ GSClosure pos $ GSBCOImp a
     GSBCOFun f -> return $ GSClosure pos $ GSBCOFun f
     GSBCOVar pos v -> return v
