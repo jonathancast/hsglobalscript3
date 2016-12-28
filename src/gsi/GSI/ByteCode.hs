@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsimplementationFailure, gsundefined_w, gsclosure_w, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsimplementationfailure, gsundefined_w, gsclosure_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.Prims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
@@ -85,7 +85,7 @@ gsbclet_w pos e k = GSBCOExpr $ \ st -> do
     v <- gsclosure_w pos e
     case gsbco (k v) of
         GSBCOExpr e' -> e' st
-        bco -> return $ $gsimplementationFailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
+        bco -> return $ $gsimplementationfailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 
@@ -133,7 +133,7 @@ gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
 gsbcviewpattern_w :: (ToGSBCO bco, ToGSViewPattern res) => Pos -> bco -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationFailure "success next"]] ])
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
@@ -152,4 +152,4 @@ gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
 gsbcvarpattern_ww :: Pos -> GSVar -> GSBCO
 gsbcvarpattern_ww pos v = gsbco $ \ (x::GSValue) -> GSBCOVar pos $ GSConstr pos (gsvar "1")
-    [$gsimplementationFailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]
+    [$gsimplementationfailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]

@@ -7,7 +7,7 @@ import Control.Concurrent (MVar, forkIO, modifyMVar)
 import GSI.Util (gshere)
 import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSStackFrame(..), GSThunkState(..), gsimplementationFailure, gsvCode, gstsCode)
+import GSI.Value (GSValue(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, gstsCode)
 
 import ACE (aceEnter)
 
@@ -28,7 +28,7 @@ eval mv = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)
-    _ -> return (st, GSIndirection $ $gsimplementationFailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
+    _ -> return (st, GSIndirection $ $gsimplementationfailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
 
 updateThunk mv v = do
     mbb <- modifyMVar mv $ \ s -> case s of
@@ -47,8 +47,8 @@ evalSync mv = do
             GSClosure{} -> return v
             GSThunk th -> evalSync th
             GSConstr{} -> return v
-            _ -> return $ $gsimplementationFailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
-        _ -> return $ $gsimplementationFailure $ "evalSync " ++ stCode st ++ " next"
+            _ -> return $ $gsimplementationfailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
+        _ -> return $ $gsimplementationfailure $ "evalSync " ++ stCode st ++ " next"
 
 stCode :: GSResult -> String
 stCode GSStack{} = "GSStack"
