@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
+    gsbcoimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
   ) where
@@ -100,8 +100,8 @@ instance Monad GSBCImp where
     return x = GSBCImp (const $ return x)
     a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t
 
-instance ToGSBCO (GSBCImp GSValue) where
-    gsbco (GSBCImp a) = GSBCOImp a
+gsbcoimpfor :: GSBCImp GSValue -> GSBCO
+gsbcoimpfor (GSBCImp a) = GSBCOImp a
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
