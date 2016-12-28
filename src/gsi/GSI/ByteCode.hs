@@ -77,8 +77,8 @@ gsbcvar = conE 'GSBCOVar `appE` gshere
 
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
-gsbcforce_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
-gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos (gsbco e) (GSStackForce pos (gsbco . k) : st)
+gsbcforce_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
+gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos e (GSStackForce pos k : st)
 
 gsbclet_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
 gsbclet_w pos e k = GSBCOExpr $ \ st -> do
