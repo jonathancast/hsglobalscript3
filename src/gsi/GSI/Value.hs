@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsvCode, bcoCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpfor_w, gsvCode, bcoCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -37,6 +37,24 @@ data GSThunkState
   | GSApply Pos GSValue [GSValue]
   | GSTSStack Event
   | GSTSIndirection GSValue
+
+newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
+
+instance Functor GSBCImp where
+    fmap f ax = GSBCImp $ \ t -> fmap f $ runGSBCImp ax t
+
+instance Applicative GSBCImp where
+    pure x = GSBCImp (const $ pure x)
+    af <*> ax = GSBCImp $ \ t -> runGSBCImp af t <*> runGSBCImp ax t
+
+instance Monad GSBCImp where
+    return x = GSBCImp (const $ return x)
+    a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t
+
+gsimpfor = varE 'gsimpfor_w `appE` gshere
+
+gsimpfor_w :: Pos -> GSBCImp GSValue -> GSValue
+gsimpfor_w pos (GSBCImp a) = GSImp pos a
 
 gsundefined = varE 'gsundefined_w `appE` gshere
 gsundefined_w pos = GSError (GSErrUnimpl pos)

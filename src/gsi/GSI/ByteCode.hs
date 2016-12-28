@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbcoimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
+    gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
   ) where
@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
@@ -86,21 +86,10 @@ gsbclet_w pos e k = GSBCOExpr $ \ st -> do
         GSBCOExpr e' -> e' st
         bco -> return $ $gsimplementationfailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
 
-newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
+gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
-instance Functor GSBCImp where
-    fmap f ax = GSBCImp $ \ t -> fmap f $ runGSBCImp ax t
-
-instance Applicative GSBCImp where
-    pure x = GSBCImp (const $ pure x)
-    af <*> ax = GSBCImp $ \ t -> runGSBCImp af t <*> runGSBCImp ax t
-
-instance Monad GSBCImp where
-    return x = GSBCImp (const $ return x)
-    a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t
-
-gsbcoimpfor :: GSBCImp GSValue -> GSBCO
-gsbcoimpfor (GSBCImp a) = GSBCOImp a
+gsbcimpfor_w :: Pos -> GSBCImp GSValue -> GSBCO
+gsbcimpfor_w pos a = GSBCOVar pos $ gsimpfor_w pos a
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
