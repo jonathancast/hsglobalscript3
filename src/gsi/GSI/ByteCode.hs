@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsimplementationFailure, gsundefined_w, gsclosure_w, gsvCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsimplementationFailure, gsundefined_w, gsclosure_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.Prims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
@@ -82,6 +82,12 @@ gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
 gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos (gsbco e) (GSStackForce pos (gsbco . k) : st)
+
+gsbclet_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
+gsbclet_w pos e k = GSBCOExpr $ \ st -> do
+    v <- gsclosure_w pos e
+    case gsbco (k v) of
+        bco -> return $ $gsimplementationFailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
 
