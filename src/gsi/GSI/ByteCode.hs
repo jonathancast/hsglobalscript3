@@ -138,9 +138,9 @@ gsbcviewpattern_w pos v =
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
-instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
+instance (ToGSViewPattern res) => ToGSViewPattern (GSBCO -> res) where
     gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbco $ \ (eta :: GSValue) (x :: GSValue) ->
-        gsbclet_w pos (gsbcapp_w pos (gsbco p) [ GSBCOVar pos x ]) $ \ px -> -- §gs{p x}
+        gsbclet_w pos (gsbcapp_w pos p [ GSBCOVar pos x ]) $ \ px ->
             gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSBCO ]
 
 instance ToGSViewPattern GSBCO where
