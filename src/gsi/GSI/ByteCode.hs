@@ -115,8 +115,8 @@ gsbcimpbind_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
 
 gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
-gsbcimpbody_w :: ToGSBCO bco => Pos -> bco -> GSBCImp GSValue
-gsbcimpbody_w pos bco = GSBCImp $ apiCallBCO pos $ gsbco bco
+gsbcimpbody_w :: Pos -> GSBCO -> GSBCImp GSValue
+gsbcimpbody_w pos bco = GSBCImp $ apiCallBCO pos bco
 
 gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 
