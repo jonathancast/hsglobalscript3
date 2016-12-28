@@ -25,8 +25,6 @@ aceEnter pos e st = return $ $gsimplementationfailure $ "aceEnter (expr = " ++ g
 
 aceEnterBCO :: Pos -> GSBCO -> [GSStackFrame] -> IO GSValue
 aceEnterBCO pos (GSBCOExpr e) st = e st
-aceEnterBCO pos (GSBCOImp a) [] = return $ GSImp pos a
-aceEnterBCO pos (GSBCOImp a) (k:st) = return $ $gsimplementationfailure $ "aceEnterBCO (GSBCOImp; cont = " ++ gsstCode k ++ ") next"
 aceEnterBCO pos0 (GSBCOVar pos1 v) st = aceEnter pos1 v st
 aceEnterBCO pos bco st = return $ $gsimplementationfailure $ "aceEnterBCO (expr = " ++ bcoCode bco ++") next"
 

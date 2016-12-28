@@ -22,8 +22,7 @@ data GSValue
   | GSConstr Pos GSVar [GSValue]
 
 data GSBCO
-  = GSBCOExpr ([GSStackFrame] -> IO GSValue) -- NB: return value is §emph{equal to} enclosing expression; computes and returns its own value
-  | GSBCOImp (Thread -> IO GSValue) -- NB: return value §emph{result of} enclosing expression; computes and returns a different value
+  = GSBCOExpr ([GSStackFrame] -> IO GSValue)
   | GSBCOVar Pos GSValue
 
 data GSStackFrame
@@ -77,7 +76,6 @@ instance GSLambda r => GSLambda (GSValue -> r) where
     gslambda_ww pos f = GSLambda pos (gslambda_ww pos . f)
 
 instance GSLambda GSBCO where
-    gslambda_ww pos (GSBCOImp a) = GSImp pos a
     gslambda_ww pos (GSBCOExpr e) = GSRawExpr e
     gslambda_ww pos0 (GSBCOVar pos1 v) = v
     gslambda_ww pos bco = GSImplementationFailure $gshere $ "gslambda_ww " ++ bcoCode bco ++ " next"
@@ -87,7 +85,6 @@ gsthunk = varE 'gsthunk_w `appE` gshere
 gsthunk_w :: Pos -> GSBCO -> IO GSValue
 gsthunk_w pos bc = case bc of
     GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
-    GSBCOImp a -> return $ GSImp pos a
     GSBCOVar pos v -> return v
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
 
@@ -102,7 +99,6 @@ gsvCode GSConstr{} = "GSConstr"
 
 bcoCode :: GSBCO -> String
 bcoCode GSBCOExpr{} = "GSBCOExpr"
-bcoCode GSBCOImp{} = "GSBCOImp"
 bcoCode GSBCOVar{} = "GSBCOVar"
 
 gsstCode :: GSStackFrame -> String
