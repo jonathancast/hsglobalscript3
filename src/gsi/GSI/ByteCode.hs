@@ -41,7 +41,7 @@ gsbcapply_w pos f args = GSBCOExpr $ \ st -> do
     asv <- mapM (gsclosure_w pos) args
     aceEnter pos f (map (GSStackArg pos) asv ++ st)
 
-gsbcapp_w :: (ToGSBCO bco1) => Pos -> GSBCO -> [bco1] -> GSBCO
+gsbcapp_w :: Pos -> GSBCO -> [GSBCO] -> GSBCO
 gsbcapp_w pos f args = GSBCOExpr $ \ st-> do
     asv <- mapM (gsclosure_w pos) args
     aceEnterBCO pos f (map (GSStackArg pos) asv ++ st)
