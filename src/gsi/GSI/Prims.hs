@@ -23,8 +23,11 @@ gsparand pos x@(GSThunk xs) y@(GSThunk ys) = do
 gsparand pos (GSThunk xs) y = do
     xv <- evalSync xs
     gsparand pos xv y
-gsparand pos x (GSThunk ys) = return $ $gsimplementationFailure $ "gsparand _ GSThunk next"
+gsparand pos x (GSThunk ys) = do
+    yv <- evalSync ys
+    gsparand pos x yv
 gsparand pos x@GSImplementationFailure{} _ = return x
 gsparand pos _ y@GSImplementationFailure{} = return y
+gsparand pos _ y@GSError{} = return y
 gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = return $ $gsimplementationFailure $ "gsparand 1 1 next"  -- > succeed
 gsparand pos x y = return $ $gsimplementationFailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
