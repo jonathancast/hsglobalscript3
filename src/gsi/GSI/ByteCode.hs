@@ -29,7 +29,7 @@ gsbcimplementationfailure_w pos msg = GSBCOExpr $ aceThrow $ GSImplementationFai
 
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
-gsbclambda_w :: Pos -> (GSValue -> GSBCO) -> GSBCO
+gsbclambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSBCO
 gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
     aceEnter pos (gslambda_w pos fn) st
 
