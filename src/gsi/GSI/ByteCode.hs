@@ -64,13 +64,13 @@ gsbcprim_w pos f = gsbcprim_ww pos (f pos)
 gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
 
 class GSBCImpPrimType f r where
-    gsbcimpprim_ww :: (Thread -> f) -> r
+    gsbcimpprim_ww :: Pos -> (Thread -> f) -> r
 
 instance GSBCImpPrimType (IO GSValue) GSBCO where
-    gsbcimpprim_ww f = GSBCOImp f
+    gsbcimpprim_ww pos f = GSBCOVar pos $ GSImp pos f
 
 gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
-gsbcimpprim_w pos f = gsbcimpprim_ww (f pos)
+gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
 
 gsbcvar = conE 'GSBCOVar `appE` gshere
 
