@@ -16,7 +16,6 @@ data GSValue
   = GSImplementationFailure Pos String
   | GSError GSError
   | GSThunk GSThunk
-  | GSClosure Pos GSBCO
   | GSLambda Pos (GSValue -> GSValue)
   | GSImp Pos (Thread -> IO GSValue)
   | GSRawExpr ([GSStackFrame] -> IO GSValue)
@@ -78,7 +77,6 @@ gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
-gsvCode GSClosure{} = "GSClosure"
 gsvCode GSImp{} = "GSImp"
 gsvCode GSLambda{} = "GSLambda"
 gsvCode GSRawExpr{} = "GSRawExpr"

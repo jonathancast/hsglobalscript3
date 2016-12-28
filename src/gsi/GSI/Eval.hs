@@ -44,7 +44,6 @@ evalSync mv = do
         GSIndirection v -> case v of
             GSImplementationFailure{} -> return v
             GSError{} -> return v
-            GSClosure{} -> return v
             GSLambda{} -> return v
             GSImp{} -> return v
             GSThunk th -> evalSync th
