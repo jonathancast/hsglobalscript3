@@ -17,7 +17,7 @@ gsmain = $gstoplevelclosure $ \ gsrun -> do
 gsprocessargs = $gstoplevelclosure $ \ args ->
     $gsbcapply gsanalyze [ $gsbcvar args,
         $gsbcapply gscase [ $gsbcviewpattern ($gsbcvar gscons_view) ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
-            $gsbcundefined, -- Process §gs{a:as}
+            $gsbclambda $ \ env -> $gsbcundefined, -- Process §gs{a:as}
         $gsbclambda $ \ args -> $gsbcprim gspriminsufficientcases args :: GSBCO
         ]
     ]
