@@ -1,6 +1,6 @@
-{-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpfor_w, gsvCode, bcoCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, bcoCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -87,6 +87,17 @@ gsthunk_w pos bc = case bc of
     GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
     GSBCOVar pos v -> return v
     bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
+
+gsimpprim = varE 'gsimpprim_w `appE` gshere
+
+gsimpprim_w :: GSImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
+gsimpprim_w pos f = gsimpprim_ww pos (f pos)
+
+class GSImpPrimType f r where
+    gsimpprim_ww :: Pos -> (Thread -> f) -> r
+
+instance GSImpPrimType (IO GSValue) GSValue where
+    gsimpprim_ww pos f = GSImp pos f
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
