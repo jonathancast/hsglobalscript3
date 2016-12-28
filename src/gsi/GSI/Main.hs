@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (GSBCO, gsundefined, gstoplevelclosure)
+import GSI.Value (GSBCO, gsundefined, gslambda)
 import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcviewpattern, gsbcvarpattern, gsbcoimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
@@ -9,12 +9,12 @@ import GSI.List (gscons_view)
 import GSI.Env (gsenvGetArgs)
 
 -- Main function (call this to start your interpreter)
-gsmain = $gstoplevelclosure $ \ gsrun -> gsbcoimpfor $ do
+gsmain = $gslambda $ \ gsrun -> gsbcoimpfor $ do
     args <- $gsbcimpbind $ $gsbcvar gsenvGetArgs
     $gsbcimpbody $ $gsbcapply gsprocessargs [ $gsbcvar args ]
 
 -- Loops over arguments to process them
-gsprocessargs = $gstoplevelclosure $ \ args ->
+gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsbcvar args,
         $gsbcapply gscase [ $gsbcviewpattern ($gsbcvar gscons_view) ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsbclambda $ \ env -> $gsbcundefined, -- Process §gs{a:as}

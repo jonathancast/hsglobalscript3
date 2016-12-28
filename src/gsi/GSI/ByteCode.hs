@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSClosure(..), gsimplementationfailure, gsundefined_w, gstoplevelclosure_w, gsthunk_w, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSClosure(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
@@ -31,7 +31,7 @@ gsbclambda = varE 'gsbclambda_w `appE` gshere
 
 gsbclambda_w :: Pos -> (GSValue -> GSBCO) -> GSBCO
 gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
-    aceEnter pos (gstoplevelclosure_w pos fn) st
+    aceEnter pos (gslambda_w pos fn) st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 

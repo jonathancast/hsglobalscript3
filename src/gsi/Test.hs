@@ -7,7 +7,7 @@ import Test.HUnit
 
 import GSI.Util (Pos(Pos), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
-import GSI.Value (GSValue(..), GSBCO, gsundefined_w, gsapply_w, gstoplevelclosure_w, gsthunk_w, gsvCode)
+import GSI.Value (GSValue(..), GSBCO, gsundefined_w, gsapply_w, gslambda_w, gsthunk_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcoimpfor, gsbcundefined_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)
@@ -60,7 +60,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        th <- getThunk =<< gsapply_w (Pos file 1 1) (gstoplevelclosure_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
+        th <- getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
         st <- eval th
         case st of
             GSStack _ -> return ()
@@ -77,7 +77,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1 1) (gstoplevelclosure_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
+        v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
