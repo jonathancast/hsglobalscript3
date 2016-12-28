@@ -135,7 +135,10 @@ class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos (\ (sk :: GSBCO) -> k (gsbco $ \ (eta :: GSValue) (x :: GSValue) -> gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta ($gsimplementationFailure "recursion case next") :: GSBCO ])) -- §gs{p x}
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbco $ \ (eta :: GSValue) (x :: GSValue) ->
+        gsbcapp_w pos sk [
+            gsbcprim_w pos gsparand eta ($gsimplementationFailure "recursion case next") :: GSBCO
+        ] -- §gs{p x}
 
 instance ToGSViewPattern GSBCO where
     gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> gsbcvar_w pos eta)
