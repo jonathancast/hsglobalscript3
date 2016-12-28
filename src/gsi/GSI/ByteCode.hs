@@ -131,9 +131,9 @@ gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSBCOVar pos x) $ \ x0 -> ca
 
 gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
-gsbcviewpattern_w :: (ToGSBCO bco, ToGSViewPattern res) => Pos -> bco -> res
+gsbcviewpattern_w :: (ToGSViewPattern res) => Pos -> GSBCO -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos (gsbco v) [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
