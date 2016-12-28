@@ -13,6 +13,10 @@ aceEnter pos (GSThunk th) st = do
     v <- evalSync th
     aceEnter pos v st
 aceEnter pos0 (GSClosure pos1 bco) st = aceEnterBCO pos0 bco st
+aceEnter pos0 v@GSLambda{} [] = return v
+aceEnter pos0 (GSLambda pos1 f) (GSStackArg pos2 a:st) = aceEnter pos0 (f a) st
+aceEnter pos0 (GSLambda pos1 f) (k:st) = return $ $gsimplementationfailure $ "aceEnter (lambda; cont = " ++ gsstCode k ++ ") next"
+aceEnter pos (GSRawExpr e) st = e st
 aceEnter pos v@GSConstr{} [] = return v
 aceEnter pos0 v@GSConstr{} (GSStackForce pos1 k:st) = aceEnterBCO pos1 (k v) st
 aceEnter pos v@GSConstr{} (k:st) = return $ $gsimplementationfailure $ "aceEnter (constr; continuation is " ++ gsstCode k ++ ") next"
