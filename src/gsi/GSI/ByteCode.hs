@@ -151,4 +151,5 @@ gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
 gsbcvarpattern_ww :: Pos -> GSVar -> GSBCO
-gsbcvarpattern_ww pos v = gsbcimplementationfailure_w $gshere "gsbcvarpattern_ww next"
+gsbcvarpattern_ww pos v = gsbco $ \ (x::GSValue) -> GSBCOVar pos $ GSConstr pos (gsvar "1")
+    [$gsimplementationFailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]
