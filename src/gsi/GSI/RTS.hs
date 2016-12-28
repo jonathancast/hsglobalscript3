@@ -1,6 +1,8 @@
-module GSI.RTS (Event, newEvent, await, wakeup) where
+module GSI.RTS (Event, newEvent, await, awaitAny, wakeup) where
 
-import Control.Concurrent (MVar, newMVar, newEmptyMVar, modifyMVar, takeMVar, tryPutMVar)
+import Control.Monad (forM_)
+
+import Control.Concurrent (MVar, newMVar, newEmptyMVar, modifyMVar, modifyMVar_, takeMVar, tryPutMVar)
 
 newtype Event = Event (MVar (Maybe [MVar ()]))
 
@@ -15,6 +17,14 @@ await (Event mv) = do
             mv1 <- newEmptyMVar
             return (Just (mv1:mvs), Just mv1)
     maybe (return ()) takeMVar mb
+
+awaitAny :: [Event] -> IO ()
+awaitAny es = do
+    mv1 <- newEmptyMVar
+    forM_ es $ \ (Event mv) -> modifyMVar_ mv $ \ st -> case st of
+        Nothing -> tryPutMVar mv1 () *> return Nothing
+        Just mvs -> return (Just (mv1:mvs))
+    takeMVar mv1
 
 wakeup :: Event -> IO ()
 wakeup (Event mv) = do
