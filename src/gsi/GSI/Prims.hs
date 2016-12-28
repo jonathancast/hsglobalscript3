@@ -18,6 +18,7 @@ gsparand pos x@(GSThunk xs) y@(GSThunk ys) = do
             awaitAny [ ex, ey ]
             gsparand pos x y
         (GSIndirection xv, GSIndirection yv) -> gsparand pos xv yv
+        (_, GSIndirection yv) -> gsparand pos x yv
         _ -> return $ $gsimplementationFailure $ "gsparand " ++ stCode xr ++ ' ' : stCode yr ++ " next" -- eval both, wait for one, then loop
 gsparand pos (GSThunk xs) y = do
     xv <- evalSync xs
