@@ -13,7 +13,7 @@ import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), ToGSBCO(..), gsimplementationfailure, gsundefined_w, gsclosure_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
-import GSI.Prims (gsparand)
+import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
 import API (apiCallBCO)
 
