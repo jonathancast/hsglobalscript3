@@ -41,10 +41,10 @@ gsbcapply_w pos f args = GSBCOExpr $ \ st -> do
     asv <- mapM (gsclosure_w pos) args
     aceEnter pos f (map (GSStackArg pos) asv ++ st)
 
-gsbcapp_w :: (ToGSBCO bco0, ToGSBCO bco1) => Pos -> bco0 -> [bco1] -> GSBCO
+gsbcapp_w :: (ToGSBCO bco1) => Pos -> GSBCO -> [bco1] -> GSBCO
 gsbcapp_w pos f args = GSBCOExpr $ \ st-> do
     asv <- mapM (gsclosure_w pos) args
-    aceEnterBCO pos (gsbco f) (map (GSStackArg pos) asv ++ st)
+    aceEnterBCO pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
@@ -133,14 +133,14 @@ gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
 gsbcviewpattern_w :: (ToGSBCO bco, ToGSViewPattern res) => Pos -> bco -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos (gsbco v) [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
 
 instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) where
     gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbco $ \ (eta :: GSValue) (x :: GSValue) ->
-        gsbclet_w pos (gsbcapp_w pos p [ GSBCOVar pos x ]) $ \ px -> -- §gs{p x}
+        gsbclet_w pos (gsbcapp_w pos (gsbco p) [ GSBCOVar pos x ]) $ \ px -> -- §gs{p x}
             gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSBCO ]
 
 instance ToGSViewPattern GSBCO where
