@@ -87,6 +87,7 @@ gsbclet_w :: (ToGSBCO a, ToGSBCO b) => Pos -> a -> (GSValue -> b) -> GSBCO
 gsbclet_w pos e k = GSBCOExpr $ \ st -> do
     v <- gsclosure_w pos e
     case gsbco (k v) of
+        GSBCOExpr e' -> e' st
         bco -> return $ $gsimplementationFailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
 
 newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
