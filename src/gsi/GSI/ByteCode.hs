@@ -4,7 +4,7 @@ module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpattern, gsbcviewpattern_w
+    gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
   ) where
 
 import Language.Haskell.TH.Lib (appE, varE, conE)
@@ -145,3 +145,10 @@ instance (ToGSBCO bco, ToGSViewPattern res) => ToGSViewPattern (bco -> res) wher
 
 instance ToGSViewPattern GSBCO where
     gsbcviewpattern_ww pos k = k (gsbco $ \ eta -> GSBCOVar pos eta)
+
+gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
+
+gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
+
+gsbcvarpattern_ww :: Pos -> GSVar -> GSBCO
+gsbcvarpattern_ww pos v = gsbcimplementationfailure_w $gshere "gsbcvarpattern_ww next"
