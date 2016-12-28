@@ -11,7 +11,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSLambda(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterBCO, aceThrow)
