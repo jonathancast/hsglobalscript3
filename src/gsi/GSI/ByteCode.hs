@@ -80,10 +80,10 @@ gsbcforce = varE 'gsbcforce_w `appE` gshere
 gsbcforce_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
 gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos e (GSStackForce pos k : st)
 
-gsbclet_w :: (ToGSBCO b) => Pos -> GSBCO -> (GSValue -> b) -> GSBCO
+gsbclet_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
 gsbclet_w pos e k = GSBCOExpr $ \ st -> do
     v <- gsclosure_w pos e
-    case gsbco (k v) of
+    case k v of
         GSBCOExpr e' -> e' st
         bco -> return $ $gsimplementationfailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
 
