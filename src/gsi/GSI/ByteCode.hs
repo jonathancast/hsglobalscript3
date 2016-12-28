@@ -98,7 +98,7 @@ instance Applicative GSBCImp where
 
 instance Monad GSBCImp where
     return x = GSBCImp (const $ return x)
-    a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t 
+    a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t
 
 instance ToGSBCO (GSBCImp GSValue) where
     gsbco (GSBCImp a) = GSBCOImp a
