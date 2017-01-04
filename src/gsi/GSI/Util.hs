@@ -12,6 +12,7 @@ data Pos = Pos {
   deriving (Eq, Show)
 
 data StackTrace = StackTrace Pos [StackTrace]
+  deriving (Show)
 
 gshere :: ExpQ
 gshere = do
