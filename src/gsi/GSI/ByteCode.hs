@@ -9,8 +9,9 @@ module GSI.ByteCode (
 
 import Language.Haskell.TH.Lib (appE, varE, conE)
 
-import GSI.Util (Pos, gsfatal, gshere)
+import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
+import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, bcoCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
@@ -20,7 +21,7 @@ import API (apiCallBCO)
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSBCO
-gsbcundefined_w pos = GSBCOExpr $ aceThrow $ gsundefined_w pos
+gsbcundefined_w pos = GSBCOExpr $ aceThrow $ GSError (GSErrUnimpl (StackTrace pos []))
 
 gsbchere = varE 'gsbchere_w `appE` gshere
 

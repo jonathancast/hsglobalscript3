@@ -6,7 +6,7 @@ import Control.Concurrent (MVar, newMVar)
 
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
-import GSI.Util (Pos, gshere, gsfatal)
+import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
 import GSI.Error (GSError(..))
 import GSI.RTS (Event)
 import GSI.Syn (GSVar)
@@ -56,7 +56,9 @@ gsimpfor_w :: Pos -> GSBCImp GSValue -> GSValue
 gsimpfor_w pos (GSBCImp a) = GSImp pos a
 
 gsundefined = varE 'gsundefined_w `appE` gshere
-gsundefined_w pos = GSError (GSErrUnimpl pos)
+
+gsundefined_w :: Pos -> GSValue
+gsundefined_w pos = GSError (GSErrUnimpl (StackTrace pos []))
 
 gsimplementationfailure = conE 'GSImplementationFailure `appE` gshere
 

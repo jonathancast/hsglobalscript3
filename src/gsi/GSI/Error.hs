@@ -9,24 +9,24 @@ import Control.Exception (Exception(..), throw)
 import GSI.Util (Pos, StackTrace(..), fmtPos, fmtStackTrace, gshere)
 
 data GSError
-  = GSErrUnimpl Pos
+  = GSErrUnimpl StackTrace
   | GSErrInsufficientCases Pos String
   deriving (Show)
 
 data GSException
-  = GSExcUndefined Pos
+  = GSExcUndefined StackTrace
   | GSExcInsufficientCases Pos String
   | GSExcImplementationFailure Pos String
   deriving (Typeable, Show)
 instance Exception GSException where
-    displayException (GSExcUndefined pos) = fmtPos pos "undefined"
+    displayException (GSExcUndefined st) = fmtStackTrace st "undefined"
     displayException (GSExcInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
 
-throwGSError (GSErrUnimpl pos) = throw $ GSExcUndefined pos
+throwGSError (GSErrUnimpl st) = throw $ GSExcUndefined st
 throwGSError (GSErrInsufficientCases pos err) = throw $ GSExcInsufficientCases pos err
 throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
 
 fmtError :: GSError -> String
-fmtError (GSErrUnimpl pos) = fmtStackTrace (StackTrace pos []) "Undefined"
+fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
 fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err

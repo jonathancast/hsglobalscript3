@@ -5,7 +5,7 @@ import Control.Exception (displayException, fromException, try)
 
 import Test.HUnit
 
-import GSI.Util (Pos(Pos), gshere, gsfatal, fmtPos)
+import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSBCO, gsundefined_w, gsapply_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
@@ -36,7 +36,7 @@ main = runTestTT $ TestList $ [
         v <- evalSync =<< getThunk =<< gsapply_w (Pos file line col) (gsundefined_w (Pos file line col)) []
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file line col)
+            GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file line col)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do
@@ -72,7 +72,7 @@ main = runTestTT $ TestList $ [
         v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
+            GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do
@@ -80,7 +80,7 @@ main = runTestTT $ TestList $ [
         v <- evalSync =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
-            GSError (GSErrUnimpl pos) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
+            GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     TestCase $ do
@@ -106,6 +106,6 @@ main = runTestTT $ TestList $ [
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"
             Left e -> case fromException e of
-                Just (GSExcUndefined pos) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line 1)
+                Just (GSExcUndefined (StackTrace pos _)) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line 1)
                 _ -> assertFailure $ "execMainThread should throw a GSExcUndefined error, but instead threw " ++ displayException e
   ]
