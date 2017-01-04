@@ -6,7 +6,7 @@ import Data.Typeable (Typeable)
 
 import Control.Exception (Exception(..), throw)
 
-import GSI.Util (Pos, fmtPos, gshere)
+import GSI.Util (Pos, StackTrace(..), fmtPos, fmtStackTrace, gshere)
 
 data GSError
   = GSErrUnimpl Pos
@@ -28,5 +28,5 @@ throwGSError (GSErrInsufficientCases pos err) = throw $ GSExcInsufficientCases p
 throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
 
 fmtError :: GSError -> String
-fmtError (GSErrUnimpl pos) = fmtPos pos "Undefined"
+fmtError (GSErrUnimpl pos) = fmtStackTrace (StackTrace pos []) "Undefined"
 fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
