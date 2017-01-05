@@ -6,7 +6,7 @@ import Control.Exception (throwIO)
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, gshere)
+import GSI.Util (Pos, StackTrace(..), gshere)
 import GSI.Value (GSValue(..), GSBCO(..), gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadException(..))
@@ -22,7 +22,7 @@ apiCall pos v t = do
 
 apiCallBCO :: Pos -> GSBCO -> Thread -> IO GSValue
 apiCallBCO pos (GSBCOExpr e) t = do
-    v <- e []
+    v <- e [] [StackTrace pos []]
     apiCall pos v t
 apiCallBCO pos0 (GSBCOVar pos1 v) t = apiCall pos0 v t
 apiCallBCO pos bco t = throwIO $ TEImplementationFailure $gshere $ "apiCallBCO " ++ bcoCode bco ++ " next"

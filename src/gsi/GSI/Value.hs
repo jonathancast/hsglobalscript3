@@ -18,11 +18,11 @@ data GSValue
   | GSThunk GSThunk
   | GSLambda Pos (GSValue -> GSValue)
   | GSImp Pos (Thread -> IO GSValue)
-  | GSRawExpr ([GSStackFrame] -> IO GSValue)
+  | GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSConstr Pos GSVar [GSValue]
 
 data GSBCO
-  = GSBCOExpr ([GSStackFrame] -> IO GSValue)
+  = GSBCOExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSBCOVar Pos GSValue
 
 data GSStackFrame
@@ -32,7 +32,7 @@ data GSStackFrame
 type GSThunk = MVar GSThunkState
 
 data GSThunkState
-  = GSTSExpr ([GSStackFrame] -> IO GSValue)
+  = GSTSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSApply Pos GSValue [GSValue]
   | GSTSStack Event
   | GSTSIndirection GSValue

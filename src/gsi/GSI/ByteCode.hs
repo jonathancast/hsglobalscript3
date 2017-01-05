@@ -21,33 +21,33 @@ import API (apiCallBCO)
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSBCO
-gsbcundefined_w pos = GSBCOExpr $ \ st -> aceThrow (GSError (GSErrUnimpl (StackTrace pos []))) st
+gsbcundefined_w pos = GSBCOExpr $ \ st cs -> aceThrow (GSError (GSErrUnimpl (StackTrace pos cs))) st
 
 gsbchere = varE 'gsbchere_w `appE` gshere
 
 gsbchere_w :: Pos -> GSBCO
-gsbchere_w pos = GSBCOExpr $ aceThrow $ $gsimplementationfailure "gsbchere next"
+gsbchere_w pos = GSBCOExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbchere next") st
 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
 gsbcimplementationfailure_w :: Pos -> String -> GSBCO
-gsbcimplementationfailure_w pos msg = GSBCOExpr $ aceThrow $ GSImplementationFailure pos msg
+gsbcimplementationfailure_w pos msg = GSBCOExpr $ \ st cs -> aceThrow (GSImplementationFailure pos msg) st
 
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
 gsbclambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSBCO
-gsbclambda_w pos fn = GSBCOExpr $ \ st -> do
+gsbclambda_w pos fn = GSBCOExpr $ \ st cs -> do
     aceEnter pos (gslambda_w pos fn) st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: Pos -> GSValue -> [GSBCO] -> GSBCO
-gsbcapply_w pos f args = GSBCOExpr $ \ st -> do
+gsbcapply_w pos f args = GSBCOExpr $ \ st cs -> do
     asv <- mapM (gsthunk_w pos) args
     aceEnter pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcapp_w :: Pos -> GSBCO -> [GSBCO] -> GSBCO
-gsbcapp_w pos f args = GSBCOExpr $ \ st-> do
+gsbcapp_w pos f args = GSBCOExpr $ \ st cs -> do
     asv <- mapM (gsthunk_w pos) args
     aceEnterBCO pos f (map (GSStackArg pos) asv ++ st)
 
@@ -57,7 +57,7 @@ class GSBCPrimType f r where
     gsbcprim_ww :: Pos -> f -> r
 
 instance GSBCPrimType (IO GSValue) GSBCO where
-    gsbcprim_ww pos f = GSBCOExpr $ \ st -> do
+    gsbcprim_ww pos f = GSBCOExpr $ \ st cs -> do
         v <- f
         aceEnter pos v st
 
@@ -83,13 +83,13 @@ gsbcvar = conE 'GSBCOVar `appE` gshere
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
-gsbcforce_w pos e k = GSBCOExpr $ \ st -> aceEnterBCO pos e (GSStackForce pos k : st)
+gsbcforce_w pos e k = GSBCOExpr $ \ st cs -> aceEnterBCO pos e (GSStackForce pos k : st)
 
 gsbclet_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
-gsbclet_w pos e k = GSBCOExpr $ \ st -> do
+gsbclet_w pos e k = GSBCOExpr $ \ st cs -> do
     v <- gsthunk_w pos e
     case k v of
-        GSBCOExpr e' -> e' st
+        GSBCOExpr e' -> e' st [StackTrace pos cs]
         bco -> return $ $gsimplementationfailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere

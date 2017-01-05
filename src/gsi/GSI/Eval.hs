@@ -20,7 +20,7 @@ eval :: MVar (GSThunkState) -> IO GSResult
 eval mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr expr -> do
         e <- newEvent
-        forkIO $ expr [] >>= updateThunk mv
+        forkIO $ expr [] [] >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
