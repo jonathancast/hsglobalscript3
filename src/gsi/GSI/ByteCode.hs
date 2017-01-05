@@ -21,7 +21,7 @@ import API (apiCallBCO)
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSBCO
-gsbcundefined_w pos = GSBCOExpr $ aceThrow $ GSError (GSErrUnimpl (StackTrace pos []))
+gsbcundefined_w pos = GSBCOExpr $ \ st -> aceThrow (GSError (GSErrUnimpl (StackTrace pos []))) st
 
 gsbchere = varE 'gsbchere_w `appE` gshere
 
