@@ -4,7 +4,7 @@ module GSI.Eval (GSResult(..), eval, evalSync, stCode) where
 
 import Control.Concurrent (MVar, forkIO, modifyMVar)
 
-import GSI.Util (gshere)
+import GSI.Util (StackTrace(..), gshere)
 import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, gstsCode)
@@ -24,7 +24,7 @@ eval mv = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
-        forkIO $ aceEnter pos fn (map (GSStackArg pos) args) >>= updateThunk mv
+        forkIO $ aceEnter [ StackTrace pos [] ] fn (map (GSStackArg pos) args) >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)

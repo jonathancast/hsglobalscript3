@@ -37,14 +37,14 @@ gsbclambda = varE 'gsbclambda_w `appE` gshere
 
 gsbclambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSBCO
 gsbclambda_w pos fn = GSBCOExpr $ \ st cs -> do
-    aceEnter pos (gslambda_w pos fn) st
+    aceEnter [ StackTrace pos cs ] (gslambda_w pos fn) st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: Pos -> GSValue -> [GSBCO] -> GSBCO
 gsbcapply_w pos f args = GSBCOExpr $ \ st cs -> do
     asv <- mapM (gsthunk_w pos) args
-    aceEnter pos f (map (GSStackArg pos) asv ++ st)
+    aceEnter [ StackTrace pos cs ] f (map (GSStackArg pos) asv ++ st)
 
 gsbcapp_w :: Pos -> GSBCO -> [GSBCO] -> GSBCO
 gsbcapp_w pos f args = GSBCOExpr $ \ st cs -> do
@@ -59,7 +59,7 @@ class GSBCPrimType f r where
 instance GSBCPrimType (IO GSValue) GSBCO where
     gsbcprim_ww pos f = GSBCOExpr $ \ st cs -> do
         v <- f
-        aceEnter pos v st
+        aceEnter [ StackTrace pos cs ] v st
 
 instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
     gsbcprim_ww pos f v = gsbcprim_ww pos (f v)
