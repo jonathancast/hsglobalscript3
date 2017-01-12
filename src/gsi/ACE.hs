@@ -13,7 +13,7 @@ aceEnter cs (GSThunk th) st = do
     v <- evalSync th
     aceEnter cs v st
 aceEnter cs v@GSLambda{} [] = return v
-aceEnter cs (GSLambda pos1 f) (GSStackArg pos2 a:st) = aceEnter (cs ++ [ StackTrace pos1 [] ]) (f a) st
+aceEnter _ (GSLambda pos1 f) (GSStackArg pos2 a:st) = aceEnter [ StackTrace pos1 [], StackTrace pos2 [] ] (f a) st
 aceEnter cs (GSLambda pos1 f) (k:st) = return $ $gsimplementationfailure $ "aceEnter (lambda; cont = " ++ gsstCode k ++ ") next"
 aceEnter cs (GSRawExpr e) st = e st cs
 aceEnter cs v@GSImp{} [] = return v
