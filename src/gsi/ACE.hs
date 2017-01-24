@@ -7,8 +7,8 @@ import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSThunkState(..), gs
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
 aceEnter :: [StackTrace] -> GSValue -> [GSStackFrame] -> IO GSValue
-aceEnter cs v@GSError{} st = return v
-aceEnter cs v@GSImplementationFailure{} st = return v
+aceEnter cs v@GSError{} st = aceThrow v st
+aceEnter cs v@GSImplementationFailure{} st = aceThrow v st
 aceEnter cs (GSThunk th) st = do
     v <- evalSync th
     aceEnter cs v st
@@ -29,4 +29,6 @@ aceEnterBCO pos0 (GSBCOVar pos1 v) st = aceEnter [ StackTrace pos1 [], StackTrac
 aceEnterBCO pos bco st = return $ $gsimplementationfailure $ "aceEnterBCO (expr = " ++ bcoCode bco ++") next"
 
 aceThrow :: GSValue -> [GSStackFrame] -> IO GSValue
-aceThrow v st = return v
+aceThrow v (GSStackArg{}:st) = aceThrow v st
+aceThrow v (k:st) = return $ $gsimplementationfailure $ "aceThrow (continuation is " ++ gsstCode k ++ ") next"
+aceThrow v [] = return v
