@@ -12,15 +12,13 @@ aceEnter cs v@GSImplementationFailure{} st = aceThrow v st
 aceEnter cs (GSThunk th) st = do
     v <- evalSync th
     aceEnter cs v st
-aceEnter cs v@GSLambda{} [] = return v
-aceEnter _ (GSLambda pos1 f) (GSStackArg pos2 a:st) = aceEnter [ StackTrace pos1 [], StackTrace pos2 [] ] (f a) st
-aceEnter cs (GSLambda pos1 f) (k:st) = return $ $gsimplementationfailure $ "aceEnter (lambda; cont = " ++ gsstCode k ++ ") next"
 aceEnter cs v@GSConstr{} [] = return v
 aceEnter cs v@GSConstr{} (GSStackForce pos1 k:st) = aceEnterExpr pos1 (k v) st
 aceEnter cs v@GSConstr{} (k:st) = return $ $gsimplementationfailure $ "aceEnter (constr; continuation is " ++ gsstCode k ++ ") next"
 aceEnter cs0 v@(GSClosure cs1 bco) st = case bco of
     GSRawExpr e -> e st (cs1 ++ cs0)
     GSImp{} -> aceReturn v st
+    GSLambda{} -> aceReturn v st
     _ -> aceThrow ($gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next") st
 aceEnter cs e st = aceThrow ($gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next") st
 
@@ -30,6 +28,9 @@ aceEnterExpr pos0 (GSExprVar pos1 v) st = aceEnter [ StackTrace pos1 [], StackTr
 aceEnterExpr pos e st = return $ $gsimplementationfailure $ "aceEnterExpr (expr = " ++ exprCode e ++") next"
 
 aceReturn :: GSValue -> [GSStackFrame] -> IO GSValue
+aceReturn (GSClosure cs (GSLambda f)) (k@(GSStackArg pos a):st) = aceEnter (cs ++ [StackTrace pos []]) (f a) st
+aceReturn (GSClosure cs bco) (k@(GSStackArg pos a):st) = aceThrow ($gsimplementationfailure $ "aceReturn (function is (GSClosure cs " ++ bcoCode bco ++ "); continuation is argument) next") (k:st)
+aceReturn f (k@(GSStackArg pos a):st) = aceThrow ($gsimplementationfailure $ "aceReturn (function is " ++ gsvCode f ++ "; continuation is argument) next") (k:st)
 aceReturn v (k:st) = aceThrow ($gsimplementationfailure $ "aceReturn (continuation is " ++ gsstCode k ++ ") next") (k:st)
 aceReturn v [] = return v
 

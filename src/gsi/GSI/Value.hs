@@ -16,13 +16,13 @@ data GSValue
   = GSImplementationFailure Pos String
   | GSError GSError
   | GSThunk GSThunk
-  | GSLambda Pos (GSValue -> GSValue)
   | GSClosure [StackTrace] GSBCO
   | GSConstr Pos GSVar [GSValue]
 
 data GSBCO
   = GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSImp (Thread -> IO GSValue)
+  | GSLambda (GSValue -> GSValue)
 
 data GSExpr
   = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
@@ -72,13 +72,13 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 gslambda = varE 'gslambda_w `appE` gshere
 
 gslambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSValue
-gslambda_w pos f = GSLambda pos (gslambda_ww pos . f)
+gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (gslambda_ww pos . f))
 
 class GSLambda r where
     gslambda_ww :: Pos -> r -> GSValue
 
 instance GSLambda r => GSLambda (GSValue -> r) where
-    gslambda_ww pos f = GSLambda pos (gslambda_ww pos . f)
+    gslambda_ww pos f = GSClosure [StackTrace pos []] (GSLambda (gslambda_ww pos . f))
 
 instance GSLambda GSExpr where
     gslambda_ww pos (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
@@ -108,13 +108,13 @@ gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
-gsvCode GSLambda{} = "GSLambda"
 gsvCode GSClosure{} = "GSClosure"
 gsvCode GSConstr{} = "GSConstr"
 
 bcoCode :: GSBCO -> String
 bcoCode GSRawExpr{} = "GSRawExpr"
 bcoCode GSImp{} = "GSImp"
+bcoCode GSLambda{} = "GSLambda"
 
 exprCode :: GSExpr -> String
 exprCode GSExpr{} = "GSExpr"
