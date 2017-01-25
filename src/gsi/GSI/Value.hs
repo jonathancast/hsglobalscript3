@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSExpr(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, exprCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, bcoCode, exprCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -18,8 +18,11 @@ data GSValue
   | GSThunk GSThunk
   | GSLambda Pos (GSValue -> GSValue)
   | GSImp Pos (Thread -> IO GSValue)
-  | GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+  | GSClosure [StackTrace] GSBCO
   | GSConstr Pos GSVar [GSValue]
+
+data GSBCO
+  = GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
 
 data GSExpr
   = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
@@ -78,7 +81,7 @@ instance GSLambda r => GSLambda (GSValue -> r) where
     gslambda_ww pos f = GSLambda pos (gslambda_ww pos . f)
 
 instance GSLambda GSExpr where
-    gslambda_ww pos (GSExpr e) = GSRawExpr e
+    gslambda_ww pos (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
     gslambda_ww pos0 (GSExprVar pos1 v) = v
     gslambda_ww pos e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
 
@@ -107,8 +110,11 @@ gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSImp{} = "GSImp"
 gsvCode GSLambda{} = "GSLambda"
-gsvCode GSRawExpr{} = "GSRawExpr"
+gsvCode GSClosure{} = "GSClosure"
 gsvCode GSConstr{} = "GSConstr"
+
+bcoCode :: GSBCO -> String
+bcoCode GSRawExpr{} = "GSRawExpr"
 
 exprCode :: GSExpr -> String
 exprCode GSExpr{} = "GSExpr"
