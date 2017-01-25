@@ -12,7 +12,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSExpr(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceThrow)
@@ -73,7 +73,7 @@ class GSBCImpPrimType f r where
     gsbcimpprim_ww :: Pos -> (Thread -> f) -> r
 
 instance GSBCImpPrimType (IO GSValue) GSExpr where
-    gsbcimpprim_ww pos f = GSExprVar pos $ GSImp pos f
+    gsbcimpprim_ww pos f = GSExprVar pos $ GSClosure [StackTrace pos []] (GSImp f)
 
 gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
 gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)

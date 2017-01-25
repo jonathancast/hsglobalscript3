@@ -7,7 +7,7 @@ import Control.Concurrent (MVar, forkIO, modifyMVar)
 import GSI.Util (StackTrace(..), gshere)
 import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnter)
 
@@ -45,9 +45,11 @@ evalSync mv = do
             GSImplementationFailure{} -> return v
             GSError{} -> return v
             GSLambda{} -> return v
-            GSImp{} -> return v
             GSThunk th -> evalSync th
             GSConstr{} -> return v
+            v@(GSClosure _ bco) -> case bco of
+                GSImp{} -> return v
+                _ -> return $ $gsimplementationfailure $ "evalSync (GSIndirection (GSClosure _ " ++ bcoCode bco ++ ")) next"
             _ -> return $ $gsimplementationfailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
         _ -> return $ $gsimplementationfailure $ "evalSync " ++ stCode st ++ " next"
 

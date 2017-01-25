@@ -17,12 +17,12 @@ data GSValue
   | GSError GSError
   | GSThunk GSThunk
   | GSLambda Pos (GSValue -> GSValue)
-  | GSImp Pos (Thread -> IO GSValue)
   | GSClosure [StackTrace] GSBCO
   | GSConstr Pos GSVar [GSValue]
 
 data GSBCO
   = GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+  | GSImp (Thread -> IO GSValue)
 
 data GSExpr
   = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
@@ -56,7 +56,7 @@ instance Monad GSBCImp where
 gsimpfor = varE 'gsimpfor_w `appE` gshere
 
 gsimpfor_w :: Pos -> GSBCImp GSValue -> GSValue
-gsimpfor_w pos (GSBCImp a) = GSImp pos a
+gsimpfor_w pos (GSBCImp a) = GSClosure [StackTrace pos []] (GSImp a)
 
 gsundefined = varE 'gsundefined_w `appE` gshere
 
@@ -102,19 +102,19 @@ class GSImpPrimType f r where
     gsimpprim_ww :: Pos -> (Thread -> f) -> r
 
 instance GSImpPrimType (IO GSValue) GSValue where
-    gsimpprim_ww pos f = GSImp pos f
+    gsimpprim_ww pos f = GSClosure [StackTrace pos []] (GSImp f)
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
-gsvCode GSImp{} = "GSImp"
 gsvCode GSLambda{} = "GSLambda"
 gsvCode GSClosure{} = "GSClosure"
 gsvCode GSConstr{} = "GSConstr"
 
 bcoCode :: GSBCO -> String
 bcoCode GSRawExpr{} = "GSRawExpr"
+bcoCode GSImp{} = "GSImp"
 
 exprCode :: GSExpr -> String
 exprCode GSExpr{} = "GSExpr"

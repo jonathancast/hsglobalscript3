@@ -88,7 +88,7 @@ main = runTestTT $ TestList $ [
         let v = gsimpfor_w (Pos file 1 1) $ gsbcimpbody_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
-            GSImp pos a -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
+            GSClosure [StackTrace pos _] bco -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++"; expected closure"
     ,
     -- §section Threads

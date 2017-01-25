@@ -7,16 +7,19 @@ import Control.Exception (throwIO)
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere)
-import GSI.Value (GSValue(..), GSExpr(..), gsvCode, exprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), gsvCode, bcoCode, exprCode)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadException(..))
 
+apiCall :: Pos -> GSValue -> Thread -> IO GSValue
 apiCall pos0 (GSImplementationFailure pos1 e) t = throwIO $ TEImplementationFailure pos1 e
 apiCall pos (GSError err) t = throwIO $ TEError err
 apiCall pos (GSThunk th) t = do
     v <- evalSync th
     apiCall pos v t
-apiCall pos0 (GSImp pos1 a) t = a t
+apiCall pos0 (GSClosure cs bco) t = case bco of
+    GSImp a -> a t
+    _ -> throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is (GSClosure cs " ++ bcoCode bco ++ ")) next"
 apiCall pos v t = do
     throwIO $ TEImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
