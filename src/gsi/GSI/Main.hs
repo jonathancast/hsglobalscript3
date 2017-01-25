@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (GSBCO, gsundefined, gslambda)
+import GSI.Value (GSExpr, gsundefined, gslambda)
 import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
@@ -18,6 +18,6 @@ gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsbcvar args,
         $gsbcapply gscase [ $gsbcviewpattern ($gsbcvar gscons_view) ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsbclambda $ \ env -> $gsbcapply gserror [ $gsbchere, $gsbcundefined ], -- Process §gs{a:as}
-        $gsbclambda $ \ args -> $gsbcprim gspriminsufficientcases args :: GSBCO
+        $gsbclambda $ \ args -> $gsbcprim gspriminsufficientcases args :: GSExpr
         ]
     ]

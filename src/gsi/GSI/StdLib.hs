@@ -2,10 +2,10 @@
 module GSI.StdLib (gsanalyze, gscase, gserror) where
 
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSBCO, gsundefined, gslambda, gsvCode)
+import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcapply, gsbcvar, gsbcforce, gsbcimplementationfailure)
 
-gsanalyze = $gslambda $ \ (e :: GSValue) (cs :: GSValue) -> $gsbcapply cs [ $gsbcvar e ] :: GSBCO
+gsanalyze = $gslambda $ \ (e :: GSValue) (cs :: GSValue) -> $gsbcapply cs [ $gsbcvar e ] :: GSExpr
 
 gscase = $gslambda $ \ (p :: GSValue) (b :: GSValue) (e :: GSValue) (x :: GSValue) ->
     $gsbcforce ($gsbcapply p [$gsbcvar x]) $ \ c -> case c of

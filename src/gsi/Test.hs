@@ -7,7 +7,7 @@ import Test.HUnit
 
 import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
-import GSI.Value (GSValue(..), GSBCO, gsundefined_w, gsapply_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode)
+import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcundefined_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)

@@ -12,52 +12,52 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
-import ACE (aceEnter, aceEnterBCO, aceThrow)
-import API (apiCallBCO)
+import ACE (aceEnter, aceEnterExpr, aceThrow)
+import API (apiCallExpr)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
-gsbcundefined_w :: Pos -> GSBCO
-gsbcundefined_w pos = GSBCOExpr $ \ st cs -> aceThrow (GSError (GSErrUnimpl (StackTrace pos cs))) st
+gsbcundefined_w :: Pos -> GSExpr
+gsbcundefined_w pos = GSExpr $ \ st cs -> aceThrow (GSError (GSErrUnimpl (StackTrace pos cs))) st
 
 gsbchere = varE 'gsbchere_w `appE` gshere
 
-gsbchere_w :: Pos -> GSBCO
-gsbchere_w pos = GSBCOExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbchere next") st
+gsbchere_w :: Pos -> GSExpr
+gsbchere_w pos = GSExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbchere next") st
 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
-gsbcimplementationfailure_w :: Pos -> String -> GSBCO
-gsbcimplementationfailure_w pos msg = GSBCOExpr $ \ st cs -> aceThrow (GSImplementationFailure pos msg) st
+gsbcimplementationfailure_w :: Pos -> String -> GSExpr
+gsbcimplementationfailure_w pos msg = GSExpr $ \ st cs -> aceThrow (GSImplementationFailure pos msg) st
 
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
-gsbclambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSBCO
-gsbclambda_w pos fn = GSBCOExpr $ \ st cs -> do
+gsbclambda_w :: GSLambda e => Pos -> (GSValue -> e) -> GSExpr
+gsbclambda_w pos fn = GSExpr $ \ st cs -> do
     aceEnter [ StackTrace pos cs ] (gslambda_w pos fn) st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
-gsbcapply_w :: Pos -> GSValue -> [GSBCO] -> GSBCO
-gsbcapply_w pos f args = GSBCOExpr $ \ st cs -> do
+gsbcapply_w :: Pos -> GSValue -> [GSExpr] -> GSExpr
+gsbcapply_w pos f args = GSExpr $ \ st cs -> do
     asv <- mapM (gsthunk_w pos) args
     aceEnter [ StackTrace pos cs ] f (map (GSStackArg pos) asv ++ st)
 
-gsbcapp_w :: Pos -> GSBCO -> [GSBCO] -> GSBCO
-gsbcapp_w pos f args = GSBCOExpr $ \ st cs -> do
+gsbcapp_w :: Pos -> GSExpr -> [GSExpr] -> GSExpr
+gsbcapp_w pos f args = GSExpr $ \ st cs -> do
     asv <- mapM (gsthunk_w pos) args
-    aceEnterBCO pos f (map (GSStackArg pos) asv ++ st)
+    aceEnterExpr pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
 class GSBCPrimType f r where
     gsbcprim_ww :: Pos -> f -> r
 
-instance GSBCPrimType (IO GSValue) GSBCO where
-    gsbcprim_ww pos f = GSBCOExpr $ \ st cs -> do
+instance GSBCPrimType (IO GSValue) GSExpr where
+    gsbcprim_ww pos f = GSExpr $ \ st cs -> do
         v <- f
         aceEnter [ StackTrace pos cs ] v st
 
@@ -72,78 +72,78 @@ gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
 class GSBCImpPrimType f r where
     gsbcimpprim_ww :: Pos -> (Thread -> f) -> r
 
-instance GSBCImpPrimType (IO GSValue) GSBCO where
-    gsbcimpprim_ww pos f = GSBCOVar pos $ GSImp pos f
+instance GSBCImpPrimType (IO GSValue) GSExpr where
+    gsbcimpprim_ww pos f = GSExprVar pos $ GSImp pos f
 
 gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
 gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
 
-gsbcvar = conE 'GSBCOVar `appE` gshere
+gsbcvar = conE 'GSExprVar `appE` gshere
 
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
-gsbcforce_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
-gsbcforce_w pos e k = GSBCOExpr $ \ st cs -> aceEnterBCO pos e (GSStackForce pos k : st)
+gsbcforce_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
+gsbcforce_w pos e k = GSExpr $ \ st cs -> aceEnterExpr pos e (GSStackForce pos k : st)
 
-gsbclet_w :: Pos -> GSBCO -> (GSValue -> GSBCO) -> GSBCO
-gsbclet_w pos e k = GSBCOExpr $ \ st cs -> do
+gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
+gsbclet_w pos e k = GSExpr $ \ st cs -> do
     v <- gsthunk_w pos e
     case k v of
-        GSBCOExpr e' -> e' st [StackTrace pos cs]
-        bco -> return $ $gsimplementationfailure $ "gsbclet_w " ++ bcoCode bco ++ " next"
+        GSExpr e' -> e' st [StackTrace pos cs]
+        e' -> return $ $gsimplementationfailure $ "gsbclet_w " ++ exprCode e' ++ " next"
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
-gsbcimpfor_w :: Pos -> GSBCImp GSValue -> GSBCO
-gsbcimpfor_w pos a = GSBCOVar pos $ gsimpfor_w pos a
+gsbcimpfor_w :: Pos -> GSBCImp GSValue -> GSExpr
+gsbcimpfor_w pos a = GSExprVar pos $ gsimpfor_w pos a
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
-gsbcimplet_w :: Pos -> GSBCO -> GSBCImp GSValue
-gsbcimplet_w pos bco = GSBCImp $ \ _ -> gsthunk_w pos bco
+gsbcimplet_w :: Pos -> GSExpr -> GSBCImp GSValue
+gsbcimplet_w pos e = GSBCImp $ \ _ -> gsthunk_w pos e
 
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 
-gsbcimpbind_w :: Pos -> GSBCO -> GSBCImp GSValue
-gsbcimpbind_w pos bco = GSBCImp $ apiCallBCO pos bco
+gsbcimpbind_w :: Pos -> GSExpr -> GSBCImp GSValue
+gsbcimpbind_w pos e = GSBCImp $ apiCallExpr pos e
 
 gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
-gsbcimpbody_w :: Pos -> GSBCO -> GSBCImp GSValue
-gsbcimpbody_w pos bco = GSBCImp $ apiCallBCO pos bco
+gsbcimpbody_w :: Pos -> GSExpr -> GSBCImp GSValue
+gsbcimpbody_w pos bco = GSBCImp $ apiCallExpr pos bco
 
 gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 
 gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 
-gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSBCO
-gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSBCOVar pos x) $ \ x0 -> case x0 of
+gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
+gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSExprVar pos x) $ \ x0 -> case x0 of
         GSConstr pos1 c' as
-            | c == c' -> gsbcapp_w pos (GSBCOVar pos sk) (map (GSBCOVar pos) as)
+            | c == c' -> gsbcapp_w pos (GSExprVar pos sk) (map (GSExprVar pos) as)
             | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
 gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
-gsbcviewpattern_w :: (ToGSViewPattern res) => Pos -> GSBCO -> res
+gsbcviewpattern_w :: (ToGSViewPattern res) => Pos -> GSExpr -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSBCOVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSExprVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
 
 class ToGSViewPattern res where
-    gsbcviewpattern_ww :: Pos -> (GSBCO -> GSBCO) -> res
+    gsbcviewpattern_ww :: Pos -> (GSExpr -> GSExpr) -> res
 
-instance (ToGSViewPattern res) => ToGSViewPattern (GSBCO -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSBCO) -> k $ gsbclambda_w pos $ \ (eta :: GSValue) (x :: GSValue) ->
-        gsbclet_w pos (gsbcapp_w pos p [ GSBCOVar pos x ]) $ \ px ->
-            gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSBCO ]
+instance (ToGSViewPattern res) => ToGSViewPattern (GSExpr -> res) where
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbclambda_w pos $ \ (eta :: GSValue) (x :: GSValue) ->
+        gsbclet_w pos (gsbcapp_w pos p [ GSExprVar pos x ]) $ \ px ->
+            gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSExpr ]
 
-instance ToGSViewPattern GSBCO where
-    gsbcviewpattern_ww pos k = k (gsbclambda_w pos $ \ eta -> GSBCOVar pos eta)
+instance ToGSViewPattern GSExpr where
+    gsbcviewpattern_ww pos k = k (gsbclambda_w pos $ \ eta -> GSExprVar pos eta)
 
 gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 
 gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
-gsbcvarpattern_ww :: Pos -> GSVar -> GSBCO
-gsbcvarpattern_ww pos v = gsbclambda_w pos $ \ (x::GSValue) -> GSBCOVar pos $ GSConstr pos (gsvar "1")
+gsbcvarpattern_ww :: Pos -> GSVar -> GSExpr
+gsbcvarpattern_ww pos v = gsbclambda_w pos $ \ (x::GSValue) -> GSExprVar pos $ GSConstr pos (gsvar "1")
     [$gsimplementationfailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]

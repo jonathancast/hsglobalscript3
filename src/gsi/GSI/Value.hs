@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, bcoCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSExpr(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, exprCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -21,12 +21,12 @@ data GSValue
   | GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSConstr Pos GSVar [GSValue]
 
-data GSBCO
-  = GSBCOExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
-  | GSBCOVar Pos GSValue
+data GSExpr
+  = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+  | GSExprVar Pos GSValue
 
 data GSStackFrame
-  = GSStackForce Pos (GSValue -> GSBCO)
+  = GSStackForce Pos (GSValue -> GSExpr)
   | GSStackArg Pos GSValue
 
 type GSThunk = MVar GSThunkState
@@ -77,18 +77,18 @@ class GSLambda r where
 instance GSLambda r => GSLambda (GSValue -> r) where
     gslambda_ww pos f = GSLambda pos (gslambda_ww pos . f)
 
-instance GSLambda GSBCO where
-    gslambda_ww pos (GSBCOExpr e) = GSRawExpr e
-    gslambda_ww pos0 (GSBCOVar pos1 v) = v
-    gslambda_ww pos bco = GSImplementationFailure $gshere $ "gslambda_ww " ++ bcoCode bco ++ " next"
+instance GSLambda GSExpr where
+    gslambda_ww pos (GSExpr e) = GSRawExpr e
+    gslambda_ww pos0 (GSExprVar pos1 v) = v
+    gslambda_ww pos e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
 
 gsthunk = varE 'gsthunk_w `appE` gshere
 
-gsthunk_w :: Pos -> GSBCO -> IO GSValue
+gsthunk_w :: Pos -> GSExpr -> IO GSValue
 gsthunk_w pos bc = case bc of
-    GSBCOExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
-    GSBCOVar pos v -> return v
-    bco -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ bcoCode bco ++ " next"
+    GSExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
+    GSExprVar pos v -> return v
+    e -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ exprCode e ++ " next"
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
@@ -110,9 +110,9 @@ gsvCode GSLambda{} = "GSLambda"
 gsvCode GSRawExpr{} = "GSRawExpr"
 gsvCode GSConstr{} = "GSConstr"
 
-bcoCode :: GSBCO -> String
-bcoCode GSBCOExpr{} = "GSBCOExpr"
-bcoCode GSBCOVar{} = "GSBCOVar"
+exprCode :: GSExpr -> String
+exprCode GSExpr{} = "GSExpr"
+exprCode GSExprVar{} = "GSExprVar"
 
 gsstCode :: GSStackFrame -> String
 gsstCode GSStackForce{} = "GSStackForce"
