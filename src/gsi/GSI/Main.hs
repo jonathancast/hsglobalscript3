@@ -11,7 +11,7 @@ import GSI.Env (gsenvGetArgs)
 -- Main function (call this to start your interpreter)
 gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
     args <- $gsbcimpbind $ $gsargvar gsenvGetArgs
-    $gsbcimpbody $ $gsbcapply gsprocessargs [ $gsargvar args ]
+    $gsbcimpbody $ $gsargexpr $ $gsbcapply gsprocessargs [ $gsargvar args ]
 
 -- Loops over arguments to process them
 gsprocessargs = $gslambda $ \ args ->

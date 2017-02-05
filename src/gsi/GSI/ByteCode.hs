@@ -110,8 +110,9 @@ gsbcimpbind_w pos a = GSBCImp $ \t -> $apiImplementationFailure $ "gsbcimpbind_w
 
 gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
-gsbcimpbody_w :: Pos -> GSExpr -> GSBCImp GSValue
-gsbcimpbody_w pos bco = GSBCImp $ apiCallExpr pos bco
+gsbcimpbody_w :: Pos -> GSArg -> GSBCImp GSValue
+gsbcimpbody_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ t -> apiCallExpr pos0 e t
+gsbcimpbody_w pos a = GSBCImp $ \t -> $apiImplementationFailure $ "gsbcimpbody_w " ++ argCode a ++ " next"
 
 gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 

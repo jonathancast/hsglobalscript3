@@ -7,7 +7,7 @@ import Test.HUnit
 
 import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
-import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode)
+import GSI.Value (GSValue(..), gsundefined_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcundefined_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)
@@ -85,7 +85,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        let v = gsimpfor_w (Pos file 1 1) $ gsbcimpbody_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
+        let v = gsimpfor_w (Pos file 1 1) $ gsbcimpbody_w (Pos file 2 1) $ gsargexpr_w (Pos file 3 1) $ gsbcundefined_w (Pos file 4 1)
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
             GSClosure [StackTrace pos _] bco -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
