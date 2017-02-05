@@ -12,6 +12,16 @@ import GSI.RTS (Event)
 import GSI.Syn (GSVar)
 import GSI.ThreadType (Thread)
 
+-- BIG IMPORTANT NOTE:
+-- §begin§note
+--     4 types!
+--     §itemize
+--         §item Values!  These are RRFs that have already been 'prepared'!  Some of them are thunks (§emph{shudder})!
+--         §item Expressions!  These are IO code that calculates a value!  Basically byte-code!  GSI.ByteCode makes these!
+--         §item Bodies!  These are things that can be bodies of closures!  Expressions or imp blocks or functions returning bodies!
+--         §item Arguments!  These are things that can be RHSs of lets or applications!  Basically values or bodies!
+-- §end
+
 data GSValue
   = GSImplementationFailure Pos String
   | GSError GSError
