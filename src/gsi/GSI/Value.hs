@@ -1,6 +1,13 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, bcoCode, exprCode, gsstCode, gstsCode) where
+module GSI.Value (
+    GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..),
+    gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w,
+    gsprepare, gsprepare_w, gsargvar, gsargvar_w, gsargexpr, gsargexpr_w,
+    gsthunk, gsthunk_w,
+    gsimpprim, gsimpprim_w, gsimpfor_w,
+    gsvCode, bcoCode, exprCode, gsstCode, gstsCode
+  ) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -33,6 +40,10 @@ data GSBCO
   = GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSImp (Thread -> IO GSValue)
   | GSLambda (GSValue -> GSValue)
+
+data GSArg
+  = GSArgExpr Pos GSExpr
+  | GSArgVar GSValue
 
 data GSExpr
   = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
@@ -87,6 +98,14 @@ gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (w . f)) where
     w (GSExprVar pos1 v) = v
     w e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
 
+gsargvar = varE 'gsargvar_w `appE` gshere
+
+gsargvar_w pos v = GSArgVar v
+
+gsargexpr = varE 'gsargexpr_w `appE` gshere
+
+gsargexpr_w pos e = GSArgExpr pos e
+
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
@@ -94,6 +113,13 @@ gsthunk_w pos bc = case bc of
     GSExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
     GSExprVar pos v -> return v
     e -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ exprCode e ++ " next"
+
+gsprepare = varE 'gsprepare_w `appE` gshere
+
+gsprepare_w :: Pos -> GSArg -> IO GSValue
+gsprepare_w pos0 (GSArgExpr pos1 e) = gsthunk_w pos1 e
+gsprepare_w pos0 (GSArgVar v) = return v
+gsprepare_w pos a = return $ GSImplementationFailure $gshere $ "gsprepare_w " ++ argCode a ++ " next"
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
@@ -121,6 +147,10 @@ bcoCode GSLambda{} = "GSLambda"
 exprCode :: GSExpr -> String
 exprCode GSExpr{} = "GSExpr"
 exprCode GSExprVar{} = "GSExprVar"
+
+argCode :: GSArg -> String
+argCode GSArgExpr{} = "GSArgExpr"
+argCode GSArgVar{} = "GSArgVar"
 
 gsstCode :: GSStackFrame -> String
 gsstCode GSStackForce{} = "GSStackForce"

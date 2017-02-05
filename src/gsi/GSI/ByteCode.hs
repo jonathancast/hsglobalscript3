@@ -12,7 +12,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceThrow)
@@ -41,9 +41,9 @@ gsbcarg_w pos fn = GSExpr $ \ st cs -> do
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
-gsbcapply_w :: Pos -> GSValue -> [GSExpr] -> GSExpr
+gsbcapply_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcapply_w pos f args = GSExpr $ \ st cs -> do
-    asv <- mapM (gsthunk_w pos) args
+    asv <- mapM (gsprepare_w pos) args
     aceEnter [ StackTrace pos cs ] f (map (GSStackArg pos) asv ++ st)
 
 gsbcapp_w :: Pos -> GSExpr -> [GSExpr] -> GSExpr

@@ -35,6 +35,7 @@ aceReturn v (k:st) = aceThrow ($gsimplementationfailure $ "aceReturn (continuati
 aceReturn v [] = return v
 
 aceThrow :: GSValue -> [GSStackFrame] -> IO GSValue
+aceThrow v (GSStackForce{}:st) = aceThrow v st
 aceThrow v (GSStackArg{}:st) = aceThrow v st
 aceThrow v (k:st) = return $ $gsimplementationfailure $ "aceThrow (continuation is " ++ gsstCode k ++ ") next"
 aceThrow v [] = return v
