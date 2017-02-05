@@ -2,7 +2,7 @@
 module GSI.Main (gsmain) where
 
 import GSI.Value (GSExpr, gsundefined, gslambda)
-import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcprim, gsbcvar, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcvar, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
@@ -17,7 +17,7 @@ gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
 gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsbcvar args,
         $gsbcapply gscase [ $gsbcviewpattern ($gsbcvar gscons_view) ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
-            $gsbclambda $ \ env -> $gsbcapply gserror [ $gsbchere, $gsbcundefined ], -- Process §gs{a:as}
-        $gsbclambda $ \ args -> $gsbcprim gspriminsufficientcases args :: GSExpr
+            $gsbcarg $ \ env -> $gsbcapply gserror [ $gsbchere, $gsbcundefined ], -- Process §gs{a:as}
+        $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args :: GSExpr
         ]
     ]

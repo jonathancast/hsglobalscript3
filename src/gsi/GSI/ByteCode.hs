@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbclambda, gsbclambda_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbchere, gsbchere_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbchere, gsbchere_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -33,10 +33,10 @@ gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 gsbcimplementationfailure_w :: Pos -> String -> GSExpr
 gsbcimplementationfailure_w pos msg = GSExpr $ \ st cs -> aceThrow (GSImplementationFailure pos msg) st
 
-gsbclambda = varE 'gsbclambda_w `appE` gshere
+gsbcarg = varE 'gsbcarg_w `appE` gshere
 
-gsbclambda_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
-gsbclambda_w pos fn = GSExpr $ \ st cs -> do
+gsbcarg_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
+gsbcarg_w pos fn = GSExpr $ \ st cs -> do
     aceEnter [ StackTrace pos cs ] (gslambda_w pos fn) st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
@@ -133,17 +133,17 @@ class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSExpr -> GSExpr) -> res
 
 instance (ToGSViewPattern res) => ToGSViewPattern (GSExpr -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbclambda_w pos $ \ eta  -> gsbclambda_w pos $ \ x ->
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbcarg_w pos $ \ eta  -> gsbcarg_w pos $ \ x ->
         gsbclet_w pos (gsbcapp_w pos p [ GSExprVar pos x ]) $ \ px ->
             gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSExpr ]
 
 instance ToGSViewPattern GSExpr where
-    gsbcviewpattern_ww pos k = k (gsbclambda_w pos $ \ eta -> GSExprVar pos eta)
+    gsbcviewpattern_ww pos k = k (gsbcarg_w pos $ \ eta -> GSExprVar pos eta)
 
 gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 
 gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
 gsbcvarpattern_ww :: Pos -> GSVar -> GSExpr
-gsbcvarpattern_ww pos v = gsbclambda_w pos $ \ (x::GSValue) -> GSExprVar pos $ GSConstr pos (gsvar "1")
+gsbcvarpattern_ww pos v = gsbcarg_w pos $ \ x -> GSExprVar pos $ GSConstr pos (gsvar "1")
     [$gsimplementationfailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]
