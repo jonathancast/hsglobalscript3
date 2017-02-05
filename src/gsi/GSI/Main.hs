@@ -10,7 +10,7 @@ import GSI.Env (gsenvGetArgs)
 
 -- Main function (call this to start your interpreter)
 gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
-    args <- $gsbcimpbind $ $gsbcvar gsenvGetArgs
+    args <- $gsbcimpbind $ $gsargvar gsenvGetArgs
     $gsbcimpbody $ $gsbcapply gsprocessargs [ $gsargvar args ]
 
 -- Loops over arguments to process them

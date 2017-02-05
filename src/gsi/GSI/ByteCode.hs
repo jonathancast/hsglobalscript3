@@ -12,11 +12,11 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode, argCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceThrow)
-import API (apiCallExpr)
+import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
@@ -104,8 +104,9 @@ gsbcimplet_w pos e = GSBCImp $ \ _ -> gsthunk_w pos e
 
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 
-gsbcimpbind_w :: Pos -> GSExpr -> GSBCImp GSValue
-gsbcimpbind_w pos e = GSBCImp $ apiCallExpr pos e
+gsbcimpbind_w :: Pos -> GSArg -> GSBCImp GSValue
+gsbcimpbind_w pos (GSArgVar v) = GSBCImp $ \ t -> apiCall pos v t
+gsbcimpbind_w pos a = GSBCImp $ \t -> $apiImplementationFailure $ "gsbcimpbind_w " ++ argCode a ++ " next"
 
 gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 

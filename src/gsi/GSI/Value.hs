@@ -6,7 +6,7 @@ module GSI.Value (
     gsprepare, gsprepare_w, gsargvar, gsargvar_w, gsargexpr, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
-    gsvCode, bcoCode, exprCode, gsstCode, gstsCode
+    gsvCode, bcoCode, exprCode, argCode, gsstCode, gstsCode
   ) where
 
 import Control.Concurrent (MVar, newMVar)
