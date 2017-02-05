@@ -12,7 +12,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSBCImp(..), GSLambda, gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceThrow)
@@ -35,7 +35,7 @@ gsbcimplementationfailure_w pos msg = GSExpr $ \ st cs -> aceThrow (GSImplementa
 
 gsbclambda = varE 'gsbclambda_w `appE` gshere
 
-gsbclambda_w :: GSLambda e => Pos -> (GSValue -> e) -> GSExpr
+gsbclambda_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
 gsbclambda_w pos fn = GSExpr $ \ st cs -> do
     aceEnter [ StackTrace pos cs ] (gslambda_w pos fn) st
 
@@ -133,7 +133,7 @@ class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSExpr -> GSExpr) -> res
 
 instance (ToGSViewPattern res) => ToGSViewPattern (GSExpr -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbclambda_w pos $ \ (eta :: GSValue) (x :: GSValue) ->
+    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbclambda_w pos $ \ eta  -> gsbclambda_w pos $ \ x ->
         gsbclet_w pos (gsbcapp_w pos p [ GSExprVar pos x ]) $ \ px ->
             gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSExpr ]
 

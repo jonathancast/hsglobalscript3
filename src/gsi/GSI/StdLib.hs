@@ -3,11 +3,11 @@ module GSI.StdLib (gsanalyze, gscase, gserror) where
 
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcapply, gsbcvar, gsbcforce, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbclambda, gsbcapply, gsbcvar, gsbcforce, gsbcimplementationfailure)
 
-gsanalyze = $gslambda $ \ (e :: GSValue) (cs :: GSValue) -> $gsbcapply cs [ $gsbcvar e ] :: GSExpr
+gsanalyze = $gslambda $ \ e -> $gsbclambda $ \ cs -> $gsbcapply cs [ $gsbcvar e ] :: GSExpr
 
-gscase = $gslambda $ \ (p :: GSValue) (b :: GSValue) (e :: GSValue) (x :: GSValue) ->
+gscase = $gslambda $ \ p -> $gsbclambda $ \ b -> $gsbclambda $ \ e -> $gsbclambda $ \ x ->
     $gsbcforce ($gsbcapply p [$gsbcvar x]) $ \ c -> case c of
         GSConstr pos cv [r] | cv == gsvar "1" -> $gsbcapply b [$gsbcvar r]
         GSConstr pos cc args -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ fmtVarAtom cc ") next" -- Probably §hs{$gsbcbranch ($gsbcvar e) ($gsbcvar b) c}

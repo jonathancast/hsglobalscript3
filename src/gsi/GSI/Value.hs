@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSLambda(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, bcoCode, exprCode, gsstCode, gstsCode) where
+module GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w, gsthunk, gsthunk_w, gsimpprim, gsimpprim_w, gsimpfor_w, gsvCode, bcoCode, exprCode, gsstCode, gstsCode) where
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -81,19 +81,11 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
 gslambda = varE 'gslambda_w `appE` gshere
 
-gslambda_w :: GSLambda bc => Pos -> (GSValue -> bc) -> GSValue
-gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (gslambda_ww pos . f))
-
-class GSLambda r where
-    gslambda_ww :: Pos -> r -> GSValue
-
-instance GSLambda r => GSLambda (GSValue -> r) where
-    gslambda_ww pos f = GSClosure [StackTrace pos []] (GSLambda (gslambda_ww pos . f))
-
-instance GSLambda GSExpr where
-    gslambda_ww pos (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
-    gslambda_ww pos0 (GSExprVar pos1 v) = v
-    gslambda_ww pos e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
+gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
+gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (w . f)) where
+    w (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
+    w (GSExprVar pos1 v) = v
+    w e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
 
 gsthunk = varE 'gsthunk_w `appE` gshere
 
