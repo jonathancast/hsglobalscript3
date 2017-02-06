@@ -90,7 +90,7 @@ gsbclet_w pos e k = GSExpr $ \ st cs -> do
     v <- gsthunk_w pos e
     case k v of
         GSExpr e' -> e' st [StackTrace pos cs]
-        e' -> return $ $gsimplementationfailure $ "gsbclet_w " ++ exprCode e' ++ " next"
+        e' -> aceThrow ($gsimplementationfailure $ "gsbclet_w " ++ exprCode e' ++ " next") st
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
