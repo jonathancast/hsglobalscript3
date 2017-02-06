@@ -47,7 +47,6 @@ data GSArg
 
 data GSExpr
   = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
-  | GSExprVar Pos GSValue
 
 data GSStackFrame
   = GSStackForce Pos (GSValue -> GSExpr)
@@ -95,7 +94,6 @@ gslambda = varE 'gslambda_w `appE` gshere
 gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
 gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (w . f)) where
     w (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
-    w (GSExprVar pos1 v) = v
     w e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
 
 gsargvar = varE 'gsargvar_w `appE` gshere
@@ -111,7 +109,6 @@ gsthunk = varE 'gsthunk_w `appE` gshere
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
 gsthunk_w pos bc = case bc of
     GSExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
-    GSExprVar pos v -> return v
     e -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ exprCode e ++ " next"
 
 gsprepare = varE 'gsprepare_w `appE` gshere
@@ -146,7 +143,6 @@ bcoCode GSLambda{} = "GSLambda"
 
 exprCode :: GSExpr -> String
 exprCode GSExpr{} = "GSExpr"
-exprCode GSExprVar{} = "GSExprVar"
 
 argCode :: GSArg -> String
 argCode GSArgExpr{} = "GSArgExpr"

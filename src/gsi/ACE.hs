@@ -24,7 +24,6 @@ aceEnter cs e st = aceThrow ($gsimplementationfailure $ "aceEnter (expr = " ++ g
 
 aceEnterExpr :: Pos -> GSExpr -> [GSStackFrame] -> IO GSValue
 aceEnterExpr pos (GSExpr e) st = e st [StackTrace pos []]
-aceEnterExpr pos0 (GSExprVar pos1 v) st = aceEnter [ StackTrace pos1 [], StackTrace pos1 [] ] v st
 aceEnterExpr pos e st = return $ $gsimplementationfailure $ "aceEnterExpr (expr = " ++ exprCode e ++") next"
 
 aceReturn :: GSValue -> [GSStackFrame] -> IO GSValue

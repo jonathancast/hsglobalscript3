@@ -27,7 +27,6 @@ apiCallExpr :: Pos -> GSExpr -> Thread -> IO GSValue
 apiCallExpr pos (GSExpr e) t = do
     v <- e [] [StackTrace pos []]
     apiCall pos v t
-apiCallExpr pos0 (GSExprVar pos1 v) t = apiCall pos0 v t
 apiCallExpr pos e t = throwIO $ TEImplementationFailure $gshere $ "apiCallExpr " ++ exprCode e ++ " next"
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
