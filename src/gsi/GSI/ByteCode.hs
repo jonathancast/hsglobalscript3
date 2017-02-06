@@ -96,7 +96,7 @@ gsbclet_w pos e k = GSExpr $ \ st cs -> do
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
 gsbcimpfor_w :: Pos -> GSBCImp GSValue -> GSExpr
-gsbcimpfor_w pos a = GSExprVar pos $ gsimpfor_w pos a
+gsbcimpfor_w pos a = GSExpr $ \ st cs -> aceReturn (gsimpfor_w pos a) st
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
