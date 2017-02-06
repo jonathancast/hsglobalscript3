@@ -89,8 +89,7 @@ gsbcforce_w pos e k = GSExpr $ \ st cs -> case e of
 gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
 gsbclet_w pos e k = GSExpr $ \ st cs -> do
     v <- gsthunk_w pos e
-    case k v of
-        GSExpr e' -> e' st [StackTrace pos cs]
+    aceEnterExpr [StackTrace pos cs] (k v) st
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
