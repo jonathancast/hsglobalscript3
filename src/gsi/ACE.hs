@@ -31,6 +31,7 @@ aceReturn :: GSValue -> [GSStackFrame] -> IO GSValue
 aceReturn (GSClosure cs (GSLambda f)) (k@(GSStackArg pos a):st) = aceEnter (cs ++ [StackTrace pos []]) (f a) st
 aceReturn (GSClosure cs bco) (k@(GSStackArg pos a):st) = aceThrow ($gsimplementationfailure $ "aceReturn (function is (GSClosure cs " ++ bcoCode bco ++ "); continuation is argument) next") (k:st)
 aceReturn f (k@(GSStackArg pos a):st) = aceThrow ($gsimplementationfailure $ "aceReturn (function is " ++ gsvCode f ++ "; continuation is argument) next") (k:st)
+aceReturn v (GSStackForce pos k:st) = aceEnterExpr pos (k v) st
 aceReturn v (k:st) = aceThrow ($gsimplementationfailure $ "aceReturn (continuation is " ++ gsstCode k ++ ") next") (k:st)
 aceReturn v [] = return v
 
