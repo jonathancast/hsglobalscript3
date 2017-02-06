@@ -7,7 +7,7 @@ import Control.Exception (throwIO)
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), gsvCode, bcoCode, exprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadException(..))
 
@@ -27,7 +27,6 @@ apiCallExpr :: Pos -> GSExpr -> Thread -> IO GSValue
 apiCallExpr pos (GSExpr e) t = do
     v <- e [] [StackTrace pos []]
     apiCall pos v t
-apiCallExpr pos e t = throwIO $ TEImplementationFailure $gshere $ "apiCallExpr " ++ exprCode e ++ " next"
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
 

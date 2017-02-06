@@ -3,7 +3,7 @@
 module ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow) where
 
 import GSI.Util (Pos, StackTrace(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, exprCode, gsstCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gsstCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
 aceEnter :: [StackTrace] -> GSValue -> [GSStackFrame] -> IO GSValue
@@ -24,7 +24,6 @@ aceEnter cs e st = aceThrow ($gsimplementationfailure $ "aceEnter (expr = " ++ g
 
 aceEnterExpr :: Pos -> GSExpr -> [GSStackFrame] -> IO GSValue
 aceEnterExpr pos (GSExpr e) st = e st [StackTrace pos []]
-aceEnterExpr pos e st = return $ $gsimplementationfailure $ "aceEnterExpr (expr = " ++ exprCode e ++") next"
 
 aceReturn :: GSValue -> [GSStackFrame] -> IO GSValue
 aceReturn (GSClosure cs (GSLambda f)) (k@(GSStackArg pos a):st) = aceEnter (cs ++ [StackTrace pos []]) (f a) st

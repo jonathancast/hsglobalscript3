@@ -12,7 +12,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, argCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow)
@@ -91,7 +91,6 @@ gsbclet_w pos e k = GSExpr $ \ st cs -> do
     v <- gsthunk_w pos e
     case k v of
         GSExpr e' -> e' st [StackTrace pos cs]
-        e' -> aceThrow ($gsimplementationfailure $ "gsbclet_w " ++ exprCode e' ++ " next") st
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 

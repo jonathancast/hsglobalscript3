@@ -6,7 +6,7 @@ module GSI.Value (
     gsprepare, gsprepare_w, gsargvar, gsargvar_w, gsargexpr, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
-    gsvCode, bcoCode, exprCode, argCode, gsstCode, gstsCode
+    gsvCode, bcoCode, argCode, gsstCode, gstsCode
   ) where
 
 import Control.Concurrent (MVar, newMVar)
@@ -45,8 +45,7 @@ data GSArg
   = GSArgExpr Pos GSExpr
   | GSArgVar GSValue
 
-data GSExpr
-  = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+newtype GSExpr = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
 
 data GSStackFrame
   = GSStackForce Pos (GSValue -> GSExpr)
@@ -94,7 +93,6 @@ gslambda = varE 'gslambda_w `appE` gshere
 gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
 gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (w . f)) where
     w (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
-    w e = GSImplementationFailure $gshere $ "gslambda_ww " ++ exprCode e ++ " next"
 
 gsargvar = varE 'gsargvar_w `appE` gshere
 
@@ -107,9 +105,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos bc = case bc of
-    GSExpr e -> fmap GSThunk $ newMVar $ GSTSExpr e
-    e -> return $ GSImplementationFailure $gshere $ "gsclosure_w " ++ exprCode e ++ " next"
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr e
 
 gsprepare = varE 'gsprepare_w `appE` gshere
 
@@ -140,9 +136,6 @@ bcoCode :: GSBCO -> String
 bcoCode GSRawExpr{} = "GSRawExpr"
 bcoCode GSImp{} = "GSImp"
 bcoCode GSLambda{} = "GSLambda"
-
-exprCode :: GSExpr -> String
-exprCode GSExpr{} = "GSExpr"
 
 argCode :: GSArg -> String
 argCode GSArgExpr{} = "GSArgExpr"
