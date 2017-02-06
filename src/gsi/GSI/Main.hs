@@ -16,7 +16,7 @@ gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
 -- Loops over arguments to process them
 gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsargvar args,
-        $gsargexpr ($gsbcapply gscase [ $gsargexpr $ $gsbcviewpattern ($gsbcvar gscons_view) ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
+        $gsargexpr ($gsbcapply gscase [ $gsargexpr $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsargexpr $ $gsbcarg $ \ env -> $gsbcapply gserror [ $gsargexpr $gsbchere, $gsargexpr $gsbcundefined ], -- Process §gs{a:as}
         $gsargexpr $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
         ])
