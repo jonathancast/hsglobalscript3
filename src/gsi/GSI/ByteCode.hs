@@ -121,7 +121,7 @@ gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
 gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSExprVar pos x) $ \ x0 -> case x0 of
         GSConstr pos1 c' as
-            | c == c' -> gsbcapp_w pos (GSExprVar pos sk) (map GSArgVar as)
+            | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
             | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
