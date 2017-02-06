@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceEnter, aceEnterExpr, aceThrow) where
+module ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow) where
 
 import GSI.Util (Pos, StackTrace(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, exprCode, gsstCode)

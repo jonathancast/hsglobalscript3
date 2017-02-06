@@ -15,7 +15,7 @@ import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, exprCode, argCode)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
-import ACE (aceEnter, aceEnterExpr, aceThrow)
+import ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -73,7 +73,7 @@ class GSBCImpPrimType f r where
     gsbcimpprim_ww :: Pos -> (Thread -> f) -> r
 
 instance GSBCImpPrimType (IO GSValue) GSExpr where
-    gsbcimpprim_ww pos f = GSExprVar pos $ GSClosure [StackTrace pos []] (GSImp f)
+    gsbcimpprim_ww pos f = GSExpr $ \ st cs -> aceReturn (GSClosure [StackTrace pos []] (GSImp f)) st
 
 gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
 gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
