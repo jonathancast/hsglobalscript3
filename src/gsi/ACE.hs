@@ -12,9 +12,7 @@ aceEnter cs v@GSImplementationFailure{} st = aceThrow v st
 aceEnter cs (GSThunk th) st = do
     v <- evalSync th
     aceEnter cs v st
-aceEnter cs v@GSConstr{} [] = return v
-aceEnter cs v@GSConstr{} (GSStackForce pos1 k:st) = aceEnterExpr pos1 (k v) st
-aceEnter cs v@GSConstr{} (k:st) = return $ $gsimplementationfailure $ "aceEnter (constr; continuation is " ++ gsstCode k ++ ") next"
+aceEnter cs v@GSConstr{} st = aceReturn v st
 aceEnter cs0 v@(GSClosure cs1 bco) st = case bco of
     GSRawExpr e -> e st (cs1 ++ cs0)
     GSImp{} -> aceReturn v st
