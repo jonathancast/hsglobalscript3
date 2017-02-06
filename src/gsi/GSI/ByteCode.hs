@@ -140,7 +140,7 @@ instance (ToGSViewPattern res) => ToGSViewPattern (GSExpr -> res) where
             gsbcapp_w pos sk [ GSArgExpr pos (gsbcprim_w pos gsparand eta px) ]
 
 instance ToGSViewPattern GSExpr where
-    gsbcviewpattern_ww pos k = k (gsbcarg_w pos $ \ eta -> GSExprVar pos eta)
+    gsbcviewpattern_ww pos k = k (gsbcarg_w pos $ \ eta -> GSExpr $ \ st cs -> aceEnter [StackTrace pos cs] eta st)
 
 gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 
