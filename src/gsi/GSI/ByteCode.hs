@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
-{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcvar, gsbcforce, gsbcforce_w, gsbchere, gsbchere_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
@@ -82,8 +82,11 @@ gsbcvar = conE 'GSExprVar `appE` gshere
 
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
-gsbcforce_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
-gsbcforce_w pos e k = GSExpr $ \ st cs -> aceEnterExpr pos e (GSStackForce pos k : st)
+gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
+gsbcforce_w pos e k = GSExpr $ \ st cs -> case e of
+    GSArgExpr pos' e' -> aceEnterExpr pos e' (GSStackForce pos k : st)
+    GSArgVar v -> aceEnter [StackTrace pos cs] v (GSStackForce pos k : st)
+    _ -> aceThrow ($gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next") st
 
 gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
 gsbclet_w pos e k = GSExpr $ \ st cs -> do
@@ -119,7 +122,7 @@ gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 
 gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
-gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSExprVar pos x) $ \ x0 -> case x0 of
+gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x0 of
         GSConstr pos1 c' as
             | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
             | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
