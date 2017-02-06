@@ -37,7 +37,7 @@ data GSValue
   | GSConstr Pos GSVar [GSValue]
 
 data GSBCO
-  = GSRawExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+  = GSRawExpr GSExpr
   | GSImp (Thread -> IO GSValue)
   | GSLambda (GSValue -> GSValue)
 
@@ -92,7 +92,7 @@ gslambda = varE 'gslambda_w `appE` gshere
 
 gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
 gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (w . f)) where
-    w (GSExpr e) = GSClosure [StackTrace pos []] (GSRawExpr e)
+    w e = GSClosure [StackTrace pos []] (GSRawExpr e)
 
 gsargvar = varE 'gsargvar_w `appE` gshere
 

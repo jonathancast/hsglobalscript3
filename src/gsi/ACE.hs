@@ -14,7 +14,7 @@ aceEnter cs (GSThunk th) st = do
     aceEnter cs v st
 aceEnter cs v@GSConstr{} st = aceReturn v st
 aceEnter cs0 v@(GSClosure cs1 bco) st = case bco of
-    GSRawExpr e -> e st (cs1 ++ cs0)
+    GSRawExpr e -> aceEnterExpr (cs1 ++ cs0) e st
     GSImp{} -> aceReturn v st
     GSLambda{} -> aceReturn v st
     _ -> aceThrow ($gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next") st
