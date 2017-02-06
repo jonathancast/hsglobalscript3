@@ -49,7 +49,7 @@ newtype GSExpr = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
 
 data GSStackFrame
   = GSStackForce Pos (GSValue -> GSExpr)
-  | GSStackArg Pos GSValue
+  | GSStackArg StackTrace GSValue
 
 type GSThunk = MVar GSThunkState
 

@@ -24,7 +24,7 @@ eval mv = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
-        forkIO $ aceEnter [ StackTrace pos [] ] fn (map (GSStackArg pos) args) >>= updateThunk mv
+        forkIO $ aceEnter [ StackTrace pos [] ] fn (map (GSStackArg (StackTrace pos [])) args) >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)
