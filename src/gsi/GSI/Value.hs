@@ -91,8 +91,8 @@ gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 gslambda = varE 'gslambda_w `appE` gshere
 
 gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
-gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (w . f)) where
-    w e = GSClosure [StackTrace pos []] (GSRawExpr e)
+gslambda_w pos f = GSClosure cs (GSLambda (GSClosure cs . GSRawExpr . f)) where
+    cs = [StackTrace pos []]
 
 gsargvar = varE 'gsargvar_w `appE` gshere
 
