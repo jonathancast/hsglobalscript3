@@ -99,8 +99,8 @@ gsbcimpfor_w pos a = GSExprVar pos $ gsimpfor_w pos a
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
-gsbcimplet_w :: Pos -> GSExpr -> GSBCImp GSValue
-gsbcimplet_w pos e = GSBCImp $ \ _ -> gsthunk_w pos e
+gsbcimplet_w :: Pos -> GSArg -> GSBCImp GSValue
+gsbcimplet_w pos a = GSBCImp $ \ _ -> gsprepare_w pos a
 
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 
