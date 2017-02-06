@@ -49,7 +49,7 @@ gsbcapply_w pos f args = GSExpr $ \ st cs -> do
 gsbcapp_w :: Pos -> GSExpr -> [GSArg] -> GSExpr
 gsbcapp_w pos f args = GSExpr $ \ st cs -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnterExpr pos f (map (GSStackArg pos) asv ++ st)
+    aceEnterExpr [StackTrace pos cs] f (map (GSStackArg pos) asv ++ st)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
@@ -82,7 +82,7 @@ gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbcforce_w pos e k = GSExpr $ \ st cs -> case e of
-    GSArgExpr pos' e' -> aceEnterExpr pos e' (GSStackForce pos k : st)
+    GSArgExpr pos' e' -> aceEnterExpr [StackTrace pos cs] e' (GSStackForce pos k : st)
     GSArgVar v -> aceEnter [StackTrace pos cs] v (GSStackForce pos k : st)
     _ -> aceThrow ($gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next") st
 
