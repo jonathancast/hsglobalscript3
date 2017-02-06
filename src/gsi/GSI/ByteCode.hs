@@ -46,9 +46,9 @@ gsbcapply_w pos f args = GSExpr $ \ st cs -> do
     asv <- mapM (gsprepare_w pos) args
     aceEnter [ StackTrace pos cs ] f (map (GSStackArg pos) asv ++ st)
 
-gsbcapp_w :: Pos -> GSExpr -> [GSExpr] -> GSExpr
+gsbcapp_w :: Pos -> GSExpr -> [GSArg] -> GSExpr
 gsbcapp_w pos f args = GSExpr $ \ st cs -> do
-    asv <- mapM (gsthunk_w pos) args
+    asv <- mapM (gsprepare_w pos) args
     aceEnterExpr pos f (map (GSStackArg pos) asv ++ st)
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
@@ -121,7 +121,7 @@ gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
 gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSExprVar pos x) $ \ x0 -> case x0 of
         GSConstr pos1 c' as
-            | c == c' -> gsbcapp_w pos (GSExprVar pos sk) (map (GSExprVar pos) as)
+            | c == c' -> gsbcapp_w pos (GSExprVar pos sk) (map GSArgVar as)
             | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
@@ -129,15 +129,15 @@ gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
 
 gsbcviewpattern_w :: (ToGSViewPattern res) => Pos -> GSExpr -> res
 gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ gsbcimplementationfailure_w $gshere "fail next", gsbcapp_w $gshere sk [GSExprVar pos $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]] ])
+    gsbcviewpattern_ww pos (\ sk -> gsbcapp_w pos v [ GSArgExpr pos (gsbcimplementationfailure_w $gshere "fail next"), GSArgExpr pos (gsbcapp_w $gshere sk [GSArgVar $ GSConstr pos (gsvar "1") [$gsimplementationfailure "success next"]]) ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSExpr -> GSExpr) -> res
 
 instance (ToGSViewPattern res) => ToGSViewPattern (GSExpr -> res) where
     gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbcarg_w pos $ \ eta  -> gsbcarg_w pos $ \ x ->
-        gsbclet_w pos (gsbcapp_w pos p [ GSExprVar pos x ]) $ \ px ->
-            gsbcapp_w pos sk [ gsbcprim_w pos gsparand eta px :: GSExpr ]
+        gsbclet_w pos (gsbcapp_w pos p [ GSArgVar x ]) $ \ px ->
+            gsbcapp_w pos sk [ GSArgExpr pos (gsbcprim_w pos gsparand eta px) ]
 
 instance ToGSViewPattern GSExpr where
     gsbcviewpattern_ww pos k = k (gsbcarg_w pos $ \ eta -> GSExprVar pos eta)
