@@ -29,7 +29,7 @@ aceReturn (GSClosure cs (GSLambda f)) (k@(GSStackArg c1 a):st) = case f a of
     bco -> aceThrow ($gsimplementationfailure $ "aceReturn (function; result is " ++ bcoCode bco ++ " next") st
 aceReturn (GSClosure cs bco) (k@(GSStackArg pos a):st) = aceThrow ($gsimplementationfailure $ "aceReturn (function is (GSClosure cs " ++ bcoCode bco ++ "); continuation is argument) next") (k:st)
 aceReturn f (k@(GSStackArg pos a):st) = aceThrow ($gsimplementationfailure $ "aceReturn (function is " ++ gsvCode f ++ "; continuation is argument) next") (k:st)
-aceReturn v (GSStackForce pos k:st) = aceEnterExpr [StackTrace pos []] (k v) st
+aceReturn v (GSStackForce c k:st) = aceEnterExpr [c] (k v) st
 aceReturn v (k:st) = aceThrow ($gsimplementationfailure $ "aceReturn (continuation is " ++ gsstCode k ++ ") next") (k:st)
 aceReturn v [] = return v
 
