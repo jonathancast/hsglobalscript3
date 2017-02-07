@@ -16,15 +16,15 @@ data GSResult
   | GSIndirection GSValue
   | GSWHNF
 
-eval :: MVar (GSThunkState) -> IO GSResult
-eval mv = modifyMVar mv $ \ st -> case st of
+eval :: [StackTrace] -> MVar (GSThunkState) -> IO GSResult
+eval cs mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr expr -> do
         e <- newEvent
-        forkIO $ expr [] [] >>= updateThunk mv
+        forkIO $ expr [] cs >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
-        forkIO $ aceEnter [ StackTrace pos [] ] fn (map (GSStackArg (StackTrace pos [])) args) >>= updateThunk mv
+        forkIO $ aceEnter (StackTrace pos [] : cs) fn (map (GSStackArg (StackTrace pos [])) args) >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)
@@ -36,15 +36,15 @@ updateThunk mv v = do
         _ -> return (GSTSIndirection v, Nothing)
     maybe (return ()) wakeup mbb
 
-evalSync :: MVar (GSThunkState) -> IO GSValue
-evalSync mv = do
-    st <- eval mv
+evalSync :: [StackTrace] -> MVar (GSThunkState) -> IO GSValue
+evalSync cs mv = do
+    st <- eval cs mv
     case st of
-        GSStack b -> await b *> evalSync mv
+        GSStack b -> await b *> evalSync cs mv
         GSIndirection v -> case v of
             GSImplementationFailure{} -> return v
             GSError{} -> return v
-            GSThunk th -> evalSync th
+            GSThunk th -> evalSync cs th
             GSConstr{} -> return v
             v@(GSClosure _ bco) -> case bco of
                 GSImp{} -> return v

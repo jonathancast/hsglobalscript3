@@ -15,7 +15,7 @@ apiCall :: Pos -> GSValue -> Thread -> IO GSValue
 apiCall pos0 (GSImplementationFailure pos1 e) t = throwIO $ TEImplementationFailure pos1 e
 apiCall pos (GSError err) t = throwIO $ TEError err
 apiCall pos (GSThunk th) t = do
-    v <- evalSync th
+    v <- evalSync [StackTrace pos []] th
     apiCall pos v t
 apiCall pos0 (GSClosure cs bco) t = case bco of
     GSImp a -> a t

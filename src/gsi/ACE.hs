@@ -10,7 +10,7 @@ aceEnter :: [StackTrace] -> GSValue -> [GSStackFrame] -> IO GSValue
 aceEnter cs v@GSError{} st = aceThrow v st
 aceEnter cs v@GSImplementationFailure{} st = aceThrow v st
 aceEnter cs (GSThunk th) st = do
-    v <- evalSync th
+    v <- evalSync cs th
     aceEnter cs v st
 aceEnter cs v@GSConstr{} st = aceReturn v st
 aceEnter cs0 v@(GSClosure cs1 bco) st = case bco of

@@ -2,6 +2,7 @@ module GSI.Eval (GSResult(..), evalSync, stCode) where
 
 import Control.Concurrent (MVar)
 
+import GSI.Util (StackTrace)
 import GSI.RTS (Event)
 import GSI.Value (GSValue, GSThunkState)
 
@@ -10,6 +11,6 @@ data GSResult
   | GSIndirection GSValue
   | GSWHNF
 
-evalSync :: MVar (GSThunkState) -> IO GSValue
+evalSync :: [StackTrace] -> MVar (GSThunkState) -> IO GSValue
 
 stCode :: GSResult -> String

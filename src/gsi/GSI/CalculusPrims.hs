@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.CalculusPrims (gsparand, gspriminsufficientcases) where
 
-import GSI.Util (Pos, gshere, fmtPos)
+import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (awaitAny)
 import GSI.Error (GSError(..))
 import GSI.Syn (gsvar, fmtVarAtom)
@@ -12,8 +12,8 @@ gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
 gsparand pos (GSConstr pos1 cx []) _ | cx == gsvar "0" = return $ $gsimplementationfailure $ "gsparand 0 _ next" -- > fail
 gsparand pos _ (GSConstr pos1 cy []) | cy == gsvar "0" = return $ $gsimplementationfailure $ "gsparand _ 0 next" -- > fail
 gsparand pos x@(GSThunk xs) y@(GSThunk ys) = do
-    xr <- eval xs
-    yr <- eval ys
+    xr <- eval [StackTrace pos []] xs
+    yr <- eval [StackTrace pos []] ys
     case (xr, yr) of
         (GSStack ex, GSStack ey) -> do
             awaitAny [ ex, ey ]
@@ -22,10 +22,10 @@ gsparand pos x@(GSThunk xs) y@(GSThunk ys) = do
         (_, GSIndirection yv) -> gsparand pos x yv
         _ -> return $ $gsimplementationfailure $ "gsparand " ++ stCode xr ++ ' ' : stCode yr ++ " next" -- eval both, wait for one, then loop
 gsparand pos (GSThunk xs) y = do
-    xv <- evalSync xs
+    xv <- evalSync [StackTrace pos []] xs
     gsparand pos xv y
 gsparand pos x (GSThunk ys) = do
-    yv <- evalSync ys
+    yv <- evalSync [StackTrace pos []] ys
     gsparand pos x yv
 gsparand pos x@GSImplementationFailure{} _ = return x
 gsparand pos _ y@GSImplementationFailure{} = return y
@@ -38,7 +38,7 @@ gspriminsufficientcases :: Pos -> GSValue -> IO GSValue
 gspriminsufficientcases pos v@GSError{} = return v
 gspriminsufficientcases pos v@GSImplementationFailure{} = return v
 gspriminsufficientcases pos (GSThunk th) = do
-    v <- evalSync th
+    v <- evalSync [StackTrace pos []] th
     gspriminsufficientcases pos v
 gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
 gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
