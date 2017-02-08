@@ -127,6 +127,7 @@ gsbcevalstring_w pos sa k = w id sa where
     w ds0 sa = gsbcforce_w pos sa $ \ sv -> case sv of
         GSConstr _ s_c [ c0, s1 ] | s_c == gsvar ":" ->
             gsbcforce_w pos ($gsav c0) $ \ c0v -> case c0v of
+                GSRune c0_hs -> w (ds0 . (c0_hs:)) ($gsav s1)
                 _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr (:) " ++ gsvCode c0v ++ ") next"
         GSConstr _ s_c s_as -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c " ) next"
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
