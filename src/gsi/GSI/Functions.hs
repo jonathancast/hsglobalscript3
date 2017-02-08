@@ -16,7 +16,7 @@ gslist_w pos (x:xn) = GSConstr pos (gsvar ":") [ x, gslist_w pos xn ]
 gsstring = varE 'gsstring_w `appE` gshere
 
 gsstring_w :: Pos -> String -> GSValue
-gsstring_w pos s = gslist_w pos (map (\c -> $gsundefined) s)
+gsstring_w pos s = gslist_w pos $ map GSRune s
 
 gsnatural = varE 'gsnatural_w `appE` gshere
 
