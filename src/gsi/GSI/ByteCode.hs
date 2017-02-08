@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -108,6 +108,15 @@ gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
 gsbcimpfor_w :: Pos -> GSBCImp GSValue -> GSExpr
 gsbcimpfor_w pos a = GSExpr $ \ st cs -> aceReturn (gsimpfor_w pos a) st
+
+gsbcfield = varE 'gsbcfield_w `appE` gshere
+
+gsbcfield_w :: Pos -> GSVar -> GSValue -> (GSValue -> GSExpr) -> GSExpr
+gsbcfield_w pos f r k = GSExpr $ \ st cs -> case r of
+    GSRecord pos1 fs -> case Map.lookup f fs of
+        Nothing -> aceThrow ($gsimplementationfailure $ "gsbcfield_w (missing field) next") st
+        Just v -> aceThrow ($gsimplementationfailure $ "gsbcfield_w (field is present) next") st
+    _ -> aceThrow ($gsimplementationfailure $ "gsbcfield_w " ++ gsvCode r ++ " next") st
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
