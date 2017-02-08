@@ -14,6 +14,7 @@ aceEnter cs (GSThunk th) st = do
     aceEnter cs v st
 aceEnter cs v@GSConstr{} st = aceReturn v st
 aceEnter cs v@GSRecord{} st = aceReturn v st
+aceEnter cs v@GSRune{} st = aceReturn v st
 aceEnter cs0 v@(GSClosure cs1 bco) st = case bco of
     GSRawExpr e -> aceEnterExpr (cs1 ++ cs0) e st
     GSImp{} -> aceReturn v st
