@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbchere, gsbchere_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -27,6 +27,11 @@ gsbchere = varE 'gsbchere_w `appE` gshere
 
 gsbchere_w :: Pos -> GSExpr
 gsbchere_w pos = GSExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbchere next") st
+
+gsbcerror = varE 'gsbcerror_w `appE` gshere
+
+gsbcerror_w :: Pos -> GSValue -> GSValue -> GSExpr
+gsbcerror_w _ pos msg = GSExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbcerror next") st
 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
