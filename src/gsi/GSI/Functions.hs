@@ -10,7 +10,7 @@ import GSI.Value (GSValue(..), gsundefined)
 gslist = varE 'gslist_w `appE` gshere
 
 gslist_w :: Pos -> [GSValue] -> GSValue
-gslist_w pos [] = $gsundefined
+gslist_w pos [] = GSConstr pos (gsvar "nil") []
 gslist_w pos (x:xn) = GSConstr pos (gsvar ":") [ x, gslist_w pos xn ]
 
 gsstring = varE 'gsstring_w `appE` gshere
