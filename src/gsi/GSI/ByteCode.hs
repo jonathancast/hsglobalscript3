@@ -7,12 +7,15 @@ module GSI.ByteCode (
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
   ) where
 
+import qualified Data.Map as Map
+
 import Language.Haskell.TH.Lib (appE, varE, conE)
 
-import GSI.Util (Pos, StackTrace(..), gsfatal, gshere)
+import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, argCode)
+import GSI.Functions (gsstring, gsnatural)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow)
@@ -26,7 +29,12 @@ gsbcundefined_w pos = GSExpr $ \ st cs -> aceThrow (GSError (GSErrUnimpl (StackT
 gsbchere = varE 'gsbchere_w `appE` gshere
 
 gsbchere_w :: Pos -> GSExpr
-gsbchere_w pos = GSExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbchere next") st
+gsbchere_w pos = GSExpr $ \ st cs -> aceReturn res st where
+    res = GSRecord $gshere $ Map.fromList [
+        (gsvar "filename", $gsstring (filename pos)),
+        (gsvar "line", $gsnatural (line pos)),
+        (gsvar "col", $gsnatural (col pos))
+      ]
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
