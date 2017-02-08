@@ -9,6 +9,8 @@ module GSI.Value (
     gsvCode, bcoCode, argCode, gsstCode, gstsCode
   ) where
 
+import Data.Map (Map)
+
 import Control.Concurrent (MVar, newMVar)
 
 import Language.Haskell.TH.Lib (appE, conE, varE)
@@ -35,6 +37,7 @@ data GSValue
   | GSThunk GSThunk
   | GSClosure [StackTrace] GSBCO
   | GSConstr Pos GSVar [GSValue]
+  | GSRecord Pos (Map GSVar GSValue)
 
 data GSBCO
   = GSRawExpr GSExpr
@@ -131,6 +134,7 @@ gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"
 gsvCode GSConstr{} = "GSConstr"
+gsvCode GSRecord{} = "GSRecord"
 
 bcoCode :: GSBCO -> String
 bcoCode GSRawExpr{} = "GSRawExpr"
