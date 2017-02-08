@@ -9,7 +9,7 @@ import GSI.Util (gsfatal)
 data GSVar
   = GSVarSym String
   | GSVarNum Integer
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 gsvar :: String -> GSVar
 gsvar [] = $gsfatal "gsvar [] called; this is very bad"
