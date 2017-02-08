@@ -3,7 +3,7 @@
 module GSI.Value (
     GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..),
     gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w,
-    gsprepare, gsprepare_w, gsargvar, gsargvar_w, gsargexpr, gsargexpr_w,
+    gsprepare, gsprepare_w, gsav, gsargvar, gsargvar_w, gsargexpr, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
     gsvCode, bcoCode, argCode, gsstCode, gstsCode
@@ -93,6 +93,7 @@ gslambda = varE 'gslambda_w `appE` gshere
 gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
 gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (GSRawExpr . f)) where
 
+gsav = gsargvar
 gsargvar = varE 'gsargvar_w `appE` gshere
 
 gsargvar_w pos v = GSArgVar v
