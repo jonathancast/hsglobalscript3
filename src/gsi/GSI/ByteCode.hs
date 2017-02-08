@@ -15,7 +15,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
@@ -125,6 +125,10 @@ gsbcevalstring_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
 gsbcevalstring_w pos sa k = w id sa where
     w :: (String -> String) -> GSArg -> GSExpr
     w ds0 sa = gsbcforce_w pos sa $ \ sv -> case sv of
+        GSConstr _ s_c [ c0, s1 ] | s_c == gsvar ":" ->
+            gsbcforce_w pos ($gsav c0) $ \ c0v -> case c0v of
+                _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr (:) " ++ gsvCode c0v ++ ") next"
+        GSConstr _ s_c s_as -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c " ) next"
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
