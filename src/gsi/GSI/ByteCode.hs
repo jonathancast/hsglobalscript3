@@ -115,7 +115,7 @@ gsbcfield_w :: Pos -> GSVar -> GSValue -> (GSValue -> GSExpr) -> GSExpr
 gsbcfield_w pos f r k = GSExpr $ \ st cs -> case r of
     GSRecord pos1 fs -> case Map.lookup f fs of
         Nothing -> aceThrow ($gsimplementationfailure $ "gsbcfield_w (missing field) next") st
-        Just v -> aceThrow ($gsimplementationfailure $ "gsbcfield_w (field is present) next") st
+        Just v -> aceEnterExpr [StackTrace pos cs] (k v) st
     _ -> aceThrow ($gsimplementationfailure $ "gsbcfield_w " ++ gsvCode r ++ " next") st
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
