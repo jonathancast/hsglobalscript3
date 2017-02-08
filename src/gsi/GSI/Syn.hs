@@ -23,6 +23,7 @@ gsvar v@(c:_) =
 fmtVarAtom :: GSVar -> String -> String
 fmtVarAtom (GSVarSym o) = ('(':) . (o++) . (')':)
 fmtVarAtom (GSVarNum n) = shows n
+fmtVarAtom (GSVarAlphaNum s) = (s++)
 fmtVarAtom v = ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':)
 
 gsvarCode :: GSVar -> String
