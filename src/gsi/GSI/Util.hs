@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos, fmtStackTrace) where
+module GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos, fmtStackTrace, filename, line, col) where
 
 import Language.Haskell.TH.Syntax (Lit(IntegerL), Loc, location, loc_filename, loc_start)
 import Language.Haskell.TH.Lib (ExpQ, appE, conE, litE, stringE, varE)
