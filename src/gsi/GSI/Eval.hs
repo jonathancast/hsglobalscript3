@@ -46,6 +46,7 @@ evalSync cs mv = do
             GSError{} -> return v
             GSThunk th -> evalSync cs th
             GSConstr{} -> return v
+            GSRecord{} -> return v
             v@(GSClosure _ bco) -> case bco of
                 GSImp{} -> return v
                 GSLambda{} -> return v
