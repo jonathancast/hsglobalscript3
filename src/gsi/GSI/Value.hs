@@ -39,6 +39,7 @@ data GSValue
   | GSConstr Pos GSVar [GSValue]
   | GSRecord Pos (Map GSVar GSValue)
   | GSNatural Integer
+  | GSRune Char
 
 data GSBCO
   = GSRawExpr GSExpr
@@ -137,6 +138,7 @@ gsvCode GSClosure{} = "GSClosure"
 gsvCode GSConstr{} = "GSConstr"
 gsvCode GSRecord{} = "GSRecord"
 gsvCode GSNatural{} = "GSNatural"
+gsvCode GSRune{} = "GSRune"
 
 bcoCode :: GSBCO -> String
 bcoCode GSRawExpr{} = "GSRawExpr"
