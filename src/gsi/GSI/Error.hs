@@ -11,6 +11,7 @@ import GSI.Util (Pos, StackTrace(..), fmtPos, fmtStackTrace, gshere)
 data GSError
   = GSErrUnimpl StackTrace
   | GSErrInsufficientCases Pos String
+  | GSErrError Pos String
   deriving (Show)
 
 data GSException
@@ -30,3 +31,4 @@ throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror ("
 fmtError :: GSError -> String
 fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
 fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
+fmtError (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
