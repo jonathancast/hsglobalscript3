@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcevalstring, gsbcevalstring_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -117,6 +118,11 @@ gsbcfield_w pos f r k = GSExpr $ \ st cs -> case r of
         Nothing -> aceThrow ($gsimplementationfailure $ "gsbcfield_w (missing field) next") st
         Just v -> aceEnterExpr [StackTrace pos cs] (k v) st
     _ -> aceThrow ($gsimplementationfailure $ "gsbcfield_w " ++ gsvCode r ++ " next") st
+
+gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
+
+gsbcevalstring_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
+gsbcevalstring_w pos a k = gsbcimplementationfailure_w $gshere "gsbcevalstring_w next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
