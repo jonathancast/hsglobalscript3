@@ -13,4 +13,7 @@ gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x -
         GSConstr pos cc args -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ fmtVarAtom cc ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
         _ -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ gsvCode c ++ ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
 
-gserror = $gslambda $ \ pos -> $gsbcarg $ \ msg -> $gsbcerror pos msg
+gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
+    $gsbcforce ($gsav posv) $ \ posv0 -> case posv0 of
+        _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
+    -- > $gsbcerror pos msg

@@ -30,8 +30,8 @@ gsbchere_w pos = GSExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbcher
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
-gsbcerror_w :: Pos -> GSValue -> GSValue -> GSExpr
-gsbcerror_w _ pos msg = GSExpr $ \ st cs -> aceThrow ($gsimplementationfailure "gsbcerror next") st
+gsbcerror_w :: Pos -> Pos -> String -> GSExpr
+gsbcerror_w _ pos msg = GSExpr $ \ st cs -> aceThrow (GSError (GSErrError pos msg)) st
 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
