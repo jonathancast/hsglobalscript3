@@ -4,7 +4,7 @@ module GSI.Syn (GSVar, gsvar, fmtVarAtom) where -- Â§hs{GSVar} is deliberately Â
 
 import Data.Char (isPunctuation, isSymbol, isDigit, isLower)
 
-import GSI.Util (gsfatal)
+import GSI.Util (gsfatal, gshere, fmtPos)
 
 data GSVar
   = GSVarSym String
@@ -23,7 +23,7 @@ gsvar v@(c:_) =
 fmtVarAtom :: GSVar -> String -> String
 fmtVarAtom (GSVarSym o) = ('(':) . (o++) . (')':)
 fmtVarAtom (GSVarNum n) = shows n
-fmtVarAtom v = ("<Unknown var type "++) . (gsvarCode v++) . ('>':)
+fmtVarAtom v = ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':)
 
 gsvarCode :: GSVar -> String
 gsvarCode GSVarSym{} = "GSVarSym"
