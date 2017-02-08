@@ -122,7 +122,10 @@ gsbcfield_w pos f r k = GSExpr $ \ st cs -> case r of
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
 
 gsbcevalstring_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
-gsbcevalstring_w pos a k = gsbcimplementationfailure_w $gshere "gsbcevalstring_w next"
+gsbcevalstring_w pos sa k = w id sa where
+    w :: (String -> String) -> GSArg -> GSExpr
+    w ds0 sa = gsbcforce_w pos sa $ \ sv -> case sv of
+        _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
