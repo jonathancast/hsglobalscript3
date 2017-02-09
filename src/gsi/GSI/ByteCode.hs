@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w,
+    gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -16,7 +16,7 @@ import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsav, gsvCode, argCode)
-import GSI.Functions (gsstring, gsnatural)
+import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
 import ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow)
@@ -139,6 +139,14 @@ gsbcevalnatural_w :: Pos -> GSArg -> (Integer -> GSExpr) -> GSExpr
 gsbcevalnatural_w pos na k = gsbcforce_w pos na $ \ nv -> case nv of
     GSNatural n -> k n
     _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalnatural_w " ++ gsvCode nv ++ " next"
+
+gsbcfmterrormsg = varE 'gsbcfmterrormsg_w `appE` gshere
+
+gsbcfmterrormsg_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
+gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
+    msgv <- gsprepare_w pos msg
+    msgs <- $gsfmterrormsg msgv
+    aceEnterExpr [StackTrace pos cs] (k msgs) st
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
