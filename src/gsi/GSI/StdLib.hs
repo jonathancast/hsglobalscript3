@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.StdLib (gsanalyze, gscase, gserror) where
 
+import GSI.Util (Pos(..))
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsav, gsargexpr, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcevalnatural, gsbcerror, gsbcimplementationfailure)
@@ -19,6 +20,9 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
             $gsbcevalstring ($gsav pos_filename) $ \ pos_filename_s ->
             $gsbcfield (gsvar "line") posv0 $ \ pos_line ->
             $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
-                $gsbcimplementationfailure $ "gserror 〈 'filename = " ++ show pos_filename_s ++ "; 'line = " ++ show pos_line_n ++ "; 〉 next"
+            $gsbcfield (gsvar "col") posv0 $ \ pos_col ->
+            $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
+            let pos_hs = Pos pos_filename_s pos_line_n pos_col_n in
+                $gsbcimplementationfailure $ "gserror 〈 'filename = " ++ show pos_filename_s ++ "; 'line = " ++ show pos_line_n ++ "; 'col = " ++ show pos_col_n ++ "; 〉 next"
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
