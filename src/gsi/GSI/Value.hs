@@ -3,7 +3,7 @@
 module GSI.Value (
     GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..),
     gsundefined_w, gsapply, gsapply_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w,
-    gsprepare, gsprepare_w, gsav, gsargvar, gsargvar_w, gsargexpr, gsargexpr_w,
+    gsprepare, gsprepare_w, gsav, gsargvar, gsargvar_w, gsae, gsargexpr, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
     gsvCode, bcoCode, argCode, gsstCode, gstsCode
@@ -103,6 +103,7 @@ gsargvar = varE 'gsargvar_w `appE` gshere
 
 gsargvar_w pos v = GSArgVar v
 
+gsae = gsargexpr
 gsargexpr = varE 'gsargexpr_w `appE` gshere
 
 gsargexpr_w pos e = GSArgExpr pos e
