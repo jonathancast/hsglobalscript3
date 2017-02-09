@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbcevalstring, gsbcevalstring_w,
+    gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -132,6 +132,11 @@ gsbcevalstring_w pos sa k = w id sa where
         GSConstr _ s_c s_as | s_c == gsvar "nil" -> k (ds0 [])
         GSConstr _ s_c s_as -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c ") next"
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
+
+gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
+
+gsbcevalnatural_w :: Pos -> GSArg -> (Integer -> GSExpr) -> GSExpr
+gsbcevalnatural_w pos na k = gsbcimplementationfailure_w $gshere $ "gsbcevalnatural_w next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
