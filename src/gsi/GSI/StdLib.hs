@@ -17,6 +17,7 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
     $gsbcforce ($gsav posv) $ \ posv0 -> case posv0 of
         GSRecord{} -> $gsbcfield (gsvar "filename") posv0 $ \ pos_filename ->
             $gsbcevalstring ($gsav pos_filename) $ \ pos_filename_s ->
+            $gsbcfield (gsvar "line") posv0 $ \ pos_line ->
                 $gsbcimplementationfailure $ "gserror 〈 'filename = " ++ show pos_filename_s ++ "; 〉 next"
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
