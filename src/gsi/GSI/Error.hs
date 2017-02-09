@@ -29,6 +29,7 @@ instance Exception GSException where
 
 throwGSError (GSErrUnimpl st) = throw $ GSExcUndefined st
 throwGSError (GSErrInsufficientCases pos err) = throw $ GSExcInsufficientCases pos err
+throwGSError (GSErrError pos err) = throw $ GSExcError pos err
 throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
 
 fmtError :: GSError -> String
