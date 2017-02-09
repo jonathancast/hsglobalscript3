@@ -24,6 +24,6 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
             $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
             let pos_hs = Pos pos_filename_s pos_line_n pos_col_n in
             $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
-                $gsbcimplementationfailure $ "gserror next"
+                $gsbcerror pos_hs msg_s
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
