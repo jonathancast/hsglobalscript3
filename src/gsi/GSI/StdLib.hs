@@ -4,7 +4,7 @@ module GSI.StdLib (gsanalyze, gscase, gserror) where
 import GSI.Util (Pos(..))
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsav, gsargexpr, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcevalnatural, gsbcerror, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcevalnatural, gsbcerror, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gsanalyze = $gslambda $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
 
@@ -23,6 +23,7 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
             $gsbcfield (gsvar "col") posv0 $ \ pos_col ->
             $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
             let pos_hs = Pos pos_filename_s pos_line_n pos_col_n in
-                $gsbcimplementationfailure $ "gserror 〈 'filename = " ++ show pos_filename_s ++ "; 'line = " ++ show pos_line_n ++ "; 'col = " ++ show pos_col_n ++ "; 〉 next"
+            $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
+                $gsbcimplementationfailure $ "gserror next"
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
