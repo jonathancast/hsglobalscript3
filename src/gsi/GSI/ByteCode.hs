@@ -137,6 +137,7 @@ gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
 
 gsbcevalnatural_w :: Pos -> GSArg -> (Integer -> GSExpr) -> GSExpr
 gsbcevalnatural_w pos na k = gsbcforce_w pos na $ \ nv -> case nv of
+    GSNatural n -> k n
     _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalnatural_w " ++ gsvCode nv ++ " next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
