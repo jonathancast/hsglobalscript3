@@ -3,7 +3,7 @@ module GSI.StdLib (gsanalyze, gscase, gserror) where
 
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsav, gsargexpr, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcerror, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcevalnatural, gsbcerror, gsbcimplementationfailure)
 
 gsanalyze = $gslambda $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
 
@@ -18,6 +18,7 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
         GSRecord{} -> $gsbcfield (gsvar "filename") posv0 $ \ pos_filename ->
             $gsbcevalstring ($gsav pos_filename) $ \ pos_filename_s ->
             $gsbcfield (gsvar "line") posv0 $ \ pos_line ->
-                $gsbcimplementationfailure $ "gserror 〈 'filename = " ++ show pos_filename_s ++ "; 〉 next"
+            $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
+                $gsbcimplementationfailure $ "gserror 〈 'filename = " ++ show pos_filename_s ++ "; 'line = " ++ show pos_line_n ++ "; 〉 next"
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
