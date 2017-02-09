@@ -3,9 +3,11 @@ module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatur
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, gshere, fmtPos)
+import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar)
+import GSI.Error (fmtError)
 import GSI.Value (GSValue(..), gsundefined, gsvCode)
+import GSI.Eval (evalSync)
 
 gslist = varE 'gslist_w `appE` gshere
 
@@ -26,4 +28,12 @@ gsnatural_w pos n = GSNatural n
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
 gsfmterrormsg_w :: Pos -> GSValue -> IO String
-gsfmterrormsg_w pos msg = return $ fmtPos $gshere "gsfmterrormsg " ++ gsvCode msg ++ " next"
+gsfmterrormsg_w pos msg = gsfmterrormsg_ww pos id msg
+
+gsfmterrormsg_ww :: Pos -> (String -> String) -> GSValue -> IO String
+gsfmterrormsg_ww pos ds (GSThunk th) = do
+    v <- evalSync [StackTrace pos []] th
+    gsfmterrormsg_ww pos ds v
+gsfmterrormsg_ww pos ds (GSError err) = return $ (ds . ("<Error: "++) . (fmtError err++) . ('>':)) $ ""
+gsfmterrormsg_ww pos ds msg =
+    return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . (gsvCode msg++) . (" next"++) . ('>':)) $ ""
