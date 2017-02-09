@@ -17,11 +17,14 @@ data GSError
 data GSException
   = GSExcUndefined StackTrace
   | GSExcInsufficientCases Pos String
+  | GSExcError Pos String
   | GSExcImplementationFailure Pos String
   deriving (Typeable, Show)
+
 instance Exception GSException where
     displayException (GSExcUndefined st) = fmtStackTrace st "undefined"
     displayException (GSExcInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
+    displayException (GSExcError pos err) = fmtPos pos $ "Error: " ++ err
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
 
 throwGSError (GSErrUnimpl st) = throw $ GSExcUndefined st
