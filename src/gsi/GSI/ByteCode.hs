@@ -16,7 +16,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
@@ -148,6 +148,10 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
     msgv <- gsprepare_w pos msg
     msgs <- $gsfmterrormsg msgv
     aceEnterExpr [StackTrace pos cs] (k msgs) st
+
+gscompose :: GSValue
+gscompose = $gslambda $ \ f -> gsbcarg_w $gshere $ \ g -> gsbcarg_w $gshere $ \ x ->
+    gsbcapply_w $gshere f [$gsae (gsbcapply_w $gshere g [$gsav x])]
 
 gsbclog = varE 'gsbclog_w `appE` gshere
 
