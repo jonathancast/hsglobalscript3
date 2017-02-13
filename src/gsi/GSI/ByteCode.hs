@@ -156,7 +156,10 @@ gscompose = $gslambda $ \ f -> gsbcarg_w $gshere $ \ g -> gsbcarg_w $gshere $ \ 
 gsbclog = varE 'gsbclog_w `appE` gshere
 
 gsbclog_w :: Pos -> [GSArg] -> GSExpr
-gsbclog_w pos as = gsbcimplementationfailure_w $gshere $ "gsbclog_w next"
+gsbclog_w pos as = foldr
+    (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ])
+    (gsbcimplementationfailure_w $gshere $ "gsbclog_w next")
+    as
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
