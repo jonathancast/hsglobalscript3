@@ -35,5 +35,6 @@ gsfmterrormsg_ww pos ds (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th
     gsfmterrormsg_ww pos ds v
 gsfmterrormsg_ww pos ds (GSError err) = return $ (ds . ("<Error: "++) . (fmtError err++) . ('>':)) $ ""
+gsfmterrormsg_ww pos0 ds (GSImplementationFailure pos1 msg) = return $ (ds . ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)) $ ""
 gsfmterrormsg_ww pos ds msg =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . (gsvCode msg++) . (" next"++) . ('>':)) $ ""
