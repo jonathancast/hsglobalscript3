@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar)
 import GSI.Error (fmtError)
-import GSI.Value (GSValue(..), gsundefined, gsvCode)
+import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsvCode)
 import GSI.Eval (evalSync)
 
 gslist = varE 'gslist_w `appE` gshere
@@ -28,7 +28,9 @@ gsnatural_w pos n = GSNatural n
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
 gsfmterrormsg_w :: Pos -> GSValue -> IO String
-gsfmterrormsg_w pos msg = gsfmterrormsg_ww pos id msg
+gsfmterrormsg_w pos msg = do
+    msgs <- $gsapply msg [ $gsimplementationfailure "empty record next" ]
+    gsfmterrormsg_ww pos id msgs
 
 gsfmterrormsg_ww :: Pos -> (String -> String) -> GSValue -> IO String
 gsfmterrormsg_ww pos ds (GSThunk th) = do
