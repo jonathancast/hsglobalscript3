@@ -3,6 +3,7 @@
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
+    gsbclog, gsbclog_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -147,6 +148,11 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
     msgv <- gsprepare_w pos msg
     msgs <- $gsfmterrormsg msgv
     aceEnterExpr [StackTrace pos cs] (k msgs) st
+
+gsbclog = varE 'gsbclog_w `appE` gshere
+
+gsbclog_w :: Pos -> [GSArg] -> GSExpr
+gsbclog_w pos as = gsbcimplementationfailure_w $gshere $ "gsbclog_w next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
