@@ -2,11 +2,11 @@
 module GSI.Main (gsmain) where
 
 import GSI.Value (GSExpr, gsundefined, gslambda, gsargvar, gsae)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbclog, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
-import GSI.Log (gsbclogstring)
+import GSI.Log (gsbclog, gsbclogstring)
 import GSI.Env (gsenvGetArgs)
 
 -- Main function (call this to start your interpreter)
