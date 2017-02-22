@@ -3,7 +3,6 @@
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
-    gscompose,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -148,10 +147,6 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
     msgv <- gsprepare_w pos msg
     msgs <- $gsfmterrormsg msgv
     aceEnterExpr [StackTrace pos cs] (k msgs) st
-
-gscompose :: GSValue
-gscompose = $gslambda $ \ f -> gsbcarg_w $gshere $ \ g -> gsbcarg_w $gshere $ \ x ->
-    gsbcapply_w $gshere f [$gsae (gsbcapply_w $gshere g [$gsav x])]
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 

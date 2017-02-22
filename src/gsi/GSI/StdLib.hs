@@ -1,10 +1,13 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gsanalyze, gscase, gserror) where
+module GSI.StdLib (gscompose, gsanalyze, gscase, gserror) where
 
 import GSI.Util (Pos(..))
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsav, gsargexpr, gsvCode)
+import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsav, gsae, gsargexpr, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcevalnatural, gsbcerror, gsbcfmterrormsg, gsbcimplementationfailure)
+
+gscompose :: GSValue
+gscompose = $gslambda $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
 
 gsanalyze = $gslambda $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
 
