@@ -1,12 +1,14 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
   ) where
+
+import Control.Monad (forM)
 
 import qualified Data.Map as Map
 
@@ -36,6 +38,15 @@ gsbchere_w pos = GSExpr $ \ st cs -> aceReturn res st where
         (gsvar "line", $gsnatural (line pos)),
         (gsvar "col", $gsnatural (col pos))
       ]
+
+gsbcrecord = varE 'gsbcrecord_w `appE` gshere
+
+gsbcrecord_w :: Pos -> [(GSVar, GSArg)] -> GSExpr
+gsbcrecord_w pos fs = GSExpr $ \ st cs -> do
+    fs' <- forM fs $ \ (v, fa) -> do
+        fv <- gsprepare_w pos fa
+        return (v, fv)
+    return $ GSRecord pos $ Map.fromList fs'
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
