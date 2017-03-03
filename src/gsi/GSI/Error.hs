@@ -7,9 +7,11 @@ import Data.Typeable (Typeable)
 import Control.Exception (Exception(..), throw)
 
 import GSI.Util (Pos, StackTrace(..), fmtPos, fmtStackTrace, gshere)
+import GSI.Syn (GSVar, fmtVarAtom)
 
 data GSError
   = GSErrUnimpl StackTrace
+  | GSErrUnimplField Pos GSVar
   | GSErrInsufficientCases Pos String
   | GSErrError Pos String
   deriving (Show)
@@ -34,5 +36,6 @@ throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror ("
 
 fmtError :: GSError -> String
 fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
+fmtError (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
 fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
 fmtError (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
