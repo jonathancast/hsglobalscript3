@@ -10,7 +10,7 @@ data GSVar
   = GSVarSym String
   | GSVarNum Integer
   | GSVarAlphaNum String
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Show)
 
 gsvar :: String -> GSVar
 gsvar [] = $gsfatal "gsvar [] called; this is very bad"
