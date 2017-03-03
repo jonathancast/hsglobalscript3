@@ -61,6 +61,7 @@ type GSThunk = MVar GSThunkState
 data GSThunkState
   = GSTSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
   | GSApply Pos GSValue [GSValue]
+  | GSTSField Pos GSVar GSValue
   | GSTSStack Event
   | GSTSIndirection GSValue
 
@@ -101,6 +102,7 @@ gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (GSRawExpr . f)) wher
 gsfield = varE 'gsfield_w `appE` gshere
 
 gsfield_w :: Pos -> GSVar -> GSValue -> IO GSValue
+gsfield_w pos0 f r@GSThunk{} = fmap GSThunk $ newMVar $ GSTSField pos0 f r
 gsfield_w pos0 f r = return $ GSImplementationFailure $gshere $ "gsfield " ++ gsvCode r ++ " next"
 
 gsav = gsargvar
@@ -161,5 +163,6 @@ gsstCode GSStackArg{} = "GSStackArg"
 gstsCode :: GSThunkState -> String
 gstsCode GSTSExpr{} = "GSTSExpr"
 gstsCode GSApply{} = "GSApply"
+gstsCode GSTSField{} = "GSTSField"
 gstsCode GSTSStack{} = "GSTSStack"
 gstsCode GSTSIndirection{} = "GSTSIndirection"
