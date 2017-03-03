@@ -10,6 +10,7 @@ module GSI.Value (
   ) where
 
 import Data.Map (Map)
+import qualified Data.Map as Map
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -103,6 +104,9 @@ gsfield = varE 'gsfield_w `appE` gshere
 
 gsfield_w :: Pos -> GSVar -> GSValue -> IO GSValue
 gsfield_w pos0 f r@GSThunk{} = fmap GSThunk $ newMVar $ GSTSField pos0 f r
+gsfield_w pos0 f (GSRecord pos1 fs) = case Map.lookup f fs of
+    Nothing -> return $ GSError $ GSErrUnimplField pos1 f
+    Just v -> return v
 gsfield_w pos0 f r = return $ GSImplementationFailure $gshere $ "gsfield " ++ gsvCode r ++ " next"
 
 gsav = gsargvar
