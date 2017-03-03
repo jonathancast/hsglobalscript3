@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar)
 import GSI.Error (fmtError)
-import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsvCode)
+import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
 
 gslist = varE 'gslist_w `appE` gshere
@@ -38,5 +38,8 @@ gsfmterrormsg_ww pos ds (GSThunk th) = do
     gsfmterrormsg_ww pos ds v
 gsfmterrormsg_ww pos ds (GSError err) = return $ (ds . ("<Error: "++) . (fmtError err++) . ('>':)) $ ""
 gsfmterrormsg_ww pos0 ds (GSImplementationFailure pos1 msg) = return $ (ds . ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)) $ ""
+gsfmterrormsg_ww pos ds v@GSRecord{} = do
+    pcs <- $gsfield (gsvar "paragraph-constituents") v
+    return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg 〈 'paragraph-constituents = "++) . (gsvCode pcs++) . ("; 〉 next"++) . ('>':)) $ ""
 gsfmterrormsg_ww pos ds msg =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . (gsvCode msg++) . (" next"++) . ('>':)) $ ""
