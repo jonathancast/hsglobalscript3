@@ -1,11 +1,12 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.List (gscons, gscons_view) where
 
-import GSI.Value (GSValue, gsundefined, gslambda, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcforce, gsbcimplementationfailure, gsbcconstr_view)
+import GSI.Syn (gsvar)
+import GSI.Value (GSValue, gsundefined, gslambda, gsav, gsvCode)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view)
 
 gscons :: GSValue
-gscons = $gsundefined
+gscons = $gslambda $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
 
 gscons_view :: GSValue
 gscons_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ xn -> $gsbcconstr_view ":" ek sk xn
