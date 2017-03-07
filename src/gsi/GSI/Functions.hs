@@ -44,8 +44,14 @@ gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ GSThunk pcth, msg1 ]) | c == gsvar "
     gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ pcv, msg1 ])
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ GSError err, msg1 ]) | c == gsvar ":" =
     gsfmterrormsg_ww pos0 (ds . ("<Error: "++) . (fmtError err++) . ('>':)) msg1
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ GSRune ch ], msg1 ]) | c1 == gsvar ":" && c2 == gsvar "char" =
+    gsfmterrormsg_ww pos0 (ds . (ch:)) msg1
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ ch ], msg1 ]) | c1 == gsvar ":" && c2 == gsvar "char" =
+    gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg (char "++) . (gsvCode ch++) . (" : _"++) . (") next"++) . ('>':)) msg1
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 _, msg1 ]) | c1 == gsvar ":" =
+    gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . fmtVarAtom c2 . (" : _"++) . (") next"++) . ('>':)) msg1
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ c0, msg1 ]) | c == gsvar ":" =
-    return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . fmtVarAtom c . (' ':) . (gsvCode c0++) . (' ':) . (gsvCode msg1++) . (") next"++) . ('>':)) $ ""
+    gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . (gsvCode c0++) . (" : _"++) . (") next"++) . ('>':)) msg1
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c as) =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . fmtVarAtom c . (" next"++) . ('>':)) $ ""
 gsfmterrormsg_ww pos ds msg =
