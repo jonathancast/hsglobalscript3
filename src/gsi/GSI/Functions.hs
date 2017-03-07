@@ -39,6 +39,13 @@ gsfmterrormsg_ww pos ds (GSThunk th) = do
     gsfmterrormsg_ww pos ds v
 gsfmterrormsg_ww pos ds (GSError err) = return $ (ds . ("<Error: "++) . (fmtError err++) . ('>':)) $ ""
 gsfmterrormsg_ww pos0 ds (GSImplementationFailure pos1 msg) = return $ (ds . ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)) $ ""
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ GSThunk pcth, msg1 ]) | c == gsvar ":" = do
+    pcv <- evalSync [StackTrace pos0 []] pcth
+    gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ pcv, msg1 ])
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ GSError err, msg1 ]) | c == gsvar ":" =
+    gsfmterrormsg_ww pos0 (ds . ("<Error: "++) . (fmtError err++) . ('>':)) msg1
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ c0, msg1 ]) | c == gsvar ":" =
+    return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . fmtVarAtom c . (' ':) . (gsvCode c0++) . (' ':) . (gsvCode msg1++) . (") next"++) . ('>':)) $ ""
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c as) =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . fmtVarAtom c . (" next"++) . ('>':)) $ ""
 gsfmterrormsg_ww pos ds msg =
