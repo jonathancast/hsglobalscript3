@@ -17,7 +17,7 @@ import Language.Haskell.TH.Lib (appE, varE, conE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand)
@@ -136,11 +136,9 @@ gsbcimpfor_w pos a = GSExpr $ \ st cs -> aceReturn (gsimpfor_w pos a) st
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
 gsbcfield_w :: Pos -> GSVar -> GSValue -> (GSValue -> GSExpr) -> GSExpr
-gsbcfield_w pos f r k = GSExpr $ \ st cs -> case r of
-    GSRecord pos1 fs -> case Map.lookup f fs of
-        Nothing -> aceThrow ($gsimplementationfailure $ "gsbcfield_w (missing field) next") st
-        Just v -> aceEnterExpr [StackTrace pos cs] (k v) st
-    _ -> aceThrow ($gsimplementationfailure $ "gsbcfield_w " ++ gsvCode r ++ " next") st
+gsbcfield_w pos f r k = GSExpr $ \ st cs -> do
+    v <- gsfield_w pos f r
+    aceEnterExpr [StackTrace pos cs] (k v) st
 
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
 
