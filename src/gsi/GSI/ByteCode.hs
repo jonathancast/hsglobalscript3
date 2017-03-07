@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
@@ -70,6 +70,11 @@ gsbcarg = varE 'gsbcarg_w `appE` gshere
 gsbcarg_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
 gsbcarg_w pos fn = GSExpr $ \ st cs -> do
     aceEnter [ StackTrace pos cs ] (gslambda_w pos fn) st
+
+gsbcenter = varE 'gsbcenter_w `appE` gshere
+
+gsbcenter_w :: Pos -> GSValue -> GSExpr
+gsbcenter_w pos v = GSExpr $ \ st cs -> aceEnter [ StackTrace pos cs ] v st
 
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
