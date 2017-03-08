@@ -27,7 +27,12 @@ gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
   ]
 
 gsloggs :: GSValue
-gsloggs = $gsundefined
+gsloggs = $gslambda $ \ x -> $gsbcarg $ \k -> $gsbcrecord [
+    (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
+        $gsae $ $gsbcundefined,
+        $gsae $ $gsbcfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
+    ])
+  ]
 
 gsbclogstring = varE 'gsbclogstring_w `appE` gshere
 
