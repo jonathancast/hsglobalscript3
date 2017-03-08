@@ -26,4 +26,4 @@ gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
 gsbclogstring = varE 'gsbclogstring_w `appE` gshere
 
 gsbclogstring_w :: Pos -> String -> GSExpr
-gsbclogstring_w pos s = foldr (\ ch k -> gsbcapply_w pos gscompose [ $gsae $ gsbcapply_w pos gslogchar [$gsav $ GSRune ch], $gsae $gsbcundefined ]) $gsbcundefined s
+gsbclogstring_w pos s = foldr (\ ch k -> gsbcapply_w pos gscompose [ $gsae $ gsbcapply_w pos gslogchar [$gsav $ GSRune ch], $gsae k ]) $gsbcundefined s
