@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w) where
+module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gsloggs) where
 
 import Language.Haskell.TH.Lib (varE, appE)
 
@@ -25,6 +25,9 @@ gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
         $gsae $ $gsbcfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
     ])
   ]
+
+gsloggs :: GSValue
+gsloggs = $gsundefined
 
 gsbclogstring = varE 'gsbclogstring_w `appE` gshere
 
