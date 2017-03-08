@@ -5,7 +5,7 @@ import Language.Haskell.TH.Lib (varE, appE)
 
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda, gsae, gsav)
+import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda, gsundefined, gsae, gsav)
 import GSI.ByteCode (gsbcarg, gsbcundefined, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbcfield)
 import GSI.StdLib (gscompose)
 import GSI.List (gscons)
@@ -14,6 +14,9 @@ gsbclog = varE 'gsbclog_w `appE` gshere
 
 gsbclog_w :: Pos -> [GSArg] -> GSExpr
 gsbclog_w pos as = foldr (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ]) $gsbcundefined as
+
+gslogempty :: GSValue
+gslogempty = $gsundefined
 
 gslogchar :: GSValue
 gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
