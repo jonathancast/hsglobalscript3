@@ -20,8 +20,7 @@ gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsargvar args,
         $gsae ($gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsae $ $gsbcarg $ \ env ->
-                $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggs [ $gsae $ $gsbcvar (gsvar "a") env ], $gsae $gsbcundefined ] ], -- > log{Process }, gs gs{a}, log{ next}
-                -- Process §gs{a:as}
+                $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggs [ $gsae $ $gsbcvar (gsvar "a") env ], $gsae $ $gsbclogstring " next" ] ],
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
         ])
     ]
