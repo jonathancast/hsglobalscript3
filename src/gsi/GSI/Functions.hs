@@ -61,3 +61,6 @@ gsfmterrormsg_ww pos0 ds (GSConstr pos1 c as) =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . fmtVarAtom c . (" next"++) . ('>':)) $ ""
 gsfmterrormsg_ww pos ds msg =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . (gsvCode msg++) . (" next"++) . ('>':)) $ ""
+
+gsfmterrorvalue :: Pos -> Bool -> GSValue -> IO (String -> String)
+gsfmterrorvalue pos p x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
