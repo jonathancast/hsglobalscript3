@@ -29,7 +29,7 @@ gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
 gsloggsv :: GSValue
 gsloggsv = $gslambda $ \ x -> $gsbcarg $ \k -> $gsbcrecord [
     (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
-        $gsae $ $gsbcundefined,
+        $gsae $ $gsbcconstr (gsvar "gsv") [ $gsav x ],
         $gsae $ $gsbcfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
     ])
   ]
