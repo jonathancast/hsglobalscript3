@@ -13,7 +13,7 @@ import GSI.List (gscons)
 gsbclog = varE 'gsbclog_w `appE` gshere
 
 gsbclog_w :: Pos -> [GSArg] -> GSExpr
-gsbclog_w pos as = foldr (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ]) $gsbcundefined as
+gsbclog_w pos as = foldr (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ]) ($gsbcenter gslogempty) as
 
 gslogempty :: GSValue
 gslogempty = $gslambda $ \ k -> $gsbcenter k
