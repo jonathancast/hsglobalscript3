@@ -66,4 +66,8 @@ gsfmterrormsg_ww pos ds msg =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . (gsvCode msg++) . (" next"++) . ('>':)) $ ""
 
 gsfmterrorvalue :: Pos -> Bool -> GSValue -> IO (String -> String)
+gsfmterrorvalue pos p (GSThunk th) = do
+    v <- evalSync [StackTrace pos []] th
+    gsfmterrorvalue pos p v
+gsfmterrorvalue pos0 p (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
 gsfmterrorvalue pos p x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
