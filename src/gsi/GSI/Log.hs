@@ -16,7 +16,7 @@ gsbclog_w :: Pos -> [GSArg] -> GSExpr
 gsbclog_w pos as = foldr (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ]) $gsbcundefined as
 
 gslogempty :: GSValue
-gslogempty = $gsundefined
+gslogempty = $gslambda $ \ k -> $gsbcenter k
 
 gslogchar :: GSValue
 gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
