@@ -3,6 +3,8 @@ module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatur
 
 import Language.Haskell.TH.Lib (appE, varE)
 
+import qualified Data.Map as Map
+
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (fmtError)
@@ -29,7 +31,9 @@ gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
 gsfmterrormsg_w :: Pos -> GSValue -> IO String
 gsfmterrormsg_w pos msg = do
-    msgt <- $gsapply msg [ $gsimplementationfailure "empty record next" ]
+    msgt <- $gsapply msg [ GSRecord $gshere (Map.fromList [
+        (gsvar "paragraph-constituents", GSConstr $gshere (gsvar "nil") [])
+      ]) ]
     msg_pcs <- $gsfield (gsvar "paragraph-constituents") msgt
     gsfmterrormsg_ww pos id msg_pcs
 
@@ -52,6 +56,7 @@ gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 _, msg1 ]) | c1 ==
     gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . fmtVarAtom c2 . (" : _"++) . (") next"++) . ('>':)) msg1
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c [ c0, msg1 ]) | c == gsvar ":" =
     gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . (gsvCode c0++) . (" : _"++) . (") next"++) . ('>':)) msg1
+gsfmterrormsg_ww pos0 ds (GSConstr pos1 c []) | c== gsvar "nil" = return $ ds $ ""
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c as) =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . fmtVarAtom c . (" next"++) . ('>':)) $ ""
 gsfmterrormsg_ww pos ds msg =
