@@ -7,7 +7,7 @@ import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcvar, gsbcv
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
-import GSI.Log (gsbclog, gsbclogstring, gsloggs)
+import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
 import GSI.Env (gsenvGetArgs)
 
 -- Main function (call this to start your interpreter)
@@ -20,7 +20,7 @@ gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsargvar args,
         $gsae ($gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsae $ $gsbcarg $ \ env ->
-                $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggs [ $gsae $ $gsbcvar (gsvar "a") env ], $gsae $ $gsbclogstring " next" ] ],
+                $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsae $ $gsbcvar (gsvar "a") env ], $gsae $ $gsbclogstring " next" ] ],
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
         ])
     ]

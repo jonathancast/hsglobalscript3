@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gsloggs) where
+module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gsloggsv) where
 
 import Language.Haskell.TH.Lib (varE, appE)
 
@@ -26,8 +26,8 @@ gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
     ])
   ]
 
-gsloggs :: GSValue
-gsloggs = $gslambda $ \ x -> $gsbcarg $ \k -> $gsbcrecord [
+gsloggsv :: GSValue
+gsloggsv = $gslambda $ \ x -> $gsbcarg $ \k -> $gsbcrecord [
     (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
         $gsae $ $gsbcundefined,
         $gsae $ $gsbcfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
