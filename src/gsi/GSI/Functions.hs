@@ -65,6 +65,10 @@ gsfmterrormsg_ww pos0 ds (GSConstr pos1 c as) =
 gsfmterrormsg_ww pos ds msg =
     return $ (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg "++) . (gsvCode msg++) . (" next"++) . ('>':)) $ ""
 
+-- §begin§itemize
+--     §item Evaluates thunks
+--     §item Prints errors
+-- §end
 gsfmterrorvalue :: Pos -> Bool -> GSValue -> IO (String -> String)
 gsfmterrorvalue pos p (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th

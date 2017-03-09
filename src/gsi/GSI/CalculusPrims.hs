@@ -49,6 +49,10 @@ gspriminsufficientcases pos (GSThunk th) = do
 gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
 gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
 
+-- §begin§itemize
+--     §item Doesn't evaluate thunks
+--     §item Doesn't print errors (prints _ instead)
+-- §end
 fmtValue :: GSValue -> IO (String -> String)
 fmtValue v@GSError{} = fmtValueAtom v
 fmtValue (GSConstr pos c xn) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM fmtValueAtom xn
