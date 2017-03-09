@@ -53,7 +53,7 @@ gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ GSRune ch ], msg
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ ch ], msg1 ]) | c1 == gsvar ":" && c2 == gsvar "char" =
     gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg (char "++) . (gsvCode ch++) . (" : _"++) . (") next"++) . ('>':)) msg1
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ x ], msg1 ]) | c1 == gsvar ":" && c2 == gsvar "gsv" = do
-    xds <- gsfmterrorvalue pos0 False x
+    xds <- gsfmterrorvalue pos0 x
     gsfmterrormsg_ww pos0 (ds . xds) msg1
 gsfmterrormsg_ww pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 _, msg1 ]) | c1 == gsvar ":" =
     gsfmterrormsg_ww pos0 (ds . ('<':) . fmtPos $gshere . ("gsfmterrormsg ("++) . fmtVarAtom c2 . (" : _"++) . (") next"++) . ('>':)) msg1
@@ -69,9 +69,13 @@ gsfmterrormsg_ww pos ds msg =
 --     §item Evaluates thunks
 --     §item Prints errors
 -- §end
-gsfmterrorvalue :: Pos -> Bool -> GSValue -> IO (String -> String)
-gsfmterrorvalue pos p (GSThunk th) = do
+gsfmterrorvalue :: Pos -> GSValue -> IO (String -> String)
+gsfmterrorvalue pos (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th
-    gsfmterrorvalue pos p v
-gsfmterrorvalue pos0 p (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
-gsfmterrorvalue pos p x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
+    gsfmterrorvalue pos v
+gsfmterrorvalue pos v@GSImplementationFailure{} = gsfmterrorvalueAtom pos v
+gsfmterrorvalue pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
+
+gsfmterrorvalueAtom :: Pos -> GSValue -> IO (String -> String)
+gsfmterrorvalueAtom pos0 (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
+gsfmterrorvalueAtom pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalueAtom "++) . (gsvCode x++) . (" next"++) . ('>':)
