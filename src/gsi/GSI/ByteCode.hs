@@ -224,6 +224,5 @@ gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
 gsbcvarpattern_ww :: Pos -> GSVar -> GSExpr
-gsbcvarpattern_ww pos v = gsbcarg_w pos $ \ x -> GSExpr $ \  st cs->
-    let res = GSConstr pos (gsvar "1") [$gsimplementationfailure "singleton record next"] -- > GSRecord $ Map.fromList [ (v, x) ]
-    in aceReturn res st
+gsbcvarpattern_ww pos v = gsbcarg_w pos $ \ x -> GSExpr $ \  st cs ->
+    aceReturn (GSConstr pos (gsvar "1") [GSRecord pos $ Map.fromList [(v, x)]]) st
