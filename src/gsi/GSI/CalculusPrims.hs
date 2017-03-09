@@ -1,6 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.CalculusPrims (gsparand, gspriminsufficientcases) where
 
+import qualified Data.Map as Map
+
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (awaitAny)
 import GSI.Error (GSError(..))
@@ -32,10 +34,10 @@ gsparand pos _ y@GSImplementationFailure{} = return y
 gsparand pos _ y@GSError{} = return y
 gsparand pos (GSConstr posx cx [ex@GSImplementationFailure{}]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = return ex
 gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey@GSImplementationFailure{}]) | cx == gsvar "1" && cy == gsvar "1" = return ey
+gsparand pos (GSConstr posx cx [GSRecord _ ex]) (GSConstr posy cy [GSRecord _ ey]) | cx == gsvar "1" && cy == gsvar "1" =
+    return $ GSConstr pos (gsvar "1") [GSRecord pos (Map.union ex ey)]
 gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" =
     return $ $gsimplementationfailure $ "gsparand (1 " ++ gsvCode ex ++ ") (1 " ++ gsvCode ey ++ ") next"
-gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" =
-    return $ GSConstr pos (gsvar "1") [$gsimplementationfailure $ "gsparand 1 1 next"] -- > succeed
 gsparand pos x y = return $ $gsimplementationfailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
 
 gspriminsufficientcases :: Pos -> GSValue -> IO GSValue
