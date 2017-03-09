@@ -30,6 +30,9 @@ gsparand pos x (GSThunk ys) = do
 gsparand pos x@GSImplementationFailure{} _ = return x
 gsparand pos _ y@GSImplementationFailure{} = return y
 gsparand pos _ y@GSError{} = return y
+gsparand pos (GSConstr posx cx [ex@GSImplementationFailure{}]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = return ex
+gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" =
+    return $ $gsimplementationfailure $ "gsparand (1 " ++ gsvCode ex ++ ") (1 " ++ gsvCode ey ++ ") next"
 gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" =
     return $ GSConstr pos (gsvar "1") [$gsimplementationfailure $ "gsparand 1 1 next"] -- > succeed
 gsparand pos x y = return $ $gsimplementationfailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
