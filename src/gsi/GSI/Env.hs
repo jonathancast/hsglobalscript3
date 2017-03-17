@@ -25,4 +25,8 @@ newtype GSEnvArgs = GSEnvArgs GSValue
 instance ThreadDataComponent GSEnvArgs where
 
 gsfileStat :: GSValue
-gsfileStat = $gsundefined
+gsfileStat = $gsimpprim gsprimenvFileStat
+
+gsprimenvFileStat :: Pos -> Thread -> GSValue -> IO GSValue
+gsprimenvFileStat pos t fn = do
+    $apiImplementationFailure $ "gsprimenvFileStat next"
