@@ -134,14 +134,14 @@ gsprepare_w pos a = return $ GSImplementationFailure $gshere $ "gsprepare_w " ++
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
-gsimpprim_w :: GSImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
-gsimpprim_w pos f = gsimpprim_ww pos (f pos)
+gsimpprim_w :: GSImpPrimType f => Pos -> (Pos -> Thread -> f) -> GSValue
+gsimpprim_w pos f = GSClosure [StackTrace pos []] (gsimpprim_ww (f pos))
 
-class GSImpPrimType f r where
-    gsimpprim_ww :: Pos -> (Thread -> f) -> r
+class GSImpPrimType f where
+    gsimpprim_ww :: (Thread -> f) -> GSBCO
 
-instance GSImpPrimType (IO GSValue) GSValue where
-    gsimpprim_ww pos f = GSClosure [StackTrace pos []] (GSImp f)
+instance GSImpPrimType (IO GSValue) where
+    gsimpprim_ww f = GSImp f
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
