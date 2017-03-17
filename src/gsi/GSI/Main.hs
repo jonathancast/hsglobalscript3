@@ -7,6 +7,7 @@ import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcfield, gsb
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
+import GSI.Either (gsleft_view)
 import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
 import GSI.Env (gsenvGetArgs, gsfileStat)
 
@@ -22,7 +23,14 @@ gsprocessargs = $gslambda $ \ args ->
             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "a") env $ \ a -> $gsbcimpfor $ do
                 st <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
-                    $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ],
+                    $gsbcapply gsanalyze [ $gsav st,
+                        $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
+                            $gsae $ $gsbcarg $ \ env ->
+                                $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ]
+                        ,
+                        $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ]
+                    ] ]
+        ,
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
         ])
     ]
