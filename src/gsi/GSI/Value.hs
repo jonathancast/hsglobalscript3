@@ -143,6 +143,9 @@ class GSImpPrimType f where
 instance GSImpPrimType (IO GSValue) where
     gsimpprim_ww f = GSImp f
 
+instance GSImpPrimType f => GSImpPrimType (GSValue -> f) where
+    gsimpprim_ww f = GSLambda $ \ x -> gsimpprim_ww (flip f x)
+
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"
