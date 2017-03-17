@@ -10,6 +10,7 @@ import qualified Data.Map as Map
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtError)
+import GSI.ThreadType (ThreadException(..))
 import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
@@ -39,6 +40,7 @@ gsapiEvalString pos v = do
     mb <- try $ gsevalString pos v
     case mb of
         Right s -> $apiImplementationFailure $ "gsapiEvalString (gsevalString returned " ++ show s ++ ") next"
+        Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
         Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalString (gsevalString threw unknown exception " ++ displayException e ++ ") next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
