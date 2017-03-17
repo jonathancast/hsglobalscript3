@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat) where
+module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsENOENT_view) where
 
 import Control.Exception (SomeException, try, fromException)
 
@@ -11,7 +11,8 @@ import System.Posix.Files (getFileStatus)
 
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), gsimpprim, gsundefined)
+import GSI.Value (GSValue(..), gslambda, gsimpprim, gsundefined)
+import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
 import API (apiImplementationFailure)
@@ -44,3 +45,6 @@ gsprimfileStat pos t fn = do
             return $ GSConstr $gshere (gsvar "left") [ GSConstr $gshere (gsvar "ENOENT") [ fn ] ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Right) next"
+
+gsENOENT_view :: GSValue
+gsENOENT_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ err -> $gsbcconstr_view "ENOENT" ek sk err
