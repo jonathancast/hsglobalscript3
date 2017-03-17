@@ -48,10 +48,10 @@ gsevalString pos v = gsevalString_w pos id v where
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
-gsapiEvalString pos v = do
-    mb <- try $ gsevalString pos v
-    case mb of
-        Right s -> $apiImplementationFailure $ "gsapiEvalString (gsevalString returned " ++ show s ++ ") next"
+gsapiEvalString pos fnv = do
+    mbs <- try $ gsevalString pos fnv
+    case mbs of
+        Right s -> return s
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
         Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalString (gsevalString threw unknown exception " ++ displayException e ++ ") next"
 
