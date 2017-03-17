@@ -8,7 +8,7 @@ import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
 import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
-import GSI.Env (gsenvGetArgs)
+import GSI.Env (gsenvGetArgs, gsfileStat)
 
 -- Main function (call this to start your interpreter)
 gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
@@ -20,6 +20,7 @@ gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsav args,
         $gsae ($gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "a") env $ \ a -> $gsbcimpfor $ do
+                st <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
                     $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " next" ] ],
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
