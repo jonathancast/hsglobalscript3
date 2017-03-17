@@ -8,6 +8,7 @@ import GSI.Value (GSValue, gsimpprim, gsundefined)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
 import API (apiImplementationFailure)
+import GSI.Functions (gsapiEvalString)
 
 gsenvGetArgs = $gsimpprim gsprimenvGetArgs :: GSValue
 
@@ -29,4 +30,5 @@ gsfileStat = $gsimpprim gsprimfileStat
 
 gsprimfileStat :: Pos -> Thread -> GSValue -> IO GSValue
 gsprimfileStat pos t fn = do
+    fns <- gsapiEvalString pos fn
     $apiImplementationFailure $ "gsprimenvFileStat next"
