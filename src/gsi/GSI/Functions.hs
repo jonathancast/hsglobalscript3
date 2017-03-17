@@ -103,7 +103,7 @@ gsfmterrorvalue pos (GSThunk th) = do
     gsfmterrorvalue pos v
 gsfmterrorvalue pos v@GSImplementationFailure{} = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos v@GSError{} = gsfmterrorvalueAtom pos v
-gsfmterrorvalue pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorString pos ("qq{"++) v
+gsfmterrorvalue pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos (GSConstr pos1 c as) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM (gsfmterrorvalueAtom pos) as
 gsfmterrorvalue pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
 
@@ -111,6 +111,7 @@ gsfmterrorvalueAtom :: Pos -> GSValue -> IO (String -> String)
 gsfmterrorvalueAtom pos0 (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
 gsfmterrorvalueAtom pos0 (GSError err) = return $ ('<':) . (fmtError err ++) . ('>':)
 gsfmterrorvalueAtom pos0 (GSRune ch) | not (ch `elem` "\\/§()[]{}") = return $ ("r/"++) . (ch:) . ("/"++)
+gsfmterrorvalueAtom pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorString pos ("qq{"++) v
 gsfmterrorvalueAtom pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalueAtom "++) . (gsvCode x++) . (" next"++) . ('>':)
 
 gsfmterrorString :: Pos -> (String -> String) -> GSValue -> IO (String -> String)
