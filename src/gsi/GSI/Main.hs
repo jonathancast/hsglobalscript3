@@ -9,7 +9,7 @@ import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
 import GSI.Either (gsleft_view)
 import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
-import GSI.Env (gsenvGetArgs, gsfileStat)
+import GSI.Env (gsenvGetArgs, gsfileStat, gsENOENT_view)
 
 -- Main function (call this to start your interpreter)
 gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
@@ -27,8 +27,11 @@ gsprocessargs = $gslambda $ \ args ->
                         $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
                             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "e") env $ \ e ->
                                 $gsbcapply gsanalyze [ $gsav e,
+                                    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
+                                        $gsae $ $gsbcarg $ \ env ->
+                                            $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ],
                                     $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ]
-                                ]
+                                ] ]
                         ,
                         $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ]
                     ] ]
