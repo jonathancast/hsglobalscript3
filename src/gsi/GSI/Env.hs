@@ -41,6 +41,6 @@ gsprimfileStat pos t fn = do
     mbst <- try $ getFileStatus fns
     case mbst of
         Left e | Just e1 <- fromException e, isDoesNotExistError e1 ->
-            return $ GSConstr $gshere (gsvar "left") [ $gsundefined ]
+            return $ GSConstr $gshere (gsvar "left") [ GSConstr $gshere (gsvar "ENOENT") [ fn ] ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Right) next"
