@@ -1,10 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Env (GSEnvArgs(..), gsenvGetArgs) where
+module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat) where
 
 import Component.Monad (getM)
 
 import GSI.Util (Pos)
-import GSI.Value (GSValue, gsimpprim)
+import GSI.Value (GSValue, gsimpprim, gsundefined)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
 import API (apiImplementationFailure)
@@ -23,3 +23,6 @@ gsprimenvGetArgs pos t = withThreadData t (\ d -> do
 newtype GSEnvArgs = GSEnvArgs GSValue
 
 instance ThreadDataComponent GSEnvArgs where
+
+gsfileStat :: GSValue
+gsfileStat = $gsundefined
