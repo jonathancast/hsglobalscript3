@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Syn (GSVar, gsvar, fmtVarAtom) where -- §hs{GSVar} is deliberately §emph{abstract}
 
-import Data.Char (isPunctuation, isSymbol, isDigit, isLower)
+import Data.Char (isPunctuation, isSymbol, isDigit, isLetter, isUpper)
 
 import GSI.Util (gsfatal, gshere, fmtPos)
 
@@ -17,7 +17,8 @@ gsvar [] = $gsfatal "gsvar [] called; this is very bad"
 gsvar v@(c:_) =
   if isPunctuation c || isSymbol c then GSVarSym v
   else if isDigit c then GSVarNum (read v)
-  else if isLower c then GSVarAlphaNum v
+  else if isLetter c && not (isUpper c) then GSVarAlphaNum v
+  else if isUpper c then GSVarAlphaNum v
   else $gsfatal $ "gsvar " ++ show v ++ " next"
 
 fmtVarAtom :: GSVar -> String -> String
