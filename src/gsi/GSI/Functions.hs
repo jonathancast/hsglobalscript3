@@ -1,7 +1,7 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsapiEvalString, gsfmterrormsg) where
 
-import Control.Exception (throwIO)
+import Control.Exception (Exception(..), throwIO, try)
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -35,7 +35,11 @@ gsevalString pos v = do
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
-gsapiEvalString pos v = $apiImplementationFailure $ "gsapiEvalString " ++ gsvCode v ++ " next"
+gsapiEvalString pos v = do
+    mb <- try $ gsevalString pos v
+    case mb of
+        Right s -> $apiImplementationFailure $ "gsapiEvalString (gsevalString returned " ++ show s ++ ") next"
+        Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalString (gsevalString threw unknown exception " ++ displayException e ++ ") next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
