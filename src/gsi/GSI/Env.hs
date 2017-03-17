@@ -9,8 +9,9 @@ import Component.Monad (getM)
 
 import System.Posix.Files (getFileStatus)
 
-import GSI.Util (Pos)
-import GSI.Value (GSValue, gsimpprim, gsundefined)
+import GSI.Util (Pos, gshere)
+import GSI.Syn (gsvar)
+import GSI.Value (GSValue(..), gsimpprim, gsundefined)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
 import API (apiImplementationFailure)
@@ -40,6 +41,6 @@ gsprimfileStat pos t fn = do
     mbst <- try $ getFileStatus fns
     case mbst of
         Left e | Just e1 <- fromException e, isDoesNotExistError e1 ->
-            return $ $gsundefined
+            return $ GSConstr $gshere (gsvar "left") [ $gsundefined ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Right) next"
