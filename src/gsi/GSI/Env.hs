@@ -1,7 +1,13 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat) where
 
+import Control.Exception (SomeException, try, fromException)
+
+import System.IO.Error (isDoesNotExistError)
+
 import Component.Monad (getM)
+
+import System.Posix.Files (getFileStatus)
 
 import GSI.Util (Pos)
 import GSI.Value (GSValue, gsimpprim, gsundefined)
@@ -31,4 +37,9 @@ gsfileStat = $gsimpprim gsprimfileStat
 gsprimfileStat :: Pos -> Thread -> GSValue -> IO GSValue
 gsprimfileStat pos t fn = do
     fns <- gsapiEvalString pos fn
-    $apiImplementationFailure $ "gsprimenvFileStat next"
+    mbst <- try $ getFileStatus fns
+    case mbst of
+        Left e | Just e1 <- fromException e, isDoesNotExistError e1 ->
+            return $ $gsundefined
+        Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
+        Right st -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Right) next"
