@@ -31,6 +31,10 @@ gsnatural = varE 'gsnatural_w `appE` gshere
 gsnatural_w :: Pos -> Integer -> GSValue
 gsnatural_w pos n = GSNatural n
 
+gsevalChar :: Pos -> GSValue -> IO Char
+gsevalChar pos v =
+    throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
+
 gsevalString :: Pos -> GSValue -> IO String
 gsevalString pos v = do
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
