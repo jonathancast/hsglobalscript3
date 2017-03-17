@@ -1,13 +1,15 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsapiEvalString, gsfmterrormsg) where
 
+import Control.Exception (throwIO)
+
 import Language.Haskell.TH.Lib (appE, varE)
 
 import qualified Data.Map as Map
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Error (fmtError)
+import GSI.Error (GSException(..), fmtError)
 import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
@@ -27,6 +29,10 @@ gsnatural = varE 'gsnatural_w `appE` gshere
 
 gsnatural_w :: Pos -> Integer -> GSValue
 gsnatural_w pos n = GSNatural n
+
+gsevalString :: Pos -> GSValue -> IO String
+gsevalString pos v = do
+    throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
 gsapiEvalString pos v = $apiImplementationFailure $ "gsapiEvalString " ++ gsvCode v ++ " next"
