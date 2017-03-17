@@ -3,7 +3,7 @@ module GSI.Main (gsmain) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSExpr, gsundefined, gslambda, gsav, gsae)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcvar, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcfield, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
@@ -19,8 +19,9 @@ gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
 gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsav args,
         $gsae ($gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
-            $gsae $ $gsbcarg $ \ env ->
-                $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsae $ $gsbcvar (gsvar "a") env ], $gsae $ $gsbclogstring " next" ] ],
+            $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "a") env $ \ a -> $gsbcimpfor $ do
+                $gsbcimpbody $ $gsae $
+                    $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " next" ] ],
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
         ])
     ]
