@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsapiEvalString, gsfmterrormsg) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -10,6 +10,7 @@ import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (fmtError)
 import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
+import API (apiImplementationFailure)
 
 gslist = varE 'gslist_w `appE` gshere
 
@@ -26,6 +27,9 @@ gsnatural = varE 'gsnatural_w `appE` gshere
 
 gsnatural_w :: Pos -> Integer -> GSValue
 gsnatural_w pos n = GSNatural n
+
+gsapiEvalString :: Pos -> GSValue -> IO String
+gsapiEvalString pos v = $apiImplementationFailure $ "gsapiEvalString " ++ gsvCode v ++ " next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
