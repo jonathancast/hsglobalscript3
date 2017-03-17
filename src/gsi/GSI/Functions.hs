@@ -36,7 +36,12 @@ gsevalChar pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
 
 gsevalString :: Pos -> GSValue -> IO String
-gsevalString pos v = do
+gsevalString pos (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
+    ch <- gsevalChar pos chv
+    throwIO $ GSExcImplementationFailure $gshere $ "gsevalString (_ : _) next"
+gsevalString pos (GSConstr pos1 c as) =
+    throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ fmtVarAtom c " next"
+gsevalString pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
