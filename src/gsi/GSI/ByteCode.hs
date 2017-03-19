@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcvar, gsbcvar_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
+    gsbcstring, gsbcstring_w, gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -144,6 +144,11 @@ gsbcfield_w :: Pos -> GSVar -> GSValue -> (GSValue -> GSExpr) -> GSExpr
 gsbcfield_w pos f r k = GSExpr $ \ st cs -> do
     v <- gsfield_w pos f r
     aceEnterExpr [StackTrace pos cs] (k v) st
+
+gsbcstring = varE 'gsbcstring_w `appE` gshere
+
+gsbcstring_w :: Pos -> [GSArg] -> GSExpr
+gsbcstring_w pos cs = gsbcimplementationfailure_w $gshere "gsbcstring_w next"
 
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
 
