@@ -11,7 +11,7 @@ import Component.Monad (getM)
 import System.Posix.Files (getFileStatus)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
-import GSI.Syn (gsvar)
+import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), gslambda, gsimpprim, gsundefined, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
@@ -58,7 +58,11 @@ gsprimprintError pos t (GSThunk th) = do
 gsprimprintError pos t (GSImplementationFailure pos1 msg) = do
     hPutStrLn stderr $ fmtPos pos1 $ msg
     return $ $gsundefined
-gsprimprintError pos t msg = do
+gsprimprintError pos t (GSConstr pos1 c []) | c == gsvar "nil" =
+    return $ $gsundefined
+gsprimprintError pos t (GSConstr pos1 c as) =
+    $apiImplementationFailure $ "gsprimprintError " ++ fmtVarAtom c " next"
+gsprimprintError pos t msg =
     $apiImplementationFailure $ "gsprimprintError " ++ gsvCode msg ++ " next"
 
 gsENOENT_view :: GSValue
