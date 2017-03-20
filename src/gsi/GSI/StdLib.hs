@@ -4,7 +4,8 @@ module GSI.StdLib (gscompose, gsanalyze, gscase, gserror) where
 import GSI.Util (Pos(..))
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, gsundefined, gslambda, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalstring, gsbcevalnatural, gsbcerror, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.String (gsbcevalstring)
 
 gscompose :: GSValue
 gscompose = $gslambda $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]

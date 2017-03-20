@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcvar, gsbcvar_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbcevalstring, gsbcevalstring_w, gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
+    gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
@@ -144,20 +144,6 @@ gsbcfield_w :: Pos -> GSVar -> GSValue -> (GSValue -> GSExpr) -> GSExpr
 gsbcfield_w pos f r k = GSExpr $ \ st cs -> do
     v <- gsfield_w pos f r
     aceEnterExpr [StackTrace pos cs] (k v) st
-
-gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
-
-gsbcevalstring_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
-gsbcevalstring_w pos sa k = w id sa where
-    w :: (String -> String) -> GSArg -> GSExpr
-    w ds0 sa = gsbcforce_w pos sa $ \ sv -> case sv of
-        GSConstr _ s_c [ c0, s1 ] | s_c == gsvar ":" ->
-            gsbcforce_w pos ($gsav c0) $ \ c0v -> case c0v of
-                GSRune c0_hs -> w (ds0 . (c0_hs:)) ($gsav s1)
-                _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr (:) " ++ gsvCode c0v ++ ") next"
-        GSConstr _ s_c s_as | s_c == gsvar "nil" -> k (ds0 [])
-        GSConstr _ s_c s_as -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c ") next"
-        _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
 
 gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
 
