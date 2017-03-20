@@ -6,7 +6,7 @@ import GSI.Value (GSValue, gsundefined, gslambda, gsav, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view)
 
 gsappend :: GSValue
-gsappend = $gsundefined
+gsappend = $gslambda $ \ xn -> $gsbcarg $ \ ys -> $gsbcundefined
 
 gscons :: GSValue
 gscons = $gslambda $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
