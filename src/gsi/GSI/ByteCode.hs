@@ -148,7 +148,10 @@ gsbcfield_w pos f r k = GSExpr $ \ st cs -> do
 gsbcstring = varE 'gsbcstring_w `appE` gshere
 
 gsbcstring_w :: Pos -> [GSArg] -> GSExpr
-gsbcstring_w pos cs = gsbcimplementationfailure_w $gshere "gsbcstring_w next"
+gsbcstring_w pos cs = gsbcstring_ww id cs where
+    gsbcstring_ww :: (GSExpr -> GSExpr) -> [GSArg] -> GSExpr
+    gsbcstring_ww ds (c:cs) = gsbcimplementationfailure_w $gshere "gsbcstring_w next"
+    gsbcstring_ww ds [] = ds $ gsbcconstr_w pos (gsvar "nil") []
 
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
 
