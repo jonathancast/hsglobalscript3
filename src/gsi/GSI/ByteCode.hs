@@ -186,7 +186,7 @@ gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
 gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x0 of
         GSConstr pos1 c' as
             | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
-            | otherwise -> gsbcimplementationfailure_w $gshere $ ("gsbcconstr_view_ww "++) . fmtVarAtom c . (' ':) . fmtVarAtom c' . (" next"++) $ ""
+            | otherwise -> gsbcenter_w pos ek
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
 gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
