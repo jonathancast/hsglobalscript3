@@ -16,6 +16,7 @@ gsanalyze = $gslambda $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
 gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ c -> case c of
         GSConstr pos cv [r] | cv == gsvar "1" -> $gsbcapply b [$gsav r]
+        GSConstr pos cv [] | cv == gsvar "0" -> $gsbcapply e [$gsav x]
         GSConstr pos cc args -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ fmtVarAtom cc ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
         _ -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ gsvCode c ++ ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
 
