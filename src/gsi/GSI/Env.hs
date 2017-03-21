@@ -3,7 +3,7 @@ module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_
 
 import Control.Exception (SomeException, try, fromException)
 
-import System.IO (hPutStrLn, stderr)
+import System.IO (hPutStrLn, hPutChar, stderr)
 import System.IO.Error (isDoesNotExistError)
 
 import Component.Monad (getM)
@@ -64,6 +64,12 @@ gsprimprintError pos t (GSError err) = do
     return $ $gsundefined
 gsprimprintError pos t (GSConstr pos1 c []) | c == gsvar "nil" =
     return $ $gsundefined
+gsprimprintError pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
+    hPutChar stderr ch
+    gsprimprintError pos t s
+gsprimprintError pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
+    hPutStrLn stderr $ fmtPos $gshere $ "gsprimprintError (" ++ gsvCode ch ++ " : _) next"
+    gsprimprintError pos t s
 gsprimprintError pos t (GSConstr pos1 c as) =
     $apiImplementationFailure $ "gsprimprintError " ++ fmtVarAtom c " next"
 gsprimprintError pos t msg =
