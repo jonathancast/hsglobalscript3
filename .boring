@@ -12,3 +12,4 @@
 src/hsgs2hs/Test$
 src/hsgs2hs/hsgs2hs$
 bin/hsgs2hs$
+src/hsgs2hs/test-fixtures/.*\.hs$

@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
 
 import Data.List (isSuffixOf)
 
@@ -38,19 +39,24 @@ mkHSFile ".hsgs" = ".hs"
 mkHSFile (c:s) = c:mkHSFile s
 
 formatOutput :: [DestComp] -> Either String [String]
+formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
 formatOutput [] = return []
 formatOutput dcs = $gsfatal $ "formatOutput " ++ show dcs ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
+compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource [] = return []
 compileSource scs = $gsfatal $ "compileSource " ++ show scs ++ " next"
 
 splitInput :: String -> Either String [SourceComp]
+splitInput (c:s) | not (c `elem` "$[") = (SCChar c:) <$> splitInput s
 splitInput "" = return []
 splitInput s = $gsfatal $ "splitInput " ++ show s ++ " next"
 
-data SourceComp = SourceComp
-   deriving Show
+data SourceComp
+  = SCChar Char
+    deriving Show
 
-data DestComp = DestComp
+data DestComp
+  = DCChar Char
    deriving Show
