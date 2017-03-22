@@ -8,7 +8,7 @@ import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gserror, gsanalyze, gscase)
 import GSI.List (gscons_view)
 import GSI.String (gsbcstring, gsbcstringlit)
-import GSI.Either (gsleft_view)
+import GSI.Either (gsleft_view, gsright_view)
 import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
 import GSI.Env (gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_view)
 
@@ -22,9 +22,9 @@ gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsav args,
         $gsae ($gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "a") env $ \ a -> $gsbcimpfor $ do
-                st <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
+                mbst <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
-                    $gsbcapply gsanalyze [ $gsav st,
+                    $gsbcapply gsanalyze [ $gsav mbst,
                         $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
                             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "e") env $ \ e ->
                                 $gsbcapply gsanalyze [ $gsav e,
@@ -34,9 +34,13 @@ gsprocessargs = $gslambda $ \ args ->
                                             $gsbcimpbody $ $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ],
                                     $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ]
                                 ] ]
-                        ,
-                        $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ]
-                    ] ]
+                            ,
+                            $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "st"),
+                                $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "st") env $ \ st ->
+                                    $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ]
+                            ,
+                            $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav mbst ], $gsae $ $gsbclogstring ") next" ] ] ] ]
+                    ]
         ,
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
         ])
