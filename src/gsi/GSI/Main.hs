@@ -21,7 +21,7 @@ gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
 gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsav args,
         $gsae ($gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
-            $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "a") env $ \ a -> $gsbcimpfor $ do
+            $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "a") env $ \ a -> $gsbcfield (gsvar "as") env $ \ as -> $gsbcimpfor $ do
                 mbst <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
                     $gsbcapply gsanalyze [ $gsav mbst,
@@ -37,7 +37,7 @@ gsprocessargs = $gslambda $ \ args ->
                             ,
                             $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "st"),
                                 $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "st") env $ \ st ->
-                                    $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav st ], $gsae $ $gsbclogstring ") next" ] ]
+                                    $gsbcapply gsprocessargs [ $gsav as ] -- Ignore all arguments until we start failing tests for it
                             ,
                             $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav mbst ], $gsae $ $gsbclogstring ") next" ] ] ] ]
                     ]
