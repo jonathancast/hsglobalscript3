@@ -1,0 +1,3 @@
+#! /home/jcast/plan9/bin/rc
+
+install hsgs2hs $HSGLOBALSCRIPT/bin/hsgs2hs
