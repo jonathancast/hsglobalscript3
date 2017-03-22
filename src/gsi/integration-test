@@ -8,3 +8,6 @@ ghc --make Test.hs
 ghc --make test-gsi.hs
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
+
+ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./test-gsi no-such-file.gs
+
