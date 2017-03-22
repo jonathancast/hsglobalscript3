@@ -30,7 +30,7 @@ gsprocessargs = $gslambda $ \ args ->
                                 $gsbcapply gsanalyze [ $gsav e,
                                     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
                                         $gsae $ $gsbcarg $ \ env -> $gsbcimpfor $ do
-                                            $gsbcimpbind $ $gsae $ $gsbcapply gsprintError [ $gsae $ $gsbcstring [ $gsav $ a, $gsae $ $gsbcstringlit "\n" ] ]
+                                            $gsbcimpbind $ $gsae $ $gsbcapply gsprintError [ $gsae $ $gsbcstring [ $gsav $ a, $gsae $ $gsbcstringlit ": Could not load: no such file or directory\n" ] ]
                                             $gsbcimpbody $ $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ],
                                     $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ]
                                 ] ]
