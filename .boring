@@ -9,3 +9,4 @@
 ^src/gsi/test-gsi$
 -actual$
 -errors$
+src/hsgs2hs/Test$
