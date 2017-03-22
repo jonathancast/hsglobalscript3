@@ -1,0 +1,5 @@
+#! /usr/local/plan9/bin/rc
+
+cd $HSGLOBALSCRIPT/src/gsi &&
+./integration-test &&
+true
