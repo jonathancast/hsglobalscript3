@@ -1,11 +1,13 @@
 #! /usr/local/plan9/bin/rc -e
 
-ghc --make Test.hs
+ghcoptions=(-i$HSGLOBALSCRIPT/src/libgsi)
+
+ghc $ghcoptions --make Test.hs
 ./Test
 
 . $GLOBALSCRIPT/bin/test-fns
 
-ghc --make test-gsi.hs
+ghc $ghcoptions --make test-gsi.hs
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
 
