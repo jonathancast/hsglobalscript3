@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.String (gsbcstring, gsbcstring_w) where
+module GSI.String (gsbcstring, gsbcstring_w, gsbcstringlit, gsbcstringlit_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, gsae, gsav, gsvCode)
-import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcforce, gsbcimplementationfailure)
-import GSI.List (gsappend)
+import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcenter, gsbcforce, gsbcimplementationfailure)
+import GSI.List (gsappend, gscons, gsnil)
 
 gsbcstring = varE 'gsbcstring_w `appE` gshere
 
@@ -16,3 +16,8 @@ gsbcstring_w pos cs = gsbcstring_ww id cs where
     gsbcstring_ww :: (GSExpr -> GSExpr) -> [GSArg] -> GSExpr
     gsbcstring_ww ds (c:cs) = gsbcstring_ww (ds . \ s1 -> $gsbcapply gsappend [ c, $gsae s1 ]) cs
     gsbcstring_ww ds [] = ds $ $gsbcconstr (gsvar "nil") []
+
+gsbcstringlit = varE 'gsbcstringlit_w `appE` gshere
+
+gsbcstringlit_w :: Pos -> String -> GSExpr
+gsbcstringlit_w pos s = foldr (\ ch e1 -> $gsbcapply gscons [ $gsav $ GSRune ch, $gsae e1 ]) ($gsbcenter gsnil) s
