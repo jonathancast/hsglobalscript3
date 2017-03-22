@@ -1,8 +1,9 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gscons, gscons_view) where
+module GSI.List (gsappend, gscons, gsnil, gscons_view) where
 
+import GSI.Util (gshere)
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue, gsundefined, gslambda, gsae, gsav, gsvCode)
+import GSI.Value (GSValue(..), gsundefined, gslambda, gsae, gsav, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcenter, gsbcfield, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view, gsbcviewpattern, gsbcvarpattern)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
@@ -21,6 +22,9 @@ gsappend = $gslambda $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $gsav x
 
 gscons :: GSValue
 gscons = $gslambda $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
+
+gsnil :: GSValue
+gsnil = GSConstr $gshere (gsvar "nil") []
 
 gscons_view :: GSValue
 gscons_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ xn -> $gsbcconstr_view ":" ek sk xn
