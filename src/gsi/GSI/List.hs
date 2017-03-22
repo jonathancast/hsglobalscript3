@@ -3,7 +3,7 @@ module GSI.List (gsappend, gscons, gscons_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gsundefined, gslambda, gsae, gsav, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcfield, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view, gsbcviewpattern, gsbcvarpattern)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcenter, gsbcfield, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view, gsbcviewpattern, gsbcvarpattern)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
 
@@ -14,7 +14,7 @@ gsappend = $gslambda $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $gsav x
             $gsbcapply gscons [ $gsav x, $gsae $ $gsbcapply gsappend [ $gsav xn1, $gsav ys ] ]
     ,
     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsnil_view,
-        $gsae $ $gsbcundefined
+        $gsae $ $gsbcarg $ \ env -> $gsbcenter ys
     ,
     $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
   ]]]
