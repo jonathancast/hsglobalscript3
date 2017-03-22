@@ -1,0 +1,11 @@
+#! /home/jcast/plan9/bin/rc -e
+
+ghcoptions=(-i$HSGLOBALSCRIPT/src/libgsi)
+
+ghc --make $ghcoptions Test.hs
+./Test
+
+. $GLOBALSCRIPT/bin/test-fns
+
+ghc --make $ghcoptions hsgs2hs.hs
+
