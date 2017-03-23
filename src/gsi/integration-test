@@ -1,5 +1,7 @@
 #! /usr/local/plan9/bin/rc -e
 
+$HSGLOBALSCRIPT/bin/hsgs2hs .
+
 ghcoptions=(-i$HSGLOBALSCRIPT/src/libgsi)
 
 ghc $ghcoptions --make Test.hs
