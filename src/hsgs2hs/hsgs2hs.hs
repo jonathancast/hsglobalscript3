@@ -1,5 +1,7 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# OPTIONS_GHC -fno-warn-overlapping-patterns #-}
+{-# LANGUAGE TemplateHaskell, Rank2Types #-}
+{-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
+
+import Control.Applicative (Alternative(..))
 
 import Data.List (isSuffixOf)
 
@@ -37,6 +39,7 @@ compileHSGSSource s =
 mkHSFile :: FilePath -> FilePath
 mkHSFile ".hsgs" = ".hs"
 mkHSFile (c:s) = c:mkHSFile s
+mkHSFile "" = ""
 
 formatOutput :: [DestComp] -> Either String [String]
 formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
@@ -49,9 +52,15 @@ compileSource [] = return []
 compileSource scs = $gsfatal $ "compileSource " ++ show scs ++ " next"
 
 splitInput :: String -> Either String [SourceComp]
+splitInput ('$':s) = case parse interpolation s of
+    Left err -> (SCChar '$':) <$> splitInput s
+    Right (r, s') -> (r:) <$> splitInput s'
 splitInput (c:s) | not (c `elem` "$[") = (SCChar c:) <$> splitInput s
 splitInput "" = return []
 splitInput s = $gsfatal $ "splitInput " ++ show s ++ " next"
+
+interpolation :: Parser Char SourceComp
+interpolation = empty
 
 data SourceComp
   = SCChar Char
@@ -60,3 +69,27 @@ data SourceComp
 data DestComp
   = DCChar Char
    deriving Show
+
+parse :: Parser s a -> [s] -> Either String (a, [s])
+parse p s = parse_w (runParser p $ $gsfatal "identity cont next") s where
+    parse_w PPEmpty s = Left "parse error"
+    parse_w p s = $gsfatal $ "parse " ++ pCode p ++ " next"
+
+newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> PrimParser s b }
+
+data PrimParser s a
+  = PPEmpty
+
+instance Functor (Parser s) where
+    fmap f px = $gsfatal $ "fmap f px next"
+
+instance Applicative (Parser s) where
+    pure x = $gsfatal "pure next"
+    pf <*> px = $gsfatal $ "pf <*> px next"
+
+instance Alternative (Parser s) where
+    empty = Parser (\ k -> PPEmpty)
+    p0 <|> p1 = $gsfatal $ "p0 <|> p1 next"
+
+pCode :: PrimParser s a -> String
+pCode PPEmpty = "PPEmpty"
