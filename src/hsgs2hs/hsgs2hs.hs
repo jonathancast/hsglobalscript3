@@ -55,6 +55,7 @@ splitInput :: String -> Either String [SourceComp]
 splitInput ('$':s) = case parse interpolation s of
     Left err -> (SCChar '$':) <$> splitInput s
     Right (r, s') -> (r:) <$> splitInput s'
+splitInput ('[':c:s) | c /= '|' = (SCChar '[':) <$> splitInput (c:s)
 splitInput (c:s) | not (c `elem` "$[") = (SCChar c:) <$> splitInput s
 splitInput "" = return []
 splitInput s = $gsfatal $ "splitInput " ++ show s ++ " next"

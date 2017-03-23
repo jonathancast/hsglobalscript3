@@ -13,3 +13,4 @@ ok_diff_compiler '-- empty file --' hsgs2hs empty-file.hsgs empty-file.hs
 ok_script '-- empty directory --' hsgs2hs-empty ./hsgs2hs ./test-fixtures/empty-dir
 ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs single-line.hs
 ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
+ok_diff_compiler '-- normal square brackets --' hsgs2hs normal-bracket.hsgs normal-bracket.hs
