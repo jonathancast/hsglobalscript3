@@ -3,6 +3,7 @@
 
 import Control.Applicative (Alternative(..))
 
+import Data.Char (isSpace)
 import Data.List (isSuffixOf)
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
@@ -149,6 +150,9 @@ notFollowedBy :: Parser s a -> Parser s ()
 notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "return next")) where
     difference_w :: PrimParser s a -> PrimParser s b -> PrimParser s a
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
+
+matching :: String -> (s -> Bool) -> Parser s s
+matching cat p = $gsfatal "matching next"
 
 pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
