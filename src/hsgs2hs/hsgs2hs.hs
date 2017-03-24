@@ -154,7 +154,12 @@ pfail :: String -> Parser s a
 pfail err = Parser (\ k -> PPFail err)
 
 (<?>) :: Parser s a -> String -> Parser s a
-p <?> s = $gsfatal "p <?> s next"
+p <?> s = Parser (\ k -> w (runParser p k)) where
+    w (SymbolOrEof ek sk) = SymbolOrEof (w ek) (\ c -> case sk c of
+        Left _ -> Left [s]
+        Right p1 -> Right p1
+      )
+    w p0 = $gsfatal $ pCode p0 ++ " <?> s next"
 
 endBy :: Parser s a -> Parser s b -> Parser s [a]
 p0 `endBy` p1 = many (p0 <* p1)
