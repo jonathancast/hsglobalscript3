@@ -152,6 +152,9 @@ idContChar = matching "identifier continuation character" isAlphaNum
 string :: String -> Parser Char ()
 string s = mapM_ char s
 
+comma :: Parser Char ()
+comma = $gsfatal "comma next"
+
 char :: Char -> Parser Char ()
 char ch = Parser (\ k -> SymbolOrEof ($gsfatal $ "char " ++ show ch ++ " next") (\ ch' -> case ch == ch' of
     False -> $gsfatal $ "char " ++ show ch ++ ' ' : show ch' ++ " next"
