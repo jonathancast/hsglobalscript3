@@ -109,7 +109,7 @@ keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
 
 ident :: Parser Char String
-ident = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
+ident = lexeme $ ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
 keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
