@@ -101,7 +101,7 @@ instance Functor (Parser s) where
 
 instance Applicative (Parser s) where
     pure x = $gsfatal "pure next"
-    pf <*> px = $gsfatal $ "pf <*> px next"
+    pf <*> px = pf >>= \ f -> px >>= \ x -> return (f x)
 
 instance Alternative (Parser s) where
     empty = Parser (\ k -> PPEmpty)
