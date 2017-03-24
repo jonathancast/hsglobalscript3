@@ -124,7 +124,7 @@ instance Monad (Parser s) where
     ax >>= f = Parser (\ k -> runParser ax $ \ x -> runParser (f x) k)
 
 pfail :: String -> Parser s a
-pfail err = $gsfatal $ "pfail " ++ show err ++ " next"
+pfail err = Parser (\ k -> PPFail err)
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idChar
