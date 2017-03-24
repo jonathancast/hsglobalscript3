@@ -171,6 +171,7 @@ instance Alternative (Parser s) where
     empty = Parser (\ k -> PPEmpty)
     p0 <|> p1 = Parser (\ k -> runParser p0 k `or_w` runParser p1 k) where
         PPEmpty `or_w` p1 = p1
+        p0 `or_w` PPEmpty = p0
         p0 `or_w` PPFail err = p0
         SymbolOrEof ek0 sk0 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `or_w` ek1) (\ c -> case (sk0 c, sk1 c) of
             (Left err0, Left err1) -> Left (err0 ++ err1)
