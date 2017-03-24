@@ -146,7 +146,9 @@ whitespace :: Parser Char ()
 whitespace = $gsfatal "whitespace next"
 
 notFollowedBy :: Parser s a -> Parser s ()
-notFollowedBy p = $gsfatal $ "notFollowedBy next"
+notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "return next")) where
+    difference_w :: PrimParser s a -> PrimParser s b -> PrimParser s a
+    p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
 
 pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
