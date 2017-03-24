@@ -91,7 +91,7 @@ parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s wher
     parse_w PPEmpty pos s = Left $ fmtPos pos $ "parse error"
     parse_w (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
     parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
-        Left exp -> Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expected " ++ fmt exp where
+        Left exp -> Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
             fmt [] = "<unknown>"
             fmt [exp0] = exp0
             fmt [exp0, exp1] = exp0 ++ " or " ++ exp1
