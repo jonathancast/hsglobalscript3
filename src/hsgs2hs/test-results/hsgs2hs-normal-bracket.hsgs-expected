@@ -1,1 +1,2 @@
+{-# LINE 1 "./test-fixtures/normal-bracket.hsgs" #-}
 [ $gsav args ]

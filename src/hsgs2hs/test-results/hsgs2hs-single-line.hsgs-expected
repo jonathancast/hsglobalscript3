@@ -1,1 +1,2 @@
+{-# LINE 1 "./test-fixtures/single-line.hsgs" #-}
 {-# LANGUAGE TemplateHaskell #-}

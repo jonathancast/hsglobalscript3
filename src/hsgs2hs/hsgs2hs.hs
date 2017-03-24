@@ -22,19 +22,19 @@ processArg a = do
         mapM_ processArg $ map (\ a' -> a ++ '/' : a') $ filter (\ a' -> a' /= "." && a' /= "..") as
       else if irf && ".hsgs" `isSuffixOf` a then do
         s <- readFile a
-        case compileHSGSSource s of
+        case compileHSGSSource a s of
             Left err -> $gsfatal $ "main " ++ show err ++ " next"
             Right s' -> do
                 writeFile (mkHSFile a) s'
       else do
         return ()
 
-compileHSGSSource :: String -> Either String String
-compileHSGSSource s =
+compileHSGSSource :: FilePath -> String -> Either String String
+compileHSGSSource fn s =
    splitInput s >>=
    compileSource >>=
    formatOutput >>=
-   return . concat
+   return . concat . (("{-# LINE 1 " ++ show fn ++ " #-}\n"):)
 
 mkHSFile :: FilePath -> FilePath
 mkHSFile ".hsgs" = ".hs"
