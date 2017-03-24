@@ -138,8 +138,8 @@ instance Alternative (Parser s) where
         p0 `or_w` PPFail err = p0
         SymbolOrEof ek0 sk0 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `or_w` ek1) (\ c -> case (sk0 c, sk1 c) of
             (Left err0, Left err1) -> $gsfatal "sk0 <|> sk1 next"
-            (Left err0, Right p1) -> $gsfatal "sk0 <|> sk1 next"
-            (Right p0, Left err1) -> $gsfatal "sk0 <|> sk1 next"
+            (Left err0, Right p1) -> Right p1
+            (Right p0, Left err1) -> Right p0
             (Right p0, Right p1) -> $gsfatal "sk0 <|> sk1 next"
           )
         p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
