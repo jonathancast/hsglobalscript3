@@ -144,7 +144,7 @@ lexeme :: Parser Char a -> Parser Char a
 lexeme p = p <* whitespace
 
 whitespace :: Parser Char ()
-whitespace = $gsfatal "whitespace next"
+whitespace = many (matching "whitespace" isSpace) *> return ()
 
 notFollowedBy :: Parser s a -> Parser s ()
 notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "return next")) where
