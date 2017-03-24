@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, Rank2Types #-}
+{-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
 
 import Control.Applicative (Alternative(..))
@@ -166,6 +166,7 @@ data PrimParser s a
   = PPEmpty
   | PPFail String
   | PPReturnPlus a (PrimParser s a)
+  | forall b. NotFollowedByOr a (PrimParser s b) (PrimParser s a)
   | SymbolOrEof (PrimParser s a) (s -> Either [String] (PrimParser s a))
 
 instance Functor (Parser s) where
@@ -237,4 +238,5 @@ pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
 pCode PPFail{} = "PPFail"
 pCode PPReturnPlus{} = "PPReturnPlus"
+pCode NotFollowedByOr{} = "NotFollowedByOr"
 pCode SymbolOrEof{} = "SymbolOrEof"
