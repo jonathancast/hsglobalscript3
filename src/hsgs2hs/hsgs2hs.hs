@@ -135,10 +135,11 @@ whitespace :: Parser Char ()
 whitespace = many (matching "whitespace" isSpace) *> return ()
 
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-parse p pos s = parse_w (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s where
-    parse_w PPEmpty pos s = Left $ fmtPos pos $ "parse error"
-    parse_w (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
-    parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
+parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s where
+    parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
+    parse_w k PPEmpty pos s = k $ Left $ fmtPos pos $ "parse error"
+    parse_w k (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
+    parse_w k (SymbolOrEof ek sk) pos (c:s') = case sk c of
         Left exp -> Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
             fmt [] = "<unknown>"
             fmt [exp0] = exp0
@@ -147,8 +148,8 @@ parse p pos s = parse_w (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s wher
                 fmt' [] = "<unknown>"
                 fmt' [exp0] = " or " ++ exp0
                 fmt' (exp0:exp) = exp0 ++ ", " ++ fmt' exp
-        Right p' -> parse_w p' (advance c pos) s'
-    parse_w p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
+        Right p' -> parse_w k p' (advance c pos) s'
+    parse_w k p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
 
 advanceStr :: String -> Pos -> Pos
 advanceStr s pos = foldl' (flip advance) pos s
