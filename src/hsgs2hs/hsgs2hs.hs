@@ -104,6 +104,7 @@ data DestComp
 
 data Expr
   = EVar String
+    deriving Show
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
