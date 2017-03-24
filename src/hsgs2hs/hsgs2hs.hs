@@ -111,6 +111,7 @@ instance Applicative (Parser s) where
 instance Alternative (Parser s) where
     empty = Parser (\ k -> PPEmpty)
     p0 <|> p1 = Parser (\ k -> runParser p0 k `or_w` runParser p1 k) where
+        PPEmpty `or_w` p1 = p1
         p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
 
 instance Monad (Parser s) where
