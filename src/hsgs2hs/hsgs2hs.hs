@@ -138,9 +138,17 @@ parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a
 parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s where
     parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
     parse_w k PPEmpty pos s = k $ Left $ fmtPos pos $ "parse error"
+    parse_w k (NotFollowedByOr x p0 p1) pos s = parse_w k' p1 pos s where
+        k' (Right x) = Right x -- Longer match, so go with that
+        k' (Left _) = case parse_w id p0 pos s of -- Check that there is no match of p0
+            Left _ -> Right (x, pos, s)
+            Right _ -> k $ Left $ fmtPos pos $ "parse error"
+    parse_w k (PPReturnPlus x p1) pos s = parse_w k' p1 pos s where
+        k' (Right y) = Right y -- Longer match, so go with that
+        k' (Left _) = Right (x, pos, s) -- Fall back to this match
     parse_w k (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
     parse_w k (SymbolOrEof ek sk) pos (c:s') = case sk c of
-        Left exp -> Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
+        Left exp -> k $ Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
             fmt [] = "<unknown>"
             fmt [exp0] = exp0
             fmt [exp0, exp1] = exp0 ++ " or " ++ exp1
