@@ -70,7 +70,7 @@ quote :: Parser Char SourceComp
 quote = empty
     <|> do
         keyword "arg"
-        ps <- param `endBy` comma
+        ps <- many param
         pfail "arg next"
 
 param :: Parser Char Param
