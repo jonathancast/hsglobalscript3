@@ -72,9 +72,15 @@ quote = empty
         keyword "arg"
         pfail "arg next"
 
+param :: Parser Char Param
+param = $gsfatal "param next"
+
 data SourceComp
   = SCChar Char
     deriving Show
+
+data Param = Param
+     deriving Show
 
 data DestComp
   = DCChar Char
