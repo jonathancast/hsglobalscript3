@@ -73,7 +73,7 @@ quote = empty
         ps <- many param
         keywordOp "|"
         e <- expr
-        pfail "arg next"
+        return $ SCArg ps e
 
 param :: Parser Char Param
 param = empty
