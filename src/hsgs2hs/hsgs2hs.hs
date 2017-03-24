@@ -3,7 +3,7 @@
 
 import Control.Applicative (Alternative(..))
 
-import Data.Char (isAlphaNum, isSpace, isSymbol)
+import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 import Data.List (isSuffixOf)
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
@@ -165,7 +165,7 @@ keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
 idStartChar :: Parser Char Char
-idStartChar = $gsfatal "idStartChar next"
+idStartChar = matching "identifier" isAlpha
 
 idContChar :: Parser Char Char
 idContChar = matching "identifier continuation character" isAlphaNum 
