@@ -80,12 +80,19 @@ data DestComp
   = DCChar Char
    deriving Show
 
-parse :: Advanceable s => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
+parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
 parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s where
     parse_w PPEmpty pos s = Left $ fmtPos pos $ "parse error"
     parse_w (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
     parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
-        Left exp -> $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek (c -> Left exp)) pos (c:s) next"
+        Left exp -> Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expected " ++ fmt exp where
+            fmt [] = "<unknown>"
+            fmt [exp0] = exp0
+            fmt [exp0, exp1] = exp0 ++ " or " ++ exp1
+            fmt exp = fmt' exp where
+                fmt' [] = "<unknown>"
+                fmt' [exp0] = " or " ++ exp0
+                fmt' (exp0:exp) = exp0 ++ ", " ++ fmt' exp
         Right p' -> parse_w p' (advance c pos) s'
     parse_w p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
 
