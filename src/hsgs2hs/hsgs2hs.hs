@@ -119,7 +119,7 @@ keyword :: String -> Parser Char ()
 keyword s = lexeme $ $gsfatal $ "keyword " ++ show s ++ " next"
 
 lexeme :: Parser Char a -> Parser Char a
-lexeme p = $gsfatal $ "lexeme p next"
+lexeme p = p <* whitespace
 
 whitespace :: Parser Char ()
 whitespace = $gsfatal "whitespace next"
