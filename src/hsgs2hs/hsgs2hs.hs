@@ -118,5 +118,8 @@ pfail err = $gsfatal $ "pfail " ++ show err ++ " next"
 keyword :: String -> Parser Char ()
 keyword s = $gsfatal $ "keyword " ++ show s ++ " next"
 
+lexeme :: Parser Char a -> Parser Char a
+lexeme p = $gsfatal $ "lexeme p next"
+
 pCode :: PrimParser s a -> String
 pCode PPEmpty = "PPEmpty"
