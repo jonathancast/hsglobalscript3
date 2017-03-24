@@ -111,5 +111,9 @@ instance Monad (Parser s) where
 
 pfail :: String -> Parser s a
 pfail err = $gsfatal $ "pfail " ++ show err ++ " next"
+
+keyword :: String -> Parser Char ()
+keyword s = $gsfatal $ "keyword " ++ show s ++ " next"
+
 pCode :: PrimParser s a -> String
 pCode PPEmpty = "PPEmpty"
