@@ -93,11 +93,9 @@ expr = empty
 data SourceComp
   = SCChar Char
   | SCArg [Param] Expr
-    deriving Show
 
 data Param
   = FVSParam [String]
-     deriving Show
 
 data DestComp
   = DCChar Char
@@ -105,7 +103,6 @@ data DestComp
 
 data Expr
   = EVar String
-    deriving Show
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
