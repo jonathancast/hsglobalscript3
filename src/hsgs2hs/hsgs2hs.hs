@@ -72,6 +72,7 @@ quote = empty
         keyword "arg"
         ps <- many param
         keywordOp "|"
+        e <- expr
         pfail "arg next"
 
 param :: Parser Char Param
