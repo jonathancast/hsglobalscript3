@@ -127,6 +127,9 @@ pfail err = $gsfatal $ "pfail " ++ show err ++ " next"
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* ($gsfatal $ "keyword " ++ show s ++ " next")
 
+idChar :: Parser Char Char
+idChar = $gsfatal $ "idChar next"
+
 string :: String -> Parser Char ()
 string s = mapM_ char s
 
