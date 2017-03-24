@@ -252,3 +252,6 @@ pCode SymbolOrEof{} = "SymbolOrEof"
 scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
 scCode SCArg{} = "SCArg"
+
+eCode :: Expr -> String
+eCode EVar{} = "EVar"
