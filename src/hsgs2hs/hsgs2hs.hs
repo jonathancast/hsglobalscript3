@@ -153,6 +153,9 @@ instance Monad (Parser s) where
 pfail :: String -> Parser s a
 pfail err = Parser (\ k -> PPFail err)
 
+(<?>) :: Parser s a -> String -> Parser s a
+p <?> s = $gsfatal "p <?> s next"
+
 endBy :: Parser s a -> Parser s b -> Parser s [a]
 p0 `endBy` p1 = many (p0 <* p1)
 
