@@ -140,6 +140,9 @@ instance Monad (Parser s) where
 pfail :: String -> Parser s a
 pfail err = Parser (\ k -> PPFail err)
 
+endBy :: Parser s a -> Parser s b -> Parser s [a]
+endBy = $gsfatal "endBy next"
+
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
 
