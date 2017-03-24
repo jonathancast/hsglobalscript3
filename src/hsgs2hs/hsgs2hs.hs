@@ -103,6 +103,7 @@ data Param
 
 data DestComp
   = DCChar Char
+  | DCExpr HSExpr
    deriving Show
 
 data Expr
