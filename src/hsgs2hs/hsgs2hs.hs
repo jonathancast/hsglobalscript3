@@ -8,7 +8,7 @@ import Data.List (isSuffixOf)
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
 import System.Environment (getArgs)
 
-import GSI.Util (gsfatal)
+import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 main = do
     as <- getArgs
@@ -31,7 +31,7 @@ processArg a = do
 
 compileHSGSSource :: FilePath -> String -> Either String String
 compileHSGSSource fn s =
-   splitInput s >>=
+   splitInput (Pos fn 1 1) s >>=
    compileSource >>=
    formatOutput >>=
    return . concat . (("{-# LINE 1 " ++ show fn ++ " #-}\n"):)
@@ -51,17 +51,22 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource [] = return []
 compileSource scs = $gsfatal $ "compileSource " ++ show scs ++ " next"
 
-splitInput :: String -> Either String [SourceComp]
-splitInput ('$':s) = case parse interpolation s of
-    Left err -> (SCChar '$':) <$> splitInput s
-    Right (r, s') -> (r:) <$> splitInput s'
-splitInput ('[':c:s) | c /= '|' = (SCChar '[':) <$> splitInput (c:s)
-splitInput (c:s) | not (c `elem` "$[") = (SCChar c:) <$> splitInput s
-splitInput "" = return []
-splitInput s = $gsfatal $ "splitInput " ++ show s ++ " next"
+splitInput :: Pos -> String -> Either String [SourceComp]
+splitInput pos ('$':s) = case parse interpolation pos s of
+    Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
+    Right (r, pos', s') -> (r:) <$> splitInput pos' s'
+splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs" pos) s of
+    Left err -> error err
+    Right (r, pos', '|':']':s') -> (r:) <$> splitInput (advanceStr "|]" pos') s'
+    Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
+splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
+splitInput pos "" = return []
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
+
+quote :: Parser Char SourceComp
+quote = empty
 
 data SourceComp
   = SCChar Char
@@ -71,10 +76,17 @@ data DestComp
   = DCChar Char
    deriving Show
 
-parse :: Parser s a -> [s] -> Either String (a, [s])
-parse p s = parse_w (runParser p $ $gsfatal "identity cont next") s where
-    parse_w PPEmpty s = Left "parse error"
-    parse_w p s = $gsfatal $ "parse " ++ pCode p ++ " next"
+parse :: Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
+parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s where
+    parse_w PPEmpty pos s = Left $ fmtPos pos $ "parse error"
+    parse_w p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
+
+advanceStr :: String -> Pos -> Pos
+advanceStr s pos = foldr advance pos s
+
+advance :: Char -> Pos -> Pos
+advance '\n' (Pos fn l c) = Pos fn (l+1) 1
+advance _ (Pos fn l c) = Pos fn l (c+1)
 
 newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> PrimParser s b }
 
