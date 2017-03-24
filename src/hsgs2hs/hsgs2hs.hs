@@ -92,6 +92,7 @@ expr = empty
 
 data SourceComp
   = SCChar Char
+  | SCArg [Param] Expr
     deriving Show
 
 data Param
