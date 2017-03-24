@@ -178,7 +178,7 @@ opContChar :: Parser Char Char
 opContChar = matching "operator continuation character" isSymbol
 
 string :: String -> Parser Char ()
-string s = mapM_ char s
+string s = mapM_ char s <?> show s
 
 comma :: Parser Char ()
 comma = lexeme $ char ','
