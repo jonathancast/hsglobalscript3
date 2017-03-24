@@ -142,7 +142,7 @@ pfail :: String -> Parser s a
 pfail err = Parser (\ k -> PPFail err)
 
 endBy :: Parser s a -> Parser s b -> Parser s [a]
-endBy = $gsfatal "endBy next"
+p0 `endBy` p1 = many (p0 <* p1)
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
