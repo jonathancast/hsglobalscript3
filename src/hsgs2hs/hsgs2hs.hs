@@ -79,7 +79,7 @@ param = empty
         keyword "fvs"
         keywordOp "="
         vs <- ident `endBy` comma
-        pfail "param next"
+        return $ FVSParam vs
 
 data SourceComp
   = SCChar Char
