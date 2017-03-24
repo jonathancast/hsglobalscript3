@@ -85,7 +85,8 @@ data SourceComp
   = SCChar Char
     deriving Show
 
-data Param = Param
+data Param
+  = FVSParam [String]
      deriving Show
 
 data DestComp
