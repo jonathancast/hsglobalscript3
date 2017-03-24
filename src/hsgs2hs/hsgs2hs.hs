@@ -118,7 +118,7 @@ instance Alternative (Parser s) where
         p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
 
 instance Monad (Parser s) where
-    return x = $gsfatal "return next"
+    return x = Parser (\ k -> k x)
     ax >>= f = Parser (\ k -> runParser ax $ \ x -> runParser (f x) k)
 
 pfail :: String -> Parser s a
