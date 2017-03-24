@@ -135,7 +135,7 @@ whitespace :: Parser Char ()
 whitespace = many (matching "whitespace" isSpace) *> return ()
 
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s where
+parse p pos s = parse_w (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s where
     parse_w PPEmpty pos s = Left $ fmtPos pos $ "parse error"
     parse_w (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
     parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
