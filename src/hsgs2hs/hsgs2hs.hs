@@ -160,6 +160,9 @@ keyword s = lexeme $ string s <* notFollowedBy idContChar
 keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
+idStartChar :: Parser Char Char
+idStartChar = $gsfatal "idStartChar next"
+
 idContChar :: Parser Char Char
 idContChar = matching "identifier continuation character" isAlphaNum 
 
