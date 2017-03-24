@@ -145,6 +145,9 @@ lexeme p = p <* whitespace
 whitespace :: Parser Char ()
 whitespace = $gsfatal "whitespace next"
 
+notFollowedBy :: Parser s a -> Parser s ()
+notFollowedBy p = $gsfatal $ "notFollowedBy next"
+
 pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
 pCode SymbolOrEof{} = "SymbolOrEof"
