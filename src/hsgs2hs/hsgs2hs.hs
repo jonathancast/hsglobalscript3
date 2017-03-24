@@ -85,6 +85,10 @@ param = empty
 
 expr :: Parser Char Expr
 expr = empty
+    <|> exprAtom
+  where
+    exprAtom = empty
+        <|> EVar <$> ident
 
 data SourceComp
   = SCChar Char
