@@ -108,5 +108,8 @@ instance Alternative (Parser s) where
 instance Monad (Parser s) where
     return x = $gsfatal "return next"
     ax >>= f = Parser (\ k -> runParser ax $ \ x -> runParser (f x) k)
+
+pfail :: String -> Parser s a
+pfail err = $gsfatal $ "pfail " ++ show err ++ " next"
 pCode :: PrimParser s a -> String
 pCode PPEmpty = "PPEmpty"
