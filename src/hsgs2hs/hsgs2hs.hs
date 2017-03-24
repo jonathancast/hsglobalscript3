@@ -3,7 +3,7 @@
 
 import Control.Applicative (Alternative(..))
 
-import Data.Char (isAlphaNum, isSpace)
+import Data.Char (isAlphaNum, isSpace, isSymbol)
 import Data.List (isSuffixOf)
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
@@ -164,7 +164,7 @@ idContChar :: Parser Char Char
 idContChar = matching "identifier continuation character" isAlphaNum 
 
 opContChar :: Parser Char Char
-opContChar = $gsfatal "opContChar next"
+opContChar = matching "operator continuation character" isSymbol
 
 string :: String -> Parser Char ()
 string s = mapM_ char s
