@@ -173,10 +173,7 @@ comma :: Parser Char ()
 comma = $gsfatal "comma next"
 
 char :: Char -> Parser Char ()
-char ch = Parser (\ k -> SymbolOrEof ($gsfatal $ "char " ++ show ch ++ " next") (\ ch' -> case ch == ch' of
-    False -> Left [show ch]
-    True -> Right $ k ()
-  ))
+char ch = matching (show ch) (==ch) *> return ()
 
 lexeme :: Parser Char a -> Parser Char a
 lexeme p = p <* whitespace
