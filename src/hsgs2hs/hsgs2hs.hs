@@ -95,6 +95,7 @@ newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> Pr
 
 data PrimParser s a
   = PPEmpty
+  | SymbolOrEof (PrimParser s a) (s -> Either [String] (PrimParser s a))
 
 instance Functor (Parser s) where
     fmap f px = Parser (\ k -> runParser px (k . f))
@@ -131,4 +132,5 @@ whitespace :: Parser Char ()
 whitespace = $gsfatal "whitespace next"
 
 pCode :: PrimParser s a -> String
-pCode PPEmpty = "PPEmpty"
+pCode PPEmpty{} = "PPEmpty"
+pCode SymbolOrEof{} = "SymbolOrEof"
