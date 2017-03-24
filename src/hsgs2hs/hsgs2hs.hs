@@ -123,7 +123,7 @@ string :: String -> Parser Char ()
 string s = mapM_ char s
 
 char :: Char -> Parser Char ()
-char ch = $gsfatal $ "char " ++ show ch ++ " next"
+char ch = Parser (\ k -> SymbolOrEof ($gsfatal $ "char " ++ show ch ++ " next") ($gsfatal $ "char " ++ show ch ++ " next"))
 
 lexeme :: Parser Char a -> Parser Char a
 lexeme p = p <* whitespace
