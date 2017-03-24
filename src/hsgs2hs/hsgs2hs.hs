@@ -174,7 +174,7 @@ comma = $gsfatal "comma next"
 
 char :: Char -> Parser Char ()
 char ch = Parser (\ k -> SymbolOrEof ($gsfatal $ "char " ++ show ch ++ " next") (\ ch' -> case ch == ch' of
-    False -> $gsfatal $ "char " ++ show ch ++ ' ' : show ch' ++ " next"
+    False -> Left [show ch]
     True -> Right $ k ()
   ))
 
