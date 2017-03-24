@@ -49,8 +49,8 @@ formatOutput dcs = $gsfatal $ "formatOutput " ++ show dcs ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
 compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
+compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
-compileSource scs = $gsfatal $ "compileSource " ++ show scs ++ " next"
 
 splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
@@ -251,3 +251,7 @@ pCode PPFail{} = "PPFail"
 pCode PPReturnPlus{} = "PPReturnPlus"
 pCode NotFollowedByOr{} = "NotFollowedByOr"
 pCode SymbolOrEof{} = "SymbolOrEof"
+
+scCode :: SourceComp -> String
+scCode SCChar{} = "SCChar"
+scCode SCArg{} = "SCArg"
