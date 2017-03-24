@@ -163,6 +163,9 @@ keywordOp s = $gsfatal "keywordOp next"
 idContChar :: Parser Char Char
 idContChar = matching "identifier continuation character" isAlphaNum 
 
+opContChar :: Parser Char Char
+opContChar = $gsfatal "opContChar next"
+
 string :: String -> Parser Char ()
 string s = mapM_ char s
 
