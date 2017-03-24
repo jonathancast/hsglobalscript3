@@ -55,7 +55,7 @@ splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
     Right (r, pos', s') -> (r:) <$> splitInput pos' s'
-splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs" pos) s of
+splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs:" pos) s of
     Left err -> error err
     Right (r, pos', '|':']':s') -> (r:) <$> splitInput (advanceStr "|]" pos') s'
     Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
