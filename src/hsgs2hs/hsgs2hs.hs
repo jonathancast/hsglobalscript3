@@ -52,6 +52,9 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
+compileArg :: Expr -> Either String DestComp
+compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
+
 splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
