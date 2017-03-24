@@ -165,6 +165,7 @@ newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> Pr
 data PrimParser s a
   = PPEmpty
   | PPFail String
+  | PPReturnPlus a (PrimParser s a)
   | SymbolOrEof (PrimParser s a) (s -> Either [String] (PrimParser s a))
 
 instance Functor (Parser s) where
@@ -234,4 +235,5 @@ matching cat p = Parser (\ k -> SymbolOrEof ($gsfatal "matching next") (\ c -> c
 pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
 pCode PPFail{} = "PPFail"
+pCode PPReturnPlus{} = "PPReturnPlus"
 pCode SymbolOrEof{} = "SymbolOrEof"
