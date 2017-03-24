@@ -3,7 +3,7 @@
 
 import Control.Applicative (Alternative(..))
 
-import Data.Char (isSpace)
+import Data.Char (isAlphaNum, isSpace)
 import Data.List (isSuffixOf)
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
@@ -128,10 +128,10 @@ pfail :: String -> Parser s a
 pfail err = Parser (\ k -> PPFail err)
 
 keyword :: String -> Parser Char ()
-keyword s = lexeme $ string s <* notFollowedBy idChar
+keyword s = lexeme $ string s <* notFollowedBy idContChar
 
-idChar :: Parser Char Char
-idChar = $gsfatal $ "idChar next"
+idContChar :: Parser Char Char
+idContChar = matching "identifier continuation character" isAlphaNum 
 
 string :: String -> Parser Char ()
 string s = mapM_ char s
