@@ -177,7 +177,7 @@ string :: String -> Parser Char ()
 string s = mapM_ char s
 
 comma :: Parser Char ()
-comma = $gsfatal "comma next"
+comma = lexeme $ char ','
 
 char :: Char -> Parser Char ()
 char ch = matching (show ch) (==ch) *> return ()
