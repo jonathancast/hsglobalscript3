@@ -119,7 +119,7 @@ keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* ($gsfatal $ "keyword " ++ show s ++ " next")
 
 string :: String -> Parser Char ()
-string s = $gsfatal $ "string " ++ show s ++ " next"
+string s = mapM_ char s
 
 char :: Char -> Parser Char ()
 char ch = $gsfatal $ "char " ++ show ch ++ " next"
