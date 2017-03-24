@@ -161,7 +161,10 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "retu
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
 
 matching :: String -> (s -> Bool) -> Parser s s
-matching cat p = Parser (\ k -> SymbolOrEof ($gsfatal "matching next") ($gsfatal "matching next"))
+matching cat p = Parser (\ k -> SymbolOrEof ($gsfatal "matching next") (\ c -> case p c of
+    False -> Left [cat]
+    True -> Right (k c)
+  ))
 
 pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
