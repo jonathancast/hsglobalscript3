@@ -94,6 +94,8 @@ data DestComp
   = DCChar Char
    deriving Show
 
+data Expr
+
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
 
