@@ -97,7 +97,7 @@ data PrimParser s a
   = PPEmpty
 
 instance Functor (Parser s) where
-    fmap f px = $gsfatal $ "fmap f px next"
+    fmap f px = Parser (\ k -> runParser px (k . f))
 
 instance Applicative (Parser s) where
     pure x = $gsfatal "pure next"
