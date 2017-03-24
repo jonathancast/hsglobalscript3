@@ -94,6 +94,33 @@ data DestComp
   = DCChar Char
    deriving Show
 
+keyword :: String -> Parser Char ()
+keyword s = lexeme $ string s <* notFollowedBy idContChar
+
+ident :: Parser Char String
+ident = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
+
+keywordOp :: String -> Parser Char ()
+keywordOp s = lexeme $ string s <* notFollowedBy opContChar
+
+idStartChar :: Parser Char Char
+idStartChar = matching "identifier" isAlpha
+
+idContChar :: Parser Char Char
+idContChar = matching "identifier continuation character" isAlphaNum 
+
+opContChar :: Parser Char Char
+opContChar = matching "operator continuation character" isSymbol
+
+comma :: Parser Char ()
+comma = lexeme $ char ','
+
+lexeme :: Parser Char a -> Parser Char a
+lexeme p = p <* whitespace
+
+whitespace :: Parser Char ()
+whitespace = many (matching "whitespace" isSpace) *> return ()
+
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
 parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s where
     parse_w PPEmpty pos s = Left $ fmtPos pos $ "parse error"
@@ -165,39 +192,6 @@ p <?> s = Parser (\ k -> w (runParser p k)) where
 endBy :: Parser s a -> Parser s b -> Parser s [a]
 p0 `endBy` p1 = many (p0 <* p1)
 
-keyword :: String -> Parser Char ()
-keyword s = lexeme $ string s <* notFollowedBy idContChar
-
-ident :: Parser Char String
-ident = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
-
-keywordOp :: String -> Parser Char ()
-keywordOp s = lexeme $ string s <* notFollowedBy opContChar
-
-idStartChar :: Parser Char Char
-idStartChar = matching "identifier" isAlpha
-
-idContChar :: Parser Char Char
-idContChar = matching "identifier continuation character" isAlphaNum 
-
-opContChar :: Parser Char Char
-opContChar = matching "operator continuation character" isSymbol
-
-string :: String -> Parser Char ()
-string s = mapM_ char s <?> show s
-
-comma :: Parser Char ()
-comma = lexeme $ char ','
-
-char :: Char -> Parser Char ()
-char ch = matching (show ch) (==ch) *> return ()
-
-lexeme :: Parser Char a -> Parser Char a
-lexeme p = p <* whitespace
-
-whitespace :: Parser Char ()
-whitespace = many (matching "whitespace" isSpace) *> return ()
-
 notFollowedBy :: Parser s a -> Parser s ()
 notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "return next")) where
     difference_w :: PrimParser s a -> PrimParser s b -> PrimParser s a
@@ -209,6 +203,12 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "retu
             (Right p0', Right p1') -> $gsfatal "sk0 `difference_w` sk1 next"
       )
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
+
+string :: String -> Parser Char ()
+string s = mapM_ char s <?> show s
+
+char :: Char -> Parser Char ()
+char ch = matching (show ch) (==ch) *> return ()
 
 matching :: String -> (s -> Bool) -> Parser s s
 matching cat p = Parser (\ k -> SymbolOrEof ($gsfatal "matching next") (\ c -> case p c of
