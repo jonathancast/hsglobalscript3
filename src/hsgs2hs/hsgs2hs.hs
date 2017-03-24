@@ -67,6 +67,9 @@ interpolation = empty
 
 quote :: Parser Char SourceComp
 quote = empty
+    <|> do
+        keyword "arg"
+        pfail "arg next"
 
 data SourceComp
   = SCChar Char
