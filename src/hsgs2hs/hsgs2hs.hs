@@ -91,9 +91,12 @@ parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s wher
 advanceStr :: String -> Pos -> Pos
 advanceStr s pos = foldr advance pos s
 
-advance :: Char -> Pos -> Pos
-advance '\n' (Pos fn l c) = Pos fn (l+1) 1
-advance _ (Pos fn l c) = Pos fn l (c+1)
+class Advanceable r where
+    advance :: r -> Pos -> Pos
+
+instance Advanceable Char where
+    advance '\n' (Pos fn l c) = Pos fn (l+1) 1
+    advance _ (Pos fn l c) = Pos fn l (c+1)
 
 newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> PrimParser s b }
 
