@@ -116,7 +116,7 @@ pfail :: String -> Parser s a
 pfail err = $gsfatal $ "pfail " ++ show err ++ " next"
 
 keyword :: String -> Parser Char ()
-keyword s = $gsfatal $ "keyword " ++ show s ++ " next"
+keyword s = lexeme $ $gsfatal $ "keyword " ++ show s ++ " next"
 
 lexeme :: Parser Char a -> Parser Char a
 lexeme p = $gsfatal $ "lexeme p next"
