@@ -82,6 +82,9 @@ param = empty
         vs <- ident `endBy` comma
         return $ FVSParam vs
 
+expr :: Parser Char Expr
+expr = empty
+
 data SourceComp
   = SCChar Char
     deriving Show
