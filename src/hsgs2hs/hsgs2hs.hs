@@ -78,6 +78,7 @@ param = empty
     <|> do
         keyword "fvs"
         keywordOp "="
+        vs <- ident `endBy` comma
         pfail "param next"
 
 data SourceComp
