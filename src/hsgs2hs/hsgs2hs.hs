@@ -4,7 +4,7 @@
 import Control.Applicative (Alternative(..))
 
 import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
-import Data.List (isSuffixOf)
+import Data.List (foldl', isSuffixOf)
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
 import System.Environment (getArgs)
@@ -110,7 +110,7 @@ parse p pos s = parse_w (runParser p $ $gsfatal "identity cont next") pos s wher
     parse_w p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
 
 advanceStr :: String -> Pos -> Pos
-advanceStr s pos = foldr advance pos s
+advanceStr s pos = foldl' (flip advance) pos s
 
 class Advanceable r where
     advance :: r -> Pos -> Pos
