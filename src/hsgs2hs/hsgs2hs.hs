@@ -147,6 +147,9 @@ p0 `endBy` p1 = many (p0 <* p1)
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
 
+keywordOp :: String -> Parser Char ()
+keywordOp s = $gsfatal "keywordOp next"
+
 idContChar :: Parser Char Char
 idContChar = matching "identifier continuation character" isAlphaNum 
 
