@@ -109,7 +109,7 @@ instance Functor (Parser s) where
     fmap f px = Parser (\ k -> runParser px (k . f))
 
 instance Applicative (Parser s) where
-    pure x = $gsfatal "pure next"
+    pure x = return x
     pf <*> px = pf >>= \ f -> px >>= \ x -> return (f x)
 
 instance Alternative (Parser s) where
