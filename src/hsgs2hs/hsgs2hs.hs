@@ -74,7 +74,11 @@ quote = empty
         pfail "arg next"
 
 param :: Parser Char Param
-param = $gsfatal "param next"
+param = empty
+    <|> do
+        keyword "fvs"
+        keywordOp "="
+        pfail "param next"
 
 data SourceComp
   = SCChar Char
