@@ -105,13 +105,11 @@ data Param
 data DestComp
   = DCChar Char
   | DCExpr HSExpr
-   deriving Show
 
 data Expr
   = EVar String
 
-data HSExpr = HSExpr
-    deriving Show
+data HSExpr
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
