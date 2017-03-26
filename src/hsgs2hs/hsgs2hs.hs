@@ -47,6 +47,9 @@ formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
 
+formatExpr :: HSExpr -> String -> String
+formatExpr e s = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
+
 compileSource :: [SourceComp] -> Either String [DestComp]
 compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (SCArg ps e:scs) = (:) <$> compileArg e <*> compileSource scs
