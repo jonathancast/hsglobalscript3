@@ -264,3 +264,7 @@ scCode SCArg{} = "SCArg"
 
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
+
+dcCode :: DestComp -> String
+dcCode DCChar{} = "DCChar"
+dcCode DCExpr{} = "DCExpr"
