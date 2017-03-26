@@ -266,3 +266,6 @@ eCode EVar{} = "EVar"
 dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
 dcCode DCExpr{} = "DCExpr"
+
+hsCode :: HSExpr -> String
+hsCode = $gsfatal "hsCode next"
