@@ -9,6 +9,9 @@ import HSGS.Parser (Parser, notFollowedBy, matching, char, string, endBy)
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
+    <|> do
+        keyword "gsimports"
+        return SCImports
 
 quote :: Parser Char SourceComp
 quote = empty
