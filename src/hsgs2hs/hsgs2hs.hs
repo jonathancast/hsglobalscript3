@@ -56,7 +56,8 @@ formatExpr :: HSExpr -> String -> String
 formatExpr e = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
 
 formatExprAtom :: HSExpr -> String -> String
-formatExprAtom e s = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
+formatExprAtom e@HSApp{} = ('(':) . formatExpr e . (')':)
+formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
 compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
