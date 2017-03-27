@@ -48,12 +48,12 @@ mkHSFile "" = ""
 
 formatOutput :: [DestComp] -> Either String [String]
 formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
-formatOutput (DCExpr e:dcs) = ((formatExpr e ""):) <$> formatOutput dcs
+formatOutput (DCExpr e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
 
-formatExpr :: HSExpr -> String -> String
-formatExpr e s = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
+formatExprAtom :: HSExpr -> String -> String
+formatExprAtom e s = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
 compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
