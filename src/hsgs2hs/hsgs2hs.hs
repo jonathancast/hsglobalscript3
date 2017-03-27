@@ -51,7 +51,7 @@ mkHSFile "" = ""
 formatOutput :: [DestComp] -> Either String [String]
 formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
 formatOutput (DCImports is:dcs) = (map formatImport (Set.toList is)++) <$> formatOutput dcs
-formatOutput (DCExpr e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
+formatOutput (DCExpr _ e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
 
@@ -83,7 +83,8 @@ gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
 compileArg :: Expr -> Either String DestComp
-compileArg (EVar v) = return $ DCExpr $ HSConstr "GSArgVar" `HSApp` HSVar v
+compileArg (EVar v) = return $ DCExpr (Set.singleton (HSIType "GSI.Value" "GSArg")) $
+    HSConstr "GSArgVar" `HSApp` HSVar v
 compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 splitInput :: Pos -> String -> Either String [SourceComp]

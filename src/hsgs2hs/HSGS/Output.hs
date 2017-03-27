@@ -9,7 +9,7 @@ import GSI.Util (gsfatal)
 data DestComp
   = DCChar Char
   | DCImports (Set HSImport)
-  | DCExpr HSExpr
+  | DCExpr (Set HSImport) HSExpr
 
 data HSImport
   = HSIType String String
