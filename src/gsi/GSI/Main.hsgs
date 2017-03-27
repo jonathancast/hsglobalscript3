@@ -11,6 +11,7 @@ import GSI.String (gsbcstring, gsbcstringlit)
 import GSI.Either (gsleft_view, gsright_view)
 import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
 import GSI.Env (gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_view)
+$gsimports
 
 -- Main function (call this to start your interpreter)
 gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
@@ -37,7 +38,7 @@ gsprocessargs = $gslambda $ \ args ->
                             ,
                             $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "st"),
                                 $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "st") env $ \ st ->
-                                    $gsbcapply gsprocessargs [ $gsav as ] -- Ignore all arguments until we start failing tests for it
+                                    $gsbcapply gsprocessargs [ [gs:arg fvs=as,| as |] ] -- Ignore all arguments until we start failing tests for it
                             ,
                             $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args ] ]
                     ]
