@@ -12,7 +12,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode)
-import HSGS.Output (HSExpr(..), hsCode)
+import HSGS.Output (DestComp(..), HSExpr(..), dcCode, hsCode)
 
 main = do
     as <- getArgs
@@ -83,13 +83,5 @@ splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs:" pos) s 
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
-data DestComp
-  = DCChar Char
-  | DCExpr HSExpr
-
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
-
-dcCode :: DestComp -> String
-dcCode DCChar{} = "DCChar"
-dcCode DCExpr{} = "DCExpr"
