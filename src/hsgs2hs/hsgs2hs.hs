@@ -3,7 +3,6 @@
 
 import Control.Applicative (Alternative(..))
 
-import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 import Data.List (isSuffixOf)
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
@@ -11,8 +10,8 @@ import System.Environment (getArgs)
 
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
-import HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, scCode)
+import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
+import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode)
 import HSGS.Output (HSExpr(..), hsCode)
 
 main = do
@@ -84,63 +83,9 @@ splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs:" pos) s 
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
-quote :: Parser Char SourceComp
-quote = empty
-    <|> do
-        keyword "arg"
-        ps <- many param
-        keywordOp "|"
-        e <- expr
-        return $ SCArg ps e
-
-param :: Parser Char Param
-param = empty
-    <|> do
-        keyword "fvs"
-        keywordOp "="
-        vs <- ident `endBy` comma
-        return $ FVSParam vs
-
-expr :: Parser Char Expr
-expr = empty
-    <|> exprAtom
-  where
-    exprAtom = empty
-        <|> EVar <$> ident
-
 data DestComp
   = DCChar Char
   | DCExpr HSExpr
-
-keyword :: String -> Parser Char ()
-keyword s = lexeme $ string s <* notFollowedBy idContChar
-
-ident :: Parser Char String
-ident = lexeme $ ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
-
-keywordOp :: String -> Parser Char ()
-keywordOp s = lexeme $ string s <* notFollowedBy opContChar
-
-idStartChar :: Parser Char Char
-idStartChar = matching "identifier" isAlpha
-
-idContChar :: Parser Char Char
-idContChar = matching "identifier continuation character" isAlphaNum 
-
-opContChar :: Parser Char Char
-opContChar = matching "operator continuation character" isSymbol
-
-comma :: Parser Char ()
-comma = lexeme $ char ','
-
-lexeme :: Parser Char a -> Parser Char a
-lexeme p = p <* whitespace
-
-whitespace :: Parser Char ()
-whitespace = many (matching "whitespace" isSpace) *> return ()
-
-endBy :: Parser s a -> Parser s b -> Parser s [a]
-p0 `endBy` p1 = many (p0 <* p1)
 
 eCode :: Expr -> String
 eCode EVar{} = "EVar"

@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
-module HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr) where
+module HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, endBy, Advanceable(..), advanceStr) where
 
 import Control.Applicative (Alternative(..))
 
@@ -42,6 +42,9 @@ p <?> s = Parser (\ k -> w (runParser p k)) where
         Right p1 -> Right p1
       )
     w p0 = $gsfatal $ pCode p0 ++ " <?> s next"
+
+endBy :: Parser s a -> Parser s b -> Parser s [a]
+p0 `endBy` p1 = many (p0 <* p1)
 
 notFollowedBy :: Parser s a -> Parser s ()
 notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "return next")) where
