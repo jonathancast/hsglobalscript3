@@ -11,7 +11,8 @@ data DestComp
   | DCImports (Set HSImport)
   | DCExpr HSExpr
 
-data HSImport = HSImport
+data HSImport
+  = HSIType String String
   deriving (Eq, Ord)
 
 data HSExpr
