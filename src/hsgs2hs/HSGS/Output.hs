@@ -1,12 +1,17 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Output (DestComp(..), HSExpr(..), dcCode, hsCode) where
+module HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsCode) where
+
+import Data.Set (Set)
 
 import GSI.Util (gsfatal)
 
 data DestComp
   = DCChar Char
   | DCExpr HSExpr
+
+data HSImport = HSImport
+  deriving (Eq, Ord)
 
 data HSExpr
   = HSConstr String
