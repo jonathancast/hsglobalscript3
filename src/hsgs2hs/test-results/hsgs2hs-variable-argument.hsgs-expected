@@ -1,2 +1,3 @@
 {-# LINE 1 "./test-fixtures/variable-argument.hsgs" #-}
+import GSI.Value (GSArg(..))
 (GSArgVar as)
