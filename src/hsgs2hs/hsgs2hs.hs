@@ -50,6 +50,7 @@ mkHSFile "" = ""
 
 formatOutput :: [DestComp] -> Either String [String]
 formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
+formatOutput (DCImports is:dcs) = (map formatImport (Set.toList is)++) <$> formatOutput dcs
 formatOutput (DCExpr e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
