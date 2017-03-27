@@ -56,6 +56,7 @@ formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
 
 formatImport :: HSImport -> String
+formatImport (HSIType m t) = "import " ++ m ++ " (" ++ t ++ "(..))\n"
 formatImport hs = $gsfatal $ "formatImport " ++ hsiCode hs ++ " next"
 
 formatExpr :: HSExpr -> String -> String
