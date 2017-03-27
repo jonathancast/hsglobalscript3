@@ -13,6 +13,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation)
+import HSGS.Output (HSExpr)
 
 main = do
     as <- getArgs
@@ -102,8 +103,6 @@ expr = empty
 data DestComp
   = DCChar Char
   | DCExpr HSExpr
-
-data HSExpr
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
