@@ -8,6 +8,7 @@ import GSI.Util (gsfatal)
 
 data DestComp
   = DCChar Char
+  | DCImports (Set HSImport)
   | DCExpr HSExpr
 
 data HSImport = HSImport
@@ -20,6 +21,7 @@ data HSExpr
 
 dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
+dcCode DCImports{} = "DCImports"
 dcCode DCExpr{} = "DCExpr"
 
 hsCode :: HSExpr -> String
