@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsCode) where
+module HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode) where
 
 import Data.Set (Set)
 
@@ -23,6 +23,9 @@ dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
 dcCode DCImports{} = "DCImports"
 dcCode DCExpr{} = "DCExpr"
+
+hsiCode :: HSImport -> String
+hsiCode i = i `seq` $gsfatal "hsiCode next"
 
 hsCode :: HSExpr -> String
 hsCode HSConstr{} = "HSConstr"
