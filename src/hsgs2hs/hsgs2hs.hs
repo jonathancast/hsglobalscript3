@@ -5,6 +5,8 @@ import Control.Applicative (Alternative(..))
 
 import Data.List (isSuffixOf)
 
+import Data.Set (Set)
+
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
 import System.Environment (getArgs)
 
@@ -12,7 +14,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode)
-import HSGS.Output (DestComp(..), HSExpr(..), dcCode, hsCode)
+import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsCode)
 
 main = do
     as <- getArgs
@@ -67,6 +69,10 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (SCArg ps e:scs) = (:) <$> compileArg e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
+
+gatherImports :: Set HSImport -> [DestComp] -> Set HSImport
+gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
+gatherImports is [] = is
 
 compileArg :: Expr -> Either String DestComp
 compileArg (EVar v) = return $ DCExpr $ HSConstr "GSArgVar" `HSApp` HSVar v
