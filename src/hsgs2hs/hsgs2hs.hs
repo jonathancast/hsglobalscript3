@@ -59,6 +59,7 @@ formatExpr e = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
 
 formatExprAtom :: HSExpr -> String -> String
 formatExprAtom (HSConstr c) = (c++)
+formatExprAtom (HSVar v) = (v++)
 formatExprAtom e@HSApp{} = ('(':) . formatExpr e . (')':)
 formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
