@@ -6,8 +6,10 @@ import GSI.Util (gsfatal)
 
 data HSExpr
   = HSConstr String
+  | HSVar String
   | HSApp HSExpr HSExpr
 
 hsCode :: HSExpr -> String
 hsCode HSConstr{} = "HSConstr"
+hsCode HSVar{} = "HSVar"
 hsCode HSApp{} = "HSApp"
