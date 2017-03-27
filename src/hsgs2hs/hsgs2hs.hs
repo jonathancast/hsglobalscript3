@@ -13,7 +13,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation)
-import HSGS.Output (HSExpr)
+import HSGS.Output (HSExpr, hsCode)
 
 main = do
     as <- getArgs
@@ -144,6 +144,3 @@ eCode EVar{} = "EVar"
 dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
 dcCode DCExpr{} = "DCExpr"
-
-hsCode :: HSExpr -> String
-hsCode = $gsfatal "hsCode next"
