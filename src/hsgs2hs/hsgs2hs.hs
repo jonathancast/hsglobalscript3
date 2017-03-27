@@ -15,7 +15,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode)
-import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsCode)
+import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 main = do
     as <- getArgs
@@ -53,6 +53,9 @@ formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
 formatOutput (DCExpr e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
+
+formatImport :: HSImport -> String
+formatImport hs = $gsfatal $ "formatImport " ++ hsiCode hs ++ " next"
 
 formatExpr :: HSExpr -> String -> String
 formatExpr e@HSConstr{} = formatExprAtom e
