@@ -6,6 +6,7 @@ import Control.Applicative (Alternative(..))
 import Data.List (isSuffixOf)
 
 import Data.Set (Set)
+import qualified Data.Set as Set
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
 import System.Environment (getArgs)
@@ -66,6 +67,9 @@ formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
 compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
+compileSource (SCImports:scs) = do
+    dcs <- compileSource scs
+    return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg ps e:scs) = (:) <$> compileArg e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
