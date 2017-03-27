@@ -5,7 +5,9 @@ module HSGS.Output (HSExpr(..), hsCode) where
 import GSI.Util (gsfatal)
 
 data HSExpr
-  = HSApp HSExpr HSExpr
+  = HSConstr String
+  | HSApp HSExpr HSExpr
 
 hsCode :: HSExpr -> String
+hsCode HSConstr{} = "HSConstr"
 hsCode HSApp{} = "HSApp"
