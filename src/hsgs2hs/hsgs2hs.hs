@@ -12,7 +12,7 @@ import System.Environment (getArgs)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation)
+import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, scCode)
 import HSGS.Output (HSExpr(..), hsCode)
 
 main = do
@@ -141,10 +141,6 @@ whitespace = many (matching "whitespace" isSpace) *> return ()
 
 endBy :: Parser s a -> Parser s b -> Parser s [a]
 p0 `endBy` p1 = many (p0 <* p1)
-
-scCode :: SourceComp -> String
-scCode SCChar{} = "SCChar"
-scCode SCArg{} = "SCArg"
 
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
