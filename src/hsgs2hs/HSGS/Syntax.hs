@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
 module HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, scCode) where
 
 import Control.Applicative (Alternative(..))
@@ -9,6 +10,7 @@ interpolation = empty
 
 data SourceComp
   = SCChar Char
+  | SCImports
   | SCArg [Param] Expr
 
 data Expr
@@ -19,4 +21,5 @@ data Param
 
 scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
+scCode SCImports{} = "SCImports"
 scCode SCArg{} = "SCArg"
