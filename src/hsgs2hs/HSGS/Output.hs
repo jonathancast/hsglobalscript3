@@ -26,7 +26,7 @@ dcCode DCImports{} = "DCImports"
 dcCode DCExpr{} = "DCExpr"
 
 hsiCode :: HSImport -> String
-hsiCode i = i `seq` $gsfatal "hsiCode next"
+hsiCode HSIType{} = "HSIType"
 
 hsCode :: HSExpr -> String
 hsCode HSConstr{} = "HSConstr"
