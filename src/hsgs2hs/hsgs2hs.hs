@@ -53,6 +53,7 @@ formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
 
 formatExpr :: HSExpr -> String -> String
+formatExpr e@HSConstr{} = formatExprAtom e
 formatExpr (HSApp ef ex) = formatExpr ef . (' ':) . formatExprAtom ex
 formatExpr e = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
 
