@@ -12,6 +12,7 @@ import System.Environment (getArgs)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr)
+import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation)
 
 main = do
     as <- getArgs
@@ -74,9 +75,6 @@ splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs:" pos) s 
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
-interpolation :: Parser Char SourceComp
-interpolation = empty
-
 quote :: Parser Char SourceComp
 quote = empty
     <|> do
@@ -101,19 +99,9 @@ expr = empty
     exprAtom = empty
         <|> EVar <$> ident
 
-data SourceComp
-  = SCChar Char
-  | SCArg [Param] Expr
-
-data Param
-  = FVSParam [String]
-
 data DestComp
   = DCChar Char
   | DCExpr HSExpr
-
-data Expr
-  = EVar String
 
 data HSExpr
 
