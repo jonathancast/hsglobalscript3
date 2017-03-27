@@ -62,7 +62,7 @@ compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
 compileArg :: Expr -> Either String DestComp
-compileArg (EVar v) = return $ DCExpr $ $gsfatal "compileArg var next"
+compileArg (EVar v) = return $ DCExpr $ ($gsfatal "compileArg var next") `HSApp` ($gsfatal "compileArg var next")
 compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 splitInput :: Pos -> String -> Either String [SourceComp]
