@@ -79,6 +79,8 @@ compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
 gatherImports :: Set HSImport -> [DestComp] -> Set HSImport
+gatherImports is (DCChar _:dcs) = gatherImports is dcs
+gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
 gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
