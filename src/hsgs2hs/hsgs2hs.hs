@@ -52,6 +52,9 @@ formatOutput (DCExpr e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
 formatOutput [] = return []
 
+formatExpr :: HSExpr -> String -> String
+formatExpr e = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
+
 formatExprAtom :: HSExpr -> String -> String
 formatExprAtom e s = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
