@@ -13,7 +13,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation)
-import HSGS.Output (HSExpr, hsCode)
+import HSGS.Output (HSExpr(..), hsCode)
 
 main = do
     as <- getArgs
