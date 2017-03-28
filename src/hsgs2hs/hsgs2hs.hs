@@ -96,6 +96,9 @@ compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 compileExpr :: Expr -> Either String (Set HSImport, HSExpr)
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
+hspos :: Pos -> HSExpr
+hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
+
 splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
