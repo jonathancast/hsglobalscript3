@@ -62,6 +62,7 @@ formatImport hs = $gsfatal $ "formatImport " ++ hsiCode hs ++ " next"
 
 formatExpr :: HSExpr -> String -> String
 formatExpr e@HSConstr{} = formatExprAtom e
+formatExpr e@HSVar{} = formatExprAtom e
 formatExpr (HSApp ef ex) = formatExpr ef . (' ':) . formatExprAtom ex
 formatExpr e = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
 
