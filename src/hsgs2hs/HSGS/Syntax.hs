@@ -25,7 +25,7 @@ quote = empty
 param :: Parser Char Param
 param = empty
     <|> do
-        keyword "fvs"
+        keyword "hsvs"
         keywordOp "="
         vs <- ident `endBy` comma
         return $ FVSParam vs
