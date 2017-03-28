@@ -106,6 +106,9 @@ compileExpr (EVar pos v) = return (
   )
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
+compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
+compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
+
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
 
