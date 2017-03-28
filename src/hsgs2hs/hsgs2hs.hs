@@ -75,7 +75,7 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
-compileSource (SCArg ps e:scs) = (:) <$> compileArg e <*> compileSource scs
+compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg e <*> compileSource scs
 compileSource (SCExpr ps e:scs) = (:) <$> compileExpr e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
@@ -86,9 +86,11 @@ gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
 gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
-compileArg :: Expr -> Either String DestComp
-compileArg (EVar v) = return $ DCExpr (Set.singleton (HSIType "GSI.Value" "GSArg")) $
+compileArg :: Expr -> Either String (Set HSImport, HSExpr)
+compileArg (EVar v) = return (
+    Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
+  )
 compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 compileExpr :: Expr -> Either String DestComp
