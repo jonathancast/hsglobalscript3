@@ -90,6 +90,9 @@ compileArg (EVar v) = return $ DCExpr (Set.singleton (HSIType "GSI.Value" "GSArg
     HSConstr "GSArgVar" `HSApp` HSVar v
 compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
+compileExpr :: Expr -> Either String DestComp
+compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
+
 splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
