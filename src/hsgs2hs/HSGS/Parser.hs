@@ -100,7 +100,7 @@ instance Alternative (Parser s) where
             (Left err0, Left err1) -> Left (err0 ++ err1)
             (Left err0, Right p1) -> Right p1
             (Right p0, Left err1) -> Right p0
-            (Right p0, Right p1) -> $gsfatal "sk0 <|> sk1 next"
+            (Right p0, Right p1) -> Right $ p0 `or_w` p1
           )
         p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
 
