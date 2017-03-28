@@ -41,6 +41,7 @@ data SourceComp
   = SCChar Char
   | SCImports
   | SCArg [Param] Expr
+  | SCExpr [Param] Expr
 
 data Expr
   = EVar String
@@ -79,3 +80,4 @@ scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
 scCode SCImports{} = "SCImports"
 scCode SCArg{} = "SCArg"
+scCode SCExpr{} = "SCExpr"
