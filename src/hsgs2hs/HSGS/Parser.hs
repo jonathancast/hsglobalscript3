@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
-module HSGS.Parser (Parser, parse, matching, char, string, notFollowedBy, endBy, Advanceable(..), advanceStr) where
+module HSGS.Parser (Parser, parse, getPos, matching, char, string, notFollowedBy, endBy, Advanceable(..), advanceStr) where
 
 import Control.Applicative (Alternative(..))
 
@@ -34,6 +34,9 @@ parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s w
 
 pfail :: String -> Parser s a
 pfail err = Parser (\ k -> PPFail err)
+
+getPos :: Parser s Pos
+getPos = Parser (\ k -> GetPos k)
 
 (<?>) :: Parser s a -> String -> Parser s a
 p <?> s = Parser (\ k -> w (runParser p k)) where
@@ -112,6 +115,7 @@ data PrimParser s a
   = PPEmpty
   | PPFail String
   | PPReturnPlus a (PrimParser s a)
+  | GetPos (Pos -> PrimParser s a)
   | forall b. NotFollowedByOr a (PrimParser s b) (PrimParser s a)
   | SymbolOrEof (PrimParser s a) (s -> Either [String] (PrimParser s a))
 
