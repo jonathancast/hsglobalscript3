@@ -13,6 +13,7 @@ data DestComp
 
 data HSImport
   = HSIType String String
+  | HSIVar String String
   deriving (Eq, Ord)
 
 data HSExpr
@@ -27,6 +28,7 @@ dcCode DCExpr{} = "DCExpr"
 
 hsiCode :: HSImport -> String
 hsiCode HSIType{} = "HSIType"
+hsiCode HSIVar{} = "HSIVar"
 
 hsCode :: HSExpr -> String
 hsCode HSConstr{} = "HSConstr"
