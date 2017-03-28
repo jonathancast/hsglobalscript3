@@ -76,7 +76,7 @@ compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg e <*> compileSource scs
-compileSource (SCExpr ps e:scs) = (:) <$> compileExpr e <*> compileSource scs
+compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
@@ -93,7 +93,7 @@ compileArg (EVar v) = return (
   )
 compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
-compileExpr :: Expr -> Either String DestComp
+compileExpr :: Expr -> Either String (Set HSImport, HSExpr)
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 splitInput :: Pos -> String -> Either String [SourceComp]
