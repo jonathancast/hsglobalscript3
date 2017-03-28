@@ -5,7 +5,9 @@ import Control.Applicative (Alternative(..))
 
 import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
-import HSGS.Parser (Parser, notFollowedBy, matching, char, string, endBy)
+import GSI.Util (Pos)
+
+import HSGS.Parser (Parser, notFollowedBy, getPos, matching, char, string, endBy)
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
@@ -41,7 +43,7 @@ expr = empty
     <|> exprAtom
   where
     exprAtom = empty
-        <|> EVar <$> ident
+        <|> EVar <$> getPos <*> ident
 
 data SourceComp
   = SCChar Char
@@ -50,7 +52,7 @@ data SourceComp
   | SCExpr [Param] Expr
 
 data Expr
-  = EVar String
+  = EVar Pos String
 
 data Param
   = FVSParam [String]

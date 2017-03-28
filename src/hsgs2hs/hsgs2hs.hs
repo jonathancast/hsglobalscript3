@@ -87,7 +87,7 @@ gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
 compileArg :: Expr -> Either String (Set HSImport, HSExpr)
-compileArg (EVar v) = return (
+compileArg (EVar _ v) = return (
     Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
   )
