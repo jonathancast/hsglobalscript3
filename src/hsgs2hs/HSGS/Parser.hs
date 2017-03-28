@@ -52,7 +52,7 @@ endBy :: Parser s a -> Parser s b -> Parser s [a]
 p0 `endBy` p1 = many (p0 <* p1)
 
 notFollowedBy :: Parser s a -> Parser s ()
-notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "return next")) where
+notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPReturnPlus x PPEmpty)) where
     difference_w :: PrimParser s a -> PrimParser s b -> PrimParser s a
     PPFail err `difference_w` p1 = PPFail err
     PPReturnPlus x p0 `difference_w` p1 = NotFollowedByOr x p1 (p0 `difference_w` p1)
@@ -64,6 +64,7 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "retu
             (Right p0', Left exp1') -> Right p0'
             (Right p0', Right p1') -> Right $ p0' `difference_w` p1'
       )
+    NotFollowedByOr x p1 p2 `difference_w` PPReturnPlus y p3 = PPEmpty
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
 
 string :: String -> Parser Char ()
