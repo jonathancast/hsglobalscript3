@@ -20,6 +20,7 @@ parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s w
     parse_w k (PPReturnPlus x p1) pos s = parse_w k' p1 pos s where
         k' (Right y) = Right y -- Longer match, so go with that
         k' (Left _) = Right (x, pos, s) -- Fall back to this match
+    parse_w k (GetPos k') pos s = parse_w k (k' pos) pos s
     parse_w k (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
     parse_w k (SymbolOrEof ek sk) pos (c:s') = case sk c of
         Left exp -> k $ Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
