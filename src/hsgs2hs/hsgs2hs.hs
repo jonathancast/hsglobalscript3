@@ -108,6 +108,15 @@ compileExpr (EApp f e) = compileApp f [e]
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
+compileApp (EVar pos f) as = do
+    as' <- mapM compileArg as
+    return (
+        Set.unions $
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
+            map (\ (is, _) -> is) as'
+        ,
+        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar f `HSApp` HSList (map (\ (_, a) -> a) as')
+      )
 compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 hspos :: Pos -> HSExpr
