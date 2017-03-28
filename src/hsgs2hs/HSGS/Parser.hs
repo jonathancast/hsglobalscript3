@@ -62,7 +62,7 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p ($gsfatal "retu
             (Left exp0, Left exp1) -> Left exp0
             (Left exp0, Right p1') -> Left exp0
             (Right p0', Left exp1') -> Right p0'
-            (Right p0', Right p1') -> $gsfatal "sk0 `difference_w` sk1 next"
+            (Right p0', Right p1') -> Right $ p0' `difference_w` p1'
       )
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
 
