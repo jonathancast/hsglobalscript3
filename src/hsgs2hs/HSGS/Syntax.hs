@@ -40,7 +40,7 @@ param = empty
 
 expr :: Parser Char Expr
 expr = empty
-    <|> exprAtom
+    <|> foldl EApp <$> exprAtom <*> many exprAtom
   where
     exprAtom = empty
         <|> EVar <$> getPos <*> ident
