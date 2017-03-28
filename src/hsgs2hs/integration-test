@@ -15,3 +15,4 @@ ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs
 ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
 ok_diff_compiler '-- normal square brackets --' hsgs2hs normal-bracket.hsgs normal-bracket.hs
 ok_diff_compiler '-- argument variables --' hsgs2hs variable-argument.hsgs variable-argument.hs
+ok_diff_compiler '-- expression variables --' hsgs2hs variable-expression.hsgs variable-expression.hs
