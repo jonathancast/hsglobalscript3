@@ -14,7 +14,7 @@ import System.Environment (getArgs)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode)
+import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode, eCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 main = do
@@ -119,6 +119,3 @@ splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs:" pos) s 
     Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
-
-eCode :: Expr -> String
-eCode EVar{} = "EVar"
