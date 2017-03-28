@@ -1,0 +1,5 @@
+{-# LINE 1 "./test-fixtures/application-expression.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.ByteCode (gsbcapply_w)
+(gsbcapply_w (Pos "./test-fixtures/application-expression.hsgs" 2 34) gsprocessargs [ GSArgVar as ])

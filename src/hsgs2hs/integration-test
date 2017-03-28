@@ -16,3 +16,4 @@ ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hs
 ok_diff_compiler '-- normal square brackets --' hsgs2hs normal-bracket.hsgs normal-bracket.hs
 ok_diff_compiler '-- argument variables --' hsgs2hs variable-argument.hsgs variable-argument.hs
 ok_diff_compiler '-- expression variables --' hsgs2hs variable-expression.hsgs variable-expression.hs
+ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
