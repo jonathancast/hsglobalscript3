@@ -74,6 +74,12 @@ formatExprAtom (HSInteger n)
     | n >= 0 = (show n++)
     | otherwise = ('(':) . (show n++) . (')':)
 formatExprAtom e@HSApp{} = ('(':) . formatExpr e . (')':)
+formatExprAtom (HSList es) = fmt es where
+    fmt [] = ("[]"++)
+    fmt es = ("[ "++) . fmt' es
+    fmt' [] = (" ]"++) -- Actually dead code, but keep GHC quiet
+    fmt' [ e ] = formatExpr e . (" ]"++)
+    fmt' (e:es) = formatExpr e . (", "++) . fmt' es
 formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
