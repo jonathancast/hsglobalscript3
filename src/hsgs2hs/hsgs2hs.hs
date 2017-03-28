@@ -100,6 +100,10 @@ compileArg (EVar _ v) = return (
 compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 compileExpr :: Expr -> Either String (Set HSImport, HSExpr)
+compileExpr (EVar pos v) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` HSVar v
+  )
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 hspos :: Pos -> HSExpr
