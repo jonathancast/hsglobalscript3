@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
+{-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
 module HSGS.Parser (Parser, parse, getPos, matching, char, string, notFollowedBy, endBy, Advanceable(..), advanceStr) where
 
 import Control.Applicative (Alternative(..))
@@ -126,5 +127,6 @@ pCode :: PrimParser s a -> String
 pCode PPEmpty{} = "PPEmpty"
 pCode PPFail{} = "PPFail"
 pCode PPReturnPlus{} = "PPReturnPlus"
+pCode GetPos{} = "GetPos"
 pCode NotFollowedByOr{} = "NotFollowedByOr"
 pCode SymbolOrEof{} = "SymbolOrEof"
