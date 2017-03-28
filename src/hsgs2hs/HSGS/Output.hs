@@ -19,6 +19,7 @@ data HSImport
 data HSExpr
   = HSConstr String
   | HSVar String
+  | HSString String
   | HSApp HSExpr HSExpr
 
 dcCode :: DestComp -> String
@@ -33,4 +34,5 @@ hsiCode HSIVar{} = "HSIVar"
 hsCode :: HSExpr -> String
 hsCode HSConstr{} = "HSConstr"
 hsCode HSVar{} = "HSVar"
+hsCode HSString{} = "HSString"
 hsCode HSApp{} = "HSApp"
