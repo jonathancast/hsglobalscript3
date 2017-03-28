@@ -53,6 +53,7 @@ data SourceComp
 
 data Expr
   = EVar Pos String
+  | EApp Expr Expr
 
 data Param
   = FVSParam [String]
@@ -92,3 +93,4 @@ scCode SCExpr{} = "SCExpr"
 
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
+eCode EApp{} = "EApp"
