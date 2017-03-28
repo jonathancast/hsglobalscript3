@@ -76,6 +76,7 @@ compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg ps e:scs) = (:) <$> compileArg e <*> compileSource scs
+compileSource (SCExpr ps e:scs) = (:) <$> compileExpr e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
