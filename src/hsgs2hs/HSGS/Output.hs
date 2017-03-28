@@ -21,6 +21,7 @@ data HSExpr
   | HSVar String
   | HSString String
   | HSInteger Integer
+  | HSList [HSExpr]
   | HSApp HSExpr HSExpr
 
 dcCode :: DestComp -> String
@@ -37,4 +38,5 @@ hsCode HSConstr{} = "HSConstr"
 hsCode HSVar{} = "HSVar"
 hsCode HSString{} = "HSString"
 hsCode HSInteger{} = "HSInteger"
+hsCode HSList{} = "HSList"
 hsCode HSApp{} = "HSApp"
