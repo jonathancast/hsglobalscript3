@@ -57,6 +57,7 @@ formatOutput [] = return []
 
 formatImport :: HSImport -> String
 formatImport (HSIType m t) = "import " ++ m ++ " (" ++ t ++ "(..))\n"
+formatImport (HSIVar m v) = "import " ++ m ++ " (" ++ v ++ ")\n"
 formatImport hs = $gsfatal $ "formatImport " ++ hsiCode hs ++ " next"
 
 formatExpr :: HSExpr -> String -> String
