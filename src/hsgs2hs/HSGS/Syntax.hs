@@ -130,4 +130,4 @@ eCode EVar{} = "EVar"
 eCode EApp{} = "EApp"
 
 patCode :: Pattern -> String
-patCode p = p `seq` $gsfatal "patCode next"
+patCode PVar{} = "PVar"
