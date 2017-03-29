@@ -147,6 +147,10 @@ compileApp (EVar pos f) as = do
 compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compilePat :: Pattern -> Either String (Set HSImport, HSExpr)
+compilePat (PVar pos v) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` HSString v
+  )
 compilePat p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
 hspos :: Pos -> HSExpr
