@@ -92,6 +92,7 @@ compileSource (SCImports:scs) = do
 compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg e <*> compileSource scs
 compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr e <*> compileSource scs
 compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr pos e <*> compileSource scs
+compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg pos e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
