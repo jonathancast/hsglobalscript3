@@ -66,6 +66,7 @@ data SourceComp
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
   | SCOpenArg Pos [Param] Expr
+  | SCPat [Param] Pattern
 
 data Expr
   = EVar Pos String
@@ -110,6 +111,7 @@ scCode SCArg{} = "SCArg"
 scCode SCExpr{} = "SCExpr"
 scCode SCOpenExpr{} = "SCOpenExpr"
 scCode SCOpenArg{} = "SCOpenArg"
+scCode SCPat{} = "SCPat"
 
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
