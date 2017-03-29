@@ -23,6 +23,7 @@ data HSExpr
   | HSInteger Integer
   | HSList [HSExpr]
   | HSApp HSExpr HSExpr
+  | HSLambda [String] HSExpr
 
 dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
@@ -40,3 +41,4 @@ hsCode HSString{} = "HSString"
 hsCode HSInteger{} = "HSInteger"
 hsCode HSList{} = "HSList"
 hsCode HSApp{} = "HSApp"
+hsCode HSLambda{} = "HSLambda"
