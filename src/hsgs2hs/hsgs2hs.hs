@@ -64,6 +64,7 @@ formatExpr :: HSExpr -> String -> String
 formatExpr e@HSConstr{} = formatExprAtom e
 formatExpr e@HSVar{} = formatExprAtom e
 formatExpr (HSApp ef ex) = formatExpr ef . (' ':) . formatExprAtom ex
+formatExpr (HSLambda vs e) = ('\\':) . foldr (.) id (map (\ v -> (' ':) . (v++)) vs) . (" -> "++) . formatExpr e
 formatExpr e = $gsfatal $ "formatExpr " ++ hsCode e ++ " next"
 
 formatExprAtom :: HSExpr -> String -> String
