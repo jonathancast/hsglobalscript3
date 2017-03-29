@@ -71,6 +71,8 @@ data Expr
   = EVar Pos String
   | EApp Expr Expr
 
+data Pattern
+
 data Param
   = FVSParam [String]
 
