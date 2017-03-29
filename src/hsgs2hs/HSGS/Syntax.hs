@@ -67,6 +67,7 @@ expr = empty
 
 pattern :: Parser Char Pattern
 pattern = empty
+    <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
 
 data SourceComp
   = SCChar Char
