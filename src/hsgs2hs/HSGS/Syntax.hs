@@ -30,11 +30,12 @@ quote = empty
         e <- expr
         return $ SCExpr ps e
     <|> do
+        pos <- getPos
         keyword "open-expr"
         ps <- many param
         keywordOp "|"
         e <- expr
-        return $ SCOpenExpr ps e
+        return $ SCOpenExpr pos ps e
 
 param :: Parser Char Param
 param = empty
@@ -56,7 +57,7 @@ data SourceComp
   | SCImports
   | SCArg [Param] Expr
   | SCExpr [Param] Expr
-  | SCOpenExpr [Param] Expr
+  | SCOpenExpr Pos [Param] Expr
 
 data Expr
   = EVar Pos String
