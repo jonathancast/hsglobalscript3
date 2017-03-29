@@ -36,6 +36,13 @@ quote = empty
         keywordOp "|"
         e <- expr
         return $ SCOpenExpr pos ps e
+    <|> do
+        pos <- getPos
+        keyword "open-arg"
+        ps <- many param
+        keywordOp "|"
+        e <- expr
+        return $ SCOpenArg pos ps e
 
 param :: Parser Char Param
 param = empty
