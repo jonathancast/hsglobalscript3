@@ -14,7 +14,7 @@ import System.Environment (getArgs)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode, eCode)
+import HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode, patCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 main = do
@@ -144,6 +144,9 @@ compileApp (EVar pos f) as = do
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar f `HSApp` HSList (map (\ (_, a) -> a) as')
       )
 compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
+
+compilePat :: Pattern -> Either String (Set HSImport, HSExpr)
+compilePat p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
