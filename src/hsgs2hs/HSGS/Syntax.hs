@@ -43,6 +43,12 @@ quote = empty
         keywordOp "|"
         e <- expr
         return $ SCOpenArg pos ps e
+    <|> do
+        keyword "pat"
+        ps <- many param
+        keywordOp "|"
+        p <- pattern
+        return $ SCPat ps p
 
 param :: Parser Char Param
 param = empty
