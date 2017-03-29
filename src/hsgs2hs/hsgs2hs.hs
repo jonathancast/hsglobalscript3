@@ -91,7 +91,7 @@ compileSource (SCImports:scs) = do
     return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg e <*> compileSource scs
 compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr e <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr e <*> compileSource scs
+compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr pos e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
@@ -116,8 +116,8 @@ compileExpr (EVar pos v) = return (
 compileExpr (EApp f e) = compileApp f [e]
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
-compileOpenExpr :: Expr -> Either String (Set HSImport, HSExpr)
-compileOpenExpr e = $gsfatal $ "compileOpenExpr " ++ eCode e ++ " next"
+compileOpenExpr :: Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenExpr pos e = $gsfatal $ "compileOpenExpr " ++ eCode e ++ " next"
 
 compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
 compileApp (EVar pos f) as = do
