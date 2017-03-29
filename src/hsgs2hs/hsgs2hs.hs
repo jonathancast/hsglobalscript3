@@ -126,7 +126,12 @@ compileOpenExpr pos e = do
       )
 
 compileOpenArg :: Pos -> Expr -> Either String (Set HSImport, HSExpr)
-compileOpenArg pos e = $gsfatal $ "compileOpenArg " ++ eCode e ++ " next"
+compileOpenArg pos e = do
+    (is, hse) <- compileOpenExpr pos e
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
+      )
 
 compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
 compileApp (EVar pos f) as = do
