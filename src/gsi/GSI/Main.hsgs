@@ -37,7 +37,7 @@ gsprocessargs = $gslambda $ \ args ->
                                 ] ]
                             ,
                             $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "st"),
-                                $gsae $ [gs:open-expr hsvs=gsprocessargs,as,| gsprocessargs as |] -- Ignore all arguments until we start failing tests for it
+                                [gs:open-arg hsvs=gsprocessargs,as,| gsprocessargs as |] -- Ignore all arguments until we start failing tests for it
                             ,
                             $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args ] ]
                     ]
