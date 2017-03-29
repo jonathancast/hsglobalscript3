@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), Param(..), interpolation, quote, scCode, eCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode) where
 
 import Control.Applicative (Alternative(..))
 
