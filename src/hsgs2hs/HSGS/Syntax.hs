@@ -59,6 +59,9 @@ expr = empty
     exprAtom = empty
         <|> EVar <$> getPos <*> ident
 
+pattern :: Parser Char Pattern
+pattern = empty
+
 data SourceComp
   = SCChar Char
   | SCImports
