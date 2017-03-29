@@ -113,6 +113,9 @@ compileExpr (EVar pos v) = return (
 compileExpr (EApp f e) = compileApp f [e]
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
+compileOpenExpr :: Expr -> Either String (Set HSImport, HSExpr)
+compileOpenExpr e = $gsfatal $ "compileOpenExpr " ++ eCode e ++ " next"
+
 compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
 compileApp (EVar pos f) as = do
     as' <- mapM compileArg as
