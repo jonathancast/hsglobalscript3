@@ -75,6 +75,7 @@ formatExprAtom (HSInteger n)
     | n >= 0 = (show n++)
     | otherwise = ('(':) . (show n++) . (')':)
 formatExprAtom e@HSApp{} = ('(':) . formatExpr e . (')':)
+formatExprAtom e@HSLambda{} = ('(':) . formatExpr e . (')':)
 formatExprAtom (HSList es) = fmt es where
     fmt [] = ("[]"++)
     fmt es = ("[ "++) . fmt' es
