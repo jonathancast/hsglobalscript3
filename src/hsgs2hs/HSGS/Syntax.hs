@@ -1,11 +1,12 @@
+{-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode, patCode) where
 
 import Control.Applicative (Alternative(..))
 
 import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
-import GSI.Util (Pos)
+import GSI.Util (Pos, gsfatal)
 
 import HSGS.Parser (Parser, notFollowedBy, getPos, matching, char, string, endBy)
 
@@ -127,3 +128,6 @@ scCode SCPat{} = "SCPat"
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
 eCode EApp{} = "EApp"
+
+patCode :: Pattern -> String
+patCode p = p `seq` $gsfatal "patCode next"
