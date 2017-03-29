@@ -117,7 +117,12 @@ compileExpr (EApp f e) = compileApp f [e]
 compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 compileOpenExpr :: Pos -> Expr -> Either String (Set HSImport, HSExpr)
-compileOpenExpr pos e = $gsfatal $ "compileOpenExpr " ++ eCode e ++ " next"
+compileOpenExpr pos e = do
+    (is, hse) <- compileExpr e
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` HSLambda ["env"] hse
+      )
 
 compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
 compileApp (EVar pos f) as = do
