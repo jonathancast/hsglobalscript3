@@ -29,6 +29,12 @@ quote = empty
         keywordOp "|"
         e <- expr
         return $ SCExpr ps e
+    <|> do
+        keyword "open-expr"
+        ps <- many param
+        keywordOp "|"
+        e <- expr
+        return $ SCOpenExpr ps e
 
 param :: Parser Char Param
 param = empty
