@@ -124,6 +124,9 @@ compileOpenExpr pos e = do
         HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` HSLambda ["env"] hse
       )
 
+compileOpenArg :: Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenArg pos e = $gsfatal $ "compileOpenArg " ++ eCode e ++ " next"
+
 compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
 compileApp (EVar pos f) as = do
     as' <- mapM compileArg as
