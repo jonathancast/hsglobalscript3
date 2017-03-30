@@ -187,5 +187,5 @@ globalEnv = Env{
   }
 
 data Env = Env {
-    gsviews :: Map String (HSImport, HSExpr)
+    gsviews :: Map String (Set HSImport, HSExpr)
   }
