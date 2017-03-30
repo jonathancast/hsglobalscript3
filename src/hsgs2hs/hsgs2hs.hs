@@ -164,9 +164,12 @@ compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 compilePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
 compilePatApp env (PView pos v) as = do
     as' <- mapM (compilePat env) as
+    (isv, ev) <- case Map.lookup v (gsviews env) of
+        Nothing -> Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
+        Just (isv, ev) -> return (isv, ev)
     return (
-        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos" ] `Set.union` Set.unions (map (\ (is, _) -> is) as'),
-        foldl HSApp (HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` HSVar v) (map (\ (_, e) -> e) as')
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv `Set.union` Set.unions (map (\ (is, _) -> is) as'),
+        foldl HSApp (HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` ev) (map (\ (_, e) -> e) as')
       )
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
