@@ -9,9 +9,9 @@ import Data.List (foldl')
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x (PPFail [])) pos s where
+parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x (PPFail [] [])) pos s where
     parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-    parse_w k (PPFail es) pos s = k $ Left $ fmtPos pos $ ("Unexpected "++) . shows s $ concat (map ("; "++) es)
+    parse_w k (PPFail e0 e1) pos s = k $ Left $ fmtPos pos $ ("Unexpected "++) . shows s $ fmtError e0 e1
     parse_w k (NotFollowedByOr x p0 p1) pos s = parse_w k' p1 pos s where
         k' (Right x) = Right x -- Longer match, so go with that
         k' (Left _) = case parse_w id p0 pos s of -- Check that there is no match of p0
@@ -23,19 +23,21 @@ parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x (PPFail [])) pos
     parse_w k (GetPos k') pos s = parse_w k (k' pos) pos s
     parse_w k (SymbolOrEof ek sk) pos [] = parse_w k ek pos []
     parse_w k (SymbolOrEof ek sk) pos (c:s') = case sk c of
-        Left exp -> k $ Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
-            fmt [] = "<unknown>"
-            fmt [exp0] = exp0
-            fmt [exp0, exp1] = exp0 ++ " or " ++ exp1
-            fmt exp = fmt' exp where
-                fmt' [] = "<unknown>"
-                fmt' [exp0] = " or " ++ exp0
-                fmt' (exp0:exp) = exp0 ++ ", " ++ fmt' exp
+        Left exp -> k $ Left $ fmtPos pos $ "Unexpected " ++ show c ++ fmtError [] exp where
         Right p' -> parse_w k p' (advance c pos) s'
     parse_w k p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
 
+    fmtError e0 e1 = concat (map ("; "++) e0) ++ fmt e1 where
+        fmt [] = ""
+        fmt [exp0] = "; expecting " ++ exp0
+        fmt [exp0, exp1] = "; expecting " ++ exp0 ++ " or " ++ exp1
+        fmt exp = "; expecting " ++ fmt' exp where
+            fmt' [] = "<unknown>"
+            fmt' [exp0] = " or " ++ exp0
+            fmt' (exp0:exp) = exp0 ++ ", " ++ fmt' exp
+
 pfail :: String -> Parser s a
-pfail err = Parser (\ k -> PPFail [err])
+pfail err = Parser (\ k -> PPFail [err] [])
 
 getPos :: Parser s Pos
 getPos = Parser (\ k -> GetPos k)
@@ -52,9 +54,9 @@ endBy :: Parser s a -> Parser s b -> Parser s [a]
 p0 `endBy` p1 = many (p0 <* p1)
 
 notFollowedBy :: Parser s a -> Parser s ()
-notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPReturnPlus x (PPFail []))) where
+notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPReturnPlus x (PPFail [] []))) where
     difference_w :: PrimParser s a -> PrimParser s b -> PrimParser s a
-    PPFail err `difference_w` p1 = PPFail err
+    PPFail e0 e1 `difference_w` p1 = PPFail e0 e1
     PPReturnPlus x p0 `difference_w` p1 = NotFollowedByOr x p1 (p0 `difference_w` p1)
     GetPos k `difference_w` SymbolOrEof ek1 sk1 = GetPos $ \ pos -> k pos `difference_w` SymbolOrEof ek1 sk1
     SymbolOrEof ek0 sk0 `difference_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `difference_w` ek1) (\ ch ->
@@ -64,7 +66,7 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPRetur
             (Right p0', Left exp1') -> Right p0'
             (Right p0', Right p1') -> Right $ p0' `difference_w` p1'
       )
-    NotFollowedByOr x p1 p2 `difference_w` PPReturnPlus y p3 = PPFail []
+    NotFollowedByOr x p1 p2 `difference_w` PPReturnPlus y p3 = PPFail [] []
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
 
 string :: String -> Parser Char ()
@@ -77,7 +79,7 @@ symbol :: Parser s s
 symbol = matching "symbol" (const True)
 
 matching :: String -> (s -> Bool) -> Parser s s
-matching cat p = Parser (\ k -> SymbolOrEof (PPFail [ "expecting " ++ cat ]) (\ c -> case p c of
+matching cat p = Parser (\ k -> SymbolOrEof (PPFail [] [ cat ]) (\ c -> case p c of
     False -> Left [cat]
     True -> Right (k c)
   ))
@@ -90,12 +92,12 @@ instance Applicative (Parser s) where
     pf <*> px = pf >>= \ f -> px >>= \ x -> return (f x)
 
 instance Alternative (Parser s) where
-    empty = Parser (\ k -> PPFail [])
+    empty = Parser (\ k -> PPFail [] [])
     p0 <|> p1 = Parser (\ k -> runParser p0 k `or_w` runParser p1 k) where
-        PPFail e0 `or_w` PPFail e1 = PPFail (e0 ++ e1)
-        PPFail [] `or_w` p1 = p1
-        p0 `or_w` PPFail [] = p0
-        p0 `or_w` PPFail err = p0
+        PPFail e0 e1  `or_w` PPFail e2 e3 = PPFail (e0 ++ e2) (e1 ++ e3)
+        PPFail [] [] `or_w` p1 = p1
+        p0 `or_w` PPFail [] [] = p0
+        p0 `or_w` PPFail e2 e3 = p0
         GetPos k0 `or_w` PPReturnPlus x p1 = PPReturnPlus x (GetPos k0 `or_w` p1)
         GetPos k0 `or_w` GetPos k1 = GetPos $ \ pos -> k0 pos `or_w` k1 pos
         GetPos k0 `or_w` SymbolOrEof ek1 sk1 = GetPos $ \ pos -> k0 pos `or_w` SymbolOrEof ek1 sk1
@@ -124,7 +126,7 @@ instance Advanceable Char where
 newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> PrimParser s b }
 
 data PrimParser s a
-  = PPFail [String]
+  = PPFail [String] [String]
   | PPReturnPlus a (PrimParser s a)
   | GetPos (Pos -> PrimParser s a)
   | forall b. NotFollowedByOr a (PrimParser s b) (PrimParser s a)
