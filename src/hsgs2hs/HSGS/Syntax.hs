@@ -68,7 +68,11 @@ expr = empty
 
 pattern :: Parser Char Pattern
 pattern = empty
-    <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
+    <|> foldl PApp <$> patternAtom <*> many patternAtom
+  where
+    patternAtom = empty
+        <|> PView <$> getPos <*> ident
+        <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
 
 data SourceComp
   = SCChar Char
