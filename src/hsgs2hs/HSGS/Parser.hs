@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Parser (Parser, parse, getPos, matching, char, string, notFollowedBy, endBy, Advanceable(..), advanceStr) where
+module HSGS.Parser (Parser, parse, getPos, matching, char, string, notFollowedBy, endBy, pfail, Advanceable(..), advanceStr) where
 
 import Control.Applicative (Alternative(..))
 
@@ -12,6 +12,7 @@ parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a
 parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s where
     parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
     parse_w k PPEmpty pos s = k $ Left $ fmtPos pos $ "Unexpected " ++ show s
+    parse_w k (PPFail msg) pos s = k $ Left $ fmtPos pos . ("Unexpected "++) . shows s . ("; "++) $ msg
     parse_w k (NotFollowedByOr x p0 p1) pos s = parse_w k' p1 pos s where
         k' (Right x) = Right x -- Longer match, so go with that
         k' (Left _) = case parse_w id p0 pos s of -- Check that there is no match of p0
