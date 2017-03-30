@@ -151,6 +151,7 @@ compilePat (PVar pos v) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` HSString v
   )
+compilePat (PApp p0 p1) = compilePatApp p0 [p1]
 compilePat p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
 compilePatApp :: Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
