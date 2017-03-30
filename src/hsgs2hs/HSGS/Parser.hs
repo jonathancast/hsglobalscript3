@@ -11,8 +11,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
 parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x (PPFail [])) pos s where
     parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-    parse_w k (PPFail []) pos s = k $ Left $ fmtPos pos $ "Unexpected " ++ show s
-    parse_w k (PPFail [msg]) pos s = k $ Left $ fmtPos pos . ("Unexpected "++) . shows s . ("; "++) $ msg
+    parse_w k (PPFail es) pos s = k $ Left $ fmtPos pos $ ("Unexpected "++) . shows s $ concat (map ("; "++) es)
     parse_w k (NotFollowedByOr x p0 p1) pos s = parse_w k' p1 pos s where
         k' (Right x) = Right x -- Longer match, so go with that
         k' (Left _) = case parse_w id p0 pos s of -- Check that there is no match of p0
@@ -90,6 +89,7 @@ instance Applicative (Parser s) where
 instance Alternative (Parser s) where
     empty = Parser (\ k -> PPFail [])
     p0 <|> p1 = Parser (\ k -> runParser p0 k `or_w` runParser p1 k) where
+        PPFail e0 `or_w` PPFail e1 = PPFail (e0 ++ e1)
         PPFail [] `or_w` p1 = p1
         p0 `or_w` PPFail [] = p0
         p0 `or_w` PPFail err = p0

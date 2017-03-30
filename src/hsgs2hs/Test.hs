@@ -18,14 +18,18 @@ main = do
         let
             p :: Parser Char ()
             p = pfail "bleargh"
-        in TestCase $ assertEqual "parse/empty" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh"),
+        in TestCase $ assertEqual "parse/pfail" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh"),
         let
             p :: Parser Char ()
             p = pfail "bleargh" <|> empty
-        in TestCase $ assertEqual "parse/empty" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh"),
+        in TestCase $ assertEqual "parse/(pfail <|> empty)" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh"),
         let
             p :: Parser Char ()
             p = empty <|> pfail "bleargh"
-        in TestCase $ assertEqual "parse/empty" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh")
+        in TestCase $ assertEqual "parse/(empty <|> pfail)" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh"),
+        let
+            p :: Parser Char ()
+            p = pfail "bleargh" <|> pfail "bleargh"
+        in TestCase $ assertEqual "parse/(pfail <|> pfail)" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh; bleargh")
       ]
     if errors c == 0 && failures c == 0 then exitWith ExitSuccess else exitWith (ExitFailure 1)
