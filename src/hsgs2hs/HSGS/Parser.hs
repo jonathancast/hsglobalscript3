@@ -11,7 +11,7 @@ import GSI.Util (Pos(..), gsfatal, fmtPos)
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
 parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x PPEmpty) pos s where
     parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-    parse_w k PPEmpty pos s = k $ Left $ fmtPos pos $ "parse error"
+    parse_w k PPEmpty pos s = k $ Left $ fmtPos pos $ "Unexpected " ++ show s
     parse_w k (NotFollowedByOr x p0 p1) pos s = parse_w k' p1 pos s where
         k' (Right x) = Right x -- Longer match, so go with that
         k' (Left _) = case parse_w id p0 pos s of -- Check that there is no match of p0
