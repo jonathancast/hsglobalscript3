@@ -50,6 +50,13 @@ quote = empty
         keywordOp "|"
         p <- pattern
         return $ SCPat ps p
+    <|> do
+        pos <- getPos
+        keyword "pat-arg"
+        ps <- many param
+        keywordOp "|"
+        p <- pattern
+        return $ SCPatArg pos ps p
 
 param :: Parser Char Param
 param = empty
