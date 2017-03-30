@@ -20,3 +20,4 @@ ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.
 ok_diff_compiler '-- open expression variables --' hsgs2hs variable-open-expression.hsgs variable-open-expression.hs
 ok_diff_compiler '-- open argument variables --' hsgs2hs variable-open-argument.hsgs variable-open-argument.hs
 ok_diff_compiler '-- pattern variables --' hsgs2hs variable-pattern.hsgs variable-pattern.hs
+ok_diff_compiler '-- view patterns --' hsgs2hs view-pattern.hsgs view-pattern.hs
