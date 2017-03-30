@@ -161,6 +161,14 @@ compilePat env (PVar pos v) = return (
 compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
 compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
+compilePatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
+compilePatArg env pos p = do
+    (is, e) <- compilePat env p
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e
+      )
+
 compilePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
 compilePatApp env (PView pos v) as = do
     as' <- mapM (compilePat env) as
