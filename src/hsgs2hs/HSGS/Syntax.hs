@@ -85,6 +85,7 @@ data Expr
 
 data Pattern
   = PVar Pos String
+  | PView Pos String
 
 data Param
   = FVSParam [String]
@@ -130,4 +131,5 @@ eCode EVar{} = "EVar"
 eCode EApp{} = "EApp"
 
 patCode :: Pattern -> String
+patCode PView{} = "PView"
 patCode PVar{} = "PVar"
