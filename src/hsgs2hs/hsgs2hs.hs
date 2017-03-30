@@ -93,7 +93,7 @@ compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compil
 compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr e <*> compileSource scs
 compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr pos e <*> compileSource scs
 compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg pos e <*> compileSource scs
-compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat p <*> compileSource scs
+compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
@@ -146,22 +146,22 @@ compileApp (EVar pos f) as = do
       )
 compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
-compilePat :: Pattern -> Either String (Set HSImport, HSExpr)
-compilePat (PVar pos v) = return (
+compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
+compilePat env (PVar pos v) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` HSString v
   )
-compilePat (PApp p0 p1) = compilePatApp p0 [p1]
-compilePat p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
+compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
+compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
-compilePatApp :: Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
-compilePatApp (PView pos v) as = do
-    as' <- mapM compilePat as
+compilePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
+compilePatApp env (PView pos v) as = do
+    as' <- mapM (compilePat env) as
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos" ] `Set.union` Set.unions (map (\ (is, _) -> is) as'),
         foldl HSApp (HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` HSVar v) (map (\ (_, e) -> e) as')
       )
-compilePatApp p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
+compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
@@ -176,3 +176,10 @@ splitInput pos ('[':'g':'s':':':s) = case parse quote (advanceStr "[gs:" pos) s 
     Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
+
+globalEnv :: Env
+globalEnv = Env{
+  }
+
+data Env = Env {
+  }
