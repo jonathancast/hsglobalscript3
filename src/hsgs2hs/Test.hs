@@ -31,6 +31,8 @@ main = do
             p :: Parser Char ()
             p = pfail "bleargh" <|> pfail "bleargh"
         in TestCase $ assertEqual "parse/(pfail <|> pfail)" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh; bleargh"),
-        TestCase $ assertEqual "parse/symbol/[]" (parse symbol pos "") (Left "./foo:1:1: Unexpected \"\"; expecting symbol")
+        TestCase $ assertEqual "parse/symbol/[]" (parse symbol pos "") (Left "./foo:1:1: Unexpected \"\"; expecting symbol"),
+        TestCase $ assertEqual "parse/(pfail <|> symbol)/[]" (parse (pfail "bleargh" <|> symbol) pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh; expecting symbol"),
+        TestCase $ assertEqual "parse/(symbol <|> pfail)/[]" (parse (symbol <|> pfail "bleargh") pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh; expecting symbol")
       ]
     if errors c == 0 && failures c == 0 then exitWith ExitSuccess else exitWith (ExitFailure 1)
