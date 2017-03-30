@@ -6,7 +6,7 @@ import System.Exit (ExitCode(..), exitWith)
 
 import GSI.Util (Pos(..))
 
-import HSGS.Parser (Parser, parse, pfail)
+import HSGS.Parser (Parser, parse, symbol, pfail)
 
 main = do
     let pos = Pos "./foo" 1 1
@@ -30,6 +30,7 @@ main = do
         let
             p :: Parser Char ()
             p = pfail "bleargh" <|> pfail "bleargh"
-        in TestCase $ assertEqual "parse/(pfail <|> pfail)" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh; bleargh")
+        in TestCase $ assertEqual "parse/(pfail <|> pfail)" (parse p pos "") (Left "./foo:1:1: Unexpected \"\"; bleargh; bleargh"),
+        TestCase $ assertEqual "parse/symbol/[]" (parse symbol pos "") (Left "./foo:1:1: Unexpected \"\"; expecting symbol")
       ]
     if errors c == 0 && failures c == 0 then exitWith ExitSuccess else exitWith (ExitFailure 1)

@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Parser (Parser, parse, getPos, matching, char, string, notFollowedBy, endBy, pfail, Advanceable(..), advanceStr) where
+module HSGS.Parser (Parser, parse, getPos, symbol, matching, char, string, notFollowedBy, endBy, pfail, Advanceable(..), advanceStr) where
 
 import Control.Applicative (Alternative(..))
 
@@ -21,7 +21,7 @@ parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x (PPFail [])) pos
         k' (Right y) = Right y -- Longer match, so go with that
         k' (Left _) = Right (x, pos, s) -- Fall back to this match
     parse_w k (GetPos k') pos s = parse_w k (k' pos) pos s
-    parse_w k (SymbolOrEof ek sk) pos [] = $gsfatal $ fmtPos pos $ "parse (SymbolOrEof ek sk) pos \"\" next"
+    parse_w k (SymbolOrEof ek sk) pos [] = parse_w k ek pos []
     parse_w k (SymbolOrEof ek sk) pos (c:s') = case sk c of
         Left exp -> k $ Left $ fmtPos pos $ "Unexpected " ++ show c ++ "; expecting " ++ fmt exp where
             fmt [] = "<unknown>"
@@ -73,8 +73,11 @@ string s = mapM_ char s <?> show s
 char :: Char -> Parser Char ()
 char ch = matching (show ch) (==ch) *> return ()
 
+symbol :: Parser s s
+symbol = matching "symbol" (const True)
+
 matching :: String -> (s -> Bool) -> Parser s s
-matching cat p = Parser (\ k -> SymbolOrEof ($gsfatal "matching next") (\ c -> case p c of
+matching cat p = Parser (\ k -> SymbolOrEof (PPFail [ "expecting " ++ cat ]) (\ c -> case p c of
     False -> Left [cat]
     True -> Right (k c)
   ))
