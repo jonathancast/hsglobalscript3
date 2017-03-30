@@ -13,6 +13,8 @@ import qualified Data.Set as Set
 
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
 import System.Environment (getArgs)
+import System.Exit (exitWith, ExitCode(..))
+import System.IO (hPutStrLn, stderr)
 
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
@@ -33,7 +35,9 @@ processArg a = do
       else if irf && ".hsgs" `isSuffixOf` a then do
         s <- readFile a
         case compileHSGSSource a s of
-            Left err -> $gsfatal $ "main " ++ show err ++ " next"
+            Left err -> do
+                hPutStrLn stderr err
+                exitWith $ ExitFailure 1
             Right s' -> do
                 writeFile (mkHSFile a) s'
       else do
