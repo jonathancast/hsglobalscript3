@@ -153,6 +153,15 @@ compilePat (PVar pos v) = return (
   )
 compilePat p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
+compilePatApp :: Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
+compilePatApp (PView pos v) as = do
+    as' <- mapM compilePat as
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos" ] `Set.union` Set.unions (map (\ (is, _) -> is) as'),
+        foldl HSApp (HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` HSVar v) (map (\ (_, e) -> e) as')
+      )
+compilePatApp p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
+
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
 
