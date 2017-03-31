@@ -17,18 +17,18 @@ parse p pos s = process $ parse_w (runParser p $ \ x -> PPReturnPlus x (PPFail [
 
     parse_w :: (Advanceable s, Show s) => PrimParser s a -> Pos -> [s] -> ([(a, Pos, [s])], String)
     parse_w (PPFail e0 e1) pos s = ([], fmtPos pos $ ("Unexpected "++) . shows s $ fmtError e0 e1)
-    parse_w (NotFollowedByOr x p0 p1) pos s = k $ parse_w p1 pos s where
-        k ~(xn, err) = case parse_w p0 pos s of
-            ([], _) -> ((x, pos, s) : xn, err)
-            _ -> (xn, err)
     parse_w (PPReturnPlus x p1) pos s = k $ parse_w p1 pos s where
         k ~(xn, err) = ((x, pos, s) : xn, err)
     parse_w (GetPos k) pos s = parse_w (k pos) pos s
+    parse_w (Lookahead p) pos s = k (PPFail [] []) $ parse_w p pos s where
+        k p0 ([], err) = ([], err)
+        k p0 ([(p1, _, _)], _) = parse_w (p0 `or_w` p1) pos s
+        k p0 ((p1, _, _):ps, err) = k (p0 `or_w` p1) (ps, err)
     parse_w (SymbolOrEof ek sk) pos [] = parse_w ek pos []
     parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
         Left (e0, e1) -> ([], fmtPos pos $ "Unexpected " ++ show c ++ fmtError e0 e1)
         Right p' -> parse_w p' (advance c pos) s'
-    parse_w p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
+    parse_w p pos s = $gsfatal $ "parse " ++ pCode p ++ " next"
 
     fmtError e0 e1 = concat (map ("; "++) e0) ++ fmt e1 where
         fmt [] = ""
@@ -60,7 +60,7 @@ notFollowedBy :: Parser s a -> Parser s ()
 notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPReturnPlus x (PPFail [] []))) where
     difference_w :: PrimParser s a -> PrimParser s b -> PrimParser s a
     PPFail e0 e1 `difference_w` p1 = PPFail e0 e1
-    PPReturnPlus x p0 `difference_w` p1 = NotFollowedByOr x p1 (p0 `difference_w` p1)
+    PPReturnPlus x p0 `difference_w` p1 = Lookahead (negate_w p1 (PPReturnPlus x p0))
     GetPos k `difference_w` PPReturnPlus y p3 = PPFail [] []
     GetPos k `difference_w` SymbolOrEof ek1 sk1 = GetPos $ \ pos -> k pos `difference_w` SymbolOrEof ek1 sk1
     SymbolOrEof ek0 sk0 `difference_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `difference_w` ek1) (\ ch ->
@@ -70,8 +70,15 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPRetur
             (Right p0', Left exp1') -> Right p0'
             (Right p0', Right p1') -> Right $ p0' `difference_w` p1'
       )
-    NotFollowedByOr x p1 p2 `difference_w` PPReturnPlus y p3 = PPFail [] []
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
+
+    negate_w :: PrimParser s a -> b -> PrimParser s b
+    negate_w (PPReturnPlus y p) x = PPFail [] []
+    negate_w (SymbolOrEof ek sk) x = SymbolOrEof (negate_w ek x) (\c -> case sk c of
+        Left _ -> Right $ PPReturnPlus x (PPFail [] [])
+        Right p1 -> Right $ negate_w p1 x
+      )
+    negate_w p0 x = $gsfatal $ "negate_w " ++ pCode p0 ++ " next"
 
 string :: String -> Parser Char ()
 string s = mapM_ char s <?> show s
@@ -98,36 +105,38 @@ instance Applicative (Parser s) where
 instance Alternative (Parser s) where
     empty = Parser (\ k -> PPFail [] [])
     p0 <|> p1 = Parser (\ k -> runParser p0 k `or_w` runParser p1 k) where
-        PPFail e0 e1 `or_w` PPFail e2 e3 = PPFail (e0 ++ e2) (e1 ++ e3)
-        PPFail e0 e1 `or_w` PPReturnPlus x p1 = PPReturnPlus x (PPFail e0 e1 `or_w` p1)
-        PPFail e0 e1 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (PPFail e0 e1 `or_w` ek1) (\ c -> case sk1 c of
-            Left (e2, e3) -> Left (e0 ++ e2, e1 ++ e3)
-            Right p1 -> Right p1
-          )
-        PPFail e0 e1 `or_w` GetPos k1 = GetPos $ \ pos -> PPFail e0 e1 `or_w` k1 pos
-        PPReturnPlus x p0 `or_w` PPFail e2 e3 = PPReturnPlus x (p0 `or_w` PPFail e2 e3)
-        PPReturnPlus x p0 `or_w` GetPos k1 = PPReturnPlus x (p0 `or_w` GetPos k1)
-        PPReturnPlus x p0 `or_w` SymbolOrEof ek1 sk1 = PPReturnPlus x (p0 `or_w` SymbolOrEof ek1 sk1)
-        NotFollowedByOr x p0 p1 `or_w` PPFail e2 e3 = NotFollowedByOr x p0 (p1 `or_w` PPFail e2 e3)
-        NotFollowedByOr x p0 p1 `or_w` SymbolOrEof ek1 sk1 = NotFollowedByOr x p0 (p1 `or_w` SymbolOrEof ek1 sk1)
-        GetPos k0 `or_w` PPFail e2 e3 = GetPos $ \ pos -> k0 pos `or_w` PPFail e2 e3
-        GetPos k0 `or_w` PPReturnPlus x p1 = PPReturnPlus x (GetPos k0 `or_w` p1)
-        GetPos k0 `or_w` GetPos k1 = GetPos $ \ pos -> k0 pos `or_w` k1 pos
-        GetPos k0 `or_w` SymbolOrEof ek1 sk1 = GetPos $ \ pos -> k0 pos `or_w` SymbolOrEof ek1 sk1
-        SymbolOrEof ek0 sk0 `or_w` PPFail e2 e3 = SymbolOrEof (ek0 `or_w` PPFail e2 e3) (\ c -> case sk0 c of
-            Left (e0, e1) -> Left (e0 ++ e2, e1 ++ e3)
-            Right p0 -> Right p0
-          )
-        SymbolOrEof ek0 sk0 `or_w` PPReturnPlus x p1 = PPReturnPlus x (SymbolOrEof ek0 sk0 `or_w` p1)
-        SymbolOrEof ek0 sk0 `or_w` GetPos k = GetPos $ \ pos -> SymbolOrEof ek0 sk0 `or_w` k pos
-        SymbolOrEof ek0 sk0 `or_w` NotFollowedByOr x p1 p2 = NotFollowedByOr x p1 (SymbolOrEof ek0 sk0 `or_w` p2)
-        SymbolOrEof ek0 sk0 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `or_w` ek1) (\ c -> case (sk0 c, sk1 c) of
-            (Left (e0, e1), Left (e2, e3)) -> Left (e0 ++ e2, e1 ++ e3)
-            (Left err0, Right p1) -> Right p1
-            (Right p0, Left err1) -> Right p0
-            (Right p0, Right p1) -> Right $ p0 `or_w` p1
-          )
-        p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
+
+or_w :: PrimParser s a -> PrimParser s a -> PrimParser s a
+PPFail e0 e1 `or_w` PPFail e2 e3 = PPFail (e0 ++ e2) (e1 ++ e3)
+PPFail e0 e1 `or_w` PPReturnPlus x p1 = PPReturnPlus x (PPFail e0 e1 `or_w` p1)
+PPFail e0 e1 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (PPFail e0 e1 `or_w` ek1) (\ c -> case sk1 c of
+    Left (e2, e3) -> Left (e0 ++ e2, e1 ++ e3)
+    Right p1 -> Right p1
+  )
+PPFail e0 e1 `or_w` GetPos k1 = GetPos $ \ pos -> PPFail e0 e1 `or_w` k1 pos
+PPReturnPlus x p0 `or_w` PPFail e2 e3 = PPReturnPlus x (p0 `or_w` PPFail e2 e3)
+PPReturnPlus x p0 `or_w` PPReturnPlus y p1 = PPReturnPlus x (p0 `or_w` PPReturnPlus y p1)
+PPReturnPlus x p0 `or_w` GetPos k1 = PPReturnPlus x (p0 `or_w` GetPos k1)
+PPReturnPlus x p0 `or_w` SymbolOrEof ek1 sk1 = PPReturnPlus x (p0 `or_w` SymbolOrEof ek1 sk1)
+GetPos k0 `or_w` PPFail e2 e3 = GetPos $ \ pos -> k0 pos `or_w` PPFail e2 e3
+GetPos k0 `or_w` PPReturnPlus x p1 = PPReturnPlus x (GetPos k0 `or_w` p1)
+GetPos k0 `or_w` GetPos k1 = GetPos $ \ pos -> k0 pos `or_w` k1 pos
+GetPos k0 `or_w` SymbolOrEof ek1 sk1 = GetPos $ \ pos -> k0 pos `or_w` SymbolOrEof ek1 sk1
+Lookahead p0 `or_w` SymbolOrEof ek1 sk1 = Lookahead (p0 `or_w` PPReturnPlus (SymbolOrEof ek1 sk1) (PPFail [] []))
+SymbolOrEof ek0 sk0 `or_w` PPFail e2 e3 = SymbolOrEof (ek0 `or_w` PPFail e2 e3) (\ c -> case sk0 c of
+    Left (e0, e1) -> Left (e0 ++ e2, e1 ++ e3)
+    Right p0 -> Right p0
+  )
+SymbolOrEof ek0 sk0 `or_w` PPReturnPlus x p1 = PPReturnPlus x (SymbolOrEof ek0 sk0 `or_w` p1)
+SymbolOrEof ek0 sk0 `or_w` GetPos k = GetPos $ \ pos -> SymbolOrEof ek0 sk0 `or_w` k pos
+SymbolOrEof ek0 sk0 `or_w` Lookahead p1 = Lookahead (PPReturnPlus (SymbolOrEof ek0 sk0) p1)
+SymbolOrEof ek0 sk0 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `or_w` ek1) (\ c -> case (sk0 c, sk1 c) of
+    (Left (e0, e1), Left (e2, e3)) -> Left (e0 ++ e2, e1 ++ e3)
+    (Left err0, Right p1) -> Right p1
+    (Right p0, Left err1) -> Right p0
+    (Right p0, Right p1) -> Right $ p0 `or_w` p1
+  )
+p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
 
 instance Monad (Parser s) where
     return x = Parser (\ k -> k x)
@@ -146,7 +155,7 @@ data PrimParser s a
   = PPFail [String] [String]
   | PPReturnPlus a (PrimParser s a)
   | GetPos (Pos -> PrimParser s a)
-  | forall b. NotFollowedByOr a (PrimParser s b) (PrimParser s a)
+  | Lookahead (PrimParser s (PrimParser s a))
   | SymbolOrEof (PrimParser s a) (s -> Either ([String], [String]) (PrimParser s a))
 
 class Advanceable r where
@@ -156,5 +165,5 @@ pCode :: PrimParser s a -> String
 pCode PPFail{} = "PPFail"
 pCode PPReturnPlus{} = "PPReturnPlus"
 pCode GetPos{} = "GetPos"
-pCode NotFollowedByOr{} = "NotFollowedByOr"
+pCode Lookahead{} = "Lookahead"
 pCode SymbolOrEof{} = "SymbolOrEof"
