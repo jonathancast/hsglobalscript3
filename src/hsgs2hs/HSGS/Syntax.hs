@@ -11,7 +11,7 @@ import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
 import GSI.Util (Pos, gsfatal)
 
-import HSGS.Parser (Parser, notFollowedBy, getPos, matching, char, string, endBy)
+import HSGS.Parser (Parser, notFollowedBy, getPos, matching, char, string, endBy, pfail)
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
