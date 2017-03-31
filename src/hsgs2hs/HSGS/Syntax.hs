@@ -162,7 +162,10 @@ lexeme :: Parser Char a -> Parser Char a
 lexeme p = p <* whitespace
 
 whitespace :: Parser Char ()
-whitespace = many (matching "whitespace" isSpace) *> return ()
+whitespace = empty
+    <|> return ()
+    <|> matching "whitespace" isSpace *> whitespace
+    <|> string "--" *> many (char '-') *> notFollowedBy opContChar *> many (matching "character" (/='\n')) *> char '\n' *> whitespace
 
 globalEnv :: Env
 globalEnv = Env{
