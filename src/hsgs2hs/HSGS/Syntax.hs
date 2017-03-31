@@ -114,6 +114,14 @@ var env = lexeme $ do
         Nothing -> return v
         Just _ -> pfail $ v ++ " is not variable-like"
 
+lambdalike :: Env -> Parser Char (String, Parser Char Expr, Parser Char Expr, Parser Char Expr)
+lambdalike env = lexeme $ do
+    v <- (:) <$> idStartChar <*> many idContChar
+    notFollowedBy idContChar
+    case Map.lookup v (lambdas env) of
+        Nothing -> pfail $ v ++ " is not lambda-like"
+        Just f -> let (ph, pb, pe) = f env in return (v, ph, pb, pe)
+
 ident :: Parser Char String
 ident = lexeme $ ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
