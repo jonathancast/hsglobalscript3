@@ -125,6 +125,7 @@ compileArg env (EVar _ v) = return (
     HSConstr "GSArgVar" `HSApp` HSVar v
   )
 compileArg env (EPat pos p) = compilePatArg env pos p
+compileArg env (EOpen pos e) = compileOpenArg env pos e
 compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
