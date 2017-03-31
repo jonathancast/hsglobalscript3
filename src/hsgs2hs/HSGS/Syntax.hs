@@ -5,6 +5,7 @@ module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolat
 import Control.Applicative (Alternative(..))
 
 import Data.Map (Map)
+import qualified Data.Map as Map
 
 import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
@@ -104,6 +105,14 @@ data Pattern
 
 data Param
   = FVSParam [String]
+
+var :: Env -> Parser Char String
+var env = lexeme $ do
+    v <- (:) <$> idStartChar <*> many idContChar
+    notFollowedBy idContChar
+    case Map.lookup v (lambdas env) of
+        Nothing -> return v
+        Just _ -> pfail $ v ++ " is not variable-like"
 
 ident :: Parser Char String
 ident = lexeme $ ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
