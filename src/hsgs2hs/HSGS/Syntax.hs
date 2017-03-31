@@ -122,6 +122,7 @@ var :: Env -> Parser Char String
 var env = lexeme $ do
     v <- (:) <$> idStartChar <*> many idContChar
     notFollowedBy idContChar
+    notFollowedBy (char '{')
     case Map.lookup v (lambdas env) of
         Nothing -> return v
         Just _ -> pfail $ v ++ " is not variable-like"
