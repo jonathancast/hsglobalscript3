@@ -169,13 +169,17 @@ compileOpenArg env pos e = do
 
 compileApp :: Env -> Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
 compileApp env (EVar pos f) as = do
+    (isf, ef) <- case Map.lookup f (gsvars env) of
+        Nothing -> Left $ fmtPos pos $ f ++ " not in scope"
+        Just (isf, ef) -> return (isf, ef)
     as' <- mapM (compileArg env) as
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
+            isf :
             map (\ (is, _) -> is) as'
         ,
-        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar f `HSApp` HSList (map (\ (_, a) -> a) as')
+        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
       )
 compileApp env (EApp f a) as = compileApp env f (a:as)
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
