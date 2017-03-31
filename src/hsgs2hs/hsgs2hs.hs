@@ -229,6 +229,7 @@ splitInput pos "" = return []
 globalEnv :: Env
 globalEnv = Env{
     gsvars = Map.fromList [
+      ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase"))
     ],
     gsviews = Map.fromList [
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view"))
