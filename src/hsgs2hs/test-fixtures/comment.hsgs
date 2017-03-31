@@ -1,0 +1,4 @@
+$gsimports
+[gs:expr hsvs=as,|
+    as -- some variable
+|]
