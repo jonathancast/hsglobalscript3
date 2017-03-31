@@ -118,6 +118,7 @@ compileArg env (EVar _ v) = return (
     Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
   )
+compileArg env (EPat pos p) = compilePatArg env pos p
 compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
