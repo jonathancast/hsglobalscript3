@@ -99,9 +99,9 @@ compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv e <*> compileSource scs
-compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr globalEnv e <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr globalEnv pos e <*> compileSource scs
-compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg globalEnv pos e <*> compileSource scs
+compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr (processParams ps globalEnv) e <*> compileSource scs
+compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processParams ps globalEnv) pos e <*> compileSource scs
+compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg (processParams ps globalEnv) pos e <*> compileSource scs
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
