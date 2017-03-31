@@ -169,7 +169,7 @@ globalEnv = Env{
     lambdas = Map.fromList [
         ("case", \ env -> (
             EPat <$> getPos <*> pattern,
-            expr env,
+            EOpen <$> getPos <*> expr env,
             EMissingCase <$> getPos
         ))
     ]
