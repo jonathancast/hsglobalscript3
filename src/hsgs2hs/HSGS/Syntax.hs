@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode, patCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, patCode) where
 
 import Control.Applicative (Alternative(..))
 
@@ -140,6 +140,11 @@ lexeme p = p <* whitespace
 
 whitespace :: Parser Char ()
 whitespace = many (matching "whitespace" isSpace) *> return ()
+
+globalEnv :: Env
+globalEnv = Env{
+    lambdas = Map.empty
+  }
 
 data Env = Env {
     lambdas :: Map String ()
