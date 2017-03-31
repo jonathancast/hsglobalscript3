@@ -1,0 +1,11 @@
+{-# LINE 1 "./test-fixtures/case-expression.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.ByteCode (gsbcapply_w)
+import GSI.ByteCode (gsbcarg_w)
+import GSI.ByteCode (gsbcenter_w)
+import GSI.ByteCode (gsbcprim_w)
+import GSI.ByteCode (gsbcvarpattern_w)
+import GSI.CalculusPrims (gspriminsufficientcases)
+import GSI.StdLib (gscase)
+(gsbcapply_w (Pos "./test-fixtures/case-expression.hsgs" 2 19) gscase [ GSArgExpr (Pos "./test-fixtures/case-expression.hsgs" 2 24) (gsbcvarpattern_w (Pos "./test-fixtures/case-expression.hsgs" 2 24) "x"), GSArgExpr (Pos "./test-fixtures/case-expression.hsgs" 2 28) (gsbcarg_w (Pos "./test-fixtures/case-expression.hsgs" 2 28) (\ env -> gsbcenter_w (Pos "./test-fixtures/case-expression.hsgs" 2 28) y)), GSArgExpr (Pos "./test-fixtures/case-expression.hsgs" 2 30) (gsbcarg_w (Pos "./test-fixtures/case-expression.hsgs" 2 30) (\ x -> gsbcprim_w (Pos "./test-fixtures/case-expression.hsgs" 2 30) gspriminsufficientcases x)) ])

@@ -22,3 +22,4 @@ ok_diff_compiler '-- open argument variables --' hsgs2hs variable-open-argument.
 ok_diff_compiler '-- pattern variables --' hsgs2hs variable-pattern.hsgs variable-pattern.hs
 ok_diff_compiler '-- view patterns --' hsgs2hs view-pattern.hsgs view-pattern.hs
 ok_diff_compiler '-- pattern arguments --' hsgs2hs variable-pattern-argument.hsgs variable-pattern-argument.hs
+ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expression.hs
