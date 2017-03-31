@@ -128,6 +128,10 @@ compileArg env (EPat pos p) = compilePatArg env pos p
 compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
+compileExpr env (EMissingCase pos) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
+    HSLambda ["args"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "args"
+  )
 compileExpr env (EVar pos v) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` HSVar v
