@@ -4,6 +4,8 @@ module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolat
 
 import Control.Applicative (Alternative(..))
 
+import Data.Map (Map)
+
 import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
 import GSI.Util (Pos, gsfatal)
@@ -129,6 +131,10 @@ lexeme p = p <* whitespace
 
 whitespace :: Parser Char ()
 whitespace = many (matching "whitespace" isSpace) *> return ()
+
+data Env = Env {
+    lambdas :: Map String ()
+  }
 
 scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
