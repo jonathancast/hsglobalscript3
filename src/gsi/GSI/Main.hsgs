@@ -37,8 +37,8 @@ gsprocessargs = $gslambda $ \ args ->
                                 ] ]
                             ,
                             $gsae [gs:expr hsvs=gsprocessargs,as,| case right 'st.
-                                gsprocessargs as
-                            |] -- Ignore all arguments until we start failing tests for it
+                                gsprocessargs as -- Ignore all arguments until we start failing tests for it
+                            |]
                         ]
                     ]
         ,
