@@ -105,6 +105,7 @@ data SourceComp
 
 data Expr
   = EVar Pos String
+  | EPat Pattern
   | EApp Expr Expr
 
 data Pattern
@@ -188,6 +189,7 @@ scCode SCPatArg{} = "SCPatArg"
 
 eCode :: Expr -> String
 eCode EVar{} = "EVar"
+eCode EPat{} = "EPat"
 eCode EApp{} = "EApp"
 
 patCode :: Pattern -> String
