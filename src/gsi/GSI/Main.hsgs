@@ -36,10 +36,10 @@ gsprocessargs = $gslambda $ \ args ->
                                     $gsae $ $gsbcapply gserror [ $gsae $gsbchere, $gsae $ $gsbclog [ $gsae $ $gsbclogstring "Process ", $gsae $ $gsbcapply gsloggsv [ $gsav a ], $gsae $ $gsbclogstring " (", $gsae $ $gsbcapply gsloggsv [ $gsav e ], $gsae $ $gsbclogstring ") next" ] ]
                                 ] ]
                             ,
-                            $gsae $ $gsbcapply gscase [ [gs:pat-arg| right 'st |],
-                                [gs:open-arg hsvs=gsprocessargs,as,| gsprocessargs as |] -- Ignore all arguments until we start failing tests for it
-                            ,
-                            $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args ] ]
+                            $gsae [gs:expr hsvs=gsprocessargs,as,| case right 'st.
+                                gsprocessargs as
+                            |] -- Ignore all arguments until we start failing tests for it
+                        ]
                     ]
         ,
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args ]
