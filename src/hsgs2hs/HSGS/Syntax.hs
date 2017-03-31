@@ -147,12 +147,16 @@ whitespace = many (matching "whitespace" isSpace) *> return ()
 globalEnv :: Env
 globalEnv = Env{
     lambdas = Map.fromList [
-        ("case", ())
+        ("case", \ env -> (
+            pfail "head of case next",
+            expr env,
+            pfail "else of case next"
+        ))
     ]
   }
 
 data Env = Env {
-    lambdas :: Map String ()
+    lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Parser Char Expr))
   }
 
 scCode :: SourceComp -> String
