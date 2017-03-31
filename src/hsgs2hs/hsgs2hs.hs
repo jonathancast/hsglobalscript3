@@ -113,6 +113,13 @@ gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
 gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
+processParams :: [Param] -> Env -> Env
+processParams (FVSParam vs:ps) env = processParams ps env{
+    gsvars = Map.fromList (map (\ v -> (v, (Set.empty, HSVar v))) vs) `Map.union` gsvars env
+  }
+processParams (p:ps) env = $gsfatal "processParams next"
+processParams [] env = env
+
 compileArg :: Env -> Expr -> Either String (Set HSImport, HSExpr)
 compileArg env e@(EMissingCase pos) = do
     (is, hse) <- compileExpr env e
