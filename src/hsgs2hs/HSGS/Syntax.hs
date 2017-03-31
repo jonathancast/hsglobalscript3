@@ -19,8 +19,8 @@ interpolation = empty
         keyword "gsimports"
         return SCImports
 
-quote :: Parser Char SourceComp
-quote = empty
+quote :: Env -> Parser Char SourceComp
+quote env = empty
     <|> do
         keyword "arg"
         ps <- many param
