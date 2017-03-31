@@ -25,27 +25,27 @@ quote env = empty
         keyword "arg"
         ps <- many param
         keywordOp "|"
-        e <- expr
+        e <- expr env
         return $ SCArg ps e
     <|> do
         keyword "expr"
         ps <- many param
         keywordOp "|"
-        e <- expr
+        e <- expr env
         return $ SCExpr ps e
     <|> do
         pos <- getPos
         keyword "open-expr"
         ps <- many param
         keywordOp "|"
-        e <- expr
+        e <- expr env
         return $ SCOpenExpr pos ps e
     <|> do
         pos <- getPos
         keyword "open-arg"
         ps <- many param
         keywordOp "|"
-        e <- expr
+        e <- expr env
         return $ SCOpenArg pos ps e
     <|> do
         keyword "pat"
@@ -69,8 +69,8 @@ param = empty
         vs <- ident `endBy` comma
         return $ FVSParam vs
 
-expr :: Parser Char Expr
-expr = empty
+expr :: Env -> Parser Char Expr
+expr env = empty
     <|> foldl EApp <$> exprAtom <*> many exprAtom
   where
     exprAtom = empty
