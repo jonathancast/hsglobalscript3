@@ -143,7 +143,9 @@ whitespace = many (matching "whitespace" isSpace) *> return ()
 
 globalEnv :: Env
 globalEnv = Env{
-    lambdas = Map.empty
+    lambdas = Map.fromList [
+        ("case", ())
+    ]
   }
 
 data Env = Env {
