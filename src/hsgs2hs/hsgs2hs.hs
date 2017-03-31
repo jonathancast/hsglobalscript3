@@ -154,6 +154,7 @@ compileApp (EVar pos f) as = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar f `HSApp` HSList (map (\ (_, a) -> a) as')
       )
+compileApp (EApp f a) as = compileApp f (a:as)
 compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
