@@ -167,9 +167,9 @@ globalEnv :: Env
 globalEnv = Env{
     lambdas = Map.fromList [
         ("case", \ env -> (
-            pfail "head of case next",
+            EPat <$> pattern,
             expr env,
-            pfail "else of case next"
+            EMissingCase <$> getPos
         ))
     ]
   }
