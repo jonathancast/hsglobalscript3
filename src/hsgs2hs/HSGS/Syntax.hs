@@ -106,7 +106,7 @@ data SourceComp
 data Expr
   = EMissingCase Pos
   | EVar Pos String
-  | EPat Pattern
+  | EPat Pos Pattern
   | EApp Expr Expr
 
 data Pattern
@@ -167,7 +167,7 @@ globalEnv :: Env
 globalEnv = Env{
     lambdas = Map.fromList [
         ("case", \ env -> (
-            EPat <$> pattern,
+            EPat <$> getPos <*> pattern,
             expr env,
             EMissingCase <$> getPos
         ))
