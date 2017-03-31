@@ -138,7 +138,7 @@ compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
 compileExpr env (EMissingCase pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
-    HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` (HSLambda ["args"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "args")
+    HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` (HSLambda ["x"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "x")
   )
 compileExpr env (EVar pos v) = do
     (isv, ev) <- case Map.lookup v (gsvars env) of
