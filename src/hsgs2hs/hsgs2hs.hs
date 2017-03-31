@@ -98,10 +98,10 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
-compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg e <*> compileSource scs
-compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr e <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr pos e <*> compileSource scs
-compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg pos e <*> compileSource scs
+compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv e <*> compileSource scs
+compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr globalEnv e <*> compileSource scs
+compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr globalEnv pos e <*> compileSource scs
+compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg globalEnv pos e <*> compileSource scs
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
@@ -113,40 +113,40 @@ gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
 gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
-compileArg :: Expr -> Either String (Set HSImport, HSExpr)
-compileArg (EVar _ v) = return (
+compileArg :: Env -> Expr -> Either String (Set HSImport, HSExpr)
+compileArg env (EVar _ v) = return (
     Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
   )
-compileArg e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
+compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
-compileExpr :: Expr -> Either String (Set HSImport, HSExpr)
-compileExpr (EVar pos v) = return (
+compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
+compileExpr env (EVar pos v) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` HSVar v
   )
-compileExpr (EApp f e) = compileApp f [e]
-compileExpr e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
+compileExpr env (EApp f e) = compileApp env f [e]
+compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
-compileOpenExpr :: Pos -> Expr -> Either String (Set HSImport, HSExpr)
-compileOpenExpr pos e = do
-    (is, hse) <- compileExpr e
+compileOpenExpr :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenExpr env pos e = do
+    (is, hse) <- compileExpr env e
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` HSLambda ["env"] hse
       )
 
-compileOpenArg :: Pos -> Expr -> Either String (Set HSImport, HSExpr)
-compileOpenArg pos e = do
-    (is, hse) <- compileOpenExpr pos e
+compileOpenArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenArg env pos e = do
+    (is, hse) <- compileOpenExpr env pos e
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileApp :: Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
-compileApp (EVar pos f) as = do
-    as' <- mapM compileArg as
+compileApp :: Env -> Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
+compileApp env (EVar pos f) as = do
+    as' <- mapM (compileArg env) as
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -154,8 +154,8 @@ compileApp (EVar pos f) as = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar f `HSApp` HSList (map (\ (_, a) -> a) as')
       )
-compileApp (EApp f a) as = compileApp f (a:as)
-compileApp f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
+compileApp env (EApp f a) as = compileApp env f (a:as)
+compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
 compilePat env (PVar pos v) = return (
