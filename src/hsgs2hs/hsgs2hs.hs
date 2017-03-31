@@ -140,10 +140,14 @@ compileExpr env (EMissingCase pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
     HSLambda ["args"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "args"
   )
-compileExpr env (EVar pos v) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` HSVar v
-  )
+compileExpr env (EVar pos v) = do
+    (isv, ev) <- case Map.lookup v (gsvars env) of
+        Nothing -> Left $ fmtPos pos $ v ++ " not in scope"
+        Just (isv, ev) -> return (isv, ev)
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
+        HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
+      )
 compileExpr env (EApp f e) = compileApp env f [e]
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
