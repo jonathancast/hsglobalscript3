@@ -72,6 +72,15 @@ param = empty
 expr :: Env -> Parser Char Expr
 expr env = empty
     <|> foldl EApp <$> exprAtom <*> many exprAtom
+    <|> do
+        pos <- getPos
+        (v, parseHead, parseBody, parseElse) <- lambdalike env
+        return (EVar pos v)
+            <|> do
+                h <- parseHead <* period
+                b <- parseBody
+                e <- parseElse
+                return $ EVar pos v `EApp` h `EApp` b `EApp` e
   where
     exprAtom = empty
         <|> EVar <$> getPos <*> var env
