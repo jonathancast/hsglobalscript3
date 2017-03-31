@@ -9,23 +9,26 @@ import Data.List (foldl')
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-parse p pos s = parse_w id (runParser p $ \ x -> PPReturnPlus x (PPFail [] [])) pos s where
-    parse_w :: (Advanceable s, Show s) => (Either String (a, Pos, [s]) -> Either String (a, Pos, [s])) -> PrimParser s a -> Pos -> [s] -> Either String (a, Pos, [s])
-    parse_w k (PPFail e0 e1) pos s = k $ Left $ fmtPos pos $ ("Unexpected "++) . shows s $ fmtError e0 e1
-    parse_w k (NotFollowedByOr x p0 p1) pos s = parse_w k' p1 pos s where
-        k' (Right x) = Right x -- Longer match, so go with that
-        k' (Left _) = case parse_w id p0 pos s of -- Check that there is no match of p0
-            Left _ -> Right (x, pos, s)
-            Right _ -> k $ Left $ fmtPos pos $ "parse error"
-    parse_w k (PPReturnPlus x p1) pos s = parse_w k' p1 pos s where
-        k' (Right y) = Right y -- Longer match, so go with that
-        k' (Left _) = Right (x, pos, s) -- Fall back to this match
-    parse_w k (GetPos k') pos s = parse_w k (k' pos) pos s
-    parse_w k (SymbolOrEof ek sk) pos [] = parse_w k ek pos []
-    parse_w k (SymbolOrEof ek sk) pos (c:s') = case sk c of
-        Left (e0, e1) -> k $ Left $ fmtPos pos $ "Unexpected " ++ show c ++ fmtError e0 e1 where
-        Right p' -> parse_w k p' (advance c pos) s'
-    parse_w k p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
+parse p pos s = process $ parse_w (runParser p $ \ x -> PPReturnPlus x (PPFail [] [])) pos s where
+    process :: ([(a, Pos, [s])], String) -> Either String (a, Pos, [s])
+    process ([], err) = Left err
+    process ([x], _) = Right x
+    process (x:xn, err) = process (xn, err)
+
+    parse_w :: (Advanceable s, Show s) => PrimParser s a -> Pos -> [s] -> ([(a, Pos, [s])], String)
+    parse_w (PPFail e0 e1) pos s = ([], fmtPos pos $ ("Unexpected "++) . shows s $ fmtError e0 e1)
+    parse_w (NotFollowedByOr x p0 p1) pos s = k $ parse_w p1 pos s where
+        k ~(xn, err) = case parse_w p0 pos s of
+            ([], _) -> ((x, pos, s) : xn, err)
+            _ -> (xn, err)
+    parse_w (PPReturnPlus x p1) pos s = k $ parse_w p1 pos s where
+        k ~(xn, err) = ((x, pos, s) : xn, err)
+    parse_w (GetPos k) pos s = parse_w (k pos) pos s
+    parse_w (SymbolOrEof ek sk) pos [] = parse_w ek pos []
+    parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
+        Left (e0, e1) -> ([], fmtPos pos $ "Unexpected " ++ show c ++ fmtError e0 e1)
+        Right p' -> parse_w p' (advance c pos) s'
+    parse_w p pos s = $gsfatal $ fmtPos pos $ "parse " ++ pCode p ++ " next"
 
     fmtError e0 e1 = concat (map ("; "++) e0) ++ fmt e1 where
         fmt [] = ""
