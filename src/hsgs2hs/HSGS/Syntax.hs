@@ -74,7 +74,7 @@ expr env = empty
     <|> foldl EApp <$> exprAtom <*> many exprAtom
   where
     exprAtom = empty
-        <|> EVar <$> getPos <*> ident
+        <|> EVar <$> getPos <*> var env
 
 pattern :: Parser Char Pattern
 pattern = empty
