@@ -95,7 +95,8 @@ instance Applicative (Parser s) where
 instance Alternative (Parser s) where
     empty = Parser (\ k -> PPFail [] [])
     p0 <|> p1 = Parser (\ k -> runParser p0 k `or_w` runParser p1 k) where
-        PPFail e0 e1  `or_w` PPFail e2 e3 = PPFail (e0 ++ e2) (e1 ++ e3)
+        PPFail e0 e1 `or_w` PPFail e2 e3 = PPFail (e0 ++ e2) (e1 ++ e3)
+        PPFail e0 e1 `or_w` PPReturnPlus x p1 = PPReturnPlus x (PPFail e0 e1 `or_w` p1)
         PPFail e0 e1 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (PPFail e0 e1 `or_w` ek1) (\ c -> case sk1 c of
             Left (e2, e3) -> Left (e0 ++ e2, e1 ++ e3)
             Right p1 -> Right p1
