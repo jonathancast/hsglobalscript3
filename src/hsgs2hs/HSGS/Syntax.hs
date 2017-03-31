@@ -107,6 +107,7 @@ data Expr
   = EMissingCase Pos
   | EVar Pos String
   | EPat Pos Pattern
+  | EOpen Pos Expr
   | EApp Expr Expr
 
 data Pattern
@@ -192,6 +193,7 @@ eCode :: Expr -> String
 eCode EMissingCase{} = "EMissingCase"
 eCode EVar{} = "EVar"
 eCode EPat{} = "EPat"
+eCode EOpen{} = "EOpen"
 eCode EApp{} = "EApp"
 
 patCode :: Pattern -> String
