@@ -121,18 +121,8 @@ processParams (p:ps) env = $gsfatal "processParams next"
 processParams [] env = env
 
 compileArg :: Env -> Expr -> Either String (Set HSImport, HSExpr)
-compileArg env e@(EMissingCase pos) = do
-    (is, hse) <- compileExpr env e
-    return (
-        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
-        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
-      )
-compileArg env e@(EQLO pos0 _ _ _) = do
-    (is, hse) <- compileExpr env e
-    return (
-        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
-        HSConstr "GSArgExpr" `HSApp` hspos pos0 `HSApp` hse
-      )
+compileArg env e@(EMissingCase pos) = compileExprToArg env pos e
+compileArg env e@(EQLO pos0 _ _ _) = compileExprToArg env pos0 e
 compileArg env (EVar _ v) = return (
     Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
@@ -140,6 +130,14 @@ compileArg env (EVar _ v) = return (
 compileArg env (EPat pos p) = compilePatArg env pos p
 compileArg env (EOpen pos e) = compileOpenArg env pos e
 compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
+
+compileExprToArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileExprToArg env pos e = do
+    (is, hse) <- compileExpr env e
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
+      )
 
 compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
 compileExpr env (EMissingCase pos) = return (
