@@ -19,14 +19,14 @@ interpolation = empty
         keyword "gsimports"
         return SCImports
 
-quote :: Env -> Parser Char SourceComp
-quote env = empty
+quote :: Env -> Pos -> Parser Char SourceComp
+quote env pos = empty
     <|> do
         keyword "arg"
         ps <- many param
         keywordOp "|"
         e <- expr env
-        return $ SCArg ps e
+        return $ SCArg pos ps e
     <|> do
         keyword "expr"
         ps <- many param
@@ -34,14 +34,12 @@ quote env = empty
         e <- expr env
         return $ SCExpr ps e
     <|> do
-        pos <- getPos
         keyword "open-expr"
         ps <- many param
         keywordOp "|"
         e <- expr env
         return $ SCOpenExpr pos ps e
     <|> do
-        pos <- getPos
         keyword "open-arg"
         ps <- many param
         keywordOp "|"
@@ -54,7 +52,6 @@ quote env = empty
         p <- pattern
         return $ SCPat ps p
     <|> do
-        pos <- getPos
         keyword "pat-arg"
         ps <- many param
         keywordOp "|"
@@ -71,7 +68,7 @@ param = empty
 
 expr :: Env -> Parser Char Expr
 expr env = empty
-    <|> foldl EApp <$> exprAtom <*> many exprAtom
+    <|> foldl (\ ef (pos, ex) -> EApp ef pos ex) <$> exprAtom <*> many ((,) <$> getPos <*> exprAtom)
     <|> do
         pos0 <- getPos
         (v, pos1, s) <- lexeme $ do
@@ -89,10 +86,11 @@ expr env = empty
         (v, parseHead, parseBody, parseElse) <- lambdalike env
         return (EVar pos v)
             <|> do
-                h <- parseHead <* period
-                b <- parseBody
-                e <- parseElse
-                return $ EVar pos v `EApp` h `EApp` b `EApp` e
+                foldl (\ ef (pos1, ex) -> EApp ef pos1 ex) (EVar pos v) <$> sequence [
+                    (,) <$> getPos <*> parseHead <* period,
+                    (,) <$> getPos <*> parseBody,
+                    (,) <$> getPos <*> parseElse
+                  ]
   where
     exprAtom = empty
         <|> EVar <$> getPos <*> var env
@@ -108,7 +106,7 @@ pattern = empty
 data SourceComp
   = SCChar Char
   | SCImports
-  | SCArg [Param] Expr
+  | SCArg Pos [Param] Expr
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
   | SCOpenArg Pos [Param] Expr
@@ -119,9 +117,9 @@ data Expr
   = EMissingCase Pos
   | EVar Pos String
   | EQLO Pos String Pos String
-  | EPat Pos Pattern
-  | EOpen Pos Expr
-  | EApp Expr Expr
+  | EPat Pattern
+  | EOpen Expr
+  | EApp Expr Pos Expr
 
 data Pattern
   = PVar Pos String
@@ -185,8 +183,8 @@ globalEnv :: Env
 globalEnv = Env{
     lambdas = Map.fromList [
         ("case", \ env -> (
-            EPat <$> getPos <*> pattern,
-            EOpen <$> getPos <*> expr env,
+            EPat <$> pattern,
+            EOpen <$> expr env,
             EMissingCase <$> getPos
         ))
     ]

@@ -98,7 +98,7 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
-compileSource (SCArg ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv e <*> compileSource scs
+compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv pos e <*> compileSource scs
 compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr (processParams ps globalEnv) e <*> compileSource scs
 compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processParams ps globalEnv) pos e <*> compileSource scs
 compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg (processParams ps globalEnv) pos e <*> compileSource scs
@@ -120,16 +120,16 @@ processParams (FVSParam vs:ps) env = processParams ps env{
 processParams (p:ps) env = $gsfatal "processParams next"
 processParams [] env = env
 
-compileArg :: Env -> Expr -> Either String (Set HSImport, HSExpr)
-compileArg env e@(EMissingCase pos) = compileExprToArg env pos e
-compileArg env e@(EQLO pos0 _ _ _) = compileExprToArg env pos0 e
-compileArg env (EVar _ v) = return (
+compileArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileArg env pos e@EMissingCase{} = compileExprToArg env pos e
+compileArg env pos e@EQLO{} = compileExprToArg env pos e
+compileArg env pos (EVar _ v) = return (
     Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
   )
-compileArg env (EPat pos p) = compilePatArg env pos p
-compileArg env (EOpen pos e) = compileOpenArg env pos e
-compileArg env e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
+compileArg env pos (EPat p) = compilePatArg env pos p
+compileArg env pos (EOpen e) = compileOpenArg env pos e
+compileArg env pos e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
 compileExprToArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileExprToArg env pos e = do
@@ -157,7 +157,7 @@ compileExpr env (EQLO pos0 "log" pos1 s) = return (
     HSVar "gsbclog_w" `HSApp` hspos pos0 `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` (HSVar "gsbclogstring_w" `HSApp` hspos pos1 `HSApp` HSString s) ]
   )
 compileExpr env (EQLO pos0 q pos1 s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
-compileExpr env (EApp f e) = compileApp env f [e]
+compileExpr env (EApp f pos1 e) = compileApp env f [(pos1, e)]
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 compileOpenExpr :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
@@ -176,12 +176,12 @@ compileOpenArg env pos e = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileApp :: Env -> Expr -> [Expr] -> Either String (Set HSImport, HSExpr)
+compileApp :: Env -> Expr -> [(Pos, Expr)] -> Either String (Set HSImport, HSExpr)
 compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    as' <- mapM (compileArg env) as
+    as' <- mapM (\ (pos1, e) -> compileArg env pos1 e) as
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -190,7 +190,7 @@ compileApp env (EVar pos f) as = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
       )
-compileApp env (EApp f a) as = compileApp env f (a:as)
+compileApp env (EApp f pos a) as = compileApp env f ((pos, a):as)
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
@@ -228,7 +228,7 @@ splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
     Right (r, pos', s') -> (r:) <$> splitInput pos' s'
-splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv) (advanceStr "[gs:" pos) s of
+splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv pos) (advanceStr "[gs:" pos) s of
     Left err -> error err
     Right (r, pos', '|':']':s') -> (r:) <$> splitInput (advanceStr "|]" pos') s'
     Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
