@@ -106,6 +106,7 @@ data SourceComp
 data Expr
   = EMissingCase Pos
   | EVar Pos String
+  | EQLO Pos String Pos String
   | EPat Pos Pattern
   | EOpen Pos Expr
   | EApp Expr Expr
@@ -196,6 +197,7 @@ scCode SCPatArg{} = "SCPatArg"
 eCode :: Expr -> String
 eCode EMissingCase{} = "EMissingCase"
 eCode EVar{} = "EVar"
+eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
 eCode EOpen{} = "EOpen"
 eCode EApp{} = "EApp"
