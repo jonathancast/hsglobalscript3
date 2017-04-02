@@ -73,6 +73,16 @@ expr :: Env -> Parser Char Expr
 expr env = empty
     <|> foldl EApp <$> exprAtom <*> many exprAtom
     <|> do
+        pos0 <- getPos
+        (v, pos1, s) <- lexeme $ do
+            v <- (:) <$> idStartChar <*> many idContChar
+            char '{'
+            pos1 <- getPos
+            s <- many (matching "ordinary character" $ \ c -> not (c `elem` "()[]{}\\§"))
+            char '}'
+            return (v, pos1, s)
+        return $ EQLO pos0 v pos1 s
+    <|> do
         pos <- getPos
         (v, parseHead, parseBody, parseElse) <- lambdalike env
         return (EVar pos v)
