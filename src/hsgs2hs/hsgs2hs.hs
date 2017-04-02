@@ -149,7 +149,7 @@ compileExpr env (EVar pos v) = do
         HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
       )
 compileExpr env (EQLO pos0 "log" pos1 s) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbclog_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ],
+    Set.fromList [ HSIVar "GSI.Log" "gsbclog_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.Log" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbclog_w" `HSApp` hspos pos0 `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` (HSVar "gsbclogstring_w" `HSApp` hspos pos1 `HSApp` HSString s) ]
   )
 compileExpr env (EQLO pos0 q pos1 s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
