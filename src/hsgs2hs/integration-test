@@ -25,3 +25,4 @@ ok_diff_compiler '-- pattern arguments --' hsgs2hs variable-pattern-argument.hsg
 ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expression.hs
 ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
 ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
+ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
