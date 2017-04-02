@@ -148,6 +148,11 @@ compileExpr env (EVar pos v) = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
         HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
       )
+compileExpr env (EQLO pos0 "log" pos1 s) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbclog_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbclog_w" `HSApp` hspos pos0 `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` (HSVar "gsbclogstring_w" `HSApp` hspos pos1 `HSApp` HSString s) ]
+  )
+compileExpr env (EQLO pos0 q pos1 s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
 compileExpr env (EApp f e) = compileApp env f [e]
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
