@@ -80,7 +80,7 @@ expr env = empty
             pos1 <- getPos
             s <- many $ empty
                 <|> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
-                <|> char '\\' *> symbol
+                <|> char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§")
             char '}'
             return (v, pos1, s)
         return $ EQLO pos0 v pos1 s
