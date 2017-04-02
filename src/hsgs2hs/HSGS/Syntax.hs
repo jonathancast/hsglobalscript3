@@ -11,7 +11,7 @@ import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
 import GSI.Util (Pos, gsfatal)
 
-import HSGS.Parser (Parser, notFollowedBy, getPos, matching, char, string, endBy, pfail)
+import HSGS.Parser (Parser, notFollowedBy, getPos, matching, symbol, char, string, endBy, pfail)
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
@@ -78,7 +78,9 @@ expr env = empty
             v <- (:) <$> idStartChar <*> many idContChar
             char '{'
             pos1 <- getPos
-            s <- many (matching "ordinary character" $ \ c -> not (c `elem` "()[]{}\\§"))
+            s <- many $ empty
+                <|> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
+                <|> char '\\' *> symbol
             char '}'
             return (v, pos1, s)
         return $ EQLO pos0 v pos1 s
