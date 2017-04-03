@@ -4,19 +4,20 @@ module HSGS.Parser (Parser, parse, getPos, symbol, matching, char, string, notFo
 
 import Control.Applicative (Alternative(..))
 
+import Data.Char (isPrint)
 import Data.List (foldl')
 
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
-parse :: (Advanceable s, Show s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
+parse :: (Advanceable s, ParserDisplay s) => Parser s a -> Pos -> [s] -> Either String (a, Pos, [s])
 parse p pos s = process $ parse_w (runParser p $ \ x -> PPReturnPlus x (PPFail [] [])) pos s where
     process :: ([(a, Pos, [s])], String) -> Either String (a, Pos, [s])
     process ([], err) = Left err
     process ([x], _) = Right x
     process (x:xn, err) = process (xn, err)
 
-    parse_w :: (Advanceable s, Show s) => PrimParser s a -> Pos -> [s] -> ([(a, Pos, [s])], String)
-    parse_w (PPFail e0 e1) pos s = ([], fmtPos pos $ ("Unexpected "++) . shows s $ fmtError e0 e1)
+    parse_w :: (Advanceable s, ParserDisplay s) => PrimParser s a -> Pos -> [s] -> ([(a, Pos, [s])], String)
+    parse_w (PPFail e0 e1) pos s = ([], fmtPos pos $ ("Unexpected "++) . displayString s $ fmtError e0 e1)
     parse_w (PPReturnPlus x p1) pos s = k $ parse_w p1 pos s where
         k ~(xn, err) = ((x, pos, s) : xn, err)
     parse_w (GetPos k) pos s = parse_w (k pos) pos s
@@ -26,7 +27,7 @@ parse p pos s = process $ parse_w (runParser p $ \ x -> PPReturnPlus x (PPFail [
         k p0 ((p1, _, _):ps, err) = k (p0 `or_w` p1) (ps, err)
     parse_w (SymbolOrEof ek sk) pos [] = parse_w ek pos []
     parse_w (SymbolOrEof ek sk) pos (c:s') = case sk c of
-        Left (e0, e1) -> ([], fmtPos pos $ "Unexpected " ++ show c ++ fmtError e0 e1)
+        Left (e0, e1) -> ([], fmtPos pos $ ("Unexpected "++) . displayChar c $ fmtError e0 e1)
         Right p' -> parse_w p' (advance c pos) s'
     parse_w p pos s = $gsfatal $ "parse " ++ pCode p ++ " next"
 
@@ -82,10 +83,10 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPRetur
     negate_w p0 x = $gsfatal $ "negate_w " ++ pCode p0 ++ " next"
 
 string :: String -> Parser Char ()
-string s = mapM_ char s <?> show s
+string s = mapM_ char s <?> displayString s ""
 
 char :: Char -> Parser Char ()
-char ch = matching (show ch) (==ch) *> return ()
+char ch = matching (displayChar ch "") (==ch) *> return ()
 
 symbol :: Parser s s
 symbol = matching "symbol" (const True)
@@ -150,6 +151,18 @@ instance Advanceable Char where
     advance '\n' (Pos fn l c) = Pos fn (l+1) 1
     advance _ (Pos fn l c) = Pos fn l (c+1)
 
+displayString :: ParserDisplay s => [s] -> String -> String
+displayString s = ('"':) . w s where
+    w [] = ('"':)
+    w (c:s) = display '"' c . w s
+
+displayChar :: ParserDisplay s => s -> String -> String
+displayChar c = ('\'':) . display '\'' c . ('\'':)
+
+instance ParserDisplay Char where
+    display q ch | isPrint ch && ch /= q = (ch:)
+    display q ch = $gsfatal $ "display " ++ show ch ++ " next"
+
 newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> PrimParser s b }
 
 data PrimParser s a
@@ -161,6 +174,9 @@ data PrimParser s a
 
 class Advanceable r where
     advance :: r -> Pos -> Pos
+
+class ParserDisplay r where
+    display :: Char -> r -> String -> String
 
 pCode :: PrimParser s a -> String
 pCode PPFail{} = "PPFail"
