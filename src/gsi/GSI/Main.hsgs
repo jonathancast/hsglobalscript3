@@ -8,7 +8,7 @@ import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
 import GSI.List (gscons_view)
 import GSI.Either (gsleft_view)
-import GSI.Env (gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_view)
+import GSI.Env (gsenvGetArgs, gsfileStat, gsENOENT_view)
 $gsimports
 
 -- Main function (call this to start your interpreter)
@@ -29,7 +29,7 @@ gsprocessargs = $gslambda $ \ args ->
                                 $gsbcapply gsanalyze [ $gsav e,
                                     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
                                         $gsae $ $gsbcarg $ \ env -> $gsbcimpfor $ do
-                                            $gsbcimpbind $ $gsae $ $gsbcapply gsprintError [ [gs:arg hsvs=a,| qq{§(a): Could not load: no such file or directory\n} |] ]
+                                            $gsbcimpbind $ $gsae [gs:expr hsvs=a,| print-error qq{§(a): Could not load: no such file or directory\n} |]
                                             [gs:body hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |],
                                     [gs:arg hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |]
                                 ] ]
