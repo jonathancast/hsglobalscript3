@@ -189,6 +189,14 @@ compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q 
 compileExpr env (EApp f pos1 e) = compileApp env f [(pos1, e)]
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
+compileBody :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileBody env pos e = do
+    (is, hse) <- compileArg env pos e
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpbody_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "gsbcimpbody_w" `HSApp` hspos pos `HSApp` hse
+      )
+
 compileOpenExpr :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileOpenExpr env pos e = do
     (is, hse) <- compileExpr env e
