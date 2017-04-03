@@ -86,16 +86,28 @@ expr env = empty
             pos0 <- getPos
             (v, s) <- lexeme $ do
                 v <- (:) <$> idStartChar <*> many idContChar
-                s <- char '{' *> quoteItems env <* char '}'
+                s <- char '{' *> quoteItems env [] <* char '}'
                 return (v, s)
             return $ EQLO pos0 v s
 
-quoteItems :: Env -> Parser Char [QLOItem]
-quoteItems env = empty
-    <|> return []
-    <|> (:) <$> (QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))) <*> quoteItems env
-    <|> (:) <$> (QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))) <*> quoteItems env
-    <|> (:) <$> (QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')) <*> quoteItems env
+quoteItems :: Env -> [Char] -> Parser Char [QLOItem]
+quoteItems env qs = empty
+    <|> (if null qs then return [] else empty)
+    <|> do
+        pos <- getPos
+        ch <- matching "open delimiter" (\ c -> c `Map.member` delimiters)
+        (QChar pos ch :) <$> quoteItems env ((delimiters Map.! ch):qs)
+    <|> case qs of
+        [] -> empty
+        ch:qs' -> do
+            pos <- getPos
+            char ch
+            (QChar pos ch:) <$> quoteItems env qs'
+    <|> (:) <$> (QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))) <*> quoteItems env qs
+    <|> (:) <$> (QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))) <*> quoteItems env qs
+    <|> (:) <$> (QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')) <*> quoteItems env qs
+
+delimiters = Map.fromList [ ('(', ')') ]
 
 pattern :: Parser Char Pattern
 pattern = empty
