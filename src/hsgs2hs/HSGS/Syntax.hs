@@ -157,12 +157,14 @@ data Param
 
 var :: Env -> Parser Char String
 var env = lexeme $ do
-    v <- (:) <$> idStartChar <*> many idContChar
-    notFollowedBy idContChar
+    v <- (++) <$> alphaNumComp <*> (concat <$> many (char '-' *> (('-':) <$> alphaNumComp)))
     notFollowedBy (char '{')
     case Map.lookup v (lambdas env) of
         Nothing -> return v
         Just _ -> pfail $ v ++ " is not variable-like"
+
+alphaNumComp :: Parser Char String
+alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
 lambdalike :: Env -> Parser Char (String, Parser Char Expr, Parser Char Expr, Parser Char Expr)
 lambdalike env = lexeme $ do
