@@ -270,6 +270,8 @@ globalEnv = Env{
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),
         ("gsv", (Set.singleton $ HSIVar "GSI.Log" "gsloggsv", HSVar "gsloggsv"))
     ],
+    gsimplicits = Map.fromList [
+    ],
     gsviews = Map.fromList [
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view"))
     ]
@@ -277,6 +279,7 @@ globalEnv = Env{
 
 data Env = Env {
     gsvars :: Map String (Set HSImport, HSExpr),
+    gsimplicits :: Map String [Implicit],
     gsviews :: Map String (Set HSImport, HSExpr)
   }
 
