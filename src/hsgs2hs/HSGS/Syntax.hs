@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, patCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, patCode) where
 
 import Control.Applicative (Alternative(..))
 
@@ -84,16 +84,15 @@ expr env = empty
         <|> EVar <$> getPos <*> var env
         <|> do
             pos0 <- getPos
-            (v, pos1, s) <- lexeme $ do
+            (v, s) <- lexeme $ do
                 v <- (:) <$> idStartChar <*> many idContChar
                 char '{'
-                pos1 <- getPos
                 s <- many $ empty
-                    <|> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
-                    <|> char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§")
+                    <|> QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
+                    <|> QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))
                 char '}'
-                return (v, pos1, s)
-            return $ EQLO pos0 v pos1 s
+                return (v, s)
+            return $ EQLO pos0 v s
 
 pattern :: Parser Char Pattern
 pattern = empty
@@ -116,10 +115,14 @@ data SourceComp
 data Expr
   = EMissingCase Pos
   | EVar Pos String
-  | EQLO Pos String Pos String
+  | EQLO Pos String [QLOItem]
   | EPat Pattern
   | EOpen Expr
   | EApp Expr Pos Expr
+
+data QLOItem
+  = QChar Pos Char
+  | QQChar Pos Char
 
 data Pattern
   = PVar Pos String
@@ -211,6 +214,10 @@ eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
 eCode EOpen{} = "EOpen"
 eCode EApp{} = "EApp"
+
+qloiCode :: QLOItem -> String
+qloiCode QChar{} = "QChar"
+qloiCode QQChar{} = "QQChar"
 
 patCode :: Pattern -> String
 patCode PView{} = "PView"

@@ -23,7 +23,7 @@ import System.IO.Encoding (readFile, writeFile)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode, patCode)
+import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, patCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 import qualified HSGS.Syntax as Syntax
@@ -158,11 +158,25 @@ compileExpr env (EVar pos v) = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
         HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
       )
-compileExpr env (EQLO pos0 "log" pos1 s) = return (
-    Set.fromList [ HSIVar "GSI.Log" "gsbclog_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.Log" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbclog_w" `HSApp` hspos pos0 `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` (HSVar "gsbclogstring_w" `HSApp` hspos pos1 `HSApp` HSString s) ]
-  )
-compileExpr env (EQLO pos0 q pos1 s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
+compileExpr env (EQLO pos0 "log" s) = do
+    (is, as) <- w s
+    return (
+        Set.fromList [ HSIVar "GSI.Log" "gsbclog_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "gsbclog_w" `HSApp` hspos pos0 `HSApp` HSList as
+      )
+  where
+    w [] = return (Set.empty, [])
+    w (QChar pos1 ch:qis) = w_ch pos1 (ch:) qis
+    w (QQChar pos1 ch:qis) = w_ch pos1 (ch:) qis
+    w (qi:qis) = $gsfatal $ "w " ++ qloiCode qi ++ " next"
+
+    w_ch pos1 ds [] = return (string_imports, [ string_expr pos1 (ds "") ])
+    w_ch pos1 ds (QChar _ ch:qis) = w_ch pos1 (ds . (ch:)) qis
+    w_ch pos1 ds (qi:qis) = $gsfatal $ "w_ch " ++ qloiCode qi ++ " next"
+
+    string_imports = Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.Log" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ]
+    string_expr pos s = HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` (HSVar "gsbclogstring_w" `HSApp` hspos pos `HSApp` HSString s)
+compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
 compileExpr env (EApp f pos1 e) = compileApp env f [(pos1, e)]
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
