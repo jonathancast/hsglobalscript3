@@ -26,3 +26,4 @@ ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expr
 ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
 ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
 ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
+ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
