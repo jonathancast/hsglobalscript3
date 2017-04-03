@@ -1,0 +1,6 @@
+{-# LINE 1 "./test-fixtures/log-parens.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.Log (gsbclog_w)
+import GSI.Log (gsbclogstring_w)
+(gsbclog_w (Pos "./test-fixtures/log-parens.hsgs" 2 11) [ GSArgExpr (Pos "./test-fixtures/log-parens.hsgs" 2 15) (gsbclogstring_w (Pos "./test-fixtures/log-parens.hsgs" 2 15) "()") ])
