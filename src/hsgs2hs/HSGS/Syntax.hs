@@ -90,6 +90,7 @@ expr env = empty
                 s <- many $ empty
                     <|> QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
                     <|> QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))
+                    <|> QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')
                 char '}'
                 return (v, s)
             return $ EQLO pos0 v s
