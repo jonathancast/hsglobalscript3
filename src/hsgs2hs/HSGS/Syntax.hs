@@ -91,10 +91,11 @@ expr env = empty
             return $ EQLO pos0 v s
 
 quoteItems :: Env -> Parser Char [QLOItem]
-quoteItems env = many $ empty
-    <|> QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
-    <|> QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))
-    <|> QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')
+quoteItems env = empty
+    <|> return []
+    <|> (:) <$> (QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))) <*> quoteItems env
+    <|> (:) <$> (QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))) <*> quoteItems env
+    <|> (:) <$> (QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')) <*> quoteItems env
 
 pattern :: Parser Char Pattern
 pattern = empty
