@@ -177,6 +177,9 @@ compileExpr env (EQLO pos0 "log" s) = do
     w_ch pos1 ds [] = return (string_imports, [ string_expr pos1 (ds "") ])
     w_ch pos1 ds (QChar _ ch:qis) = w_ch pos1 (ds . (ch:)) qis
     w_ch pos1 ds (QQChar _ ch:qis) = w_ch pos1 (ds . (ch:)) qis
+    w_ch pos1 ds qis@(QInterpExpr{}:_) = do
+        (ist, hst) <- w qis
+        return (string_imports `Set.union` ist, string_expr pos1 (ds "") : hst)
     w_ch pos1 ds (qi:qis) = $gsfatal $ "w_ch " ++ qloiCode qi ++ " next"
 
     string_imports = Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.Log" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ]
