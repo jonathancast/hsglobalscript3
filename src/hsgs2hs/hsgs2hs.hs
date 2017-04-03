@@ -279,3 +279,8 @@ data Env = Env {
     gsvars :: Map String (Set HSImport, HSExpr),
     gsviews :: Map String (Set HSImport, HSExpr)
   }
+
+data Implicit
+
+imCode :: Implicit -> String
+imCode im = im `seq` $gsfatal "imCode next"
