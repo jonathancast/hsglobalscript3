@@ -32,7 +32,7 @@ gsprocessargs = $gslambda $ \ args ->
                                     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
                                         $gsae $ $gsbcarg $ \ env -> $gsbcimpfor $ do
                                             $gsbcimpbind $ $gsae $ $gsbcapply gsprintError [ $gsae $ $gsbcstring [ $gsav $ a, $gsae $ $gsbcstringlit ": Could not load: no such file or directory\n" ] ]
-                                            $gsbcimpbody [gs:arg hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |],
+                                            [gs:body hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |],
                                     [gs:arg hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |]
                                 ] ]
                             ,
