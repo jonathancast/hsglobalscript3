@@ -123,6 +123,7 @@ data Expr
 data QLOItem
   = QChar Pos Char
   | QQChar Pos Char
+  | QInterpExpr Pos Expr
 
 data Pattern
   = PVar Pos String
@@ -218,6 +219,7 @@ eCode EApp{} = "EApp"
 qloiCode :: QLOItem -> String
 qloiCode QChar{} = "QChar"
 qloiCode QQChar{} = "QQChar"
+qloiCode QInterpExpr{} = "QInterpExpr"
 
 patCode :: Pattern -> String
 patCode PView{} = "PView"
