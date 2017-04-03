@@ -1,5 +1,7 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, ImplicitParams #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
+
+import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
 import Control.Applicative (Alternative(..))
 
@@ -11,10 +13,12 @@ import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
 
+import Data.Encoding.UTF8 (UTF8(..))
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents)
 import System.Environment (getArgs)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO (hPutStrLn, stderr)
+import System.IO.Encoding (readFile, writeFile)
 
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
@@ -35,6 +39,7 @@ processArg a = do
         as <- getDirectoryContents a
         mapM_ processArg $ map (\ a' -> a ++ '/' : a') $ filter (\ a' -> a' /= "." && a' /= "..") as
       else if irf && ".hsgs" `isSuffixOf` a then do
+        let ?enc = UTF8Strict
         s <- readFile a
         case compileHSGSSource a s of
             Left err -> do
