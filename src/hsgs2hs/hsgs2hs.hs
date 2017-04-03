@@ -4,6 +4,7 @@
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
 import Control.Applicative (Alternative(..))
+import Control.Monad (forM)
 
 import Data.List (isSuffixOf)
 
@@ -209,14 +210,19 @@ compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
+    as0 <- case Map.lookup f (gsimplicits env) of
+        Nothing -> return []
+        Just ims -> forM ims $ \ im -> case im of
+            _ -> $gsfatal $ "Compile implicit " ++ imCode im ++ " next"
     as' <- mapM (\ (pos1, e) -> compileArg env pos1 e) as
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
             isf :
+            map (\ (is, _) -> is) as0 ++
             map (\ (is, _) -> is) as'
         ,
-        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
+        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) as')
       )
 compileApp env (EApp f pos a) as = compileApp env f ((pos, a):as)
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
