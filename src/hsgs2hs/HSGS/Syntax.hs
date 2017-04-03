@@ -57,6 +57,12 @@ quote env pos = empty
         keywordOp "|"
         p <- pattern
         return $ SCPatArg pos ps p
+    <|> do
+        keyword "body"
+        ps <- many param
+        keywordOp "|"
+        e <- expr env
+        return $ SCBody pos ps e
 
 param :: Parser Char Param
 param = empty
