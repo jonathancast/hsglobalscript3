@@ -30,3 +30,4 @@ ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-inter
 ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
 ok_diff_compiler '-- error function --' hsgs2hs error-call.hsgs error-call.hs
 ok_diff_compiler '-- variable bodies --' hsgs2hs variable-body.hsgs variable-body.hs
+ok_diff_compiler '-- qq literals --' hsgs2hs qq-literal.hsgs qq-literal.hs
