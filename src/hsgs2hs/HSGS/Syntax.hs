@@ -107,7 +107,7 @@ quoteItems env qs = empty
     <|> (:) <$> (QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))) <*> quoteItems env qs
     <|> (:) <$> (QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')) <*> quoteItems env qs
 
-delimiters = Map.fromList [ ('(', ')') ]
+delimiters = Map.fromList [ ('(', ')'), ('[', ']'), ('{', '}') ]
 
 pattern :: Parser Char Pattern
 pattern = empty
