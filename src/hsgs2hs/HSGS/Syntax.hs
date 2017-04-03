@@ -126,6 +126,7 @@ data SourceComp
   | SCOpenArg Pos [Param] Expr
   | SCPat [Param] Pattern
   | SCPatArg Pos [Param] Pattern
+  | SCBody Pos [Param] Expr
 
 data Expr
   = EMissingCase Pos
@@ -222,6 +223,7 @@ scCode SCOpenExpr{} = "SCOpenExpr"
 scCode SCOpenArg{} = "SCOpenArg"
 scCode SCPat{} = "SCPat"
 scCode SCPatArg{} = "SCPatArg"
+scCode SCBody{} = "SCBody"
 
 eCode :: Expr -> String
 eCode EMissingCase{} = "EMissingCase"
