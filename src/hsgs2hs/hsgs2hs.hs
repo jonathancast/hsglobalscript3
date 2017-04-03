@@ -169,6 +169,10 @@ compileExpr env (EQLO pos "qq" s) = do
   where
     w [] = return (Set.empty, [])
     w (QChar pos1 ch:qis) = w_ch pos1 (ch:) qis
+    w (QInterpExpr pos1 e:qis) = do
+        (ise, hse) <- compileArg env pos1 e
+        (ist, hst) <- w qis
+        return (ise `Set.union` ist, hse : hst)
     w (qi:qis) = $gsfatal $ "w " ++ qloiCode qi ++ " next"
 
     w_ch pos ds [] = return (string_imports, [ string_expr pos (ds "") ])
