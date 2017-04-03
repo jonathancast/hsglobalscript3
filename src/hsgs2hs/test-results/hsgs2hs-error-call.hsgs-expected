@@ -1,0 +1,7 @@
+{-# LINE 1 "./test-fixtures/error-call.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.ByteCode (gsbcapply_w)
+import GSI.ByteCode (gsbchere_w)
+import GSI.StdLib (gserror)
+(gsbcapply_w (Pos "./test-fixtures/error-call.hsgs" 2 21) gserror [ GSArgExpr (Pos "./test-fixtures/error-call.hsgs" 2 21) (gsbchere_w (Pos "./test-fixtures/error-call.hsgs" 2 21)), GSArgVar msg ])
