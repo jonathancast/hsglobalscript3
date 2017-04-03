@@ -277,6 +277,7 @@ globalEnv = Env{
         ("gsv", (Set.singleton $ HSIVar "GSI.Log" "gsloggsv", HSVar "gsloggsv"))
     ],
     gsimplicits = Map.fromList [
+        ("error", [ ImHere ])
     ],
     gsviews = Map.fromList [
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view"))
