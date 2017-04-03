@@ -213,6 +213,10 @@ compileApp env (EVar pos f) as = do
     as0 <- case Map.lookup f (gsimplicits env) of
         Nothing -> return []
         Just ims -> forM ims $ \ im -> case im of
+            ImHere -> return (
+                Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbchere_w", HSIType "GSI.Util" "Pos" ],
+                HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` (HSVar "gsbchere_w" `HSApp` hspos pos)
+              )
             _ -> $gsfatal $ "Compile implicit " ++ imCode im ++ " next"
     as' <- mapM (\ (pos1, e) -> compileArg env pos1 e) as
     return (
