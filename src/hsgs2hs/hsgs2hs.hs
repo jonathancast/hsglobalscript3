@@ -290,6 +290,7 @@ data Env = Env {
   }
 
 data Implicit
+  = ImHere
 
 imCode :: Implicit -> String
-imCode im = im `seq` $gsfatal "imCode next"
+imCode ImHere = "ImHere"
