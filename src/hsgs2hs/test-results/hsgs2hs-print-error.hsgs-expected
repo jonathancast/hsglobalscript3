@@ -1,0 +1,5 @@
+{-# LINE 1 "./test-fixtures/print-error.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.ByteCode (gsbcenter_w)
+import GSI.Env (gsprintError)
+(gsbcenter_w (Pos "./test-fixtures/print-error.hsgs" 2 11) gsprintError)
