@@ -160,6 +160,23 @@ compileExpr env (EVar pos v) = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
         HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
       )
+compileExpr env (EQLO pos "qq" s) = do
+    (is, as) <- w s
+    return (
+        Set.fromList [ HSIVar "GSI.String" "gsbcstring_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "gsbcstring_w" `HSApp` hspos pos `HSApp` HSList as
+      )
+  where
+    w [] = return (Set.empty, [])
+    w (QChar pos1 ch:qis) = w_ch pos1 (ch:) qis
+    w (qi:qis) = $gsfatal $ "w " ++ qloiCode qi ++ " next"
+
+    w_ch pos ds [] = return (string_imports, [ string_expr pos (ds "") ])
+    w_ch pos ds (QChar _ ch:qis) = w_ch pos (ds . (ch:)) qis
+    w_ch pos ds (qi:qis) = $gsfatal $ "w_ch pos ds (" ++ qloiCode qi ++ ":qis) next"
+
+    string_imports = Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.String" "gsbcstringlit_w", HSIType "GSI.Util" "Pos" ]
+    string_expr pos s = HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` (HSVar "gsbcstringlit_w" `HSApp` hspos pos `HSApp` HSString s)
 compileExpr env (EQLO pos0 "log" s) = do
     (is, as) <- w s
     return (
