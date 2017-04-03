@@ -169,7 +169,8 @@ compileExpr env (EQLO pos0 "log" s) = do
   where
     w [] = return (Set.empty, [])
     w (QChar pos1 ch:qis) = w_ch pos1 (ch:) qis
-    w (QQChar pos1 ch:qis) = w_ch pos1 (ch:) qis
+    w (QQChar pos1 ch:qis) | ch `elem` "\\" = w_ch pos1 (ch:) qis
+    w (QQChar pos1 ch:qis) = $gsfatal $ "w (QQChar pos1 " ++ show ch ++ ":qis) next"
     w (QInterpExpr pos1 e:qis) = do
         (ise, hse) <- compileArg env pos1 e
         (ist, hst) <- w qis
