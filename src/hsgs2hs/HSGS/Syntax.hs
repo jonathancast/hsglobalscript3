@@ -86,14 +86,15 @@ expr env = empty
             pos0 <- getPos
             (v, s) <- lexeme $ do
                 v <- (:) <$> idStartChar <*> many idContChar
-                char '{'
-                s <- many $ empty
-                    <|> QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
-                    <|> QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))
-                    <|> QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')
-                char '}'
+                s <- char '{' *> quoteItems env <* char '}'
                 return (v, s)
             return $ EQLO pos0 v s
+
+quoteItems :: Env -> Parser Char [QLOItem]
+quoteItems env = many $ empty
+    <|> QChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))
+    <|> QQChar <$> getPos <*> (char '\\' *> matching "symbol" (\ c -> c `elem` "()[]{}\\§"))
+    <|> QInterpExpr <$> getPos <*> (char '§' *> char '(' *> expr env <* char ')')
 
 pattern :: Parser Char Pattern
 pattern = empty
