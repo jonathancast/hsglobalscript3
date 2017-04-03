@@ -8,7 +8,6 @@ import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
 import GSI.List (gscons_view)
 import GSI.Either (gsleft_view)
-import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
 import GSI.Env (gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_view)
 $gsimports
 
