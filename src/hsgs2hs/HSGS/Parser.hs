@@ -140,6 +140,15 @@ SymbolOrEof ek0 sk0 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `or_w` ek1) (\
   )
 p0 `or_w` p1 = $gsfatal $ pCode p0 ++ " <|> " ++ pCode p1 ++ " next"
 
+mapPrim :: (a -> b) -> PrimParser s a -> PrimParser s b
+mapPrim f (PPFail e0 e1) = PPFail e0 e1
+mapPrim f (PPReturnPlus x p) = PPReturnPlus (f x) (mapPrim f p)
+mapPrim f (SymbolOrEof ek sk) = SymbolOrEof (mapPrim f ek) (\ c -> case sk c of
+    Left (e0, e1) -> Left (e0, e1)
+    Right p1 -> Right (mapPrim f p1)
+  )
+mapPrim f p = $gsfatal $ "mapPrim f " ++ pCode p ++ " next"
+
 instance Monad (Parser s) where
     return x = Parser (\ k -> k x)
     ax >>= f = Parser (\ k -> runParser ax $ \ x -> runParser (f x) k)
