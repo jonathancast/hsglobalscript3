@@ -3,11 +3,10 @@ module GSI.Main (gsmain) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSExpr, gsundefined, gslambda, gsav, gsae)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcfield, gsbcviewpattern, gsbcvarpattern, gsbchere, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcfield, gsbcviewpattern, gsbcvarpattern, gsbcimpfor, gsbcimplet, gsbcimpbind, gsbcimpbody)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.StdLib (gserror, gsanalyze, gscase)
+import GSI.StdLib (gsanalyze, gscase)
 import GSI.List (gscons_view)
-import GSI.String (gsbcstring)
 import GSI.Either (gsleft_view)
 import GSI.Log (gsbclog, gsbclogstring, gsloggsv)
 import GSI.Env (gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_view)
@@ -31,7 +30,7 @@ gsprocessargs = $gslambda $ \ args ->
                                 $gsbcapply gsanalyze [ $gsav e,
                                     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
                                         $gsae $ $gsbcarg $ \ env -> $gsbcimpfor $ do
-                                            $gsbcimpbind $ $gsae $ $gsbcapply gsprintError [ $gsae $ $gsbcstring [ [gs:arg hsvs=a,| qq{§(a)} |], [gs:arg| qq{: Could not load: no such file or directory\n} |] ] ]
+                                            $gsbcimpbind $ $gsae $ $gsbcapply gsprintError [ [gs:arg hsvs=a,| qq{§(a): Could not load: no such file or directory\n} |] ]
                                             [gs:body hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |],
                                     [gs:arg hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |]
                                 ] ]
