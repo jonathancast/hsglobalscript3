@@ -111,6 +111,7 @@ compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
 compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBody (processParams ps globalEnv) pos e <*> compileSource scs
+compileSource (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBind (processParams ps globalEnv) pos e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
