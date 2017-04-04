@@ -222,6 +222,14 @@ compileBody env pos e = do
         HSVar "gsbcimpbody_w" `HSApp` hspos pos `HSApp` hse
       )
 
+compileBind :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileBind env pos e = do
+    (is, hse) <- compileArg env pos e
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpbind_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "gsbcimpbind_w" `HSApp` hspos pos `HSApp` hse
+      )
+
 compileOpenExpr :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileOpenExpr env pos e = do
     (is, hse) <- compileExpr env e
