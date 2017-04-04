@@ -29,7 +29,7 @@ gsprocessargs = $gslambda $ \ args ->
                                 $gsbcapply gsanalyze [ $gsav e,
                                     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
                                         $gsae $ $gsbcarg $ \ env -> $gsbcimpfor $ do
-                                            $gsbcimpbind [gs:arg hsvs=a,| print-error qq{§(a): Could not load: no such file or directory\n} |]
+                                            [gs:bind hsvs=a,| print-error qq{§(a): Could not load: no such file or directory\n} |]
                                             [gs:body hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |],
                                     [gs:arg hsvs=a,e,| error log{Process §(gsv a) (§(gsv e)) next} |]
                                 ] ]
