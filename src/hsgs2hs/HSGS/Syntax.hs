@@ -63,6 +63,12 @@ quote env pos = empty
         keywordOp "|"
         e <- expr env
         return $ SCBody pos ps e
+    <|> do
+        keyword "bind"
+        ps <- many param
+        keywordOp "|"
+        e <- expr env
+        return $ SCBind pos ps e
 
 param :: Parser Char Param
 param = empty
