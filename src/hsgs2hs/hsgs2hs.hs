@@ -321,6 +321,7 @@ globalEnv = Env{
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),
         ("gsv", (Set.singleton $ HSIVar "GSI.Log" "gsloggsv", HSVar "gsloggsv")),
+        ("impfor", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpfor", HSVar "gsimpfor")),
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError"))
     ],
     gsimplicits = Map.fromList [
