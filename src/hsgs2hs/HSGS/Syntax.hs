@@ -83,14 +83,14 @@ expr env = empty
     <|> foldl (\ ef (pos, ex) -> EApp ef pos ex) <$> exprAtom <*> many ((,) <$> getPos <*> exprAtom)
     <|> do
         pos <- getPos
-        (v, parseHead, parseBody, parseElse) <- lambdalike env
+        (v, parseHead, parseBody, mbparseElse) <- lambdalike env
         return (EVar pos v)
             <|> do
-                foldl (\ ef (pos1, ex) -> EApp ef pos1 ex) (EVar pos v) <$> sequence [
-                    (,) <$> getPos <*> parseHead <* period,
-                    (,) <$> getPos <*> parseBody,
-                    (,) <$> getPos <*> parseElse
-                  ]
+                foldl (\ ef (pos1, ex) -> EApp ef pos1 ex) (EVar pos v) <$> sequence (
+                    [ (,) <$> getPos <*> parseHead <* period ] ++
+                    [ (,) <$> getPos <*> parseBody ] ++
+                    [ (,) <$> getPos <*> pe | Just pe <- [mbparseElse] ]
+                  )
   where
     exprAtom = empty
         <|> EVar <$> getPos <*> var env
@@ -175,7 +175,7 @@ var env = lexeme $ do
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
-lambdalike :: Env -> Parser Char (String, Parser Char Expr, Parser Char Expr, Parser Char Expr)
+lambdalike :: Env -> Parser Char (String, Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr))
 lambdalike env = lexeme $ do
     v <- (:) <$> idStartChar <*> many idContChar
     notFollowedBy idContChar
@@ -222,13 +222,13 @@ globalEnv = Env{
         ("case", \ env -> (
             EPat <$> pattern,
             EOpen <$> expr env,
-            EMissingCase <$> getPos
+            Just (EMissingCase <$> getPos)
         ))
     ]
   }
 
 data Env = Env {
-    lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Parser Char Expr))
+    lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr)))
   }
 
 scCode :: SourceComp -> String
