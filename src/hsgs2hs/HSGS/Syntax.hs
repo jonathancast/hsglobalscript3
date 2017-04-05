@@ -84,13 +84,15 @@ expr env = empty
     <|> do
         pos <- getPos
         (v, parseHead, parseBody, mbparseElse) <- lambdalike env
-        return (EVar pos v)
+        let ef = EVar pos v
+        return ef
             <|> do
-                foldl (\ ef (pos1, ex) -> EApp ef pos1 ex) (EVar pos v) <$> sequence (
-                    [ (,) <$> getPos <*> parseHead <* period ] ++
-                    [ (,) <$> getPos <*> parseBody ] ++
-                    [ (,) <$> getPos <*> pe | Just pe <- [mbparseElse] ]
-                  )
+                ef1 <- (EApp ef <$> getPos <*> parseHead) <* period
+                ef2 <- EApp ef1 <$> getPos <*> parseBody
+                ef3 <- case mbparseElse of
+                    Nothing -> return ef2
+                    Just pe -> EApp ef2 <$> getPos <*> pe
+                return ef3
   where
     exprAtom = empty
         <|> EVar <$> getPos <*> var env
