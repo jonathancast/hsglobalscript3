@@ -226,6 +226,11 @@ globalEnv = Env{
             EPat <$> pattern,
             EOpen <$> expr env,
             Just (EMissingCase <$> getPos)
+        )),
+        ("impfor", \ env -> (
+            EGens <$> many empty,
+            EOpen <$> expr env,
+            Nothing
         ))
     ]
   }
