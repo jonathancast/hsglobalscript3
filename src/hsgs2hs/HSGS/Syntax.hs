@@ -148,6 +148,7 @@ data Expr
   | EVar Pos String
   | EQLO Pos String [QLOItem]
   | EPat Pattern
+  | EGens [Generator]
   | EOpen Expr
   | EApp Expr Pos Expr
 
@@ -250,6 +251,7 @@ eCode EMissingCase{} = "EMissingCase"
 eCode EVar{} = "EVar"
 eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
+eCode EGens{} = "EGens"
 eCode EOpen{} = "EOpen"
 eCode EApp{} = "EApp"
 
