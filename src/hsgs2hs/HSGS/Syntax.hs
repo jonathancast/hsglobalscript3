@@ -148,7 +148,7 @@ data Expr
   | EVar Pos String
   | EQLO Pos String [QLOItem]
   | EPat Pattern
-  | EGens [Generator]
+  | EGens [Generator] Pos
   | EOpen Expr
   | EApp Expr Pos Expr
 
@@ -228,7 +228,7 @@ globalEnv = Env{
             Just (EMissingCase <$> getPos)
         )),
         ("impfor", \ env -> (
-            EGens <$> many empty,
+            EGens <$> many empty <*> getPos,
             EOpen <$> expr env,
             Nothing
         ))
