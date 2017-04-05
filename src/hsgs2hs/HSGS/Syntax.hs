@@ -159,6 +159,8 @@ data Pattern
   | PView Pos String
   | PApp Pattern Pattern
 
+data Generator
+
 data Param
   = FVSParam [String]
 
@@ -258,3 +260,6 @@ patCode :: Pattern -> String
 patCode PView{} = "PView"
 patCode PVar{} = "PVar"
 patCode PApp{} = "PApp"
+
+genCode :: Generator -> String
+genCode g = g `seq` $gsfatal "genCode next"
