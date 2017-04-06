@@ -137,6 +137,7 @@ compileArg env pos (EVar _ v) = return (
   )
 compileArg env pos (EPat p) = compilePatArg env pos p
 compileArg env pos (EOpen e) = compileOpenArg env pos e
+compileArg env pos (EGens gs pos1) = compileGensArg env pos gs pos1
 compileArg env pos e@EApp{} = compileExprToArg env pos e
 compileArg env pos e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
