@@ -24,7 +24,7 @@ import System.IO.Encoding (readFile, writeFile)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, patCode)
+import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, patCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 import qualified HSGS.Syntax as Syntax
@@ -300,6 +300,13 @@ compilePatApp env (PView pos v) as = do
         foldl HSApp (HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` ev) (map (\ (_, e) -> e) as')
       )
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
+
+compileGens :: Env -> Pos -> [Generator] -> Pos -> Either String (Set HSImport, HSExpr)
+compileGens env pos (g:gs) pos1 = $gsfatal "compileGens env pos (g:gs) pos1 next"
+compileGens env pos [] pos1 = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptyimpgen_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcemptyimpgen_w" `HSApp` hspos pos1
+  )
 
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
