@@ -301,6 +301,14 @@ compilePatApp env (PView pos v) as = do
       )
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
+compileGensArg :: Env -> Pos -> [Generator] -> Pos -> Either String (Set HSImport, HSExpr)
+compileGensArg env pos gs pos1 = do
+    (is, hse) <- compileGens env pos gs pos1
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
+      )
+
 compileGens :: Env -> Pos -> [Generator] -> Pos -> Either String (Set HSImport, HSExpr)
 compileGens env pos (g:gs) pos1 = $gsfatal "compileGens env pos (g:gs) pos1 next"
 compileGens env pos [] pos1 = return (
