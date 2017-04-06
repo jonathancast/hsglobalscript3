@@ -1,0 +1,9 @@
+{-# LINE 1 "./test-fixtures/variable-impfor.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.ByteCode (gsbcapply_w)
+import GSI.ByteCode (gsbcarg_w)
+import GSI.ByteCode (gsbcemptyimpgen_w)
+import GSI.ByteCode (gsbcenter_w)
+import GSI.StdLib (gsimpfor)
+(gsbcapply_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 19) gsimpfor [ GSArgExpr (Pos "./test-fixtures/variable-impfor.hsgs" 2 25) (gsbcemptyimpgen_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 25)), GSArgExpr (Pos "./test-fixtures/variable-impfor.hsgs" 2 27) (gsbcarg_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 27) (\ env -> gsbcenter_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 27) x)) ])

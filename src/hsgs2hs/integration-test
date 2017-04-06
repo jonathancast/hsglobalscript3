@@ -35,3 +35,4 @@ ok_diff_compiler '-- \n in qq literals --' hsgs2hs qq-newline.hsgs qq-newline.hs
 ok_diff_compiler '-- interpolations in qq literals --' hsgs2hs qq-interpolation.hsgs qq-interpolation.hs
 ok_diff_compiler '-- print-error function --' hsgs2hs print-error.hsgs print-error.hs
 ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
+ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
