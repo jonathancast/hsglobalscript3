@@ -317,6 +317,9 @@ compileGens env pos [] pos1 = return (
     HSVar "gsbcemptyimpgen_w" `HSApp` hspos pos1
   )
 
+compileGenArg :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
+compileGenArg env pos g = $gsfatal "compileGenArg env pos g next"
+
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
 
