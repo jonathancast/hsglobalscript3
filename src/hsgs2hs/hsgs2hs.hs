@@ -122,12 +122,9 @@ gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
 processHSVS :: [Param] -> Env -> Env
-processHSVS (HSVSParam vs:ps) env = processHSVS ps env{
-    gsvars = Map.fromList (map (\ v -> (v, (Set.empty, HSVar v))) vs) `Map.union` gsvars env
+processHSVS ps env = env{
+    gsvars = Map.fromList [ (v, (Set.empty, HSVar v)) | HSVSParam vs <- ps, v <- vs ] `Map.union` gsvars env
   }
-processHSVS (FVSParam{}:ps) env = processHSVS ps env
-processHSVS (p:ps) env = $gsfatal "processHSVS next"
-processHSVS [] env = env
 
 compileArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} = compileExprToArg env pos e
