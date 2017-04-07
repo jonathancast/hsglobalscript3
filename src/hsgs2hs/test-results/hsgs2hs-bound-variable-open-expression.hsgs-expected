@@ -1,0 +1,7 @@
+{-# LINE 1 "./test-fixtures/bound-variable-open-expression.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.ByteCode (gsbcarg_w)
+import GSI.ByteCode (gsbcenter_w)
+import GSI.ByteCode (gsbcfield_w)
+import GSI.Syn (gsvar)
+(gsbcarg_w (Pos "./test-fixtures/bound-variable-open-expression.hsgs" 2 1) (\ env -> gsbcfield_w (Pos "./test-fixtures/bound-variable-open-expression.hsgs" 2 1) (gsvar "as") env (\ x0 -> gsbcenter_w (Pos "./test-fixtures/bound-variable-open-expression.hsgs" 2 24) x0)))
