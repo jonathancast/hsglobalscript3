@@ -126,6 +126,9 @@ processHSVS ps env = env{
     gsvars = Map.fromList [ (v, (Set.empty, HSVar v)) | HSVSParam vs <- ps, v <- vs ] `Map.union` gsvars env
   }
 
+processFVS :: [Param] -> Set String
+processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
+
 compileArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} = compileExprToArg env pos e
 compileArg env pos e@EQLO{} = compileExprToArg env pos e
