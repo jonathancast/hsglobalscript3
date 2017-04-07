@@ -27,7 +27,7 @@ gsprocessargs = $gslambda $ \ args ->
                         $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
                             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "e") env $ \ e ->
                                 $gsbcapply gsanalyze [ $gsav e,
-                                    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view ($gsbcvarpattern "fn"),
+                                    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsENOENT_view [gs:pat| 'fn |],
                                         [gs:open-arg hsvs=a,e,| impfor
                                             _ ← print-error qq{§(a): Could not load: no such file or directory\n};
                                           . error log{Process §(gsv a) (§(gsv e)) next}
