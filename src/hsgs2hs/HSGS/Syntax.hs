@@ -252,7 +252,10 @@ globalEnv = Env{
         ("case", \ env -> (
             EPat <$> pattern,
             EOpen <$> expr env,
-            Just (EMissingCase <$> getPos)
+            Just (empty
+                <|> EMissingCase <$> getPos
+                <|> lambdalike env (Just "case")
+            )
         )),
         ("impfor", \ env -> (
             EGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
