@@ -234,7 +234,7 @@ globalEnv = Env{
             Just (EMissingCase <$> getPos)
         )),
         ("impfor", \ env -> (
-            EGens <$> many empty <*> getPos,
+            EGens <$> (generator `endBy` semicolon) <*> getPos,
             EOpen <$> expr env,
             Nothing
         ))
