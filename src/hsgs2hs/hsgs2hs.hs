@@ -106,7 +106,7 @@ compileSource (SCImports:scs) = do
     return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv pos e <*> compileSource scs
 compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr (processHSVS ps globalEnv) e <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processHSVS ps globalEnv) pos e <*> compileSource scs
+compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e <*> compileSource scs
 compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg (processHSVS ps globalEnv) pos e <*> compileSource scs
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
@@ -233,8 +233,8 @@ compileBind env pos e = do
         HSVar "gsbcimpbind_w" `HSApp` hspos pos `HSApp` hse
       )
 
-compileOpenExpr :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
-compileOpenExpr env pos e = do
+compileOpenExpr :: Env -> Pos -> Set String -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenExpr env pos fvs e = do
     (is, hse) <- compileExpr env e
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
@@ -243,7 +243,7 @@ compileOpenExpr env pos e = do
 
 compileOpenArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileOpenArg env pos e = do
-    (is, hse) <- compileOpenExpr env pos e
+    (is, hse) <- compileOpenExpr env pos Set.empty e
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
