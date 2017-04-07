@@ -233,6 +233,11 @@ whitespace = empty
 globalEnv :: Env
 globalEnv = Env{
     lambdas = Map.fromList [
+        ("analyze", \ env -> (
+            expr env,
+            expr env,
+            Nothing
+        )),
         ("case", \ env -> (
             EPat <$> pattern,
             EOpen <$> expr env,
