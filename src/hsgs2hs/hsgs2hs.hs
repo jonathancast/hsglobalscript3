@@ -5,7 +5,7 @@ import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evi
 
 import Control.Applicative (Alternative(..))
 import Control.Monad (forM)
-import Control.Monad.State.Lazy (StateT, evalStateT)
+import Control.Monad.State.Strict (MonadState(..), StateT, evalStateT)
 import Control.Monad.Trans (MonadTrans(..))
 
 import Data.List (isSuffixOf)
@@ -358,6 +358,9 @@ splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
 type Compiler = StateT Integer (Either String)
+
+getGenSym :: Compiler String
+getGenSym = state $ \ n -> ("x" ++ show n, n + 1)
 
 runCompiler :: StateT Integer (Either String) a -> Either String a
 runCompiler a = evalStateT a 0
