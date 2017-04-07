@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Generator(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, patCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Generator(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, patCode, genCode) where
 
 import Control.Applicative (Alternative(..))
 
