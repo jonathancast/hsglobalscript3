@@ -210,6 +210,9 @@ opContChar = matching "operator continuation character" isSymbol
 comma :: Parser Char ()
 comma = lexeme $ char ','
 
+semicolon :: Parser Char ()
+semicolon = lexeme $ char ';'
+
 period :: Parser Char ()
 period = lexeme $ char '.'
 
