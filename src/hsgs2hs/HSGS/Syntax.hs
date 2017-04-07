@@ -133,6 +133,7 @@ pattern = empty
 
 generator :: Env -> Parser Char Generator
 generator env = empty
+    <|> ExecGenerator <$> getPos <*> (underscoreTerm *> keywordOp "←" *> expr env)
 
 data SourceComp
   = SCChar Char
