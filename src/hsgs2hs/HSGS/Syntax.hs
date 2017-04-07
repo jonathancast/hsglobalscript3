@@ -282,4 +282,4 @@ patCode PVar{} = "PVar"
 patCode PApp{} = "PApp"
 
 genCode :: Generator -> String
-genCode g = g `seq` $gsfatal "genCode next"
+genCode ExecGenerator{} = "ExecGenerator"
