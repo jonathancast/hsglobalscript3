@@ -32,7 +32,7 @@ gsprocessargs = $gslambda $ \ args ->
                                           . error log{Process §(gsv a) (§(gsv e)) next}
                                 |]
                             ,
-                            $gsae [gs:expr hsvs=gsprocessargs,as,| case right 'st.
+                            [gs:arg hsvs=gsprocessargs,as,| case right 'st.
                                 gsprocessargs as -- Ignore all arguments until we start failing tests for it
                             |]
                         ]
