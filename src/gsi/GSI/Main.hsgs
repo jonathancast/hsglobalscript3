@@ -7,7 +7,6 @@ import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcfield, gsb
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
 import GSI.List (gscons_view)
-import GSI.Either (gsleft_view)
 import GSI.Env (gsenvGetArgs, gsfileStat)
 $gsimports
 
@@ -24,7 +23,7 @@ gsprocessargs = $gslambda $ \ args ->
                 mbst <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
                     $gsbcapply gsanalyze [ $gsav mbst,
-                        $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view [gs:pat| 'e |],
+                        $gsae $ $gsbcapply gscase [ $gsae [gs:pat| left 'e |],
                             [gs:open-arg hsvs=a, fvs=e,| analyze e.
                                     case ENOENT 'fn.
                                         impfor
