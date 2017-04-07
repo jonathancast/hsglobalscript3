@@ -25,7 +25,7 @@ gsprocessargs = $gslambda $ \ args ->
                 $gsbcimpbody $ $gsae $
                     $gsbcapply gsanalyze [ $gsav mbst,
                         $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
-                            $gsae [gs:open-expr hsvs=a, fvs=e,| analyze e.
+                            [gs:open-arg hsvs=a, fvs=e,| analyze e.
                                     case ENOENT 'fn.
                                         impfor
                                             _ ← print-error qq{§(a): Could not load: no such file or directory\n};
