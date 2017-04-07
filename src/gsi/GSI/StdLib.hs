@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gscompose, gsanalyze, gscase, gserror, gsbcevalstring, gsbcevalstring_w) where
+module GSI.StdLib (gscompose, gsanalyze, gscase, gserror, gsimpfor, gsbcevalstring, gsbcevalstring_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -19,6 +19,9 @@ gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x -
         GSConstr pos cv [] | cv == gsvar "0" -> $gsbcapply e [$gsav x]
         GSConstr pos cc args -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ fmtVarAtom cc ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
         _ -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ gsvCode c ++ ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
+
+gsimpfor :: GSValue
+gsimpfor = $gsundefined
 
 -- This should be in GSI.String, but that would end up causing a circular dependency with this module so it goes here instead
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
