@@ -125,6 +125,7 @@ processParams :: [Param] -> Env -> Env
 processParams (HSVSParam vs:ps) env = processParams ps env{
     gsvars = Map.fromList (map (\ v -> (v, (Set.empty, HSVar v))) vs) `Map.union` gsvars env
   }
+processParams (FVSParam{}:ps) env = processParams ps env
 processParams (p:ps) env = $gsfatal "processParams next"
 processParams [] env = env
 
