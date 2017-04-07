@@ -109,7 +109,7 @@ compileSource (SCImports:scs) = do
 compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps globalEnv) pos e) <*> compileSource scs
 compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps globalEnv) e) <*> compileSource scs
 compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource scs
-compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps globalEnv) pos e) <*> compileSource scs
+compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource scs
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
 compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps globalEnv) pos e) <*> compileSource scs
@@ -143,7 +143,7 @@ compileArg env pos (EVar _ v) = do
         HSConstr "GSArgVar" `HSApp` ev
       )
 compileArg env pos (EPat p) = lift $ compilePatArg env pos p
-compileArg env pos (EOpen e) = compileOpenArg env pos e
+compileArg env pos (EOpen e) = compileOpenArg env pos Set.empty e
 compileArg env pos (EGens gs pos1) = compileGensArg env pos gs pos1
 compileArg env pos e@EApp{} = compileExprToArg env pos e
 compileArg env pos e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
@@ -257,9 +257,9 @@ compileOpenExpr env pos fvs e = do
         HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` HSLambda ["env"] hse'
       )
 
-compileOpenArg :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileOpenArg env pos e = do
-    (is, hse) <- compileOpenExpr env pos Set.empty e
+compileOpenArg :: Env -> Pos -> Set String -> Expr -> Compiler (Set HSImport, HSExpr)
+compileOpenArg env pos fvs e = do
+    (is, hse) <- compileOpenExpr env pos fvs e
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
