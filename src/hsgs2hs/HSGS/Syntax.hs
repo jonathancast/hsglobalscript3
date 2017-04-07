@@ -11,7 +11,7 @@ import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
 
 import GSI.Util (Pos, gsfatal)
 
-import HSGS.Parser (Parser, notFollowedBy, getPos, matching, symbol, char, string, endBy, pfail)
+import HSGS.Parser (Parser, notFollowedBy, getPos, matching, symbol, char, string, (<?>), endBy, pfail)
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
@@ -207,6 +207,9 @@ keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
 opContChar :: Parser Char Char
 opContChar = matching "operator continuation character" isSymbol
+
+underscoreTerm = (lexeme $ char '_' *> notFollowedBy (idStartChar <|> matching "open delimiter" (`elem` "([{〈《")))
+    <?> "variable-like underscore"
 
 comma :: Parser Char ()
 comma = lexeme $ char ','
