@@ -166,6 +166,7 @@ data Pattern
   | PApp Pattern Pattern
 
 data Generator
+  = ExecGenerator Pos Expr
 
 data Param
   = FVSParam [String]
