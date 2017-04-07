@@ -332,6 +332,12 @@ compileGenArg env pos g = do
       )
 
 compileGen :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
+compileGen env pos (ExecGenerator pos1 e) = do
+    (is, hse) <- compileArg env pos e
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpexecbind_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "gsbcimpexecbind_w" `HSApp` hspos pos1 `HSApp` hse
+      )
 compileGen env pos g = $gsfatal $ "compileGen env pos " ++ genCode g ++ " next"
 
 hspos :: Pos -> HSExpr
