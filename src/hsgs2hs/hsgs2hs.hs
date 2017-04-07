@@ -357,6 +357,8 @@ splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv pos) (ad
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
+type Compiler = StateT Integer (Either String)
+
 runCompiler :: StateT Integer (Either String) a -> Either String a
 runCompiler a = evalStateT a 0
 
