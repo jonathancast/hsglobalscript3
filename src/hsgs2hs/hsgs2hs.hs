@@ -324,7 +324,12 @@ compileGens env pos [] pos1 = return (
   )
 
 compileGenArg :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
-compileGenArg env pos g = $gsfatal "compileGenArg env pos g next"
+compileGenArg env pos g = do
+    (is, hse) <- compileGen env pos g
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
+      )
 
 compileGen :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
 compileGen env pos g = $gsfatal $ "compileGen env pos " ++ genCode g ++ " next"
