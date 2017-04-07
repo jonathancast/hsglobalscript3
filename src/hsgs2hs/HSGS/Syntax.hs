@@ -77,6 +77,11 @@ param = empty
         keywordOp "="
         vs <- ident `endBy` comma
         return $ HSVSParam vs
+    <|> do
+        keyword "fvs"
+        keywordOp "="
+        vs <- ident `endBy` comma
+        return $ FVSParam vs
 
 expr :: Env -> Parser Char Expr
 expr env = empty
