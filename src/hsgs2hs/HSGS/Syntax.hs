@@ -100,6 +100,7 @@ expr env = empty
                 return ef3
   where
     exprAtom = empty
+        <|> parens (expr env)
         <|> EVar <$> getPos <*> var env
         <|> do
             pos0 <- getPos
@@ -214,6 +215,9 @@ keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
 opContChar :: Parser Char Char
 opContChar = matching "operator continuation character" isSymbol
+
+parens :: Parser Char a -> Parser Char a
+parens p = lexeme (char '(') *> p <* lexeme (char ')')
 
 underscoreTerm = (lexeme $ char '_' *> notFollowedBy (idStartChar <|> matching "open delimiter" (`elem` "([{〈《")))
     <?> "variable-like underscore"
