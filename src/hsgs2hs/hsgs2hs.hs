@@ -105,13 +105,13 @@ compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
 compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv pos e <*> compileSource scs
-compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr (processParams ps globalEnv) e <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processParams ps globalEnv) pos e <*> compileSource scs
-compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg (processParams ps globalEnv) pos e <*> compileSource scs
+compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr (processHSVS ps globalEnv) e <*> compileSource scs
+compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processHSVS ps globalEnv) pos e <*> compileSource scs
+compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg (processHSVS ps globalEnv) pos e <*> compileSource scs
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
-compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBody (processParams ps globalEnv) pos e <*> compileSource scs
-compileSource (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBind (processParams ps globalEnv) pos e <*> compileSource scs
+compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBody (processHSVS ps globalEnv) pos e <*> compileSource scs
+compileSource (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBind (processHSVS ps globalEnv) pos e <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
@@ -121,13 +121,13 @@ gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
 gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
-processParams :: [Param] -> Env -> Env
-processParams (HSVSParam vs:ps) env = processParams ps env{
+processHSVS :: [Param] -> Env -> Env
+processHSVS (HSVSParam vs:ps) env = processHSVS ps env{
     gsvars = Map.fromList (map (\ v -> (v, (Set.empty, HSVar v))) vs) `Map.union` gsvars env
   }
-processParams (FVSParam{}:ps) env = processParams ps env
-processParams (p:ps) env = $gsfatal "processParams next"
-processParams [] env = env
+processHSVS (FVSParam{}:ps) env = processHSVS ps env
+processHSVS (p:ps) env = $gsfatal "processHSVS next"
+processHSVS [] env = env
 
 compileArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} = compileExprToArg env pos e
