@@ -185,7 +185,9 @@ gsbccomposeimpgen_w pos gen0 gen1 = gsbcimpfor_w pos $ do
     gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbccomposeimpgen_w next"
 
 gsbcimpexecbind_w :: Pos -> GSArg -> GSExpr
-gsbcimpexecbind_w pos a = gsbcimplementationfailure_w $gshere "gsbcimpexecbind_w next"
+gsbcimpexecbind_w pos a = gsbcimpfor_w pos $ do
+    gsbcimpbind_w $gshere a
+    gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcimpexecbind_w next"
 
 gsbcemptyimpgen_w :: Pos -> GSExpr
 gsbcemptyimpgen_w pos = gsbcimplementationfailure_w $gshere "gsbcemptyimpgen_w next"
