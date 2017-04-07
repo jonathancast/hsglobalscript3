@@ -180,7 +180,9 @@ gsbcimpbody_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ t -> apiCallExpr pos0 e t
 gsbcimpbody_w pos a = GSBCImp $ \t -> $apiImplementationFailure $ "gsbcimpbody_w " ++ argCode a ++ " next"
 
 gsbccomposeimpgen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbccomposeimpgen_w pos gen0 gen1 = gsbcimplementationfailure_w $gshere "gsbccomposeimpgen_w next"
+gsbccomposeimpgen_w pos gen0 gen1 = gsbcimpfor_w pos $ do
+    env0 <- gsbcimpbind_w $gshere $ gen0
+    gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbccomposeimpgen_w next"
 
 gsbcimpexecbind_w :: Pos -> GSArg -> GSExpr
 gsbcimpexecbind_w pos a = gsbcimplementationfailure_w $gshere "gsbcimpexecbind_w next"
