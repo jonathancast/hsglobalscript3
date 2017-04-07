@@ -302,23 +302,23 @@ compilePatApp env (PView pos v) as = do
       )
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
-compileGensArg :: Env -> Pos -> [Generator] -> Pos -> Either String (Set HSImport, HSExpr)
+compileGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> Either String (Set HSImport, HSExpr)
 compileGensArg env pos gs pos1 = do
-    (is, hse) <- compileGens env pos gs pos1
+    (is, hse) <- compileGens env gs pos1
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileGens :: Env -> Pos -> [Generator] -> Pos -> Either String (Set HSImport, HSExpr)
-compileGens env pos (g:gs) pos1 = do
+compileGens :: Env -> [(Pos, Generator)] -> Pos -> Either String (Set HSImport, HSExpr)
+compileGens env ((pos, g):gs) pos1 = do
     (is, hse) <- compileGenArg env pos g
-    (ist, hst) <- compileGens env pos gs pos1
+    (ist, hst) <- compileGens env gs pos1
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbccomposeimpgen_w", HSIType "GSI.Util" "Pos" ] `Set.union` is `Set.union` ist,
         HSVar "gsbccomposeimpgen_w" `HSApp` hspos pos `HSApp` hse `HSApp` (HSLambda ["env"] hst)
       )
-compileGens env pos [] pos1 = return (
+compileGens env [] pos1 = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptyimpgen_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcemptyimpgen_w" `HSApp` hspos pos1
   )

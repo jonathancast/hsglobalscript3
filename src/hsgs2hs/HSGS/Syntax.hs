@@ -152,7 +152,7 @@ data Expr
   | EVar Pos String
   | EQLO Pos String [QLOItem]
   | EPat Pattern
-  | EGens [Generator] Pos
+  | EGens [(Pos, Generator)] Pos
   | EOpen Expr
   | EApp Expr Pos Expr
 
@@ -239,7 +239,7 @@ globalEnv = Env{
             Just (EMissingCase <$> getPos)
         )),
         ("impfor", \ env -> (
-            EGens <$> (generator env `endBy` semicolon) <*> getPos,
+            EGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
             EOpen <$> expr env,
             Nothing
         ))
