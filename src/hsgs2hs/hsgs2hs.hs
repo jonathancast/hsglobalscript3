@@ -5,6 +5,7 @@ import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evi
 
 import Control.Applicative (Alternative(..))
 import Control.Monad (forM)
+import Control.Monad.State.Lazy (StateT, evalStateT)
 
 import Data.List (isSuffixOf)
 
@@ -354,6 +355,9 @@ splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv pos) (ad
     Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
+
+runCompiler :: StateT Integer (Either String) a -> Either String a
+runCompiler a = evalStateT a 0
 
 globalEnv :: Env
 globalEnv = Env{
