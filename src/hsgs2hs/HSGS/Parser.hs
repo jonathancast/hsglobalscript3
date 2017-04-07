@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, Rank2Types, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Parser (Parser, parse, getPos, symbol, matching, char, string, notFollowedBy, endBy, pfail, Advanceable(..), advanceStr) where
+module HSGS.Parser (Parser, parse, getPos, symbol, matching, char, string, notFollowedBy, (<?>), endBy, pfail, Advanceable(..), advanceStr) where
 
 import Control.Applicative (Alternative(..))
 
