@@ -86,18 +86,7 @@ param = empty
 expr :: Env -> Parser Char Expr
 expr env = empty
     <|> foldl (\ ef (pos, ex) -> EApp ef pos ex) <$> exprAtom <*> many ((,) <$> getPos <*> exprAtom)
-    <|> do
-        pos <- getPos
-        (v, parseHead, parseBody, mbparseElse) <- lambdalike env
-        let ef = EVar pos v
-        return ef
-            <|> do
-                ef1 <- (EApp ef <$> getPos <*> parseHead) <* period
-                ef2 <- EApp ef1 <$> getPos <*> parseBody
-                ef3 <- case mbparseElse of
-                    Nothing -> return ef2
-                    Just pe -> EApp ef2 <$> getPos <*> pe
-                return ef3
+    <|> lambdalike env Nothing
   where
     exprAtom = empty
         <|> parens (expr env)
@@ -190,13 +179,25 @@ var env = lexeme $ do
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
-lambdalike :: Env -> Parser Char (String, Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr))
-lambdalike env = lexeme $ do
-    v <- (:) <$> idStartChar <*> many idContChar
-    notFollowedBy idContChar
-    case Map.lookup v (lambdas env) of
-        Nothing -> pfail $ v ++ " is not lambda-like"
-        Just f -> let (ph, pb, pe) = f env in return (v, ph, pb, pe)
+lambdalike :: Env -> Maybe String -> Parser Char Expr
+lambdalike env mbv = do
+    pos <- getPos
+    let vs = case mbv of
+            Nothing -> Map.toList (lambdas env)
+            Just v -> case Map.lookup v (lambdas env) of
+                Nothing -> []
+                Just f -> [(v, f)]
+    (v, parseHead, parseBody, mbparseElse) <- foldr (<|>) empty $
+        map (\ (v, f) -> keyword v *> let (ph, pb, pe) = f env in return (v, ph, pb, pe)) vs
+    let ef = EVar pos v
+    return ef
+        <|> do
+            ef1 <- (EApp ef <$> getPos <*> parseHead) <* period
+            ef2 <- EApp ef1 <$> getPos <*> parseBody
+            ef3 <- case mbparseElse of
+                Nothing -> return ef2
+                Just pe -> EApp ef2 <$> getPos <*> pe
+            return ef3
 
 ident :: Parser Char String
 ident = lexeme $ ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
