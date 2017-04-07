@@ -367,6 +367,7 @@ globalEnv = Env{
         ("error", [ ImHere ])
     ],
     gsviews = Map.fromList [
+        ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view"))
     ]
   }
