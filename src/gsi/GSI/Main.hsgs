@@ -24,7 +24,7 @@ gsprocessargs = $gslambda $ \ args ->
                 mbst <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
                     $gsbcapply gsanalyze [ $gsav mbst,
-                        $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
+                        $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view [gs:pat| 'e |],
                             [gs:open-arg hsvs=a, fvs=e,| analyze e.
                                     case ENOENT 'fn.
                                         impfor
