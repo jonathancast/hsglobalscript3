@@ -131,6 +131,9 @@ pattern = empty
         <|> PView <$> getPos <*> ident
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
 
+generator :: Parser Char Generator
+generator = empty
+
 data SourceComp
   = SCChar Char
   | SCImports
