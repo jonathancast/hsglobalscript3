@@ -76,7 +76,7 @@ param = empty
         keyword "hsvs"
         keywordOp "="
         vs <- ident `endBy` comma
-        return $ FVSParam vs
+        return $ HSVSParam vs
 
 expr :: Env -> Parser Char Expr
 expr env = empty
@@ -170,7 +170,7 @@ data Generator
   = ExecGenerator Pos Expr
 
 data Param
-  = FVSParam [String]
+  = HSVSParam [String]
 
 var :: Env -> Parser Char String
 var env = lexeme $ do

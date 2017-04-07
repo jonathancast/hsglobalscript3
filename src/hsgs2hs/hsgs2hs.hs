@@ -122,7 +122,7 @@ gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
 
 processParams :: [Param] -> Env -> Env
-processParams (FVSParam vs:ps) env = processParams ps env{
+processParams (HSVSParam vs:ps) env = processParams ps env{
     gsvars = Map.fromList (map (\ v -> (v, (Set.empty, HSVar v))) vs) `Map.union` gsvars env
   }
 processParams (p:ps) env = $gsfatal "processParams next"
