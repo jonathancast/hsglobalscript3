@@ -311,7 +311,13 @@ compileGensArg env pos gs pos1 = do
       )
 
 compileGens :: Env -> Pos -> [Generator] -> Pos -> Either String (Set HSImport, HSExpr)
-compileGens env pos (g:gs) pos1 = $gsfatal "compileGens env pos (g:gs) pos1 next"
+compileGens env pos (g:gs) pos1 = do
+    (is, hse) <- compileGenArg env pos g
+    (ist, hst) <- compileGens env pos gs pos1
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbccomposeimpgen_w", HSIType "GSI.Util" "Pos" ] `Set.union` is `Set.union` ist,
+        HSVar "gsbccomposeimpgen_w" `HSApp` hspos pos `HSApp` hse `HSApp` (HSLambda ["env"] hst)
+      )
 compileGens env pos [] pos1 = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptyimpgen_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcemptyimpgen_w" `HSApp` hspos pos1
