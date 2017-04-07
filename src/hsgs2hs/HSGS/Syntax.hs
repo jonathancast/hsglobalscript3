@@ -131,8 +131,8 @@ pattern = empty
         <|> PView <$> getPos <*> ident
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
 
-generator :: Parser Char Generator
-generator = empty
+generator :: Env -> Parser Char Generator
+generator env = empty
 
 data SourceComp
   = SCChar Char
@@ -234,7 +234,7 @@ globalEnv = Env{
             Just (EMissingCase <$> getPos)
         )),
         ("impfor", \ env -> (
-            EGens <$> (generator `endBy` semicolon) <*> getPos,
+            EGens <$> (generator env `endBy` semicolon) <*> getPos,
             EOpen <$> expr env,
             Nothing
         ))
