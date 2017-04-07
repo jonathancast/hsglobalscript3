@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, gsundefined, gslambda, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gscompose :: GSValue
 gscompose = $gslambda $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
@@ -21,7 +21,9 @@ gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x -
         _ -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ gsvCode c ++ ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
 
 gsimpfor :: GSValue
-gsimpfor = $gsundefined
+gsimpfor = $gslambda $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
+    env <- $gsbcimpbind $ $gsav g
+    $gsbcimpbody $ $gsae $ $gsbcapply $gsundefined [ $gsav env ]
 
 -- This should be in GSI.String, but that would end up causing a circular dependency with this module so it goes here instead
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
