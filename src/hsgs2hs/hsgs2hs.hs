@@ -134,10 +134,14 @@ processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 compileArg :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} = compileExprToArg env pos e
 compileArg env pos e@EQLO{} = compileExprToArg env pos e
-compileArg env pos (EVar _ v) = return (
-    Set.singleton (HSIType "GSI.Value" "GSArg"),
-    HSConstr "GSArgVar" `HSApp` HSVar v
-  )
+compileArg env pos (EVar _ v) = do
+    (isv, ev) <- case Map.lookup v (gsvars env) of
+        Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
+        Just (isv, ev) -> return (isv, ev)
+    return (
+        Set.singleton (HSIType "GSI.Value" "GSArg") `Set.union` isv,
+        HSConstr "GSArgVar" `HSApp` ev
+      )
 compileArg env pos (EPat p) = lift $ compilePatArg env pos p
 compileArg env pos (EOpen e) = compileOpenArg env pos e
 compileArg env pos (EGens gs pos1) = compileGensArg env pos gs pos1
