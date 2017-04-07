@@ -6,6 +6,7 @@ import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evi
 import Control.Applicative (Alternative(..))
 import Control.Monad (forM)
 import Control.Monad.State.Lazy (StateT, evalStateT)
+import Control.Monad.Trans (MonadTrans(..))
 
 import Data.List (isSuffixOf)
 
@@ -105,14 +106,14 @@ compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
 compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
-compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileArg globalEnv pos e <*> compileSource scs
-compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileExpr (processHSVS ps globalEnv) e <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e <*> compileSource scs
-compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileOpenArg (processHSVS ps globalEnv) pos e <*> compileSource scs
+compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg globalEnv pos e) <*> compileSource scs
+compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps globalEnv) e) <*> compileSource scs
+compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource scs
+compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps globalEnv) pos e) <*> compileSource scs
 compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
 compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
-compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBody (processHSVS ps globalEnv) pos e <*> compileSource scs
-compileSource (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compileBind (processHSVS ps globalEnv) pos e <*> compileSource scs
+compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps globalEnv) pos e) <*> compileSource scs
+compileSource (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBind (processHSVS ps globalEnv) pos e) <*> compileSource scs
 compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
 compileSource [] = return []
 
@@ -130,20 +131,20 @@ processHSVS ps env = env{
 processFVS :: [Param] -> Set String
 processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 
-compileArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileArg :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} = compileExprToArg env pos e
 compileArg env pos e@EQLO{} = compileExprToArg env pos e
 compileArg env pos (EVar _ v) = return (
     Set.singleton (HSIType "GSI.Value" "GSArg"),
     HSConstr "GSArgVar" `HSApp` HSVar v
   )
-compileArg env pos (EPat p) = compilePatArg env pos p
+compileArg env pos (EPat p) = lift $ compilePatArg env pos p
 compileArg env pos (EOpen e) = compileOpenArg env pos e
 compileArg env pos (EGens gs pos1) = compileGensArg env pos gs pos1
 compileArg env pos e@EApp{} = compileExprToArg env pos e
 compileArg env pos e = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
-compileExprToArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileExprToArg :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileExprToArg env pos e = do
     (is, hse) <- compileExpr env e
     return (
@@ -151,14 +152,14 @@ compileExprToArg env pos e = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileExpr :: Env -> Expr -> Either String (Set HSImport, HSExpr)
+compileExpr :: Env -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileExpr env (EMissingCase pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
     HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` (HSLambda ["x"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "x")
   )
 compileExpr env (EVar pos v) = do
     (isv, ev) <- case Map.lookup v (gsvars env) of
-        Nothing -> Left $ fmtPos pos $ v ++ " not in scope"
+        Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
         Just (isv, ev) -> return (isv, ev)
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
@@ -218,7 +219,7 @@ compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q 
 compileExpr env (EApp f pos1 e) = compileApp env f [(pos1, e)]
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
-compileBody :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileBody :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileBody env pos e = do
     (is, hse) <- compileArg env pos e
     return (
@@ -226,7 +227,7 @@ compileBody env pos e = do
         HSVar "gsbcimpbody_w" `HSApp` hspos pos `HSApp` hse
       )
 
-compileBind :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileBind :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileBind env pos e = do
     (is, hse) <- compileArg env pos e
     return (
@@ -234,7 +235,7 @@ compileBind env pos e = do
         HSVar "gsbcimpbind_w" `HSApp` hspos pos `HSApp` hse
       )
 
-compileOpenExpr :: Env -> Pos -> Set String -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenExpr :: Env -> Pos -> Set String -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileOpenExpr env pos fvs e = do
     (is, hse) <- compileExpr env e
     return (
@@ -242,7 +243,7 @@ compileOpenExpr env pos fvs e = do
         HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` HSLambda ["env"] hse
       )
 
-compileOpenArg :: Env -> Pos -> Expr -> Either String (Set HSImport, HSExpr)
+compileOpenArg :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileOpenArg env pos e = do
     (is, hse) <- compileOpenExpr env pos Set.empty e
     return (
@@ -250,10 +251,10 @@ compileOpenArg env pos e = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileApp :: Env -> Expr -> [(Pos, Expr)] -> Either String (Set HSImport, HSExpr)
+compileApp :: Env -> Expr -> [(Pos, Expr)] -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
-        Nothing -> Left $ fmtPos pos $ f ++ " not in scope"
+        Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
     as0 <- case Map.lookup f (gsimplicits env) of
         Nothing -> return []
@@ -304,7 +305,7 @@ compilePatApp env (PView pos v) as = do
       )
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
-compileGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> Either String (Set HSImport, HSExpr)
+compileGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileGensArg env pos gs pos1 = do
     (is, hse) <- compileGens env gs pos1
     return (
@@ -312,7 +313,7 @@ compileGensArg env pos gs pos1 = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileGens :: Env -> [(Pos, Generator)] -> Pos -> Either String (Set HSImport, HSExpr)
+compileGens :: Env -> [(Pos, Generator)] -> Pos -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileGens env ((pos, g):gs) pos1 = do
     (is, hse) <- compileGenArg env pos g
     (ist, hst) <- compileGens env gs pos1
@@ -325,7 +326,7 @@ compileGens env [] pos1 = return (
     HSVar "gsbcemptyimpgen_w" `HSApp` hspos pos1
   )
 
-compileGenArg :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
+compileGenArg :: Env -> Pos -> Generator -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileGenArg env pos g = do
     (is, hse) <- compileGen env pos g
     return (
@@ -333,7 +334,7 @@ compileGenArg env pos g = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileGen :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
+compileGen :: Env -> Pos -> Generator -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileGen env pos (ExecGenerator pos1 e) = do
     (is, hse) <- compileArg env pos1 e
     return (
