@@ -24,7 +24,7 @@ import System.IO.Encoding (readFile, writeFile)
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, patCode)
+import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, patCode, genCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 import qualified HSGS.Syntax as Syntax
@@ -325,6 +325,9 @@ compileGens env pos [] pos1 = return (
 
 compileGenArg :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
 compileGenArg env pos g = $gsfatal "compileGenArg env pos g next"
+
+compileGen :: Env -> Pos -> Generator -> Either String (Set HSImport, HSExpr)
+compileGen env pos g = $gsfatal $ "compileGen env pos " ++ genCode g ++ " next"
 
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
