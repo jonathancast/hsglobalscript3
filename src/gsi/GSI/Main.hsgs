@@ -26,12 +26,12 @@ gsprocessargs = $gslambda $ \ args ->
                     $gsbcapply gsanalyze [ $gsav mbst,
                         $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsleft_view ($gsbcvarpattern "e"),
                             $gsae $ $gsbcarg $ \ env -> $gsbcfield (gsvar "e") env $ \ e ->
-                                $gsbcapply gsanalyze [ [gs:arg hsvs=e,| e |],
-                                    [gs:arg hsvs=a,e,| case ENOENT 'fn.
+                                [gs:expr hsvs=a,e,| analyze e.
+                                    case ENOENT 'fn.
                                         impfor
                                             _ ← print-error qq{§(a): Could not load: no such file or directory\n};
                                           . error log{Process §(gsv a) (§(gsv e)) next}
-                                |] ]
+                                |]
                             ,
                             $gsae [gs:expr hsvs=gsprocessargs,as,| case right 'st.
                                 gsprocessargs as -- Ignore all arguments until we start failing tests for it
