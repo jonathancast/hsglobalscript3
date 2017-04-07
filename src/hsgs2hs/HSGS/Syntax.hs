@@ -171,6 +171,7 @@ data Generator
 
 data Param
   = HSVSParam [String]
+  | FVSParam [String]
 
 var :: Env -> Parser Char String
 var env = lexeme $ do
