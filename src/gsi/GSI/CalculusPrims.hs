@@ -37,6 +37,9 @@ gsmergeenv :: Pos -> GSValue -> GSValue -> IO GSValue
 gsmergeenv pos (GSThunk xs) (GSThunk ys) = do
     (xv, yv) <- gspareval pos xs ys
     gsmergeenv pos xv yv
+gsmergeenv pos x (GSThunk ys) = do
+    yv <- evalSync [StackTrace pos []] ys
+    gsmergeenv pos x yv
 gsmergeenv pos ex@GSImplementationFailure{} ey = return ex
 gsmergeenv pos ex ey@GSImplementationFailure{} = return ey
 gsmergeenv pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
