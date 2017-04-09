@@ -21,7 +21,7 @@ import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
-import GSI.CalculusPrims (gsparand)
+import GSI.CalculusPrims (gsparand, gsmergeenv)
 import ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
@@ -186,7 +186,7 @@ gsbccomposeimpgen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbccomposeimpgen_w pos gen0 gen1 = gsbcimpfor_w pos $ do
     env0 <- gsbcimpbind_w $gshere $ gen0
     env1 <- gsbcimpbind_w $gshere $ $gsae $ gen1 env0
-    gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbccomposeimpgen_w next"
+    gsbcimpbody_w $gshere $ $gsae $ gsbcprim_w $gshere gsmergeenv env0 env1
 
 gsbcimpexecbind_w :: Pos -> GSArg -> GSExpr
 gsbcimpexecbind_w pos a = gsbcimpfor_w pos $ do
