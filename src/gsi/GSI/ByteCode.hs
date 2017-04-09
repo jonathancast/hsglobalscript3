@@ -200,7 +200,7 @@ gsbcimpvarbind_w pos x a = gsbcimpfor_w pos $ do
 
 gsbcemptyimpgen_w :: Pos -> GSExpr
 gsbcemptyimpgen_w pos = gsbcimpfor_w pos $ do
-    gsbcimpunit_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcemptyimpgen_w next"
+    gsbcimpunit_w $gshere $ $gsav $ GSRecord pos (Map.fromList [])
 
 gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 
