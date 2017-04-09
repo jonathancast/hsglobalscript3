@@ -38,3 +38,4 @@ ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-
 ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
 ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
 ok_diff_compiler '-- open expressions with bound variables --' hsgs2hs bound-variable-open-expression.hsgs bound-variable-open-expression.hs
+ok_diff_compiler '-- case expressions where the pattern-bound variables are used --' hsgs2hs lexical-variable.hsgs lexical-variable.hs
