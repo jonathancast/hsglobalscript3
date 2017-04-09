@@ -41,6 +41,17 @@ gsparand pos (GSConstr _ cx [ex]) (GSConstr _ cy [ey]) | cx == gsvar "1" && cy =
 gsparand pos x y = return $ $gsimplementationfailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
 
 gsmergeenv :: Pos -> GSValue -> GSValue -> IO GSValue
+gsmergeenv pos x@(GSThunk xs) y@(GSThunk ys) = do
+    xr <- eval [StackTrace pos []] xs
+    yr <- eval [StackTrace pos []] ys
+    case (xr, yr) of
+        (GSStack ex, GSStack ey) -> do
+            awaitAny [ ex, ey ]
+            gsmergeenv pos x y
+        (GSIndirection xv, GSIndirection yv) -> gsmergeenv pos xv yv
+        (_, GSIndirection yv) -> gsmergeenv pos x yv
+        (GSIndirection xv, _) -> gsmergeenv pos xv y
+        _ -> return $ $gsimplementationfailure $ "gsmergeenv " ++ stCode xr ++ ' ' : stCode yr ++ " next" -- eval both, wait for one, then loop
 gsmergeenv pos ex@GSImplementationFailure{} ey = return ex
 gsmergeenv pos ex ey@GSImplementationFailure{} = return ey
 gsmergeenv pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
