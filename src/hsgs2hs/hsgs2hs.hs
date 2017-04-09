@@ -415,6 +415,7 @@ data Env = Env {
   }
 
 boundVars :: Pattern -> Set String
+boundVars (PVar _ x) = Set.singleton x
 boundVars p = $gsfatal $ "boundVars " ++ patCode p ++ " next"
 
 data Implicit
