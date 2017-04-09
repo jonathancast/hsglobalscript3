@@ -49,13 +49,13 @@ quote env pos = empty
         keyword "pat"
         ps <- many param
         keywordOp "|"
-        p <- pattern
+        p <- pattern env
         return $ SCPat ps p
     <|> do
         keyword "pat-arg"
         ps <- many param
         keywordOp "|"
-        p <- pattern
+        p <- pattern env
         return $ SCPatArg pos ps p
     <|> do
         keyword "body"
@@ -118,8 +118,8 @@ quoteItems env qs = empty
 
 delimiters = Map.fromList [ ('(', ')'), ('[', ']'), ('{', '}') ]
 
-pattern :: Parser Char Pattern
-pattern = empty
+pattern :: Env -> Parser Char Pattern
+pattern env = empty
     <|> foldl PApp <$> patternAtom <*> many patternAtom
   where
     patternAtom = empty
@@ -263,7 +263,7 @@ globalEnv = Env{
             Nothing
         )),
         ("case", \ env -> (
-            EPat <$> pattern,
+            EPat <$> pattern env,
             EOpen <$> expr env,
             Just (empty
                 <|> EMissingCase <$> getPos
