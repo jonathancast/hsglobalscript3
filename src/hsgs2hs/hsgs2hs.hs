@@ -323,6 +323,7 @@ compilePatApp env (PView pos v) as = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv `Set.union` Set.unions (map (\ (is, _) -> is) as'),
         foldl HSApp (HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` ev) (map (\ (_, e) -> e) as')
       )
+compilePatApp env (PApp pf px) as = compilePatApp env pf (px:as)
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
 compileGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> StateT Integer (Either String) (Set HSImport, HSExpr)
