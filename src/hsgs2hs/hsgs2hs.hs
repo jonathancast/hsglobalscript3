@@ -414,6 +414,10 @@ globalEnv = Env{
         ("case", \ as -> case as of
             (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
             _ -> return []
+        ),
+        ("impfor", \ as -> case as of
+            (_, EGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
+            _ -> return []
         )
     ]
   }
