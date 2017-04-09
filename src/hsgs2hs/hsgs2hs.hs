@@ -410,3 +410,8 @@ data Implicit
 
 imCode :: Implicit -> String
 imCode ImHere = "ImHere"
+
+data Signature
+
+sigCode :: Signature -> String
+sigCode s = s `seq` $gsfatal "sigCode next"
