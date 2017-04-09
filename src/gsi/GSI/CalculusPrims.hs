@@ -7,22 +7,15 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (awaitAny)
 import GSI.Error (GSError(..))
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), gsimplementationfailure, gsvCode)
+import GSI.Value (GSValue(..), GSThunk(..), gsimplementationfailure, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 
 gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
 gsparand pos (GSConstr pos1 cx []) _ | cx == gsvar "0" = return $ $gsimplementationfailure $ "gsparand 0 _ next" -- > fail
 gsparand pos _ (GSConstr pos1 cy []) | cy == gsvar "0" = return $ $gsimplementationfailure $ "gsparand _ 0 next" -- > fail
-gsparand pos x@(GSThunk xs) y@(GSThunk ys) = do
-    xr <- eval [StackTrace pos []] xs
-    yr <- eval [StackTrace pos []] ys
-    case (xr, yr) of
-        (GSStack ex, GSStack ey) -> do
-            awaitAny [ ex, ey ]
-            gsparand pos x y
-        (GSIndirection xv, GSIndirection yv) -> gsparand pos xv yv
-        (_, GSIndirection yv) -> gsparand pos x yv
-        _ -> return $ $gsimplementationfailure $ "gsparand " ++ stCode xr ++ ' ' : stCode yr ++ " next" -- eval both, wait for one, then loop
+gsparand pos (GSThunk xs) (GSThunk ys) = do
+    (xv, yv) <- gspareval pos xs ys
+    gsparand pos xv yv
 gsparand pos (GSThunk xs) y = do
     xv <- evalSync [StackTrace pos []] xs
     gsparand pos xv y
@@ -41,21 +34,26 @@ gsparand pos (GSConstr _ cx [ex]) (GSConstr _ cy [ey]) | cx == gsvar "1" && cy =
 gsparand pos x y = return $ $gsimplementationfailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
 
 gsmergeenv :: Pos -> GSValue -> GSValue -> IO GSValue
-gsmergeenv pos x@(GSThunk xs) y@(GSThunk ys) = do
+gsmergeenv pos (GSThunk xs) (GSThunk ys) = do
+    (xv, yv) <- gspareval pos xs ys
+    gsmergeenv pos xv yv
+gsmergeenv pos ex@GSImplementationFailure{} ey = return ex
+gsmergeenv pos ex ey@GSImplementationFailure{} = return ey
+gsmergeenv pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
+gsmergeenv pos ex ey = return $ $gsimplementationfailure $ "gsmergeenv " ++ gsvCode ex ++ ' ' : gsvCode ey ++ " next"
+
+gspareval :: Pos -> GSThunk -> GSThunk -> IO (GSValue, GSValue)
+gspareval pos xs ys = do
     xr <- eval [StackTrace pos []] xs
     yr <- eval [StackTrace pos []] ys
     case (xr, yr) of
         (GSStack ex, GSStack ey) -> do
             awaitAny [ ex, ey ]
-            gsmergeenv pos x y
-        (GSIndirection xv, GSIndirection yv) -> gsmergeenv pos xv yv
-        (_, GSIndirection yv) -> gsmergeenv pos x yv
-        (GSIndirection xv, _) -> gsmergeenv pos xv y
-        _ -> return $ $gsimplementationfailure $ "gsmergeenv " ++ stCode xr ++ ' ' : stCode yr ++ " next" -- eval both, wait for one, then loop
-gsmergeenv pos ex@GSImplementationFailure{} ey = return ex
-gsmergeenv pos ex ey@GSImplementationFailure{} = return ey
-gsmergeenv pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
-gsmergeenv pos ex ey = return $ $gsimplementationfailure $ "gsmergeenv " ++ gsvCode ex ++ ' ' : gsvCode ey ++ " next"
+            return (GSThunk xs, GSThunk ys)
+        (GSIndirection xv, GSIndirection yv) -> return (xv, yv)
+        (_, GSIndirection yv) -> return (GSThunk xs, yv)
+        (GSIndirection xv, _) -> return (xv, GSThunk ys)
+        _ -> let err = $gsimplementationfailure $ "gspareval" ++ stCode xr ++ ' ' : stCode yr ++ " next" in return (err, err)
 
 gspriminsufficientcases :: Pos -> GSValue -> IO GSValue
 gspriminsufficientcases pos v@GSError{} = return v
