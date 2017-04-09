@@ -431,6 +431,11 @@ boundVars (PView _ _) = Set.empty
 boundVars (PApp p0 p1) = boundVars p0 `Set.union` boundVars p1
 boundVars p = $gsfatal $ "boundVars " ++ patCode p ++ " next"
 
+genBoundVars :: Generator -> Set String
+genBoundVars (ExecGenerator _ _) = Set.empty
+genBoundVars (BindGenerator x _ _) = Set.singleton x
+genBoundVars g = $gsfatal $ "genBoundVars " ++ genCode g ++ " next"
+
 data Implicit
   = ImHere
 
