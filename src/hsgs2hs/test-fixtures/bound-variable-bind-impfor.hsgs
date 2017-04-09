@@ -1,0 +1,2 @@
+$gsimports
+[gs:expr hsvs=a,| impfor 'b ← a;. b |]
