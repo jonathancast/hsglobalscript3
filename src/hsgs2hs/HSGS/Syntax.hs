@@ -216,6 +216,9 @@ idContChar = matching "identifier continuation character" isAlphaNum
 keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
+opStartChar :: Parser Char Char
+opStartChar = matching "operator start character" isSymbol
+
 opContChar :: Parser Char Char
 opContChar = matching "operator continuation character" isSymbol
 
