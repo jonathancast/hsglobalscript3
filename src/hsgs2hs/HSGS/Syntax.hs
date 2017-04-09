@@ -178,6 +178,11 @@ var env = lexeme $ do
         Nothing -> return v
         Just _ -> pfail $ v ++ " is not variable-like"
 
+operator :: Env -> Parser Char String
+operator env = lexeme $ do
+    v <- operatorComp
+    return v
+
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
