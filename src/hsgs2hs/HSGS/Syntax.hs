@@ -121,6 +121,12 @@ delimiters = Map.fromList [ ('(', ')'), ('[', ']'), ('{', '}') ]
 pattern :: Env -> Parser Char Pattern
 pattern env = empty
     <|> foldl PApp <$> patternAtom <*> many patternAtom
+    <|> do
+        px <- patternAtom
+        posop <- getPos
+        op <- operator env
+        py <- patternAtom
+        return $ PView posop op `PApp` px `PApp` py
   where
     patternAtom = empty
         <|> PView <$> getPos <*> ident
