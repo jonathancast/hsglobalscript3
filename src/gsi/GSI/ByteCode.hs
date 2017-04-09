@@ -186,7 +186,7 @@ gsbccomposeimpgen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbccomposeimpgen_w pos gen0 gen1 = gsbcimpfor_w pos $ do
     env0 <- gsbcimpbind_w $gshere $ gen0
     env1 <- gsbcimpbind_w $gshere $ $gsae $ gen1 env0
-    gsbcimpbody_w $gshere $ $gsae $ gsbcprim_w $gshere gsmergeenv env0 env1
+    gsbcimpunit_w $gshere $ $gsae $ gsbcprim_w $gshere gsmergeenv env0 env1
 
 gsbcimpexecbind_w :: Pos -> GSArg -> GSExpr
 gsbcimpexecbind_w pos a = gsbcimpfor_w pos $ do
