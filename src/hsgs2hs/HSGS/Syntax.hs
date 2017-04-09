@@ -163,6 +163,7 @@ data Pattern
 
 data Generator
   = ExecGenerator Pos Expr
+  | BindGenerator String Pos Expr
 
 data Param
   = HSVSParam [String]
@@ -302,3 +303,4 @@ patCode PApp{} = "PApp"
 
 genCode :: Generator -> String
 genCode ExecGenerator{} = "ExecGenerator"
+genCode BindGenerator{} = "BindGenerator"
