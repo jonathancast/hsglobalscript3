@@ -396,6 +396,7 @@ globalEnv :: Env
 globalEnv = Env{
     gsvars = Map.fromList [
         ("analyze", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyze", HSVar "gsanalyze")),
+        ("analyze-impM", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyzeImpM", HSVar "gsanalyzeImpM")),
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
         ("env.get-args", (Set.singleton $ HSIVar "GSI.Env" "gsenvGetArgs", HSVar "gsenvGetArgs")),
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),

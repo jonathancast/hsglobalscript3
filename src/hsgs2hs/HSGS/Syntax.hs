@@ -268,6 +268,11 @@ globalEnv = Env{
             expr env,
             Nothing
         )),
+        ("analyze-impM", \ env -> (
+            expr env,
+            expr env,
+            Nothing
+        )),
         ("case", \ env -> (
             EPat <$> pattern env,
             EOpen <$> expr env,
