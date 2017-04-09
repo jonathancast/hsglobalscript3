@@ -18,7 +18,7 @@ gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
 -- Loops over arguments to process them
 gsprocessargs = $gslambda $ \ args ->
     $gsbcapply gsanalyze [ $gsav args,
-        $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "a") ($gsbcvarpattern "as"),
+        $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view [gs:pat| 'a |] [gs:pat| 'as |],
             [gs:open-arg fvs=a,as, hsvs=gsprocessargs,| impfor 'mbst ← file.stat a;. analyze mbst.
                 case left 'e. (analyze e.
                     case ENOENT 'fn.
