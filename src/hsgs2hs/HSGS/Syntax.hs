@@ -7,7 +7,7 @@ import Control.Applicative (Alternative(..))
 import Data.Map (Map)
 import qualified Data.Map as Map
 
-import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol)
+import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol, isPunctuation)
 
 import GSI.Util (Pos, gsfatal)
 
@@ -225,7 +225,7 @@ keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
 opStartChar :: Parser Char Char
-opStartChar = matching "operator start character" isSymbol
+opStartChar = matching "operator start character" (\ c -> isSymbol c || (isPunctuation c && not (c `elem` ",;.")))
 
 opContChar :: Parser Char Char
 opContChar = matching "operator continuation character" isSymbol
