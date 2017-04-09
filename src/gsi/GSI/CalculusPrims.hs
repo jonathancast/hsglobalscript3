@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.CalculusPrims (gsparand, gspriminsufficientcases) where
+module GSI.CalculusPrims (gsparand, gsmergeenv, gspriminsufficientcases) where
 
 import qualified Data.Map as Map
 
@@ -32,13 +32,19 @@ gsparand pos x (GSThunk ys) = do
 gsparand pos x@GSImplementationFailure{} _ = return x
 gsparand pos _ y@GSImplementationFailure{} = return y
 gsparand pos _ y@GSError{} = return y
-gsparand pos (GSConstr posx cx [ex@GSImplementationFailure{}]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = return ex
-gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey@GSImplementationFailure{}]) | cx == gsvar "1" && cy == gsvar "1" = return ey
-gsparand pos (GSConstr posx cx [GSRecord _ ex]) (GSConstr posy cy [GSRecord _ ey]) | cx == gsvar "1" && cy == gsvar "1" =
-    return $ GSConstr pos (gsvar "1") [GSRecord pos (Map.union ex ey)]
-gsparand pos (GSConstr posx cx [ex]) (GSConstr posy cy [ey]) | cx == gsvar "1" && cy == gsvar "1" =
-    return $ $gsimplementationfailure $ "gsparand (1 " ++ gsvCode ex ++ ") (1 " ++ gsvCode ey ++ ") next"
+gsparand pos (GSConstr _ cx [ex]) (GSConstr _ cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = do
+    ez <- gsmergeenv pos ex ey
+    case ez of
+        GSImplementationFailure{} -> return ez
+        GSRecord{} -> return $ GSConstr pos (gsvar "1") [ez]
+        _ -> return $ $gsimplementationfailure $ "gsparand (1 _) (1 _) (gsmergeenv returned " ++ gsvCode ez ++ ") next"
 gsparand pos x y = return $ $gsimplementationfailure $ "gsparand " ++ gsvCode x ++ ' ' : gsvCode y ++ " next"
+
+gsmergeenv :: Pos -> GSValue -> GSValue -> IO GSValue
+gsmergeenv pos ex@GSImplementationFailure{} ey = return ex
+gsmergeenv pos ex ey@GSImplementationFailure{} = return ey
+gsmergeenv pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
+gsmergeenv pos ex ey = return $ $gsimplementationfailure $ "gsmergeenv " ++ gsvCode ex ++ ' ' : gsvCode ey ++ " next"
 
 gspriminsufficientcases :: Pos -> GSValue -> IO GSValue
 gspriminsufficientcases pos v@GSError{} = return v
