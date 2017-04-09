@@ -143,7 +143,10 @@ compileArg env pos (EVar _ v) s = do
         HSConstr "GSArgVar" `HSApp` ev
       )
 compileArg env pos (EPat p) s = lift $ compilePatArg env pos p
-compileArg env pos (EOpen e) s = compileOpenArg env pos Set.empty e
+compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
+    fvs = case s of
+        Nothing -> Set.empty
+        Just (SigOpen vs) -> vs
 compileArg env pos (EGens gs pos1) s = compileGensArg env pos gs pos1
 compileArg env pos e@EApp{} s = compileExprToArg env pos e
 compileArg env pos e s = $gsfatal $ "compileArg " ++ eCode e ++ " next"
