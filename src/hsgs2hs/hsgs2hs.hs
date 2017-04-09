@@ -409,7 +409,8 @@ globalEnv = Env{
     gsviews = Map.fromList [
         ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft_view", HSVar "gsleft_view")),
-        ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view"))
+        ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
+        (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view"))
     ],
     gssignatures = Map.fromList [
         ("case", \ as -> case as of
