@@ -411,6 +411,9 @@ data Env = Env {
     gsviews :: Map String (Set HSImport, HSExpr)
   }
 
+boundVars :: Pattern -> Set String
+boundVars p = $gsfatal $ "boundVars " ++ patCode p ++ " next"
+
 data Implicit
   = ImHere
 
