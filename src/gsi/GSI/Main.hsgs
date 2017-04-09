@@ -12,7 +12,7 @@ gsmain = $gslambda $ \ gsrun -> [gs:expr hsvs=gsprocessargs,| impfor
 
 -- Loops over arguments to process them
 gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,| analyze args.
-    case 'a : 'as. impfor 'mbst ← file.stat a;. analyze mbst.
+    case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
                 impfor
