@@ -170,7 +170,7 @@ data Param
 
 var :: Env -> Parser Char String
 var env = lexeme $ do
-    v <- (++) <$> alphaNumComp <*> (concat <$> many (char '-' *> (('-':) <$> alphaNumComp)))
+    v <- (++) <$> alphaNumComp <*> (concat <$> many ((:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp))
     notFollowedBy (char '{')
     case Map.lookup v (lambdas env) of
         Nothing -> return v
