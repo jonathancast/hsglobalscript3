@@ -23,7 +23,7 @@ gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x -
 gsimpfor :: GSValue
 gsimpfor = $gslambda $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
     env <- $gsbcimpbind $ $gsav g
-    $gsbcimpbody $ $gsae $ $gsbcapply $gsundefined [ $gsav env ]
+    $gsbcimpbody $ $gsae $ $gsbcapply e [ $gsav env ]
 
 -- This should be in GSI.String, but that would end up causing a circular dependency with this module so it goes here instead
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
