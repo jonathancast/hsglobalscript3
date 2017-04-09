@@ -4,7 +4,7 @@ module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcvar, gsbcvar_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
-    gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcemptyimpgen_w,
+    gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w
   ) where
@@ -188,6 +188,11 @@ gsbcimpexecbind_w :: Pos -> GSArg -> GSExpr
 gsbcimpexecbind_w pos a = gsbcimpfor_w pos $ do
     gsbcimpbind_w $gshere a
     gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcimpexecbind_w next"
+
+gsbcimpvarbind_w :: Pos -> GSVar -> GSArg -> GSExpr
+gsbcimpvarbind_w pos x a = gsbcimpfor_w pos $ do
+    v <- gsbcimpbind_w $gshere a
+    gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcimpvarbind_w next"
 
 gsbcemptyimpgen_w :: Pos -> GSExpr
 gsbcemptyimpgen_w pos = gsbcimplementationfailure_w $gshere "gsbcemptyimpgen_w next"
