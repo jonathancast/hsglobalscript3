@@ -195,7 +195,7 @@ gsbcimpexecbind_w pos a = gsbcimpfor_w pos $ do
 gsbcimpvarbind_w :: Pos -> GSVar -> GSArg -> GSExpr
 gsbcimpvarbind_w pos x a = gsbcimpfor_w pos $ do
     v <- gsbcimpbind_w $gshere a
-    gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcimpvarbind_w next"
+    gsbcimpunit_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcimpvarbind_w next"
 
 gsbcemptyimpgen_w :: Pos -> GSExpr
 gsbcemptyimpgen_w pos = gsbcimplementationfailure_w $gshere "gsbcemptyimpgen_w next"
