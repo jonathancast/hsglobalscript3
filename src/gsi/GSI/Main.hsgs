@@ -23,19 +23,15 @@ gsprocessargs = $gslambda $ \ args ->
                 mbst <- $gsbcimpbind $ $gsae $ $gsbcapply gsfileStat [ $gsav a ]
                 $gsbcimpbody $ $gsae $
                     $gsbcapply gsanalyze [ $gsav mbst,
-                        $gsae $ $gsbcapply gscase [ [gs:pat-arg| left 'e |],
-                            [gs:open-arg hsvs=a, fvs=e,| analyze e.
-                                    case ENOENT 'fn.
-                                        impfor
-                                            _ ← print-error qq{§(a): Could not load: no such file or directory\n};
-                                          . error log{Process §(gsv a) (§(gsv e)) next}
-                                |]
-                            ,
-                            [gs:arg hsvs=gsprocessargs,as,| case right 'st.
+                        $gsae [gs:expr hsvs=gsprocessargs,a,as,| case left 'e. (analyze e.
+                                case ENOENT 'fn.
+                                    impfor
+                                        _ ← print-error qq{§(a): Could not load: no such file or directory\n};
+                                      . error log{Process §(gsv a) (§(gsv e)) next}
+                                )
+                            case right 'st.
                                 gsprocessargs as -- Ignore all arguments until we start failing tests for it
-                            |]
-                        ]
-                    ]
+                        |] ]
         ,
         $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args ]
     ]
