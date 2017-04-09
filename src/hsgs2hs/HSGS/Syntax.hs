@@ -181,6 +181,9 @@ var env = lexeme $ do
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
+operatorComp :: Parser Char String
+operatorComp = ((:) <$> opStartChar <*> many opContChar) <* notFollowedBy opContChar
+
 lambdalike :: Env -> Maybe String -> Parser Char Expr
 lambdalike env mbv = do
     pos <- getPos
