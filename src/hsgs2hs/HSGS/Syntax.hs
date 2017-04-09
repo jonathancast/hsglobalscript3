@@ -231,7 +231,7 @@ keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
 
 opStartChar :: Parser Char Char
-opStartChar = matching "operator start character" (\ c -> isSymbol c || (isPunctuation c && not (c `elem` ",;.")))
+opStartChar = matching "operator start character" (\ c -> isSymbol c || (isPunctuation c && not (c `elem` ",;.'\"\\")))
 
 opContChar :: Parser Char Char
 opContChar = matching "operator continuation character" isSymbol
