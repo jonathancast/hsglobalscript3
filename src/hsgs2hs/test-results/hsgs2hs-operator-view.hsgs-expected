@@ -1,0 +1,6 @@
+{-# LINE 1 "./test-fixtures/operator-view.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.ByteCode (gsbcvarpattern_w)
+import GSI.ByteCode (gsbcviewpattern_w)
+import GSI.List (gscons_view)
+(gsbcviewpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 13) gscons_view (gsbcvarpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 10) "x") (gsbcvarpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 15) "xn"))
