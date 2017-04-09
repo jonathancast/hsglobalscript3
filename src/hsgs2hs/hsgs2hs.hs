@@ -404,6 +404,10 @@ globalEnv = Env{
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view"))
     ],
     gssignatures = Map.fromList [
+        ("case", \ as -> case as of
+            (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
+            _ -> return []
+        )
     ]
   }
 
