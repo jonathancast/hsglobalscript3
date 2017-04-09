@@ -278,7 +278,10 @@ compileApp env (EVar pos f) as = do
                 HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` (HSVar "gsbchere_w" `HSApp` hspos pos)
               )
             _ -> $gsfatal $ "Compile implicit " ++ imCode im ++ " next"
-    as' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing) as
+    sig <- case Map.lookup f (gssignatures env) of
+        Nothing -> return []
+        Just sigM -> sigM as
+    as' <- mapM (\ ((pos1, e), s) -> compileArg env pos1 e s) (zip as (map Just sig ++ repeat Nothing))
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
