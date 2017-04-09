@@ -281,7 +281,7 @@ compileApp env (EVar pos f) as = do
     sig <- case Map.lookup f (gssignatures env) of
         Nothing -> return []
         Just sigM -> sigM as
-    as' <- mapM (\ ((pos1, e), s) -> compileArg env pos1 e s) (zip as (map Just sig ++ repeat Nothing))
+    as' <- mapM (\ ((pos1, e), s) -> compileArg env pos1 e s) (zip as (sig ++ repeat Nothing))
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -406,7 +406,7 @@ globalEnv = Env{
 
 data Env = Env {
     gsimplicits :: Map String [Implicit],
-    gssignatures :: Map String ([(Pos, Expr)] -> Compiler [Signature]),
+    gssignatures :: Map String ([(Pos, Expr)] -> Compiler [Maybe Signature]),
     gsvars :: Map String (Set HSImport, HSExpr),
     gsviews :: Map String (Set HSImport, HSExpr)
   }
