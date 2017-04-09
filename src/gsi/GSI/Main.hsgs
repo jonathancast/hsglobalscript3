@@ -1,15 +1,15 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (GSExpr, gslambda, gsav, gsae)
-import GSI.ByteCode (gsbcapply, gsbcimpfor, gsbcimpbind, gsbcimpbody)
+import GSI.Value (gslambda, gsav)
+import GSI.ByteCode (gsbcimpfor, gsbcimpbind)
 import GSI.Env (gsenvGetArgs)
 $gsimports
 
 -- Main function (call this to start your interpreter)
 gsmain = $gslambda $ \ gsrun -> $gsbcimpfor $ do
     args <- $gsbcimpbind $ $gsav gsenvGetArgs
-    $gsbcimpbody $ $gsae $ $gsbcapply gsprocessargs [ $gsav args ]
+    [gs:body hsvs=gsprocessargs,args,| gsprocessargs args |]
 
 -- Loops over arguments to process them
 gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,| analyze args.
