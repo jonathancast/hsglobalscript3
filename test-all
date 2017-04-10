@@ -3,6 +3,7 @@
 cd $HSGLOBALSCRIPT/src/hsgs2hs &&
     ./integration-test &&
     ./install-all &&
-cd ../gsi &&
+cd ../gsi && # implementation implementation
     ./integration-test &&
+cd ../gsio && # very simple file I/O
 true
