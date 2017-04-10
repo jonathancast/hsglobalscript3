@@ -7,6 +7,7 @@ cd $HSGLOBALSCRIPT/src/hsgs2hs &&
 echo '# implementation implementation' &&
 cd ../gsi &&
     ./integration-test &&
+    ./install-all &&
 echo '# very simple file I/O' &&
 cd ../gsio &&
     ./integration-test &&
