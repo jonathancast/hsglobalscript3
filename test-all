@@ -12,7 +12,7 @@ echo '# very simple file I/O' &&
 cd ../gsio &&
     ./integration-test &&
 echo '# Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full Global Script programs' &&
-cd ../hs2gs &&
+cd ../gs2hs &&
     ./integration-test &&
 echo '# write a string to stdout' &&
 cd ../gscat &&
