@@ -10,8 +10,14 @@ ghc $ghcoptions --make Test.hs
 . $GLOBALSCRIPT/bin/test-fns
 
 ghc $ghcoptions --make test-gsi.hs
+ghc $ghcoptions --make gsi.hs
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
 
+echo '## test-gsi'
+
 ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./test-gsi no-such-file.gs
 
+echo '## gsi'
+
+ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./gsi no-such-file.gs
