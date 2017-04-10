@@ -1,0 +1,7 @@
+#! /home/jcast/plan9/bin/rc -e
+
+. $GLOBALSCRIPT/bin/test-fns
+
+GLOBALSCRIPT=$HSGLOBALSCRIPT
+
+true
