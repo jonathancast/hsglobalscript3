@@ -10,4 +10,5 @@ cd ../hs2gs && # Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full G
 cd ../gscat && # write a string to stdout
 cd ../gshtml && # HTML templating system
 cd ../doc && # Documentation, written in Global Script
+cd ../gsdoc && # Acme-driven documentation system
 true
