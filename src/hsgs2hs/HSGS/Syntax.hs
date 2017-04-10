@@ -85,7 +85,7 @@ param = empty
 
 expr :: Env -> Parser Char Expr
 expr env = empty
-    <|> foldl (\ ef (pos, ex) -> EApp ef pos ex) <$> exprAtom <*> many ((,) <$> getPos <*> exprArg)
+    <|> foldl EApp <$> exprAtom <*> many exprArg
     <|> lambdalike env Nothing
   where
     exprAtom = empty
@@ -99,7 +99,7 @@ expr env = empty
                 return (v, s)
             return $ EQLO pos0 v s
     exprArg = empty
-        <|> ArgExpr <$> exprAtom
+        <|> ArgExpr <$> getPos <*> exprAtom
 
 quoteItems :: Env -> [Char] -> Parser Char [QLOItem]
 quoteItems env qs = empty
@@ -158,10 +158,10 @@ data Expr
   | EPat Pattern
   | EGens [(Pos, Generator)] Pos
   | EOpen Expr
-  | EApp Expr Pos Arg
+  | EApp Expr Arg
 
 data Arg
-  = ArgExpr Expr
+  = ArgExpr Pos Expr
 
 data QLOItem
   = QChar Pos Char
@@ -213,11 +213,11 @@ lambdalike env mbv = do
     let ef = EVar pos v
     return ef
         <|> do
-            ef1 <- (EApp ef <$> getPos <*> (ArgExpr <$> parseHead)) <* period
-            ef2 <- EApp ef1 <$> getPos <*> (ArgExpr <$> parseBody)
+            ef1 <- (EApp ef <$> (ArgExpr <$> getPos <*> parseHead)) <* period
+            ef2 <- EApp ef1 <$> (ArgExpr <$> getPos <*> parseBody)
             ef3 <- case mbparseElse of
                 Nothing -> return ef2
-                Just pe -> EApp ef2 <$> getPos <*> (ArgExpr <$> pe)
+                Just pe -> EApp ef2 <$> (ArgExpr <$> getPos <*> pe)
             return ef3
 
 ident :: Parser Char String

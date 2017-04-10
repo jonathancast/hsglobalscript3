@@ -223,8 +223,8 @@ compileExpr env (EQLO pos0 "log" s) = do
     string_imports = Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.Log" "gsbclogstring_w", HSIType "GSI.Util" "Pos" ]
     string_expr pos s = HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` (HSVar "gsbclogstring_w" `HSApp` hspos pos `HSApp` HSString s)
 compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
-compileExpr env (EApp f pos1 (ArgExpr e)) = compileApp env f [(pos1, e)]
-compileExpr env (EApp f pos1 a) = $gsfatal $ "compileExpr (EApp f pos1 " ++ argCode a ++ ") next"
+compileExpr env (EApp f (ArgExpr pos1 e)) = compileApp env f [(pos1, e)]
+compileExpr env (EApp f a) = $gsfatal $ "compileExpr (EApp f " ++ argCode a ++ ") next"
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 compileBody :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
@@ -295,8 +295,8 @@ compileApp env (EVar pos f) as = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) as')
       )
-compileApp env (EApp f pos (ArgExpr a)) as = compileApp env f ((pos, a):as)
-compileApp env (EApp f pos a) as = $gsfatal $ "compileApp (EApp f pos " ++ argCode a ++ ") next"
+compileApp env (EApp f (ArgExpr pos a)) as = compileApp env f ((pos, a):as)
+compileApp env (EApp f a) as = $gsfatal $ "compileApp (EApp f " ++ argCode a ++ ") next"
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
