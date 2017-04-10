@@ -14,5 +14,6 @@ cd ../gscat && # write a string to stdout
 cd ../gshtml && # HTML templating system
     ./integration-test &&
 cd ../doc && # Documentation, written in Global Script
+    ./integration-test &&
 cd ../gsdoc && # Acme-driven documentation system
 true
