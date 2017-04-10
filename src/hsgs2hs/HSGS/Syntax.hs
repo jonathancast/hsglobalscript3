@@ -330,7 +330,8 @@ qloiCode QQChar{} = "QQChar"
 qloiCode QInterpExpr{} = "QInterpExpr"
 
 argCode :: Arg -> String
-argCode a = a `seq` $gsfatal "argCode next"
+argCode ArgExpr{} = "ArgExpr"
+argCode ArgField{} = "ArgField"
 
 patCode :: Pattern -> String
 patCode PView{} = "PView"
