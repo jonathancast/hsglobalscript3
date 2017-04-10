@@ -16,4 +16,5 @@ cd ../gshtml && # HTML templating system
 cd ../doc && # Documentation, written in Global Script
     ./integration-test &&
 cd ../gsdoc && # Acme-driven documentation system
+    ./integration-test &&
 true
