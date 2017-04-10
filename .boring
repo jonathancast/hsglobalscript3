@@ -14,3 +14,4 @@ src/hsgs2hs/hsgs2hs$
 bin/hsgs2hs$
 src/hsgs2hs/test-fixtures/.*\.hs$
 src/gsi/GSI/Main\.hs$
+src/gsi/gsi$
