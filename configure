@@ -3,6 +3,7 @@
 HSGLOBALSCRIPT=${HSGLOBALSCRIPT:-$PWD}
 
 SCRIPTS=""
+SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/gsi/integration-test"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/gsio/integration-test"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/hs2gs/integration-test"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/gscat/integration-test"
