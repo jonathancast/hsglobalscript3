@@ -1,2 +1,7 @@
 #! /usr/local/plan9/bin/rc
 
+ghcoptions=(-i$HSGLOBALSCRIPT/src/libgsi)
+
+ghc $ghcoptions --make gsi.hs
+
+install gsi $HSGLOBALSCRIPT/bin/gsi
