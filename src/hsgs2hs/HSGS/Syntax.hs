@@ -100,6 +100,7 @@ expr env = empty
             return $ EQLO pos0 v s
     exprArg = empty
         <|> ArgExpr <$> getPos <*> exprAtom
+        <|> ArgField <$> getPos <*> (keywordOp "#" *> ident)
 
 quoteItems :: Env -> [Char] -> Parser Char [QLOItem]
 quoteItems env qs = empty
@@ -162,6 +163,7 @@ data Expr
 
 data Arg
   = ArgExpr Pos Expr
+  | ArgField Pos String
 
 data QLOItem
   = QChar Pos Char
@@ -183,7 +185,7 @@ data Param
 
 var :: Env -> Parser Char String
 var env = lexeme $ do
-    v <- (++) <$> alphaNumComp <*> (concat <$> many ((:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp))
+    v <- identName
     notFollowedBy (char '{')
     case Map.lookup v (lambdas env) of
         Nothing -> return v
@@ -193,9 +195,6 @@ operator :: Env -> Parser Char String
 operator env = lexeme $ do
     v <- operatorComp
     return v
-
-alphaNumComp :: Parser Char String
-alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
 operatorComp :: Parser Char String
 operatorComp = ((:) <$> opStartChar <*> many opContChar) <* notFollowedBy opContChar
@@ -221,7 +220,13 @@ lambdalike env mbv = do
             return ef3
 
 ident :: Parser Char String
-ident = lexeme $ ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
+ident = lexeme identName
+
+identName :: Parser Char String
+identName = (++) <$> alphaNumComp <*> (concat <$> many ((:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp))
+
+alphaNumComp :: Parser Char String
+alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
