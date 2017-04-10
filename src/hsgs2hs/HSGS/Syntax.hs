@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Pattern(..), Generator(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, patCode, genCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), Generator(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, argCode, patCode, genCode) where
 
 import Control.Applicative (Alternative(..))
 
@@ -85,7 +85,7 @@ param = empty
 
 expr :: Env -> Parser Char Expr
 expr env = empty
-    <|> foldl (\ ef (pos, ex) -> EApp ef pos ex) <$> exprAtom <*> many ((,) <$> getPos <*> exprAtom)
+    <|> foldl (\ ef (pos, ex) -> EApp ef pos ex) <$> exprAtom <*> many ((,) <$> getPos <*> exprArg)
     <|> lambdalike env Nothing
   where
     exprAtom = empty
@@ -98,6 +98,8 @@ expr env = empty
                 s <- char '{' *> quoteItems env [] <* char '}'
                 return (v, s)
             return $ EQLO pos0 v s
+    exprArg = empty
+        <|> ArgExpr <$> exprAtom
 
 quoteItems :: Env -> [Char] -> Parser Char [QLOItem]
 quoteItems env qs = empty
@@ -156,7 +158,10 @@ data Expr
   | EPat Pattern
   | EGens [(Pos, Generator)] Pos
   | EOpen Expr
-  | EApp Expr Pos Expr
+  | EApp Expr Pos Arg
+
+data Arg
+  = ArgExpr Expr
 
 data QLOItem
   = QChar Pos Char
@@ -208,11 +213,11 @@ lambdalike env mbv = do
     let ef = EVar pos v
     return ef
         <|> do
-            ef1 <- (EApp ef <$> getPos <*> parseHead) <* period
-            ef2 <- EApp ef1 <$> getPos <*> parseBody
+            ef1 <- (EApp ef <$> getPos <*> (ArgExpr <$> parseHead)) <* period
+            ef2 <- EApp ef1 <$> getPos <*> (ArgExpr <$> parseBody)
             ef3 <- case mbparseElse of
                 Nothing -> return ef2
-                Just pe -> EApp ef2 <$> getPos <*> pe
+                Just pe -> EApp ef2 <$> getPos <*> (ArgExpr <$> pe)
             return ef3
 
 ident :: Parser Char String
@@ -318,6 +323,9 @@ qloiCode :: QLOItem -> String
 qloiCode QChar{} = "QChar"
 qloiCode QQChar{} = "QQChar"
 qloiCode QInterpExpr{} = "QInterpExpr"
+
+argCode :: Arg -> String
+argCode a = a `seq` $gsfatal "argCode next"
 
 patCode :: Pattern -> String
 patCode PView{} = "PView"
