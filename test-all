@@ -7,4 +7,5 @@ cd ../gsi && # implementation implementation
     ./integration-test &&
 cd ../gsio && # very simple file I/O
 cd ../hs2gs && # Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full Global Script programs
+cd ../gscat && # write a string to stdout
 true
