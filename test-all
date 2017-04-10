@@ -1,20 +1,28 @@
 #! /usr/local/plan9/bin/rc
 
+echo '# trivial Global Script to Haskell translator'
 cd $HSGLOBALSCRIPT/src/hsgs2hs &&
     ./integration-test &&
     ./install-all &&
-cd ../gsi && # implementation implementation
+echo '# implementation implementation' &&
+cd ../gsi &&
     ./integration-test &&
-cd ../gsio && # very simple file I/O
+echo '# very simple file I/O' &&
+cd ../gsio &&
     ./integration-test &&
-cd ../hs2gs && # Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full Global Script programs
+echo '# Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full Global Script programs' &&
+cd ../hs2gs &&
     ./integration-test &&
-cd ../gscat && # write a string to stdout
+echo '# write a string to stdout' &&
+cd ../gscat &&
     ./integration-test &&
-cd ../gshtml && # HTML templating system
+echo '# HTML templating system' &&
+cd ../gshtml &&
     ./integration-test &&
-cd ../doc && # Documentation, written in Global Script
+echo '# Documentation, written in Global Script' &&
+cd ../doc &&
     ./integration-test &&
-cd ../gsdoc && # Acme-driven documentation system
+echo '# Acme-driven documentation system' &&
+cd ../gsdoc &&
     ./integration-test &&
 true
