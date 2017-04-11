@@ -19,6 +19,8 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,| analyze
                     _ ← print-error qq{§(a): Could not load: no such file or directory\n};
                   . error log{Process §(gsv a) (§(gsv e)) next}
         )
-        case right 'st.
-            gsprocessargs as -- Ignore all arguments until we start failing tests for it
+        case right 'st. (analyze st #is.dir.
+            case true. gsprocessargs as -- Ignore all arguments until we start failing tests for it
+            case false. error log{§(gsv a): process file next}
+        )
 |]
