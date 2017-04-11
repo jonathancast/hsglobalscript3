@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsprintError, gsENOENT_view) where
+module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsfileRead, gsprintError, gsENOENT_view) where
 
 import qualified Data.Map as Map
 
@@ -55,6 +55,13 @@ gsprimfileStat pos t fn = do
                 True -> GSConstr $gshere (gsvar "true") []
             )
           ] ]
+
+gsfileRead :: GSValue
+gsfileRead = $gsimpprim gsprimfileRead
+
+gsprimfileRead :: Pos -> Thread -> GSValue -> IO GSValue
+gsprimfileRead pos t fn = do
+    $apiImplementationFailure $ "gsprimfileRead next"
 
 gsprintError :: GSValue
 gsprintError = $gsimpprim gsprimprintError
