@@ -146,7 +146,7 @@ gsbcfield = varE 'gsbcfield_w `appE` gshere
 gsbcfield_w :: Pos -> GSArg -> GSVar -> GSExpr
 gsbcfield_w pos a f = gsbcforce_w pos a $ \ r -> case r of
     GSRecord pos1 fs -> case Map.lookup f fs of
-        Just v -> gsbcimplementationfailure_w $gshere $ "gsbcfield GSRecord/Just next"
+        Just v -> gsbcenter_w pos v
         Nothing -> gsbcimplementationfailure_w $gshere $ (fmtPos pos1 . ("missing field "++) . fmtVarAtom f) $ ""
     _ -> gsbcimplementationfailure_w $gshere $ "gsbcfield " ++ gsvCode r ++ " next"
 
