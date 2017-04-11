@@ -21,6 +21,8 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,| analyze
         )
         case right 'st. (analyze st #is.dir.
             case true. gsprocessargs as -- Ignore all arguments until we start failing tests for it
-            case false. error log{§(gsv a): process file next}
+            case false. impfor
+                's ← file.read a;
+              . error log{§(gsv a): process file next}
         )
 |]
