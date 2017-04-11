@@ -15,7 +15,7 @@ import qualified Data.Map as Map
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, filename, line, col)
+import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
@@ -144,7 +144,11 @@ gsbclfield_w pos f r k = GSExpr $ \ st cs -> do
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
 gsbcfield_w :: Pos -> GSArg -> GSVar -> GSExpr
-gsbcfield_w pos a f = gsbcforce_w pos a $ \ r -> gsbcimplementationfailure_w $gshere "gsbcfield next"
+gsbcfield_w pos a f = gsbcforce_w pos a $ \ r -> case r of
+    GSRecord pos1 fs -> case Map.lookup f fs of
+        Just v -> gsbcimplementationfailure_w $gshere $ "gsbcfield GSRecord/Just next"
+        Nothing -> gsbcimplementationfailure_w $gshere $ (fmtPos pos1 . ("missing field "++) . fmtVarAtom f) $ ""
+    _ -> gsbcimplementationfailure_w $gshere $ "gsbcfield " ++ gsvCode r ++ " next"
 
 gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
 
