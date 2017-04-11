@@ -1,11 +1,15 @@
-{-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
 module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsfileRead, gsprintError, gsENOENT_view) where
+
+import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
 import qualified Data.Map as Map
 
 import Control.Exception (SomeException, try, fromException)
 
+import Data.Encoding.UTF8 (UTF8(..))
 import System.IO (hPutStrLn, hPutChar, stderr)
+import System.IO.Encoding (readFile)
 import System.IO.Error (isDoesNotExistError)
 
 import Component.Monad (getM)
@@ -21,7 +25,7 @@ import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
-import GSI.Functions (gsapiEvalString)
+import GSI.Functions (gsstring, gsapiEvalString)
 
 gsenvGetArgs = $gsimpprim gsprimenvGetArgs :: GSValue
 
@@ -61,7 +65,11 @@ gsfileRead = $gsimpprim gsprimfileRead
 
 gsprimfileRead :: Pos -> Thread -> GSValue -> IO GSValue
 gsprimfileRead pos t fn = do
-    $apiImplementationFailure $ "gsprimfileRead next"
+    fns <- gsapiEvalString pos fn
+    mbs <- try $ let ?enc = UTF8Strict in readFile fns
+    case mbs of
+        Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimfileRead " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
+        Right s -> return $ $gsstring s
 
 gsprintError :: GSValue
 gsprintError = $gsimpprim gsprimprintError
