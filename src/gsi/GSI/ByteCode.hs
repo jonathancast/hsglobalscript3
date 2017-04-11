@@ -144,7 +144,7 @@ gsbclfield_w pos f r k = GSExpr $ \ st cs -> do
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
 gsbcfield_w :: Pos -> GSArg -> GSVar -> GSExpr
-gsbcfield_w pos a f = gsbcimplementationfailure_w $gshere "gsbcfield next"
+gsbcfield_w pos a f = gsbcforce_w pos a $ \ r -> gsbcimplementationfailure_w $gshere "gsbcfield next"
 
 gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
 
