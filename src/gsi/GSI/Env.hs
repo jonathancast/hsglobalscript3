@@ -50,6 +50,7 @@ gsprimfileStat pos t fn = do
             return $ GSConstr $gshere (gsvar "left") [ GSConstr $gshere (gsvar "ENOENT") [ fn ] ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> return $ GSConstr $gshere (gsvar "right") [ GSRecord $gshere $ Map.fromList [
+            (gsvar "is.dir", $gsundefined)
           ] ]
 
 gsprintError :: GSValue
