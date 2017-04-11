@@ -1,6 +1,6 @@
 {-# LINE 1 "./test-fixtures/field-extraction.hsgs" #-}
 import GSI.Util (Pos(..))
-import GSI.ByteCode (gsbcenter_w)
+import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcfield_w)
 import GSI.Syn (gsvar)
-(gsbcfield_w (Pos "./test-fixtures/field-extraction.hsgs" 2 23) (gsbcenter_w (Pos "./test-fixtures/field-extraction.hsgs" 2 20) st) (gsvar "is.dir"))
+(gsbcfield_w (Pos "./test-fixtures/field-extraction.hsgs" 2 23) (GSArgVar st) (gsvar "is.dir"))

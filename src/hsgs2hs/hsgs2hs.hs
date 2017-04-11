@@ -225,7 +225,7 @@ compileExpr env (EQLO pos0 "log" s) = do
 compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
 compileExpr env (EApp f (ArgExpr pos1 e)) = compileApp env f [(pos1, e)]
 compileExpr env (EApp f (ArgField pos1 m)) = do
-    (isf, hsef) <- compileExpr env f
+    (isf, hsef) <- compileArg env pos1 f Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcfield_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` isf,
         HSVar "gsbcfield_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` (HSVar "gsvar" `HSApp` HSString m)
