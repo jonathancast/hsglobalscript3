@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (varE, appE)
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda, gsundefined, gsae, gsav)
-import GSI.ByteCode (gsbcarg, gsbcundefined, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbcfield)
+import GSI.ByteCode (gsbcarg, gsbcundefined, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbclfield)
 import GSI.StdLib (gscompose)
 import GSI.List (gscons)
 
@@ -22,7 +22,7 @@ gslogchar :: GSValue
 gslogchar = $gslambda $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
     (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
         $gsae $ $gsbcconstr (gsvar "char") [ $gsav ch ],
-        $gsae $ $gsbcfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
+        $gsae $ $gsbclfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
     ])
   ]
 
@@ -30,7 +30,7 @@ gsloggsv :: GSValue
 gsloggsv = $gslambda $ \ x -> $gsbcarg $ \k -> $gsbcrecord [
     (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
         $gsae $ $gsbcconstr (gsvar "gsv") [ $gsav x ],
-        $gsae $ $gsbcfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
+        $gsae $ $gsbclfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
     ])
   ]
 
