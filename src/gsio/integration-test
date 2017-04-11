@@ -4,6 +4,6 @@
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
 
-ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./gsio no-such-file.gs
+TODO='gsi is not good enough for this yet' ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./gsio no-such-file.gs
 
 true
