@@ -10,7 +10,7 @@ import System.IO.Error (isDoesNotExistError)
 
 import Component.Monad (getM)
 
-import System.Posix.Files (getFileStatus)
+import System.Posix.Files (getFileStatus, isDirectory)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
@@ -50,7 +50,10 @@ gsprimfileStat pos t fn = do
             return $ GSConstr $gshere (gsvar "left") [ GSConstr $gshere (gsvar "ENOENT") [ fn ] ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> return $ GSConstr $gshere (gsvar "right") [ GSRecord $gshere $ Map.fromList [
-            (gsvar "is.dir", $gsundefined)
+            (gsvar "is.dir", case isDirectory st of
+                False -> GSConstr $gshere (gsvar "false") []
+                True -> GSConstr $gshere (gsvar "true") []
+            )
           ] ]
 
 gsprintError :: GSValue
