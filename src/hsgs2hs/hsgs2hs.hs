@@ -311,6 +311,7 @@ compilePat env (PVar pos v) = return (
     HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` HSString v
   )
 compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
+compilePat env p@PView{} = compilePatApp env p []
 compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
 compilePatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
