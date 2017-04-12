@@ -14,31 +14,52 @@ ok_script '-- empty directory --' hsgs2hs-empty ./hsgs2hs ./test-fixtures/empty-
 ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs single-line.hs
 ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
 ok_diff_compiler '-- normal square brackets --' hsgs2hs normal-bracket.hsgs normal-bracket.hs
+ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
+
+# Different kinds of interpolations
+
 ok_diff_compiler '-- argument variables --' hsgs2hs variable-argument.hsgs variable-argument.hs
 ok_diff_compiler '-- expression variables --' hsgs2hs variable-expression.hsgs variable-expression.hs
-ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
 ok_diff_compiler '-- open expression variables --' hsgs2hs variable-open-expression.hsgs variable-open-expression.hs
 ok_diff_compiler '-- open argument variables --' hsgs2hs variable-open-argument.hsgs variable-open-argument.hs
 ok_diff_compiler '-- pattern variables --' hsgs2hs variable-pattern.hsgs variable-pattern.hs
-ok_diff_compiler '-- view patterns --' hsgs2hs view-pattern.hsgs view-pattern.hs
 ok_diff_compiler '-- pattern arguments --' hsgs2hs variable-pattern-argument.hsgs variable-pattern-argument.hs
+ok_diff_compiler '-- variable bodies --' hsgs2hs variable-body.hsgs variable-body.hs
+ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
+ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
+ok_diff_compiler '-- open expressions with bound variables --' hsgs2hs bound-variable-open-expression.hsgs bound-variable-open-expression.hs
+
+# Different kinds of expressions
+
+ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
 ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expression.hs
-ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
+ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
+ok_diff_compiler '-- case expressions where the pattern-bound variables are used --' hsgs2hs lexical-variable.hsgs lexical-variable.hs
+ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-extraction.hs
+
+# log{} literals
+
 ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
 ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
 ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
 ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
-ok_diff_compiler '-- error function --' hsgs2hs error-call.hsgs error-call.hs
-ok_diff_compiler '-- variable bodies --' hsgs2hs variable-body.hsgs variable-body.hs
+
+# qq{} literals
+
 ok_diff_compiler '-- qq literals --' hsgs2hs qq-literal.hsgs qq-literal.hs
 ok_diff_compiler '-- \n in qq literals --' hsgs2hs qq-newline.hsgs qq-newline.hs
 ok_diff_compiler '-- interpolations in qq literals --' hsgs2hs qq-interpolation.hsgs qq-interpolation.hs
+
+# Different functions
+
+ok_diff_compiler '-- error function --' hsgs2hs error-call.hsgs error-call.hs
 ok_diff_compiler '-- print-error function --' hsgs2hs print-error.hsgs print-error.hs
-ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
-ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
-ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
-ok_diff_compiler '-- open expressions with bound variables --' hsgs2hs bound-variable-open-expression.hsgs bound-variable-open-expression.hs
-ok_diff_compiler '-- case expressions where the pattern-bound variables are used --' hsgs2hs lexical-variable.hsgs lexical-variable.hs
-ok_diff_compiler '-- variable definition binds --' hsgs2hs bound-variable-bind-impfor.hsgs bound-variable-bind-impfor.hs
+
+# Different kinds of patterns
+
+ok_diff_compiler '-- view patterns --' hsgs2hs view-pattern.hsgs view-pattern.hs
 ok_diff_compiler '-- operator views --' hsgs2hs operator-view.hsgs operator-view.hs
-ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-extraction.hs
+
+# Different kinds of generators
+
+ok_diff_compiler '-- variable definition binds --' hsgs2hs bound-variable-bind-impfor.hsgs bound-variable-bind-impfor.hs
