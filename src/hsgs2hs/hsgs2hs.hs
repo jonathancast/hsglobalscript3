@@ -142,6 +142,10 @@ compileArg env pos (EVar _ v) s = do
         Set.singleton (HSIType "GSI.Value" "GSArg") `Set.union` isv,
         HSConstr "GSArgVar" `HSApp` ev
       )
+compileArg env pos (ENumber _ n) s = return (
+    Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
+    HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
+  )
 compileArg env pos (EPat p) s = lift $ compilePatArg env pos p
 compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
     fvs = case s of
