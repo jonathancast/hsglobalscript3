@@ -155,6 +155,7 @@ data SourceComp
 data Expr
   = EMissingCase Pos
   | EVar Pos String
+  | ENumber Pos Integer
   | EQLO Pos String [QLOItem]
   | EPat Pattern
   | EGens [(Pos, Generator)] Pos
@@ -315,6 +316,7 @@ scCode SCBind{} = "SCBind"
 eCode :: Expr -> String
 eCode EMissingCase{} = "EMissingCase"
 eCode EVar{} = "EVar"
+eCode ENumber{} = "ENumber"
 eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
 eCode EGens{} = "EGens"
