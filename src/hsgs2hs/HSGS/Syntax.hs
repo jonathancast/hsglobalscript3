@@ -226,6 +226,12 @@ identName = (++) <$> alphaNumComp <*> (concat <$> many ((:) <$> matching "separa
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
 
+decimal :: Parser Char Integer
+decimal = lexeme $ read <$> ((:) <$> digit <*> many digit) <* notFollowedBy digit
+
+digit :: Parser Char Char
+digit = matching "digit" (`elem` [ '0'..'9' ])
+
 keyword :: String -> Parser Char ()
 keyword s = lexeme $ string s <* notFollowedBy idContChar
 
