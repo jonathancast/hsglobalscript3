@@ -25,7 +25,7 @@ import System.IO.Encoding (readFile, writeFile)
 
 import GSI.Util (Pos(..), gsfatal, fmtPos)
 
-import HSGS.Parser (Parser, parse, Advanceable(..), advanceStr)
+import HSGS.Parser (Parser, parse, string, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, argCode, patCode, genCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
@@ -386,10 +386,9 @@ splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
     Right (r, pos', s') -> (r:) <$> splitInput pos' s'
-splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv pos) (advanceStr "[gs:" pos) s of
+splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv pos <* string "|]") (advanceStr "[gs:" pos) s of
     Left err -> error err
-    Right (r, pos', '|':']':s') -> (r:) <$> splitInput (advanceStr "|]" pos') s'
-    Right (r, pos', s') -> error $ fmtPos pos' $ "Got " ++ show s' ++ "; expected \"|]\""
+    Right (r, pos', s') -> (r:) <$> splitInput pos' s'
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
