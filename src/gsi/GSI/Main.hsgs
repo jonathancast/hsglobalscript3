@@ -1,7 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (gslambda)
+import GSI.Value (gslambda, gsundefined)
+import GSI.ByteCode (gsbcarg)
 $gsimports
 
 -- Main function (call this to start your interpreter)
@@ -11,7 +12,7 @@ gsmain = $gslambda $ \ gsrun -> [gs:expr hsvs=gsprocessargs,| impfor
 |]
 
 -- Loops over arguments to process them
-gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,| analyze args.
+gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,parse,file,gspos,| analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
@@ -21,8 +22,17 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,| analyze
         )
         case right 'st. (analyze st #is.dir.
             case true. gsprocessargs as -- Ignore all arguments until we start failing tests for it
-            case false. impfor
-                's ← file.read a;
-              . error log{§(gsv a): process file next}
+            case false. impfor 's ← file.read a;. (analyze parse file (gspos a 1 1) s.
+                case left 'err. error log{§(gsv a): process §(gsv err) next}
+                case right 'd. error log{§(gsv a): process §(gsv d) next}
+            )
         )
 |]
+
+parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,s,|
+    error log{parse §(gsv p) pos §(gsv s) next}
+|]
+
+file = $gsundefined
+
+gspos = $gslambda $ \ fn -> [gs:expr hsvs=fn,| error log{gspos §(gsv fn) next} |]
