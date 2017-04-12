@@ -91,6 +91,7 @@ expr env = empty
     exprAtom = empty
         <|> parens (expr env)
         <|> EVar <$> getPos <*> var env
+        <|> ENumber <$> getPos <*> decimal
         <|> do
             pos0 <- getPos
             (v, s) <- lexeme $ do
