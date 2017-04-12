@@ -280,7 +280,10 @@ globalEnv = Env{
     lambdas = Map.fromList [
         ("analyze", \ env -> (
             expr env,
-            expr env,
+            empty
+                <|> EMissingCase <$> getPos
+                <|> expr env
+            ,
             Nothing
         )),
         ("analyze-impM", \ env -> (
