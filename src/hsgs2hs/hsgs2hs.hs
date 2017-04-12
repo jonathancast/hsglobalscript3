@@ -172,6 +172,10 @@ compileExpr env (EVar pos v) = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
         HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
       )
+compileExpr env (ENumber pos n) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnatural_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcnatural_w" `HSApp` hspos pos `HSApp` HSInteger n
+  )
 compileExpr env (EQLO pos "qq" s) = do
     (is, as) <- w s
     return (
