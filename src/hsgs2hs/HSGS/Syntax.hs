@@ -209,15 +209,12 @@ lambdalike env mbv = do
                 Just f -> [(v, f)]
     (v, parseHead, parseBody, mbparseElse) <- foldr (<|>) empty $
         map (\ (v, f) -> keyword v *> let (ph, pb, pe) = f env in return (v, ph, pb, pe)) vs
-    let ef = EVar pos v
-    return ef
-        <|> do
-            ef1 <- (EApp ef <$> (ArgExpr <$> getPos <*> parseHead)) <* period
-            ef2 <- EApp ef1 <$> (ArgExpr <$> getPos <*> parseBody)
-            ef3 <- case mbparseElse of
-                Nothing -> return ef2
-                Just pe -> EApp ef2 <$> (ArgExpr <$> getPos <*> pe)
-            return ef3
+    ef1 <- (EApp (EVar pos v) <$> (ArgExpr <$> getPos <*> parseHead)) <* period
+    ef2 <- EApp ef1 <$> (ArgExpr <$> getPos <*> parseBody)
+    ef3 <- case mbparseElse of
+        Nothing -> return ef2
+        Just pe -> EApp ef2 <$> (ArgExpr <$> getPos <*> pe)
+    return ef3
 
 ident :: Parser Char String
 ident = lexeme identName
