@@ -3,4 +3,8 @@ import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
 import GSI.String (gsbcstring_w)
 import GSI.String (gsbcstringlit_w)
+
+{-# LINE 2 "./test-fixtures/qq-literal.hsgs" #-}
 (gsbcstring_w (Pos "./test-fixtures/qq-literal.hsgs" 2 11) [ GSArgExpr (Pos "./test-fixtures/qq-literal.hsgs" 2 14) (gsbcstringlit_w (Pos "./test-fixtures/qq-literal.hsgs" 2 14) " next") ])
+{-# LINE 2 "./test-fixtures/qq-literal.hsgs" #-}
+                      

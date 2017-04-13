@@ -2,4 +2,8 @@
 import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcimpbind_w)
+
+{-# LINE 2 "./test-fixtures/variable-bind.hsgs" #-}
 (gsbcimpbind_w (Pos "./test-fixtures/variable-bind.hsgs" 2 1) (GSArgVar x))
+{-# LINE 2 "./test-fixtures/variable-bind.hsgs" #-}
+                      

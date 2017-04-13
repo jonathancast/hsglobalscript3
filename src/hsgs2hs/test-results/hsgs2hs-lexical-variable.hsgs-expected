@@ -10,4 +10,8 @@ import GSI.ByteCode (gsbcvarpattern_w)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gscase)
 import GSI.Syn (gsvar)
+
+{-# LINE 2 "./test-fixtures/lexical-variable.hsgs" #-}
 (gsbcapply_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 11) gscase [ GSArgExpr (Pos "./test-fixtures/lexical-variable.hsgs" 2 16) (gsbcvarpattern_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 16) "x"), GSArgExpr (Pos "./test-fixtures/lexical-variable.hsgs" 2 20) (gsbcarg_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 20) (\ env -> gsbclfield_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 20) (gsvar "x") env (\ x0 -> gsbcenter_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 20) x0))), GSArgExpr (Pos "./test-fixtures/lexical-variable.hsgs" 2 22) (gsbcarg_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 22) (\ x -> gsbcprim_w (Pos "./test-fixtures/lexical-variable.hsgs" 2 22) gspriminsufficientcases x)) ])
+{-# LINE 2 "./test-fixtures/lexical-variable.hsgs" #-}
+                       

@@ -2,4 +2,8 @@
 import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcvarpattern_w)
+
+{-# LINE 2 "./test-fixtures/variable-pattern-argument.hsgs" #-}
 (GSArgExpr (Pos "./test-fixtures/variable-pattern-argument.hsgs" 2 1) (gsbcvarpattern_w (Pos "./test-fixtures/variable-pattern-argument.hsgs" 2 14) "st"))
+{-# LINE 2 "./test-fixtures/variable-pattern-argument.hsgs" #-}
+                   

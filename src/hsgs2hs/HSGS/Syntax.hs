@@ -143,6 +143,7 @@ generator env = empty
 
 data SourceComp
   = SCChar Char
+  | SCPos Pos
   | SCImports
   | SCArg Pos [Param] Expr
   | SCExpr [Param] Expr
@@ -313,6 +314,7 @@ data Env = Env {
 
 scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
+scCode SCPos{} = "SCPos"
 scCode SCImports{} = "SCImports"
 scCode SCArg{} = "SCArg"
 scCode SCExpr{} = "SCExpr"

@@ -6,4 +6,8 @@ import GSI.ByteCode (gsbcarg_w)
 import GSI.ByteCode (gsbcemptyimpgen_w)
 import GSI.ByteCode (gsbcenter_w)
 import GSI.StdLib (gsimpfor)
+
+{-# LINE 2 "./test-fixtures/variable-impfor.hsgs" #-}
 (gsbcapply_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 19) gsimpfor [ GSArgExpr (Pos "./test-fixtures/variable-impfor.hsgs" 2 25) (gsbcemptyimpgen_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 25)), GSArgExpr (Pos "./test-fixtures/variable-impfor.hsgs" 2 27) (gsbcarg_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 27) (\ env -> gsbcenter_w (Pos "./test-fixtures/variable-impfor.hsgs" 2 27) x)) ])
+{-# LINE 2 "./test-fixtures/variable-impfor.hsgs" #-}
+                              

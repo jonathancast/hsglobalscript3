@@ -10,4 +10,8 @@ import GSI.ByteCode (gsbcvarpattern_w)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gscase)
 import GSI.Syn (gsvar)
+
+{-# LINE 2 "./test-fixtures/case-expression.hsgs" #-}
 (gsbcapply_w (Pos "./test-fixtures/case-expression.hsgs" 2 19) gscase [ GSArgExpr (Pos "./test-fixtures/case-expression.hsgs" 2 24) (gsbcvarpattern_w (Pos "./test-fixtures/case-expression.hsgs" 2 24) "x"), GSArgExpr (Pos "./test-fixtures/case-expression.hsgs" 2 28) (gsbcarg_w (Pos "./test-fixtures/case-expression.hsgs" 2 28) (\ env -> gsbclfield_w (Pos "./test-fixtures/case-expression.hsgs" 2 28) (gsvar "x") env (\ x0 -> gsbcenter_w (Pos "./test-fixtures/case-expression.hsgs" 2 28) y))), GSArgExpr (Pos "./test-fixtures/case-expression.hsgs" 2 30) (gsbcarg_w (Pos "./test-fixtures/case-expression.hsgs" 2 30) (\ x -> gsbcprim_w (Pos "./test-fixtures/case-expression.hsgs" 2 30) gspriminsufficientcases x)) ])
+{-# LINE 2 "./test-fixtures/case-expression.hsgs" #-}
+                               

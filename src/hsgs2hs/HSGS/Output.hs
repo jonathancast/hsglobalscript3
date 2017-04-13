@@ -4,10 +4,11 @@ module HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsC
 
 import Data.Set (Set)
 
-import GSI.Util (gsfatal)
+import GSI.Util (Pos, gsfatal)
 
 data DestComp
   = DCChar Char
+  | DCPos Pos
   | DCImports (Set HSImport)
   | DCExpr (Set HSImport) HSExpr
 
@@ -27,6 +28,7 @@ data HSExpr
 
 dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
+dcCode DCPos{} = "DCPos"
 dcCode DCImports{} = "DCImports"
 dcCode DCExpr{} = "DCExpr"
 

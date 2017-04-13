@@ -1,3 +1,7 @@
 {-# LINE 1 "./test-fixtures/variable-argument.hsgs" #-}
 import GSI.Value (GSArg(..))
+
+{-# LINE 2 "./test-fixtures/variable-argument.hsgs" #-}
 (GSArgVar as)
+{-# LINE 2 "./test-fixtures/variable-argument.hsgs" #-}
+                       

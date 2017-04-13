@@ -4,4 +4,8 @@ import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcapply_w)
 import GSI.Log (gsbclog_w)
 import GSI.Log (gsloggsv)
+
+{-# LINE 2 "./test-fixtures/log-interpolation.hsgs" #-}
 (gsbclog_w (Pos "./test-fixtures/log-interpolation.hsgs" 2 19) [ GSArgExpr (Pos "./test-fixtures/log-interpolation.hsgs" 2 23) (gsbcapply_w (Pos "./test-fixtures/log-interpolation.hsgs" 2 25) gsloggsv [ GSArgVar x ]) ])
+{-# LINE 2 "./test-fixtures/log-interpolation.hsgs" #-}
+                                  

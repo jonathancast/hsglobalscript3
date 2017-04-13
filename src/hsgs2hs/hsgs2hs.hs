@@ -67,6 +67,9 @@ mkHSFile "" = ""
 
 formatOutput :: [DestComp] -> Either String [String]
 formatOutput (DCChar c:dcs) = ([c]:) <$> formatOutput dcs
+formatOutput (DCPos pos:dcs) =
+    ([ "\n", "{-# LINE " ++ show (line pos) ++ ' ' : show (filename pos) ++ " #-}\n", replicate (fromInteger (col pos - 1)) ' ' ]++) <$>
+        formatOutput dcs
 formatOutput (DCImports is:dcs) = (map formatImport (Set.toList is)++) <$> formatOutput dcs
 formatOutput (DCExpr _ e:dcs) = ((formatExprAtom e ""):) <$> formatOutput dcs
 formatOutput (dc:dcs) = $gsfatal $ "formatOutput " ++ dcCode dc ++ " next"
@@ -103,6 +106,7 @@ formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
 compileSource :: [SourceComp] -> Either String [DestComp]
 compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
+compileSource (SCPos pos:scs) = (DCPos pos:) <$> compileSource scs
 compileSource (SCImports:scs) = do
     dcs <- compileSource scs
     return $ DCImports (gatherImports Set.empty dcs) : dcs
@@ -119,6 +123,7 @@ compileSource [] = return []
 
 gatherImports :: Set HSImport -> [DestComp] -> Set HSImport
 gatherImports is (DCChar _:dcs) = gatherImports is dcs
+gatherImports is (DCPos _:dcs) = gatherImports is dcs
 gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
 gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports is [] = is
@@ -393,10 +398,10 @@ hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (li
 splitInput :: Pos -> String -> Either String [SourceComp]
 splitInput pos ('$':s) = case parse interpolation pos s of
     Left err -> (SCChar '$':) <$> splitInput (advance '$' pos) s
-    Right (r, pos', s') -> (r:) <$> splitInput pos' s'
+    Right (r, pos', s') -> ((r:) . (SCPos pos':)) <$> splitInput pos' s'
 splitInput pos ('[':'g':'s':':':s) = case parse (quote Syntax.globalEnv pos <* string "|]") (advanceStr "[gs:" pos) s of
     Left err -> error err
-    Right (r, pos', s') -> (r:) <$> splitInput pos' s'
+    Right (r, pos', s') -> ((r:) . (SCPos pos':)) <$> splitInput pos' s'
 splitInput pos (c:s) = (SCChar c:) <$> splitInput (advance c pos) s
 splitInput pos "" = return []
 
