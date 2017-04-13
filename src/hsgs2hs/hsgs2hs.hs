@@ -453,12 +453,12 @@ globalEnv = Env{
         ("error", [ ImHere ])
     ],
     gsviews = Map.fromList [
+        (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view")),
         ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
         ("false", (Set.singleton $ HSIVar "GSI.Bool" "gsfalse_view", HSVar "gsfalse_view")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft_view", HSVar "gsleft_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
-        ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
-        (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view"))
+        ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view"))
     ],
     gssignatures = Map.fromList [
         ("case", \ as -> case as of
