@@ -35,3 +35,5 @@ parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p
 file = [gs:value| error log{file next} |]
 
 gspos = $gslambda $ \ fn -> [gs:expr hsvs=fn,| error log{gspos §(gsv fn) next} |]
+
+empty = $gsundefined
