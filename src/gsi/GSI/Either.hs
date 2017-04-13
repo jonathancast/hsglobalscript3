@@ -1,11 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Either (gsleft, gsleft_view, gsright_view) where
 
-import GSI.Value (GSValue, gslambda, gsundefined)
-import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+import GSI.Syn (gsvar)
+import GSI.Value (GSValue, gslambda, gsav, gsundefined)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view, gsbcundefined)
 
 gsleft :: GSValue
-gsleft = $gsundefined
+gsleft = $gslambda $ \ x -> $gsbcconstr (gsvar "left") [ $gsav x ]
 
 gsleft_view :: GSValue
 gsleft_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "left" ek sk e
