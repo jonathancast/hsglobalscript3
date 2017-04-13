@@ -29,7 +29,8 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,parse,fil
         )
 |]
 
-parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,s,| analyze p.
+parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,s,| analyze p.
+    case empty. left (pos.fmt pos qq{empty})
 |]
 
 file = [gs:value| empty |]
