@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
     GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..),
-    gsundefined_w, gsapply, gsapply_w, gsfield, gsfield_w, gsundefined, gsimplementationfailure, gslambda, gslambda_w,
+    gsundefined_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined, gsimplementationfailure, gslambda, gslambda_w,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
@@ -110,6 +110,8 @@ gsfield_w pos0 f (GSRecord pos1 fs) = case Map.lookup f fs of
 gsfield_w pos0 f v@GSError{} = return v
 gsfield_w pos0 f v@GSImplementationFailure{} = return v
 gsfield_w pos0 f r = return $ GSImplementationFailure $gshere $ "gsfield " ++ gsvCode r ++ " next"
+
+gsconstr = conE 'GSConstr `appE` gshere
 
 gsav = varE 'gsargvar_w `appE` gshere
 
