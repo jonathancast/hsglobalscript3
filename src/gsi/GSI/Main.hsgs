@@ -1,8 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (gslambda, gsundefined)
-import GSI.ByteCode (gsbcarg)
+import GSI.Syn (gsvar)
+import GSI.Value (gslambda, gsundefined, gsav)
+import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined)
 $gsimports
 
 -- Main function (call this to start your interpreter)
@@ -37,4 +38,8 @@ parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p
 
 file = [gs:value| empty |]
 
-gspos = $gslambda $ \ fn -> [gs:expr hsvs=fn,| error log{gspos §(gsv fn) next} |]
+gspos = $gslambda $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
+    (gsvar "filename", $gsav fn),
+    (gsvar "line", $gsav l),
+    (gsvar "col", $gsav c)
+  ]
