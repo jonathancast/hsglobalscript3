@@ -2,11 +2,14 @@
 module GSI.Parser (gsposFmt, gsempty, gsempty_view) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue, gslambda, gsconstr, gsundefined)
-import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+import GSI.Value (GSValue, gslambda, gsconstr, gsundefined, gsav, gsae)
+import GSI.ByteCode (gsbcarg, gsbclfield, gsbcundefined, gsbcconstr_view)
+import GSI.String (gsbcstring)
 
 gsposFmt :: GSValue
-gsposFmt = $gsundefined
+gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
+    $gsbclfield (gsvar "filename") pos $ \ posv ->
+        $gsbcstring [ $gsav $ posv, $gsae $ $gsbcundefined ]
 
 gsempty = $gsconstr (gsvar "empty") []
 
