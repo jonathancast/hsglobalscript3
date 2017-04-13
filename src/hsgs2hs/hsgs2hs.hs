@@ -212,6 +212,7 @@ compileExpr env (EQLO pos "qq" s) = do
   where
     w [] = return (Set.empty, [])
     w (qi@(QChar pos1 _):qis) = w_ch pos1 id (qi:qis)
+    w (qi@(QQChar pos1 _):qis) = w_ch pos1 id (qi:qis)
     w (QInterpExpr pos1 e:qis) = do
         (ise, hse) <- compileArg env pos1 e Nothing
         (ist, hst) <- w qis
