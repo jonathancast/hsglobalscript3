@@ -426,6 +426,9 @@ getGenSym = state $ \ n -> ("x" ++ show n, n + 1)
 runCompiler :: StateT Integer (Either String) a -> Either String a
 runCompiler a = evalStateT a 0
 
+compileError :: Pos -> String -> Compiler a
+compileError pos msg = lift $ Left $ fmtPos pos msg
+
 globalEnv :: Env
 globalEnv = Env{
     gsvars = Map.fromList [
