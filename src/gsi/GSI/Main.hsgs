@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Main (gsmain) where
 
-import GSI.Value (gslambda, gsundefined)
+import GSI.Value (gslambda, gsundefined, gsconstr)
 import GSI.ByteCode (gsbcarg)
 $gsimports
 
@@ -36,4 +36,4 @@ file = [gs:value hsvs=empty,| empty |]
 
 gspos = $gslambda $ \ fn -> [gs:expr hsvs=fn,| error log{gspos §(gsv fn) next} |]
 
-empty = $gsundefined
+empty = $gsconstr (gsvar "empty") []
