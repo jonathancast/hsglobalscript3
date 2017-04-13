@@ -136,6 +136,14 @@ processHSVS ps env = env{
 processFVS :: [Param] -> Set String
 processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 
+compileThunk :: Env -> Pos -> Expr -> Compiler (Set HSImport, HSExpr)
+compileThunk env pos e = do
+    (is, hse) <- compileExpr env e
+    return (
+        Set.fromList [ HSIVar "System.IO.Unsafe" "unsafePerformIO", HSIVar "GSI.Value" "gsthunk_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSVar "unsafePerformIO" `HSApp` (HSVar "gsthunk_w" `HSApp` hspos pos `HSApp` hse)
+      )
+
 compileArg :: Env -> Pos -> Expr -> Maybe Signature -> Compiler (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} s = compileExprToArg env pos e
 compileArg env pos e@EQLO{} s = compileExprToArg env pos e
