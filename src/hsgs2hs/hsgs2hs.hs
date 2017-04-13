@@ -136,6 +136,10 @@ processHSVS ps env = env{
 processFVS :: [Param] -> Set String
 processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 
+compileValue :: Env -> Pos -> Expr -> Compiler (Set HSImport, HSExpr)
+compileValue env pos e@EApp{} = compileThunk env pos e
+compileValue env pos e = $gsfatal $ "compileValue " ++ eCode e ++ " next"
+
 compileThunk :: Env -> Pos -> Expr -> Compiler (Set HSImport, HSExpr)
 compileThunk env pos e = do
     (is, hse) <- compileExpr env e
