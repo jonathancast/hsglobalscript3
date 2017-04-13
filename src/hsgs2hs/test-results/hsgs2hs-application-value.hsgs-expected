@@ -1,0 +1,11 @@
+{-# LINE 1 "./test-fixtures/application-value.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.ByteCode (gsbcapply_w)
+import GSI.Value (gsthunk_w)
+import System.IO.Unsafe (unsafePerformIO)
+
+{-# LINE 2 "./test-fixtures/application-value.hsgs" #-}
+(unsafePerformIO (gsthunk_w (Pos "./test-fixtures/application-value.hsgs" 2 1) (gsbcapply_w (Pos "./test-fixtures/application-value.hsgs" 2 22) f [ GSArgVar x ])))
+{-# LINE 2 "./test-fixtures/application-value.hsgs" #-}
+                          

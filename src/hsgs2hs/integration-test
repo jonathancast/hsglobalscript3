@@ -28,6 +28,7 @@ ok_diff_compiler '-- variable bodies --' hsgs2hs variable-body.hsgs variable-bod
 ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
 ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
 ok_diff_compiler '-- open expressions with bound variables --' hsgs2hs bound-variable-open-expression.hsgs bound-variable-open-expression.hs
+ok_diff_compiler '-- values (thunks) --' hsgs2hs application-value.hsgs application-value.hs
 
 # Different kinds of expressions
 
