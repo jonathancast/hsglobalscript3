@@ -3,14 +3,14 @@ module GSI.Parser (gsposFmt, gsparser_unary_or, gsempty, gsempty_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
-import GSI.ByteCode (gsbcarg, gsbcundefined, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcenter, gsbcundefined, gsbcconstr_view)
 $gsimports
 
 gsposFmt :: GSValue
 gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
     [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
-gsparser_unary_or = $gsundefined_value
+gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
 gsempty = $gsconstr (gsvar "empty") []
 
