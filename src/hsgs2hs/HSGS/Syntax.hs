@@ -91,7 +91,7 @@ param = empty
 
 expr :: Env -> Parser Char Expr
 expr env = empty
-    <|> foldl EApp <$> exprAtom <*> many exprArg
+    <|> exprApp
     <|> lambdalike env Nothing
     <|> exprLeftList
   where
@@ -100,8 +100,9 @@ expr env = empty
             pos0 <- getPos
             op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ leftops env
             pos1 <- getPos
-            e <- exprAtom
+            e <- exprApp
             return $ EUnary pos0 op `EApp` ArgExpr pos1 e
+    exprApp = foldl EApp <$> exprAtom <*> many exprArg
     exprAtom = empty
         <|> parens (expr env)
         <|> EVar <$> getPos <*> var env
