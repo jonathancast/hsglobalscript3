@@ -157,14 +157,16 @@ compileThunk env pos e = do
 compileArg :: Env -> Pos -> Expr -> Maybe Signature -> Compiler (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} s = compileExprToArg env pos e
 compileArg env pos e@EQLO{} s = compileExprToArg env pos e
-compileArg env pos (EVar _ v) s = do
-    (isv, ev) <- case Map.lookup v (gsvars env) of
-        Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
-        Just (isv, ev) -> return (isv, ev)
-    return (
-        Set.singleton (HSIType "GSI.Value" "GSArg") `Set.union` isv,
-        HSConstr "GSArgVar" `HSApp` ev
-      )
+compileArg env pos (EVar pos1 v) s = case Map.lookup v (gsimplicits env) of
+    Nothing -> do
+        (isv, ev) <- case Map.lookup v (gsvars env) of
+            Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
+            Just (isv, ev) -> return (isv, ev)
+        return (
+            Set.singleton (HSIType "GSI.Value" "GSArg") `Set.union` isv,
+            HSConstr "GSArgVar" `HSApp` ev
+          )
+    Just _ -> compileExprToArg env pos (EVar pos1 v)
 compileArg env pos (ENumber _ n) s = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)

@@ -56,6 +56,7 @@ ok_diff_compiler '-- interpolations in qq literals --' hsgs2hs qq-interpolation.
 
 ok_diff_compiler '-- error function --' hsgs2hs error-call.hsgs error-call.hs
 ok_diff_compiler '-- undefined function --' hsgs2hs undefined-call.hsgs undefined-call.hs
+ok_diff_compiler '-- undefined argument --' hsgs2hs undefined-argument.hsgs undefined-argument.hs
 ok_diff_compiler '-- print-error function --' hsgs2hs print-error.hsgs print-error.hs
 
 # Different kinds of patterns
