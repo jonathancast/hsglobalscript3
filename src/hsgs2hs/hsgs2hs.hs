@@ -465,6 +465,8 @@ globalEnv = Env{
         ("error", [ ImHere ]),
         ("undefined", [ ImHere ])
     ],
+    gsunaries = Map.fromList [
+    ],
     gsviews = Map.fromList [
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view")),
         ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
@@ -489,6 +491,7 @@ globalEnv = Env{
 data Env = Env {
     gsimplicits :: Map String [Implicit],
     gssignatures :: Map String ([(Pos, Expr)] -> Compiler [Maybe Signature]),
+    gsunaries :: Map String (Set HSImport, HSExpr),
     gsvars :: Map String (Set HSImport, HSExpr),
     gsviews :: Map String (Set HSImport, HSExpr)
   }
