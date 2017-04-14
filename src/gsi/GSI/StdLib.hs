@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, gsundefined_value, gslambda, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbclfield, gsbcevalnatural, gsbcerror, gsbcundefined_w, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_w, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gscompose :: GSValue
 gscompose = $gslambda $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
@@ -55,11 +55,8 @@ gsundefined = $gslambda $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_h
 gsbcevalpos_w :: Pos -> GSArg -> (Pos -> GSExpr) -> GSExpr
 gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
     GSRecord{} ->
-        $gsbclfield (gsvar "filename") pos1v $ \ pos_filename ->
-        gsbcevalstring_w $gshere ($gsav pos_filename) $ \ pos_filename_s ->
-        $gsbclfield (gsvar "line") pos1v $ \ pos_line ->
-        $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
-        $gsbclfield (gsvar "col") pos1v $ \ pos_col ->
-        $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
+        gsbcevalstring_w $gshere ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "filename")) $ \ pos_filename_s ->
+        $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "line")) $ \ pos_line_n ->
+        $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "col")) $ \ pos_col_n ->
         k $ Pos pos_filename_s pos_line_n pos_col_n
     _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"
