@@ -27,3 +27,6 @@ gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsae
 
 gsempty_view :: GSValue
 gsempty_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
+
+gsunitplus_view :: GSValue
+gsunitplus_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
