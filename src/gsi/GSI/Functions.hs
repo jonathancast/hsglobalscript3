@@ -11,7 +11,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtError)
 import GSI.ThreadType (ThreadException(..))
-import GSI.Value (GSValue(..), gsundefined, gsimplementationfailure, gsapply, gsfield, gsvCode)
+import GSI.Value (GSValue(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 

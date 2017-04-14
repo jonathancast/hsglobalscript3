@@ -10,7 +10,7 @@ import System.Exit (ExitCode(..), exitWith)
 import System.IO (hPutStrLn, stderr)
 
 import GSI.Util (gsfatal, fmtPos, gshere)
-import GSI.Value (gsapply, gsundefined)
+import GSI.Value (gsapply, gsundefined_value)
 import GSI.ThreadType (ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
@@ -23,7 +23,7 @@ main = do
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
-gsrun = $gsundefined
+gsrun = $gsundefined_value
 
 data GSIThread = GSIThread{
     envArgs :: MVar GSEnvArgs

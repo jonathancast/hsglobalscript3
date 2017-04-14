@@ -19,7 +19,7 @@ import System.Posix.Files (getFileStatus, isDirectory)
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (fmtError)
-import GSI.Value (GSValue(..), gslambda, gsimpprim, gsundefined, gsvCode)
+import GSI.Value (GSValue(..), gslambda, gsimpprim, gsundefined_value, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (Thread, withThreadData)
@@ -80,12 +80,12 @@ gsprimprintError pos t (GSThunk th) = do
     gsprimprintError pos t v
 gsprimprintError pos t (GSImplementationFailure pos1 msg) = do
     hPutStrLn stderr $ fmtPos pos1 $ msg
-    return $ $gsundefined
+    return $ $gsundefined_value
 gsprimprintError pos t (GSError err) = do
     hPutStrLn stderr $ fmtError err
-    return $ $gsundefined
+    return $ $gsundefined_value
 gsprimprintError pos t (GSConstr pos1 c []) | c == gsvar "nil" =
-    return $ $gsundefined
+    return $ $gsundefined_value
 gsprimprintError pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
     hPutChar stderr ch
     gsprimprintError pos t s

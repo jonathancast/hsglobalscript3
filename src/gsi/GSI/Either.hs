@@ -2,7 +2,7 @@
 module GSI.Either (gsleft, gsleft_view, gsright_view) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue, gslambda, gsav, gsundefined)
+import GSI.Value (GSValue, gslambda, gsav, gsundefined_value)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view, gsbcundefined)
 
 gsleft :: GSValue

@@ -2,7 +2,7 @@
 module GSI.Main (gsmain) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gslambda, gsundefined, gsav)
+import GSI.Value (gslambda, gsundefined_value, gsav)
 import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined)
 $gsimports
 

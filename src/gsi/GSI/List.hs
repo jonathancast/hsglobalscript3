@@ -3,7 +3,7 @@ module GSI.List (gsappend, gscons, gsnil, gscons_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), gsundefined, gslambda, gsae, gsav, gsvCode)
+import GSI.Value (GSValue(..), gsundefined_value, gslambda, gsae, gsav, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcenter, gsbclfield, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view, gsbcviewpattern, gsbcvarpattern)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)

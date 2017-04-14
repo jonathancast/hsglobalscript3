@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
     GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..),
-    gsundefined_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined, gsimplementationfailure, gslambda, gslambda_w,
+    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda, gslambda_w,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
@@ -84,10 +84,10 @@ gsimpfor = varE 'gsimpfor_w `appE` gshere
 gsimpfor_w :: Pos -> GSBCImp GSValue -> GSValue
 gsimpfor_w pos (GSBCImp a) = GSClosure [StackTrace pos []] (GSImp a)
 
-gsundefined = varE 'gsundefined_w `appE` gshere
+gsundefined_value = varE 'gsundefined_value_w `appE` gshere
 
-gsundefined_w :: Pos -> GSValue
-gsundefined_w pos = GSError (GSErrUnimpl (StackTrace pos []))
+gsundefined_value_w :: Pos -> GSValue
+gsundefined_value_w pos = GSError (GSErrUnimpl (StackTrace pos []))
 
 gsimplementationfailure = conE 'GSImplementationFailure `appE` gshere
 
