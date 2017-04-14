@@ -3,7 +3,7 @@ module GSI.Parser (gsparse, gsposFmt, gsparser_unit, gsparser_unary_or, gsempty,
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
-import GSI.ByteCode (gsbcarg, gsbcenter, gsbcconstr, gsbcundefined, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcundefined, gsbcconstr_view)
 $gsimports
 
 gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
@@ -17,7 +17,7 @@ gsposFmt :: GSValue
 gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
     [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
-gsparser_unit = $gsundefined_value
+gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
