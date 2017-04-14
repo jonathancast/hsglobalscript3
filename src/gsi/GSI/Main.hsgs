@@ -36,7 +36,7 @@ parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p
     case empty. left (pos.fmt pos qq{empty})
 |]
 
-file = [gs:value| empty |]
+file = [gs:value| <|> empty |]
 
 gspos = $gslambda $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
