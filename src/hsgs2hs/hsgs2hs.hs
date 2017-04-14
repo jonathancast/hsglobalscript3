@@ -340,6 +340,19 @@ compileApp env (EVar pos f) as = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) as')
       )
+compileApp env (EUnary pos f) as = do
+    (isf, ef) <- case Map.lookup f (gsunaries env) of
+        Nothing -> lift $ Left $ fmtPos pos $ "unary " ++ f ++ " not in scope"
+        Just (isf, ef) -> return (isf, ef)
+    as' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing) as
+    return (
+        Set.unions $
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
+            isf :
+            map (\ (is, _) -> is) as'
+        ,
+        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
+      )
 compileApp env (EApp f (ArgExpr pos a)) as = compileApp env f ((pos, a):as)
 compileApp env (EApp f a) as = $gsfatal $ "compileApp (EApp f " ++ argCode a ++ ") next"
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
