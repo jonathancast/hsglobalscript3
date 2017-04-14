@@ -33,18 +33,18 @@ import qualified HSGS.Syntax as Syntax
 
 main = do
     as <- getArgs
-    mapM processArg as
+    mapM (processArg "") as
 
-processArg a = do
+processArg m a = do
     id <- doesDirectoryExist a
     irf <- doesFileExist a
     if id then do
         as <- getDirectoryContents a
-        mapM_ processArg $ map (\ a' -> a ++ '/' : a') $ filter (\ a' -> a' /= "." && a' /= "..") as
+        mapM_ (\ a' -> processArg (modCat m a') (a ++ '/' : a')) $ filter (\ a' -> a' /= "." && a' /= "..") as
       else if irf && ".hsgs" `isSuffixOf` a then do
         let ?enc = UTF8Strict
         s <- readFile a
-        case compileHSGSSource a s of
+        case compileHSGSSource m a s of
             Left err -> do
                 hPutStrLn stderr err
                 exitWith $ ExitFailure 1
@@ -53,10 +53,17 @@ processArg a = do
       else do
         return ()
 
-compileHSGSSource :: FilePath -> String -> Either String String
-compileHSGSSource fn s =
+modCat "" a = mkMod a
+modCat m a = m ++ '.' : mkMod a
+
+mkMod "" = ""
+mkMod ".hsgs" = ""
+mkMod (c:s) = c : mkMod s
+
+compileHSGSSource :: String -> FilePath -> String -> Either String String
+compileHSGSSource m fn s =
    splitInput (Pos fn 1 1) s >>=
-   compileSource >>=
+   compileSource m >>=
    formatOutput >>=
    return . concat . (("{-# LINE 1 " ++ show fn ++ " #-}\n"):)
 
@@ -104,30 +111,32 @@ formatExprAtom (HSList es) = fmt es where
     fmt' (e:es) = formatExpr e . (", "++) . fmt' es
 formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
-compileSource :: [SourceComp] -> Either String [DestComp]
-compileSource (SCChar c:scs) = (DCChar c:) <$> compileSource scs
-compileSource (SCPos pos:scs) = (DCPos pos:) <$> compileSource scs
-compileSource (SCImports:scs) = do
-    dcs <- compileSource scs
-    return $ DCImports (gatherImports Set.empty dcs) : dcs
-compileSource (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps globalEnv) pos e Nothing) <*> compileSource scs
-compileSource (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps globalEnv) e) <*> compileSource scs
-compileSource (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource scs
-compileSource (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource scs
-compileSource (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource scs
-compileSource (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource scs
-compileSource (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps globalEnv) pos e) <*> compileSource scs
-compileSource (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBind (processHSVS ps globalEnv) pos e) <*> compileSource scs
-compileSource (SCValue pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileValue (processHSVS ps globalEnv) pos e) <*> compileSource scs
-compileSource (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
-compileSource [] = return []
+compileSource :: String -> [SourceComp] -> Either String [DestComp]
+compileSource m (SCChar c:scs) = (DCChar c:) <$> compileSource m scs
+compileSource m (SCPos pos:scs) = (DCPos pos:) <$> compileSource m scs
+compileSource m (SCImports:scs) = do
+    dcs <- compileSource m scs
+    return $ DCImports (gatherImports m Set.empty dcs) : dcs
+compileSource m (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps globalEnv) pos e Nothing) <*> compileSource m scs
+compileSource m (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps globalEnv) e) <*> compileSource m scs
+compileSource m (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource m scs
+compileSource m (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource m scs
+compileSource m (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource m scs
+compileSource m (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource m scs
+compileSource m (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps globalEnv) pos e) <*> compileSource m scs
+compileSource m (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBind (processHSVS ps globalEnv) pos e) <*> compileSource m scs
+compileSource m (SCValue pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileValue (processHSVS ps globalEnv) pos e) <*> compileSource m scs
+compileSource m (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
+compileSource m [] = return []
 
-gatherImports :: Set HSImport -> [DestComp] -> Set HSImport
-gatherImports is (DCChar _:dcs) = gatherImports is dcs
-gatherImports is (DCPos _:dcs) = gatherImports is dcs
-gatherImports is (DCExpr is' _:dcs) = gatherImports (is `Set.union` is') dcs
-gatherImports is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
-gatherImports is [] = is
+gatherImports :: String -> Set HSImport -> [DestComp] -> Set HSImport
+gatherImports m is (DCChar _:dcs) = gatherImports m is dcs
+gatherImports m is (DCPos _:dcs) = gatherImports m is dcs
+gatherImports m is (DCExpr is' _:dcs) = gatherImports m (is `Set.union` Set.filter p is') dcs where
+    p (HSIType m' _) = m /= m'
+    p (HSIVar m' _) = m /= m'
+gatherImports m is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
+gatherImports m is [] = is
 
 processHSVS :: [Param] -> Env -> Env
 processHSVS ps env = env{
