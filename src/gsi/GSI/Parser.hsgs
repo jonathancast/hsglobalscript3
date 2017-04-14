@@ -10,7 +10,7 @@ $gsimports
 gsposFmt :: GSValue
 gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
     $gsbclfield (gsvar "filename") pos $ \ posv ->
-        $gsbcstring [ $gsav $ posv, $gsae $ $gsbcstringlit ":", [gs:arg| undefined |] ]
+        $gsbcstring [ $gsav $ posv, [gs:arg| qq{:} |], [gs:arg| qq{§(undefined)} |] ]
 
 gsempty = $gsconstr (gsvar "empty") []
 
