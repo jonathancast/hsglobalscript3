@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gscons, gsnil, gscons_view) where
+module GSI.List (gsappend, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
