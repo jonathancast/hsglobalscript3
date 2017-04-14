@@ -13,7 +13,7 @@ gsmain = $gslambda $ \ gsrun -> [gs:expr hsvs=gsprocessargs,| impfor
 |]
 
 -- Loops over arguments to process them
-gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,parse,file,gspos,| analyze args.
+gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspos,| analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
@@ -30,10 +30,6 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,parse,fil
                 case right 'd. error log{§(gsv a): process §(gsv d) next}
             )
         )
-|]
-
-parse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,s,| analyze p.
-    case empty. left (pos.fmt pos qq{empty})
 |]
 
 file = [gs:value| <|> empty |]
