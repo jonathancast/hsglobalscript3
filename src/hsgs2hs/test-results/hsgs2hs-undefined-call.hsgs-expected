@@ -1,0 +1,11 @@
+{-# LINE 1 "./test-fixtures/undefined-call.hsgs" #-}
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.ByteCode (gsbcapply_w)
+import GSI.ByteCode (gsbchere_w)
+import GSI.StdLib (gsundefined)
+
+{-# LINE 2 "./test-fixtures/undefined-call.hsgs" #-}
+(gsbcapply_w (Pos "./test-fixtures/undefined-call.hsgs" 2 11) gsundefined [ GSArgExpr (Pos "./test-fixtures/undefined-call.hsgs" 2 11) (gsbchere_w (Pos "./test-fixtures/undefined-call.hsgs" 2 11)) ])
+{-# LINE 2 "./test-fixtures/undefined-call.hsgs" #-}
+                      

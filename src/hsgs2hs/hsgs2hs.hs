@@ -191,14 +191,16 @@ compileExpr env (EMissingCase pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
     HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` (HSLambda ["x"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "x")
   )
-compileExpr env (EVar pos v) = do
-    (isv, ev) <- case Map.lookup v (gsvars env) of
-        Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
-        Just (isv, ev) -> return (isv, ev)
-    return (
-        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
-        HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
-      )
+compileExpr env (EVar pos v) = case Map.lookup v (gsimplicits env) of
+    Nothing -> do
+        (isv, ev) <- case Map.lookup v (gsvars env) of
+            Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
+            Just (isv, ev) -> return (isv, ev)
+        return (
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
+            HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
+          )
+    Just _ -> compileApp env (EVar pos v) []
 compileExpr env (ENumber pos n) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnatural_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcnatural_w" `HSApp` hspos pos `HSApp` HSInteger n
@@ -450,10 +452,12 @@ globalEnv = Env{
         ("impfor", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpfor", HSVar "gsimpfor")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
         ("pos.fmt", (Set.singleton $ HSIVar "GSI.Parser" "gsposFmt", HSVar "gsposFmt")),
-        ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError"))
+        ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
+        ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined"))
     ],
     gsimplicits = Map.fromList [
-        ("error", [ ImHere ])
+        ("error", [ ImHere ]),
+        ("undefined", [ ImHere ])
     ],
     gsviews = Map.fromList [
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view")),

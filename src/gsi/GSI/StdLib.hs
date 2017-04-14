@@ -1,12 +1,12 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsimpfor, gsbcevalstring, gsbcevalstring_w) where
+module GSI.StdLib (gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsimpfor, gsbcevalstring, gsbcevalstring_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, gsundefined_value, gslambda, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbclfield, gsbcevalnatural, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbclfield, gsbcevalnatural, gsbcerror, gsbcundefined_w, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gscompose :: GSValue
 gscompose = $gslambda $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
@@ -57,3 +57,14 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
                 $gsbcerror pos_hs msg_s
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
+
+gsundefined = $gslambda $ \ posv -> $gsbcforce ($gsav posv) $ \ posv0 -> case posv0 of
+    GSRecord{} -> $gsbclfield (gsvar "filename") posv0 $ \ pos_filename ->
+        gsbcevalstring_w $gshere ($gsav pos_filename) $ \ pos_filename_s ->
+        $gsbclfield (gsvar "line") posv0 $ \ pos_line ->
+        $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
+        $gsbclfield (gsvar "col") posv0 $ \ pos_col ->
+        $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
+        let pos_hs = Pos pos_filename_s pos_line_n pos_col_n in
+        gsbcundefined_w pos_hs
+    _ -> $gsbcimplementationfailure $ "gsundefined " ++ gsvCode posv0 ++ " next"
