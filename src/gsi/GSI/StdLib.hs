@@ -58,13 +58,17 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
         _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
     -- > $gsbcerror pos msg
 
-gsundefined = $gslambda $ \ posv -> $gsbcforce ($gsav posv) $ \ posv0 -> case posv0 of
-    GSRecord{} -> $gsbclfield (gsvar "filename") posv0 $ \ pos_filename ->
-        gsbcevalstring_w $gshere ($gsav pos_filename) $ \ pos_filename_s ->
-        $gsbclfield (gsvar "line") posv0 $ \ pos_line ->
-        $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
-        $gsbclfield (gsvar "col") posv0 $ \ pos_col ->
-        $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
-        let pos_hs = Pos pos_filename_s pos_line_n pos_col_n in
+gsundefined = $gslambda $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
         gsbcundefined_w pos_hs
-    _ -> $gsbcimplementationfailure $ "gsundefined " ++ gsvCode posv0 ++ " next"
+
+gsbcevalpos_w :: Pos -> GSArg -> (Pos -> GSExpr) -> GSExpr
+gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
+    GSRecord{} ->
+        $gsbclfield (gsvar "filename") pos1v $ \ pos_filename ->
+        gsbcevalstring_w $gshere ($gsav pos_filename) $ \ pos_filename_s ->
+        $gsbclfield (gsvar "line") pos1v $ \ pos_line ->
+        $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
+        $gsbclfield (gsvar "col") pos1v $ \ pos_col ->
+        $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
+        k $ Pos pos_filename_s pos_line_n pos_col_n
+    _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"
