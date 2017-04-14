@@ -6,7 +6,9 @@ import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
 import GSI.ByteCode (gsbcarg, gsbcenter, gsbcundefined, gsbcconstr_view)
 $gsimports
 
-gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,s,| analyze p.
+gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=gsparsew,p,pos,s,| gsparsew p pos s|]
+
+gsparsew = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,| analyze p.
     case empty. left (pos.fmt pos qq{empty})
 |]
 
