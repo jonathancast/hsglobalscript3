@@ -45,18 +45,9 @@ gsbcevalstring_w pos sa k = w id sa where
         _ -> $gsbcimplementationfailure $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
 
 gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
-    $gsbcforce ($gsav posv) $ \ posv0 -> case posv0 of
-        GSRecord{} -> $gsbclfield (gsvar "filename") posv0 $ \ pos_filename ->
-            gsbcevalstring_w $gshere ($gsav pos_filename) $ \ pos_filename_s ->
-            $gsbclfield (gsvar "line") posv0 $ \ pos_line ->
-            $gsbcevalnatural ($gsav pos_line) $ \ pos_line_n ->
-            $gsbclfield (gsvar "col") posv0 $ \ pos_col ->
-            $gsbcevalnatural ($gsav pos_col) $ \ pos_col_n ->
-            let pos_hs = Pos pos_filename_s pos_line_n pos_col_n in
-            $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
-                $gsbcerror pos_hs msg_s
-        _ -> $gsbcimplementationfailure $ "gserror " ++ gsvCode posv0 ++ " next"
-    -- > $gsbcerror pos msg
+    gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
+    $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
+    $gsbcerror pos_hs msg_s
 
 gsundefined = $gslambda $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
         gsbcundefined_w pos_hs
