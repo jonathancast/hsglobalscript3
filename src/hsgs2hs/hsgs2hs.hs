@@ -479,6 +479,7 @@ globalEnv = Env{
         ("undefined", [ ImHere ])
     ],
     gsunaries = Map.fromList [
+        ("<|>", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unary_or", HSVar "gsparser_unary_or"))
     ],
     gsviews = Map.fromList [
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view")),

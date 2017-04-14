@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsposFmt, gsempty, gsempty_view) where
+module GSI.Parser (gsposFmt, gsparser_unary_or, gsempty, gsempty_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
@@ -9,6 +9,8 @@ $gsimports
 gsposFmt :: GSValue
 gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
     [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
+
+gsparser_unary_or = $gsundefined_value
 
 gsempty = $gsconstr (gsvar "empty") []
 

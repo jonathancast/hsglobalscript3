@@ -323,6 +323,7 @@ globalEnv = Env{
         ))
     ],
     leftops = Map.fromList [
+        ("<|>", ())
     ]
   }
 
