@@ -8,7 +8,7 @@ $gsimports
 
 gsposFmt :: GSValue
 gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
-    [gs:expr hsvs=pos,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(undefined)} |]
+    [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
 gsempty = $gsconstr (gsvar "empty") []
 
