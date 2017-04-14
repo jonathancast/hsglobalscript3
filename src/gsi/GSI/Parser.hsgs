@@ -3,10 +3,11 @@ module GSI.Parser (gsparse, gsposFmt, gsparser_unary_or, gsempty, gsempty_view) 
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
-import GSI.ByteCode (gsbcarg, gsbcenter, gsbcundefined, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcenter, gsbcconstr, gsbcundefined, gsbcconstr_view)
 $gsimports
 
-gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=gsparsew,p,pos,s,| gsparsew p pos s|]
+gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
+    [gs:expr hsvs=gsparsew,p,pos,s,| gsparsew (p undefined) pos s|]
 
 gsparsew = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,| analyze p.
     case empty. left (pos.fmt pos qq{empty})
@@ -18,7 +19,7 @@ gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
-gsempty = $gsconstr (gsvar "empty") []
+gsempty = $gslambda $ \ k -> $gsbcconstr (gsvar "empty") []
 
 gsempty_view :: GSValue
 gsempty_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
