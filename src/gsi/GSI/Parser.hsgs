@@ -23,7 +23,7 @@ gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
 gsempty = $gslambda $ \ k -> $gsbcconstr (gsvar "empty") []
 
-gsprimunit = $gsundefined_value
+gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsae $ $gsbcundefined ]
 
 gsempty_view :: GSValue
 gsempty_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
