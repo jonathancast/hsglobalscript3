@@ -12,6 +12,7 @@ gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
 gsparsew = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,s,| analyze p.
     case empty. left (pos.fmt pos qq{empty})
     case unit-plus 'x 'p1. (analyze s.
+        case nil. right x
     )
 |]
 
