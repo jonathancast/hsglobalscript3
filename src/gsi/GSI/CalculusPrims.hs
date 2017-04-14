@@ -79,6 +79,7 @@ fmtValue v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCod
 fmtValueAtom :: GSValue -> IO (String -> String)
 fmtValueAtom GSError{} = return ('_':)
 fmtValueAtom v@GSConstr{} = fmtParens <$> fmtValue v
+fmtValueAtom GSThunk{} = return ('_':)
 fmtValueAtom v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
 
 fmtParens :: (String -> String) -> String -> String
