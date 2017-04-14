@@ -313,11 +313,14 @@ globalEnv = Env{
             EOpen <$> expr env,
             Nothing
         ))
+    ],
+    leftops = Map.fromList [
     ]
   }
 
 data Env = Env {
-    lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr)))
+    lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr))),
+    leftops :: Map String ()
   }
 
 scCode :: SourceComp -> String
