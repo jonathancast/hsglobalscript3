@@ -164,6 +164,7 @@ data SourceComp
 data Expr
   = EMissingCase Pos
   | EVar Pos String
+  | EUnary Pos String
   | ENumber Pos Integer
   | EQLO Pos String [QLOItem]
   | EPat Pattern
@@ -336,6 +337,7 @@ scCode SCValue{} = "SCValue"
 eCode :: Expr -> String
 eCode EMissingCase{} = "EMissingCase"
 eCode EVar{} = "EVar"
+eCode EUnary{} = "EUnary"
 eCode ENumber{} = "ENumber"
 eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
