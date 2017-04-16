@@ -35,6 +35,8 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
 
 file = [gs:value| <|> parser.unit undefined |]
 
+gsfileDocument = $gsundefined_value
+
 gspos = $gslambda $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
     (gsvar "line", $gsav l),
