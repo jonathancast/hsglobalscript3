@@ -33,7 +33,7 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
         )
 |]
 
-file = [gs:value| <|> parser.unit undefined |]
+file = [gs:value| <|> parser.unit file.document |]
 
 gsfileDocument = $gsundefined_value
 
