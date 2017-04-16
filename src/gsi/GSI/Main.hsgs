@@ -27,7 +27,8 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
                 case left 'err. impfor
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
-                case right 'd. error log{§(gsv a): process §(gsv d) next}
+                case right 'd. (analyze d.
+                )
             )
         )
 |]
