@@ -2,7 +2,7 @@
 module GSI.Main (gsmain) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gslambda, gsundefined_value, gsav)
+import GSI.Value (gslambda, gsconstr, gsundefined_value, gsav)
 import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined)
 $gsimports
 
@@ -35,7 +35,7 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
 
 file = [gs:value| <|> parser.unit file.document |]
 
-gsfileDocument = $gsundefined_value
+gsfileDocument = $gsconstr (gsvar "document") []
 
 gspos = $gslambda $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
