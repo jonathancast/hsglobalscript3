@@ -10,10 +10,11 @@ import System.Exit (ExitCode(..), exitWith)
 import System.IO (hPutStrLn, stderr)
 
 import GSI.Util (gsfatal, fmtPos, gshere)
-import GSI.Value (gsapply, gsundefined_value)
+import GSI.Value (gslambda, gsapply, gsundefined_value, gsae)
 import GSI.ThreadType (ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
+import GSI.ByteCode (gsbcarg, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody)
 import GSI.Env (GSEnvArgs(..))
 import GSI.Main (gsmain)
 
@@ -23,7 +24,9 @@ main = do
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
-gsrun = $gsundefined_value
+gsrun = $gslambda $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
+    t <- $gsbcimpbind $ $gsae $ $gsbcundefined
+    $gsbcimpbody $ $gsae $ $gsbcundefined
 
 data GSIThread = GSIThread{
     envArgs :: MVar GSEnvArgs
