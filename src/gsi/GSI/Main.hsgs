@@ -7,13 +7,13 @@ import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined, gsbcconstr_view)
 $gsimports
 
 -- Main function (call this to start your interpreter)
-gsmain = $gslambda $ \ gsrun -> [gs:expr hsvs=gsprocessargs,| impfor
+gsmain = $gslambda $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gsrun,| impfor
         'args ← env.get-args;
-    . gsprocessargs args
+    . gsprocessargs args gsrun
 |]
 
 -- Loops over arguments to process them
-gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspos,| analyze args.
+gsprocessargs = $gslambda $ \ args -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gsrun,args,file,gspos,| analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
@@ -22,13 +22,13 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
                   . error log{Process §(gsv a) (§(gsv e)) next}
         )
         case right 'st. (analyze st #is.dir.
-            case true. gsprocessargs as -- Ignore all arguments until we start failing tests for it
+            case true. gsprocessargs as gsrun -- Ignore all arguments until we start failing tests for it
             case false. impfor 's ← file.read a;. (analyze parse file (gspos a 1 1) s.
                 case left 'err. impfor
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document. error log{§(gsv a): process document next}
+                    case file.document. gsrun (gsundefined (gspos a 1 1)) as -- §(gsv a): process document next
                 )
             )
         )
