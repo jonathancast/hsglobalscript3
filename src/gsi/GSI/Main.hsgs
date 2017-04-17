@@ -28,6 +28,7 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
+                    case file.document. error log{§(gsv a): process document next}
                 )
             )
         )
