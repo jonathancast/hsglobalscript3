@@ -3,7 +3,7 @@ module GSI.Main (gsmain) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda, gsconstr, gsundefined_value, gsav)
-import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined)
+import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined, gsbcconstr_view)
 $gsimports
 
 -- Main function (call this to start your interpreter)
@@ -36,6 +36,8 @@ gsprocessargs = $gslambda $ \ args -> [gs:expr hsvs=gsprocessargs,args,file,gspo
 file = [gs:value| <|> parser.unit file.document |]
 
 gsfileDocument = $gsconstr (gsvar "document") []
+
+gsfileDocument_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
 gspos = $gslambda $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
