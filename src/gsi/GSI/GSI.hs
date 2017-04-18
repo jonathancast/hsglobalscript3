@@ -1,11 +1,14 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
 module GSI.GSI (gsigsundefined, gsicreateThread, gsigsiThreadData) where
 
+import Control.Concurrent.MVar (newMVar)
+
 import GSI.Util (Pos)
 import GSI.Value (GSValue, GSExternal, gsimpprim, gsundefined_value)
 import GSI.ThreadType (Thread, ThreadData)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal)
+import GSI.Env (GSEnvArgs(..))
 
 gsigsundefined = $gsundefined_value
 
@@ -18,7 +21,12 @@ gsiprimcreateThread pos t tdv vv = do
     $apiImplementationFailure $ "gsiprimcreateThread next"
 
 gsigsiThreadData :: GSValue
-gsigsiThreadData = $gsundefined_value
+gsigsiThreadData = $gsimpprim gsiprimgsiThreadData
+
+gsiprimgsiThreadData :: Pos -> Thread -> GSValue -> IO GSValue
+gsiprimgsiThreadData pos t args = do
+    as <- newMVar $ GSEnvArgs $ args
+    $apiImplementationFailure $ "gsiprimgsiThreadData next"
 
 data GSIThreadData = forall d. ThreadData d => GSIThreadData d
 
