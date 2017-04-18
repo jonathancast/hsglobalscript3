@@ -13,7 +13,12 @@ import GSI.Functions (gsapiEvalExternal)
 import GSI.Env (GSEnvArgs(..))
 
 gsigsapply :: GSValue
-gsigsapply = $gsundefined_value
+gsigsapply = $gsimpprim gsiprimgsapply
+
+gsiprimgsapply :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
+gsiprimgsapply pos t fv asv = do
+    GSIGSValue f <- gsapiEvalExternal pos fv
+    $apiImplementationFailure $ "gsiprimgsapply next"
 
 gsigsundefined = $gsundefined_value
 
