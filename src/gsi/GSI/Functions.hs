@@ -11,7 +11,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtError)
 import GSI.ThreadType (ThreadException(..))
-import GSI.Value (GSValue(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsvCode)
+import GSI.Value (GSValue(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -46,6 +46,9 @@ gsevalString pos v = gsevalString_w pos id v where
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ fmtVarAtom c " next"
     gsevalString_w pos ds v =
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
+
+gsevalExternal :: GSExternal a => Pos -> GSValue -> IO a
+gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
 gsapiEvalString pos fnv = do
