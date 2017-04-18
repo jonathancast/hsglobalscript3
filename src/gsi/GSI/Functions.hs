@@ -36,6 +36,10 @@ gsevalChar pos (GSRune ch) = return ch
 gsevalChar pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
 
+gsevalList :: Pos -> GSValue -> IO [GSValue]
+gsevalList pos v = gsevalList_w pos id v where
+    gsevalList_w pos ds v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ gsvCode v ++ " next"
+
 gsevalString :: Pos -> GSValue -> IO String
 gsevalString pos v = gsevalString_w pos id v where
     gsevalString_w pos ds (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
