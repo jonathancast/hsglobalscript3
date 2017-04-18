@@ -28,7 +28,7 @@ gsigsiThreadData = $gsimpprim gsiprimgsiThreadData
 gsiprimgsiThreadData :: Pos -> Thread -> GSValue -> IO GSValue
 gsiprimgsiThreadData pos t args = do
     as <- newMVar $ GSEnvArgs $ args
-    $apiImplementationFailure $ "gsiprimgsiThreadData next"
+    gsiprimthreadData pos t GSIThread{ envArgs = as }
 
 gsiprimthreadData :: ThreadData d => Pos -> Thread -> d -> IO GSValue
 gsiprimthreadData pos t td = do
