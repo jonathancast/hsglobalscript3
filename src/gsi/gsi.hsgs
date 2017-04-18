@@ -13,7 +13,7 @@ import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody)
 import GSI.Env (GSEnvArgs(..))
-import GSI.GSI (gsicreateThread, GSIThread(..))
+import GSI.GSI (GSIThread(..))
 import GSI.Main (gsmain)
 $gsimports
 
@@ -25,5 +25,5 @@ main = do
 
 gsrun = $gslambda $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
     td <- [gs:bind hsvs=args,| gsiThreadData args |]
-    t <- $gsbcimpbind $ $gsae $ $gsbcapply gsicreateThread [ [gs:arg hsvs=td,| td |], [gs:arg | undefined |] ] -- gs{gsbcapply gsmain [prog]}
+    t <- $gsbcimpbind $ $gsae [gs:expr hsvs=td,| createThread td undefined |] -- gs{gsbcapply gsmain [prog]}
     $gsbcimpbody $ $gsae $ $gsbcundefined
