@@ -55,12 +55,7 @@ gsevalExternal pos (GSError err) = throwGSError err
 gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
-gsapiEvalString pos fnv = do
-    mbs <- try $ gsevalString pos fnv
-    case mbs of
-        Right s -> return s
-        Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
-        Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalString (gsevalString threw unknown exception " ++ displayException e ++ ") next"
+gsapiEvalString pos fnv = gsevalForApi $ gsevalString pos fnv
 
 gsapiEvalExternal :: GSExternal a => Pos -> GSValue -> IO a
 gsapiEvalExternal pos v = gsevalForApi $ gsevalExternal pos v
