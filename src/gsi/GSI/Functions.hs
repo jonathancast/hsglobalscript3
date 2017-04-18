@@ -63,13 +63,16 @@ gsapiEvalString pos fnv = do
         Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalString (gsevalString threw unknown exception " ++ displayException e ++ ") next"
 
 gsapiEvalExternal :: GSExternal a => Pos -> GSValue -> IO a
-gsapiEvalExternal pos v = do
-    mbx <- try $ gsevalExternal pos v
+gsapiEvalExternal pos v = gsevalForApi $ gsevalExternal pos v
+
+gsevalForApi :: IO a -> IO a
+gsevalForApi ev = do
+    mbx <- try ev
     case mbx of
         Right x -> return x
         Left (GSExcUndefined st) -> throwIO $ TEError $ GSErrUnimpl st
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
-        Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalExternal (gsevalExternal threw unknown exception (" ++ show e ++ ")) next"
+        Left (e :: GSException) -> $apiImplementationFailure $ "gsevalForApi (eval threw unknown exception (" ++ show e ++ ")) next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
