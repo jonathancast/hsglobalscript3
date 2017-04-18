@@ -9,7 +9,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Error (GSException(..), fmtError)
+import GSI.Error (GSError(..), GSException(..), throwGSError, fmtError)
 import GSI.ThreadType (ThreadException(..))
 import GSI.Value (GSValue(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsvCode)
 import GSI.Eval (evalSync)
@@ -67,6 +67,7 @@ gsapiEvalExternal pos v = do
     mbx <- try $ gsevalExternal pos v
     case mbx of
         Right x -> return x
+        Left (GSExcUndefined st) -> throwIO $ TEError $ GSErrUnimpl st
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
         Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalExternal (gsevalExternal threw unknown exception (" ++ show e ++ ")) next"
 
