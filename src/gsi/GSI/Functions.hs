@@ -38,6 +38,10 @@ gsevalChar pos v =
 
 gsevalList :: Pos -> GSValue -> IO [GSValue]
 gsevalList pos v = gsevalList_w pos id v where
+    gsevalList_w pos ds (GSThunk ts) = do
+        v <- evalSync [StackTrace pos []] ts
+        gsevalList_w pos ds v
+    gsevalList_w pos ds (GSError err) = throwGSError err
     gsevalList_w pos ds v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ gsvCode v ++ " next"
 
 gsevalString :: Pos -> GSValue -> IO String
