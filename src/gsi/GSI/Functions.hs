@@ -48,6 +48,10 @@ gsevalString pos v = gsevalString_w pos id v where
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
 gsevalExternal :: GSExternal a => Pos -> GSValue -> IO a
+gsevalExternal pos (GSThunk ts) = do
+    v <- evalSync [StackTrace pos []] ts
+    gsevalExternal pos v
+gsevalExternal pos (GSError err) = throwGSError err
 gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
