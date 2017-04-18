@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsapiEvalString, gsapiEvalExternal, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalExternal, gsfmterrormsg) where
 
 import Control.Exception (Exception(..), throwIO, try)
 
@@ -61,6 +61,9 @@ gsevalExternal pos (GSExternal e) = case fromExternal e of
     Just x -> return x
 gsevalExternal _ (GSImplementationFailure pos1 err) = throwIO $ GSExcImplementationFailure pos1 err
 gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
+
+gsapiEvalList :: Pos -> GSValue -> IO [GSValue]
+gsapiEvalList pos xnv = gsevalForApi $ gsevalList pos xnv
 
 gsapiEvalString :: Pos -> GSValue -> IO String
 gsapiEvalString pos fnv = gsevalForApi $ gsevalString pos fnv
