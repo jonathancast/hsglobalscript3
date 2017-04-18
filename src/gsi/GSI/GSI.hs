@@ -21,7 +21,7 @@ gsigsapply = $gsimpprim gsiprimgsapply
 gsiprimgsapply :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimgsapply pos t fv asv = do
     GSIGSValue f <- gsapiEvalExternal pos fv
-    asgsi <- gsapiEvalList pos asv
+    as <- gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ (GSIGSValue a) -> return a)
     $apiImplementationFailure $ "gsiprimgsapply next"
 
 gsigsundefined = $gsundefined_value
