@@ -1,7 +1,7 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..),
+    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda, gslambda_w,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
@@ -11,6 +11,8 @@ module GSI.Value (
 
 import Data.Map (Map)
 import qualified Data.Map as Map
+
+import Data.Typeable (Typeable(..), cast, typeRep)
 
 import Control.Concurrent (MVar, newMVar)
 
@@ -146,6 +148,19 @@ instance GSImpPrimType (IO GSValue) where
 
 instance GSImpPrimType f => GSImpPrimType (GSValue -> f) where
     gsimpprim_ww f = GSLambda $ \ x -> gsimpprim_ww (flip f x)
+
+data SomeGSExternal = forall e. GSExternal e => SomeGSExternal e
+
+class Typeable e => GSExternal e where
+    toExternal   :: e -> SomeGSExternal
+    fromExternal :: SomeGSExternal -> Maybe e
+
+    toExternal = SomeGSExternal
+    fromExternal (SomeGSExternal e) = cast e
+
+    externalType :: proxy e -> String
+
+    externalType = show . typeRep
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
