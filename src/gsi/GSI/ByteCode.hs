@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
@@ -18,7 +18,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExternal(..), GSArg(..), GSStackFrame(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
@@ -55,6 +55,11 @@ gsbcconstr_w :: Pos -> GSVar -> [GSArg] -> GSExpr
 gsbcconstr_w pos c as = GSExpr $ \ st cs -> do
     asv <- mapM (gsprepare_w pos) as
     aceReturn (GSConstr pos c asv) st
+
+gsbcexternal = varE 'gsbcexternal_w `appE` gshere
+
+gsbcexternal_w :: GSExternal e => Pos -> e -> GSExpr
+gsbcexternal_w pos e = gsbcimplementationfailure_w $gshere "gsbcexternal next"
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
