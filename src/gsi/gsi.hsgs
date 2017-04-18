@@ -13,7 +13,7 @@ import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody)
 import GSI.Env (GSEnvArgs(..))
-import GSI.GSI (gsicreateThread, GSIThread(..), gsigsiThreadData)
+import GSI.GSI (gsicreateThread, GSIThread(..))
 import GSI.Main (gsmain)
 $gsimports
 
@@ -24,6 +24,6 @@ main = do
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
 gsrun = $gslambda $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
-    td <- $gsbcimpbind $ $gsae $ $gsbcapply gsigsiThreadData [ [gs:arg hsvs=args,| args |] ]
+    td <- $gsbcimpbind $ $gsae [gs:expr hsvs=args,| gsiThreadData args |]
     t <- $gsbcimpbind $ $gsae $ $gsbcapply gsicreateThread [ $gsav td, $gsae $ $gsbcundefined ] -- gs{$gsbcapply gsmain [prog]}
     $gsbcimpbody $ $gsae $ $gsbcundefined
