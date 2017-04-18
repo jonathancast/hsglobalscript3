@@ -55,6 +55,7 @@ gsevalExternal pos (GSError err) = throwGSError err
 gsevalExternal pos (GSExternal e) = case fromExternal e of
     Nothing -> throwIO $ GSExcImplementationFailure $gshere $ "Got the wrong type of external"
     Just x -> return x
+gsevalExternal _ (GSImplementationFailure pos1 err) = throwIO $ GSExcImplementationFailure pos1 err
 gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
