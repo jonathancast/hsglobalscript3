@@ -56,6 +56,7 @@ evalSync cs mv = do
                 GSImp{} -> return v
                 GSLambda{} -> return v
                 _ -> return $ $gsimplementationfailure $ "evalSync (GSIndirection (GSClosure _ " ++ bcoCode bco ++ ")) next"
+            GSExternal{} -> return v
             _ -> return $ $gsimplementationfailure $ "evalSync (GSIndirection " ++ gsvCode v ++ ") next"
         _ -> return $ $gsimplementationfailure $ "evalSync " ++ stCode st ++ " next"
 
