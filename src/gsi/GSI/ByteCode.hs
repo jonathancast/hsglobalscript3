@@ -59,7 +59,7 @@ gsbcconstr_w pos c as = GSExpr $ \ st cs -> do
 gsbcexternal = varE 'gsbcexternal_w `appE` gshere
 
 gsbcexternal_w :: GSExternal e => Pos -> e -> GSExpr
-gsbcexternal_w pos e = gsbcimplementationfailure_w $gshere "gsbcexternal next"
+gsbcexternal_w pos e = GSExpr $ \ st cs -> aceReturn (GSExternal (toExternal e)) st
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
