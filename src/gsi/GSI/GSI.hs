@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsundefined, gsicreateThread) where
+module GSI.GSI (gsigsundefined, gsicreateThread, gsigsiThreadData) where
 
 import GSI.Util (Pos)
 import GSI.Value (GSValue, GSExternal, gsimpprim, gsundefined_value)
@@ -16,6 +16,9 @@ gsiprimcreateThread :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimcreateThread pos t tdv vv = do
     td <- gsapiEvalExternal pos tdv :: IO GSIThreadData
     $apiImplementationFailure $ "gsiprimcreateThread next"
+
+gsigsiThreadData :: GSValue
+gsigsiThreadData = $gsundefined_value
 
 data GSIThreadData = forall d. ThreadData d => GSIThreadData d
 
