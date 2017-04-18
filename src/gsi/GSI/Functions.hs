@@ -52,6 +52,9 @@ gsevalExternal pos (GSThunk ts) = do
     v <- evalSync [StackTrace pos []] ts
     gsevalExternal pos v
 gsevalExternal pos (GSError err) = throwGSError err
+gsevalExternal pos (GSExternal e) = case fromExternal e of
+    Nothing -> throwIO $ GSExcImplementationFailure $gshere $ "Got the wrong type of external"
+    Just x -> return x
 gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
 
 gsapiEvalString :: Pos -> GSValue -> IO String
