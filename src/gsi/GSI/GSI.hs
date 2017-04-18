@@ -10,10 +10,10 @@ import GSI.Value (GSValue(..), GSExternal(..), gslambda, gsimpprim, gsundefined_
 import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal)
-import GSI.ByteCode (gsbcundefined)
+import GSI.ByteCode (gsbcexternal, gsbcundefined)
 import GSI.Env (GSEnvArgs(..))
 
-gsigsinject = $gslambda $ \ v -> $gsbcundefined
+gsigsinject = $gslambda $ \ v -> $gsbcexternal (GSIGSValue v)
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
