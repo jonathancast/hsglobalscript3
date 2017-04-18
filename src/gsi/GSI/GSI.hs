@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsapply, gsigsundefined, gsicreateThread, GSIThread(..), gsigsiThreadData) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsicreateThread, GSIThread(..), gsigsiThreadData) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 
@@ -11,6 +11,8 @@ import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertT
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal)
 import GSI.Env (GSEnvArgs(..))
+
+gsigsinject = $gsundefined_value
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
