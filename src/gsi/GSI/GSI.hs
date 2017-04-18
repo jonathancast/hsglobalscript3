@@ -6,13 +6,14 @@ import Control.Concurrent.MVar (MVar, newMVar)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.Value (GSValue(..), GSExternal(..), gsimpprim, gsundefined_value)
+import GSI.Value (GSValue(..), GSExternal(..), gslambda, gsimpprim, gsundefined_value)
 import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal)
+import GSI.ByteCode (gsbcundefined)
 import GSI.Env (GSEnvArgs(..))
 
-gsigsinject = $gsundefined_value
+gsigsinject = $gslambda $ \ v -> $gsbcundefined
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
