@@ -17,3 +17,4 @@ src/gsi/GSI/Main\.hs$
 src/gsi/gsi$
 bin/gsi$
 src/gsi/GSI/Parser.hs$
+src/gsi/gsi.hs$
