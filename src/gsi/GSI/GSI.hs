@@ -28,6 +28,10 @@ gsiprimgsiThreadData pos t args = do
     as <- newMVar $ GSEnvArgs $ args
     $apiImplementationFailure $ "gsiprimgsiThreadData next"
 
+gsiprimthreadData :: ThreadData d => Pos -> Thread -> d -> IO GSValue
+gsiprimthreadData pos t td = do
+    $apiImplementationFailure $ "gsiprimthreadData next"
+
 data GSIThreadData = forall d. ThreadData d => GSIThreadData d
 
 instance GSExternal GSIThreadData
