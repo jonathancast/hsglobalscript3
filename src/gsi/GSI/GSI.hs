@@ -51,3 +51,7 @@ instance ThreadData GSIThread where
 gsiThreadComponents =
     insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
     emptyThreadDataComponents
+
+newtype GSIGSValue = GSIGSValue GSValue
+
+instance GSExternal GSIGSValue
