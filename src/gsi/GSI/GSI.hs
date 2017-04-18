@@ -9,7 +9,7 @@ import GSI.Util (Pos, fmtPos, gshere)
 import GSI.Value (GSValue(..), GSExternal(..), gslambda, gsimpprim, gsundefined_value)
 import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import API (apiImplementationFailure)
-import GSI.Functions (gsapiEvalExternal)
+import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcexternal, gsbcundefined)
 import GSI.Env (GSEnvArgs(..))
 
@@ -21,6 +21,7 @@ gsigsapply = $gsimpprim gsiprimgsapply
 gsiprimgsapply :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimgsapply pos t fv asv = do
     GSIGSValue f <- gsapiEvalExternal pos fv
+    asgsi <- gsapiEvalList pos asv
     $apiImplementationFailure $ "gsiprimgsapply next"
 
 gsigsundefined = $gsundefined_value
