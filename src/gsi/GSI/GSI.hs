@@ -6,7 +6,7 @@ import Control.Concurrent.MVar (MVar, newMVar)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.Value (GSValue, GSExternal, gsimpprim, gsundefined_value)
+import GSI.Value (GSValue(..), GSExternal(..), gsimpprim, gsundefined_value)
 import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal)
@@ -32,7 +32,7 @@ gsiprimgsiThreadData pos t args = do
 
 gsiprimthreadData :: ThreadData d => Pos -> Thread -> d -> IO GSValue
 gsiprimthreadData pos t td = do
-    $apiImplementationFailure $ "gsiprimthreadData next"
+    return $ GSExternal $ toExternal $ GSIThreadData td
 
 -- ↓ This wraps up an §emph{arbitrary} §hs{ThreadData} value for then including into a GSValue
 data GSIThreadData = forall d. ThreadData d => GSIThreadData d
