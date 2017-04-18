@@ -1,22 +1,19 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import Control.Concurrent.MVar (MVar, newMVar)
+import Control.Concurrent.MVar (newMVar)
 import Control.Exception (SomeException, catch, displayException)
-
-import Component.Monad (mvarContents)
 
 import System.Environment (getArgs)
 import System.Exit (ExitCode(..), exitWith)
 import System.IO (hPutStrLn, stderr)
 
-import GSI.Util (gsfatal, fmtPos, gshere)
+import GSI.Util (gsfatal, gshere)
 import GSI.Value (gslambda, gsapply, gsundefined_value, gsav, gsae)
-import GSI.ThreadType (ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody)
 import GSI.Env (GSEnvArgs(..))
-import GSI.GSI (gsicreateThread, gsigsiThreadData)
+import GSI.GSI (gsicreateThread, GSIThread(..), gsigsiThreadData)
 import GSI.Main (gsmain)
 
 main = do
@@ -29,15 +26,3 @@ gsrun = $gslambda $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
     td <- $gsbcimpbind $ $gsae $ $gsbcapply gsigsiThreadData [ $gsav args ]
     t <- $gsbcimpbind $ $gsae $ $gsbcapply gsicreateThread [ $gsav td, $gsae $ $gsbcundefined ] -- gs{$gsbcapply gsmain [prog]}
     $gsbcimpbody $ $gsae $ $gsbcundefined
-
-data GSIThread = GSIThread{
-    envArgs :: MVar GSEnvArgs
-  }
-
-instance ThreadData GSIThread where
-    component d = fetchThreadDataComponent gsiThreadComponents d
-    threadTypeName _ = fmtPos $gshere "GSIThread"
-
-gsiThreadComponents =
-    insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
-    emptyThreadDataComponents

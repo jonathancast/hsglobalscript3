@@ -1,11 +1,13 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsundefined, gsicreateThread, gsigsiThreadData) where
+module GSI.GSI (gsigsundefined, gsicreateThread, GSIThread(..), gsigsiThreadData) where
 
-import Control.Concurrent.MVar (newMVar)
+import Control.Concurrent.MVar (MVar, newMVar)
 
-import GSI.Util (Pos)
+import Component.Monad (mvarContents)
+
+import GSI.Util (Pos, fmtPos, gshere)
 import GSI.Value (GSValue, GSExternal, gsimpprim, gsundefined_value)
-import GSI.ThreadType (Thread, ThreadData)
+import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal)
 import GSI.Env (GSEnvArgs(..))
@@ -32,6 +34,20 @@ gsiprimthreadData :: ThreadData d => Pos -> Thread -> d -> IO GSValue
 gsiprimthreadData pos t td = do
     $apiImplementationFailure $ "gsiprimthreadData next"
 
+-- ↓ This wraps up an §emph{arbitrary} §hs{ThreadData} value for then including into a GSValue
 data GSIThreadData = forall d. ThreadData d => GSIThreadData d
 
 instance GSExternal GSIThreadData
+
+-- ↓ This is the §hs{ThreadData} value for a §gs{gsi.m} thread specifically
+data GSIThread = GSIThread{
+    envArgs :: MVar GSEnvArgs
+  }
+
+instance ThreadData GSIThread where
+    component d = fetchThreadDataComponent gsiThreadComponents d
+    threadTypeName _ = fmtPos $gshere "GSIThread"
+
+gsiThreadComponents =
+    insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
+    emptyThreadDataComponents
