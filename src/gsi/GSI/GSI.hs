@@ -20,6 +20,7 @@ gsicreateThread = $gsimpprim gsiprimcreateThread
 gsiprimcreateThread :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimcreateThread pos t tdv vv = do
     td <- gsapiEvalExternal pos tdv :: IO GSIThreadData
+    v <- gsapiEvalExternal pos vv :: IO GSIGSValue
     $apiImplementationFailure $ "gsiprimcreateThread next"
 
 gsigsiThreadData :: GSValue
