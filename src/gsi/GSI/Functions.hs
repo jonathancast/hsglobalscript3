@@ -63,7 +63,8 @@ gsapiEvalExternal pos v = do
     mbx <- try $ gsevalExternal pos v
     case mbx of
         Right x -> return x
-        Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalExternal (gsevalExternal threw unknown exception " ++ displayException e ++ ") next"
+        Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
+        Left (e :: GSException) -> $apiImplementationFailure $ "gsapiEvalExternal (gsevalExternal threw unknown exception (" ++ show e ++ ")) next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
