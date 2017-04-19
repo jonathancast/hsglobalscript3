@@ -21,3 +21,4 @@ ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load
 echo '## gsi'
 
 ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./gsi no-such-file.gs
+ok_grep_errors '-- empty source file --' 'empty-file.gs:1:1: undefined' ./gsi empty-file.gs
