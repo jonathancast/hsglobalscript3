@@ -2,13 +2,15 @@
 module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
+import Control.Exception (SomeException, try, throwIO, fromException)
 
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
+import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSExternal(..), gslambda, gsimpprim, gsundefined_value, gsundefined_value_w, gsav)
-import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
-import GSI.Thread (createThread)
+import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
+import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcexternal, gsbcundefined)
@@ -40,7 +42,18 @@ gsiprimcreateThread pos t tdv vv = do
     return $ GSExternal $ toExternal t
 
 gsiexecMainThread :: GSValue
-gsiexecMainThread = $gsundefined_value
+gsiexecMainThread = $gsimpprim gsiprimexecMainThread
+
+gsiprimexecMainThread :: Pos -> Thread -> GSValue -> IO GSValue
+gsiprimexecMainThread pos tself tprogv = do
+    tprog <- gsapiEvalExternal pos tprogv
+    mb <- try $ execMainThread tprog :: IO (Either SomeException ())
+    case mb of
+        Left e | Just e' <- fromException e -> case e' :: GSException of
+            GSExcUndefined st -> throwIO $ TEError $ GSErrUnimpl st
+            _ -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e' ++ " next"
+        Left e -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e ++ " next"
+        Right () -> $apiImplementationFailure $ "gsiexecMainThread next"
 
 gsigsiThreadData :: GSValue
 gsigsiThreadData = $gsimpprim gsiprimgsiThreadData
