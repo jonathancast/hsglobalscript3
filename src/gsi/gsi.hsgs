@@ -26,4 +26,4 @@ main = do
 gsrun = $gslambda $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
     td <- [gs:bind hsvs=args,| gsiThreadData args |]
     t <- [gs:bind hsvs=td,prog,| createThread td prog |]
-    $gsbcimpbody $ $gsae $ $gsbcundefined
+    [gs:body| undefined |]
