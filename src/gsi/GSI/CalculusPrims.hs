@@ -83,6 +83,7 @@ fmtValueAtom v@GSConstr{} = fmtParens <$> fmtValue v
 fmtValueAtom GSThunk{} = return ('_':)
 fmtValueAtom (GSRune r)
     | r `elem` "/\\§()[]{}" = return $ ("r/"++) . ('\\':) . (r:) . ('/':)
+    | r == '\n' = return $ ("r/\\n/"++)
     | otherwise = return $ ("r/"++) . (r:) . ('/':)
 fmtValueAtom v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
 
