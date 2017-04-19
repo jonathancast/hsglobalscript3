@@ -10,6 +10,7 @@ import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcundefined_w, gsbcimpbody_w)
+import GSI.ThreadType (simpleThreadData)
 import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of
@@ -95,13 +96,13 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $gshere () $ gsundefined_value_w (Pos file line 1)
+        t <- createThread $gshere simpleThreadData $ gsundefined_value_w (Pos file line 1)
         return ()
     ,
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
-        t <- createThread $gshere () $ gsundefined_value_w (Pos file line 1)
+        t <- createThread $gshere simpleThreadData $ gsundefined_value_w (Pos file line 1)
         mb <- try $ execMainThread t
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"

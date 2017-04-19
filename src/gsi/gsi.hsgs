@@ -13,13 +13,13 @@ import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody)
 import GSI.Env (GSEnvArgs(..))
-import GSI.GSI (GSIThread(..))
+import GSI.GSI (GSIThread(..), gsiThreadData)
 import GSI.Main (gsmain)
 $gsimports
 
 main = do
     as <- newMVar . GSEnvArgs . $gslist . map $gsstring =<< getArgs
-    t <- createThread $gshere GSIThread{ envArgs = as } =<< $gsapply gsmain [gsrun]
+    t <- createThread $gshere (gsiThreadData GSIThread{ envArgs = as }) =<< $gsapply gsmain [gsrun]
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 

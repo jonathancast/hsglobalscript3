@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents, threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents, simpleThreadData, threadStateCode) where
 
 import qualified Data.Map as Map
 
@@ -15,9 +15,9 @@ import GSI.Util (Pos, gsfatal, fmtPos)
 import GSI.RTS (Event)
 import GSI.Error (GSError, fmtError)
 
-data Thread = forall d. ThreadData d => Thread {
+data Thread = Thread {
     state :: MVar ThreadState,
-    threadData :: d,
+    threadData :: ThreadData,
     wait :: Event
   }
 
@@ -52,13 +52,15 @@ emptyThreadDataComponents = ThreadDataComponents Map.empty
 
 class Typeable a => ThreadDataComponent a where
 
-class Typeable d => ThreadData d where
-    component :: ThreadDataComponent a => d -> Maybe (MonadComponentImpl IO b a)
-    threadTypeName :: d -> String
+data ThreadData = ThreadData {
+    component :: forall a b. ThreadDataComponent a => Maybe (MonadComponentImpl IO b a),
+    threadTypeName :: String
+  }
 
-instance ThreadData () where
-    component _ = Nothing
-    threadTypeName _ = "()"
+simpleThreadData = ThreadData {
+    component = Nothing,
+    threadTypeName = "()"
+  }
 
 data ThreadException
   = TEImplementationFailure Pos String

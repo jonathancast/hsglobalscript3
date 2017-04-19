@@ -19,7 +19,7 @@ import GSI.Main (gsmain)
 
 main = do
     as <- newMVar . GSEnvArgs . $gslist . map $gsstring =<< getArgs
-    t <- createThread $gshere TestGSIThread{ envArgs = as } =<< $gsapply gsmain [gsrun]
+    t <- createThread $gshere (testGSIThreadData TestGSIThread{ envArgs = as }) =<< $gsapply gsmain [gsrun]
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
@@ -29,9 +29,11 @@ data TestGSIThread = TestGSIThread{
     envArgs :: MVar GSEnvArgs
   }
 
-instance ThreadData TestGSIThread where
-    component d = fetchThreadDataComponent testGSIThreadComponents d
-    threadTypeName _ = fmtPos $gshere "TestGSIThread"
+testGSIThreadData :: TestGSIThread -> ThreadData
+testGSIThreadData d = ThreadData{
+    component = fetchThreadDataComponent testGSIThreadComponents d,
+    threadTypeName = fmtPos $gshere "TestGSIThread"
+  }
 
 testGSIThreadComponents =
     insertThreadDataComponent (\d -> mvarContents (envArgs d)) $

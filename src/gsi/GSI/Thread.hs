@@ -18,7 +18,7 @@ import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
 
-createThread :: ThreadData d => Pos -> d -> GSValue -> IO Thread
+createThread :: Pos -> ThreadData -> GSValue -> IO Thread
 createThread pos d v = do
     rec
         w <- newEvent
@@ -49,5 +49,5 @@ execMainThread t = do
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
 
-withThreadData :: Thread -> (forall s. ThreadData s => s -> a) -> a
+withThreadData :: Thread -> (ThreadData -> a) -> a
 withThreadData (Thread{threadData = d}) k = k d
