@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsimpfor, gsbcevalstring, gsbcevalstring_w) where
+module GSI.StdLib (gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsimpfor, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -51,6 +51,8 @@ gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
 
 gsundefined = $gslambda $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
         gsbcundefined_w pos_hs
+
+gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
 
 gsbcevalpos_w :: Pos -> GSArg -> (Pos -> GSExpr) -> GSExpr
 gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
