@@ -72,3 +72,7 @@ gsiThreadComponents =
 newtype GSIGSValue = GSIGSValue GSValue
 
 instance GSExternal GSIGSValue
+
+newtype GSIGSThread = GSIGSThread Thread
+
+instance GSExternal GSIGSThread
