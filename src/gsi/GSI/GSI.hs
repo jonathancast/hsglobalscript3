@@ -6,12 +6,13 @@ import Control.Concurrent.MVar (MVar, newMVar)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.Value (GSValue(..), GSExternal(..), gslambda, gsimpprim, gsundefined_value)
+import GSI.Value (GSValue(..), GSExternal(..), gslambda, gsimpprim, gsundefined_value, gsav)
 import GSI.ThreadType (Thread, ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcexternal, gsbcundefined)
 import GSI.Env (GSEnvArgs(..))
+import GSI.StdLib (gsbcevalpos)
 
 gsigsinject = $gslambda $ \ v -> $gsbcexternal (GSIGSValue v)
 
@@ -24,7 +25,7 @@ gsiprimgsapply pos t fv asv = do
     as <- gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ (GSIGSValue a) -> return a)
     $apiImplementationFailure $ "gsiprimgsapply next"
 
-gsigsundefined = $gslambda $ \ pos -> $gsbcundefined
+gsigsundefined = $gslambda $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcundefined
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
