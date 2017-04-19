@@ -37,7 +37,7 @@ gsiprimcreateThread pos t tdv vv = do
     GSIThreadData td <- gsapiEvalExternal pos tdv
     GSIGSValue v <- gsapiEvalExternal pos vv
     t <- createThread pos td v
-    return $ GSExternal $ toExternal $ GSIGSThread t
+    return $ GSExternal $ toExternal t
 
 gsigsiThreadData :: GSValue
 gsigsiThreadData = $gsimpprim gsiprimgsiThreadData
@@ -72,7 +72,3 @@ gsiThreadComponents =
 newtype GSIGSValue = GSIGSValue GSValue
 
 instance GSExternal GSIGSValue
-
-newtype GSIGSThread = GSIGSThread Thread
-
-instance GSExternal GSIGSThread
