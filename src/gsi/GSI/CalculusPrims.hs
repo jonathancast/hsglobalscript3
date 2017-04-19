@@ -80,6 +80,9 @@ fmtValueAtom :: GSValue -> IO (String -> String)
 fmtValueAtom GSError{} = return ('_':)
 fmtValueAtom v@GSConstr{} = fmtParens <$> fmtValue v
 fmtValueAtom GSThunk{} = return ('_':)
+fmtValueAtom (GSRune r)
+    | r `elem` "/\\§()[]{}" = return $ ("r/"++) . ('\\':) . (r:) . ('/':)
+    | otherwise = return $ ("r/"++) . (r:) . ('/':)
 fmtValueAtom v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
 
 fmtParens :: (String -> String) -> String -> String
