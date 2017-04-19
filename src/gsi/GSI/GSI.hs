@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsicreateThread, GSIThread(..), gsiThreadData, gsigsiThreadData) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 
@@ -38,6 +38,9 @@ gsiprimcreateThread pos t tdv vv = do
     GSIGSValue v <- gsapiEvalExternal pos vv
     t <- createThread pos td v
     return $ GSExternal $ toExternal t
+
+gsiexecMainThread :: GSValue
+gsiexecMainThread = $gsundefined_value
 
 gsigsiThreadData :: GSValue
 gsigsiThreadData = $gsimpprim gsiprimgsiThreadData
