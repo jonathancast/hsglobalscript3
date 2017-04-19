@@ -24,7 +24,7 @@ gsiprimgsapply pos t fv asv = do
     as <- gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ (GSIGSValue a) -> return a)
     $apiImplementationFailure $ "gsiprimgsapply next"
 
-gsigsundefined = $gsundefined_value
+gsigsundefined = $gslambda $ \ pos -> $gsbcundefined
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
