@@ -34,7 +34,7 @@ gsicreateThread = $gsimpprim gsiprimcreateThread
 
 gsiprimcreateThread :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimcreateThread pos t tdv vv = do
-    GSIThreadData td <- gsapiEvalExternal pos tdv
+    td <- gsapiEvalExternal pos tdv
     GSIGSValue v <- gsapiEvalExternal pos vv
     t <- createThread pos td v
     return $ GSExternal $ toExternal t
@@ -49,14 +49,8 @@ gsiprimgsiThreadData pos t args = do
 
 gsiprimthreadData :: Pos -> Thread -> ThreadData -> IO GSValue
 gsiprimthreadData pos t td = do
-    return $ GSExternal $ toExternal $ GSIThreadData td
+    return $ GSExternal $ toExternal td
 
--- ↓ This wraps up an §emph{arbitrary} §hs{ThreadData} value for then including into a GSValue
-data GSIThreadData = GSIThreadData ThreadData
-
-instance GSExternal GSIThreadData
-
--- ↓ This is the §hs{ThreadData} value for a §gs{gsi.m} thread specifically
 data GSIThread = GSIThread{
     envArgs :: MVar GSEnvArgs
   }

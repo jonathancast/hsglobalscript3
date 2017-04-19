@@ -22,7 +22,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
 import GSI.Error (GSError(..))
 import GSI.RTS (Event)
 import GSI.Syn (GSVar)
-import GSI.ThreadType (Thread)
+import GSI.ThreadType (Thread, ThreadData)
 
 -- BIG IMPORTANT NOTE:
 -- §begin§note
@@ -165,6 +165,7 @@ class Typeable e => GSExternal e where
 
 -- ↓ Instances that are here because we depend on the modules the types are in
 instance GSExternal Thread
+instance GSExternal ThreadData
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
