@@ -21,6 +21,7 @@ aceEnter cs0 v@(GSClosure cs1 bco) st = case bco of
     GSImp{} -> aceReturn v st
     GSLambda{} -> aceReturn v st
     _ -> aceThrow ($gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next") st
+aceEnter cs v@GSExternal{} st = aceReturn v st
 aceEnter cs e st = aceThrow ($gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next") st
 
 aceEnterExpr :: [StackTrace] -> GSExpr -> [GSStackFrame] -> IO GSValue
