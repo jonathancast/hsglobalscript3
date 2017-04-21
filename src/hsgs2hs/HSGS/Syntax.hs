@@ -322,6 +322,11 @@ globalEnv = Env{
             EImpGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
             EOpen <$> expr env,
             Nothing
+        )),
+        ("either-for", \ env -> (
+            EMonadGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
+            EOpen <$> expr env,
+            Nothing
         ))
     ],
     leftops = Map.fromList [
