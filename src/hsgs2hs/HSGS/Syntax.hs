@@ -178,6 +178,7 @@ data Expr
   | EQLO Pos String [QLOItem]
   | EPat Pattern
   | EImpGens [(Pos, Generator)] Pos
+  | EMonadGens [(Pos, Generator)] Pos
   | EOpen Expr
   | EApp Expr Arg
 
@@ -355,6 +356,7 @@ eCode ENumber{} = "ENumber"
 eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
 eCode EImpGens{} = "EImpGens"
+eCode EMonadGens{} = "EMonadGens"
 eCode EOpen{} = "EOpen"
 eCode EApp{} = "EApp"
 
