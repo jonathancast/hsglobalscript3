@@ -472,6 +472,7 @@ globalEnv = Env{
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
         ("compile-document", (Set.singleton $ HSIVar "GSI.Main" "gscompileDocument", HSVar "gscompileDocument")),
         ("createThread", (Set.singleton $ HSIVar "GSI.GSI" "gsicreateThread", HSVar "gsicreateThread")),
+        ("either-for", (Set.singleton $ HSIVar "GSI.Either" "gseitherFor", HSVar "gseitherFor")),
         ("empty", (Set.singleton $ HSIVar "GSI.Parser" "gsempty", HSVar "gsempty")),
         ("env.get-args", (Set.singleton $ HSIVar "GSI.Env" "gsenvGetArgs", HSVar "gsenvGetArgs")),
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),
