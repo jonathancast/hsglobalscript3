@@ -28,8 +28,10 @@ gsprocessargs = $gslambda $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document. (analyze compile-document (gspos a 1 1).
-                        case right 'prog. gsrun prog as
+                    case file.document. (analyze type-check-document (gspos a 1 1) gstyc.
+                        case right 'da. (analyze compile-document (gspos a 1 1).
+                            case right 'prog. gsrun prog as
+                        )
                     )
                 )
             )
@@ -37,6 +39,8 @@ gsprocessargs = $gslambda $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -
 |]
 
 file = [gs:value| <|> parser.unit file.document |]
+
+gstypeCheckDocument = $gslambda $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr| right undefined |]
 
 gscompileDocument = $gslambda $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
