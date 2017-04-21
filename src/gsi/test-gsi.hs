@@ -19,9 +19,11 @@ import GSI.Main (gsmain)
 
 main = do
     as <- newMVar . GSEnvArgs . $gslist . map $gsstring =<< getArgs
-    t <- createThread $gshere (testGSIThreadData TestGSIThread{ envArgs = as }) =<< $gsapply gsmain [gsrun]
+    t <- createThread $gshere (testGSIThreadData TestGSIThread{ envArgs = as }) =<< $gsapply gsmain [gstyc, gsrun]
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
+
+gstyc = $gsundefined_value
 
 gsrun = $gsundefined_value
 
