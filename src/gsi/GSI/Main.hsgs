@@ -28,13 +28,17 @@ gsprocessargs = $gslambda $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document. gsrun (gsundefined (gspos a 1 1)) as -- §(gsv a): process document next
+                    case file.document. (analyze compile-document (gspos a 1 1).
+                        case right 'prog. gsrun prog as
+                    )
                 )
             )
         )
 |]
 
 file = [gs:value| <|> parser.unit file.document |]
+
+gscompileDocument = $gslambda $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
 gsfileDocument = $gsconstr (gsvar "document") []
 
