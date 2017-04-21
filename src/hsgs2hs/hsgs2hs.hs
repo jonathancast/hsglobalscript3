@@ -185,7 +185,7 @@ compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
     fvs = case s of
         Nothing -> Set.empty
         Just (SigOpen vs) -> vs
-compileArg env pos (EGens gs pos1) s = compileGensArg env pos gs pos1
+compileArg env pos (EImpGens gs pos1) s = compileImpGensArg env pos gs pos1
 compileArg env pos e@EApp{} s = compileExprToArg env pos e
 compileArg env pos e s = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
@@ -396,49 +396,49 @@ compilePatApp env (PView pos v) as = do
 compilePatApp env (PApp pf px) as = compilePatApp env pf (px:as)
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
-compileGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileGensArg env pos gs pos1 = do
-    (is, hse) <- compileGens env gs pos1
+compileImpGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
+compileImpGensArg env pos gs pos1 = do
+    (is, hse) <- compileImpGens env gs pos1
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileGens :: Env -> [(Pos, Generator)] -> Pos -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileGens env ((pos, g):gs) pos1 = do
-    (is, hse) <- compileGenArg env pos g
-    (ist, hst) <- compileGens env gs pos1
+compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
+compileImpGens env ((pos, g):gs) pos1 = do
+    (is, hse) <- compileImpGenArg env pos g
+    (ist, hst) <- compileImpGens env gs pos1
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbccomposeimpgen_w", HSIType "GSI.Util" "Pos" ] `Set.union` is `Set.union` ist,
         HSVar "gsbccomposeimpgen_w" `HSApp` hspos pos `HSApp` hse `HSApp` (HSLambda ["env"] hst)
       )
-compileGens env [] pos1 = return (
+compileImpGens env [] pos1 = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptyimpgen_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcemptyimpgen_w" `HSApp` hspos pos1
   )
 
-compileGenArg :: Env -> Pos -> Generator -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileGenArg env pos g = do
-    (is, hse) <- compileGen env pos g
+compileImpGenArg :: Env -> Pos -> Generator -> StateT Integer (Either String) (Set HSImport, HSExpr)
+compileImpGenArg env pos g = do
+    (is, hse) <- compileImpGen env pos g
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileGen :: Env -> Pos -> Generator -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileGen env pos (ExecGenerator pos1 e) = do
+compileImpGen :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
+compileImpGen env pos (ExecGenerator pos1 e) = do
     (is, hse) <- compileArg env pos1 e Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpexecbind_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSVar "gsbcimpexecbind_w" `HSApp` hspos pos1 `HSApp` hse
       )
-compileGen env pos (BindGenerator x pos1 e) = do
+compileImpGen env pos (BindGenerator x pos1 e) = do
     (is, hse) <- compileArg env pos1 e Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpvarbind_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` is,
         HSVar "gsbcimpvarbind_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString x) `HSApp` hse
       )
-compileGen env pos g = $gsfatal $ "compileGen env pos " ++ genCode g ++ " next"
+compileImpGen env pos g = $gsfatal $ "compileImpGen env pos " ++ genCode g ++ " next"
 
 hspos :: Pos -> HSExpr
 hspos pos = HSConstr "Pos" `HSApp` HSString (filename pos) `HSApp` HSInteger (line pos) `HSApp` HSInteger (col pos)
@@ -521,7 +521,7 @@ globalEnv = Env{
             _ -> return []
         ),
         ("impfor", \ as -> case as of
-            (_, EGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
+            (_, EImpGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
             _ -> return []
         )
     ]

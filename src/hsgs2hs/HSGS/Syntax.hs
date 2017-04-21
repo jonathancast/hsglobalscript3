@@ -177,7 +177,7 @@ data Expr
   | ENumber Pos Integer
   | EQLO Pos String [QLOItem]
   | EPat Pattern
-  | EGens [(Pos, Generator)] Pos
+  | EImpGens [(Pos, Generator)] Pos
   | EOpen Expr
   | EApp Expr Arg
 
@@ -318,7 +318,7 @@ globalEnv = Env{
             )
         )),
         ("impfor", \ env -> (
-            EGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
+            EImpGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
             EOpen <$> expr env,
             Nothing
         ))
@@ -354,7 +354,7 @@ eCode EUnary{} = "EUnary"
 eCode ENumber{} = "ENumber"
 eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
-eCode EGens{} = "EGens"
+eCode EImpGens{} = "EImpGens"
 eCode EOpen{} = "EOpen"
 eCode EApp{} = "EApp"
 
