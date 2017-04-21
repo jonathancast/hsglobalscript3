@@ -186,6 +186,7 @@ compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
         Nothing -> Set.empty
         Just (SigOpen vs) -> vs
 compileArg env pos (EImpGens gs pos1) s = compileImpGensArg env pos gs pos1
+compileArg env pos (EMonadGens gs pos1) s = compileMonadGensArg env pos gs pos s
 compileArg env pos e@EApp{} s = compileExprToArg env pos e
 compileArg env pos e s = $gsfatal $ "compileArg " ++ eCode e ++ " next"
 
