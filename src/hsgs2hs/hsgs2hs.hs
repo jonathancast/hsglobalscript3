@@ -418,7 +418,11 @@ compileImpGensArg env pos gs pos1 = do
 
 compileMonadGens :: Env -> [(Pos, Generator)] -> Pos -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGens env ((pos, g):gs) pos1 s = $gsfatal "compileMonadGens env ((pos, g):gs) pos1 s next"
-compileMonadGens env [] pos1 s = $gsfatal "compileMonadGens env [] pos1 s next"
+compileMonadGens env [] pos1 s = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptygen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` unitis,
+    HSVar "gsbcemptygen_w" `HSApp` hspos pos1 `HSApp` (HSConstr "GSArgValue" `HSApp` unithse)
+  ) where
+    (unitis, unithse) = gsunit s
 
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
