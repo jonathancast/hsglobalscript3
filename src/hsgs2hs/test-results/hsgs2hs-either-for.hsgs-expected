@@ -9,6 +9,6 @@ import GSI.Either (gseitherFor)
 import GSI.Either (gsright)
 
 {-# LINE 2 "./test-fixtures/either-for.hsgs" #-}
-(gsbcapply_w (Pos "./test-fixtures/either-for.hsgs" 2 19) gseitherFor [ GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 29) (gsbcemptygen_w (Pos "./test-fixtures/either-for.hsgs" 2 29) (GSArgValue gsright)), GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 31) (gsbcarg_w (Pos "./test-fixtures/either-for.hsgs" 2 31) (\ env -> gsbcenter_w (Pos "./test-fixtures/either-for.hsgs" 2 31) x)) ])
+(gsbcapply_w (Pos "./test-fixtures/either-for.hsgs" 2 19) gseitherFor [ GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 29) (gsbcemptygen_w (Pos "./test-fixtures/either-for.hsgs" 2 29) (GSArgVar gsright)), GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 31) (gsbcarg_w (Pos "./test-fixtures/either-for.hsgs" 2 31) (\ env -> gsbcenter_w (Pos "./test-fixtures/either-for.hsgs" 2 31) x)) ])
 {-# LINE 2 "./test-fixtures/either-for.hsgs" #-}
                                   

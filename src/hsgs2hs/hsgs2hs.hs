@@ -423,11 +423,11 @@ compileMonadGens env ((pos, g):gs) pos1 s = do
     (ist, hst) <- compileMonadGens env gs pos1 s
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbccomposegen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` bindis `Set.union` is `Set.union` ist,
-        HSVar "gsbccomposegen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgValue" `HSApp` bindhse) `HSApp` hse `HSApp` (HSLambda ["env"] hst)
+        HSVar "gsbccomposegen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgVar" `HSApp` bindhse) `HSApp` hse `HSApp` (HSLambda ["env"] hst)
       )
 compileMonadGens env [] pos1 s = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptygen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` unitis,
-    HSVar "gsbcemptygen_w" `HSApp` hspos pos1 `HSApp` (HSConstr "GSArgValue" `HSApp` unithse)
+    HSVar "gsbcemptygen_w" `HSApp` hspos pos1 `HSApp` (HSConstr "GSArgVar" `HSApp` unithse)
   ) where
     (unitis, unithse) = gsunit s
 
@@ -445,7 +445,7 @@ compileMonadGen env pos (ExecGenerator pos1 e) s = do
     (is, hse) <- compileArg env pos1 e Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcexecgen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` mapis `Set.union` is,
-        HSVar "gsbcexecgen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgValue" `HSApp` maphse) `HSApp` hse
+        HSVar "gsbcexecgen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgVar" `HSApp` maphse) `HSApp` hse
       )
 compileMonadGen env pos g s = $gsfatal $ "compileMonadGen env pos " ++ genCode g ++ " s next"
 
