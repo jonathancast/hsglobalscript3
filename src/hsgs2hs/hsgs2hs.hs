@@ -440,6 +440,13 @@ compileMonadGenArg env pos g s = do
       )
 
 compileMonadGen :: Env -> Pos -> Generator -> SigMonad -> Compiler (Set HSImport, HSExpr)
+compileMonadGen env pos (ExecGenerator pos1 e) s = do
+    let (mapis, maphse) = gsmap s
+    (is, hse) <- compileArg env pos1 e Nothing
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcexecgen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` mapis `Set.union` is,
+        HSVar "gsbcexecgen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgValue" `HSApp` maphse) `HSApp` hse
+      )
 compileMonadGen env pos g s = $gsfatal $ "compileMonadGen env pos " ++ genCode g ++ " s next"
 
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
