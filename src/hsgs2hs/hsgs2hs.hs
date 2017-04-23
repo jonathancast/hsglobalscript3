@@ -187,7 +187,8 @@ compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
         Just (SigOpen vs) -> vs
         Just sg -> $gsfatal $ "compileArg (EOpen e) " ++ sigCode sg ++ " next"
 compileArg env pos (EImpGens gs pos1) s = compileImpGensArg env pos gs pos1
-compileArg env pos (EMonadGens gs pos1) (Just s) = compileMonadGensArg env pos gs pos s
+compileArg env pos (EMonadGens gs pos1) (Just (SigMonad s)) = compileMonadGensArg env pos gs pos s
+compileArg env pos (EMonadGens gs pos1) (Just s) = compileError pos $ "monadic generators with invalid signature " ++ sigCode s ++ "!"
 compileArg env pos (EMonadGens gs pos1) Nothing = compileError pos "monadic generators with no signature!"
 compileArg env pos e@EApp{} s = compileExprToArg env pos e
 compileArg env pos e s = $gsfatal $ "compileArg " ++ eCode e ++ " next"
@@ -399,7 +400,7 @@ compilePatApp env (PView pos v) as = do
 compilePatApp env (PApp pf px) as = compilePatApp env pf (px:as)
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
-compileMonadGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> Signature -> Compiler (Set HSImport, HSExpr)
+compileMonadGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGensArg env pos gs pos1 s = do
     (is, hse) <- compileMonadGens env gs pos1 s
     return (
@@ -415,7 +416,7 @@ compileImpGensArg env pos gs pos1 = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileMonadGens :: Env -> [(Pos, Generator)] -> Pos -> Signature -> Compiler (Set HSImport, HSExpr)
+compileMonadGens :: Env -> [(Pos, Generator)] -> Pos -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGens env ((pos, g):gs) pos1 s = $gsfatal "compileMonadGens env ((pos, g):gs) pos1 s next"
 compileMonadGens env [] pos1 s = $gsfatal "compileMonadGens env [] pos1 s next"
 
