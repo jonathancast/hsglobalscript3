@@ -530,6 +530,10 @@ globalEnv = Env{
         ("impfor", \ as -> case as of
             (_, EImpGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
             _ -> return []
+        ),
+        ("either-for", \ as -> case as of
+            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [ Just $ SigMonad, Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs ]
+            _ -> return []
         )
     ]
   }
