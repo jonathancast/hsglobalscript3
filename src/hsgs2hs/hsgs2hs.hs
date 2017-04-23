@@ -400,7 +400,12 @@ compilePatApp env (PApp pf px) as = compilePatApp env pf (px:as)
 compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
 compileMonadGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> Signature -> Compiler (Set HSImport, HSExpr)
-compileMonadGensArg env pos gs pos1 s = $gsfatal $ "compileMonadGensArg next"
+compileMonadGensArg env pos gs pos1 s = do
+    (is, hse) <- compileMonadGens env gs pos1 s
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
+      )
 
 compileImpGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGensArg env pos gs pos1 = do
