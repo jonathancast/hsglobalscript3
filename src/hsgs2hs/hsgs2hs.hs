@@ -541,7 +541,10 @@ globalEnv = Env{
             _ -> return []
         ),
         ("either-for", \ as -> case as of
-            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [ Just $ SigMonad, Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs ]
+            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
+                Just $ SigMonad SM{ gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright") },
+                Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
+              ]
             _ -> return []
         )
     ]
@@ -577,7 +580,7 @@ imCode ImHere = "ImHere"
 
 data Signature
   = SigOpen (Set String)
-  | SigMonad
+  | SigMonad SigMonad
 
 data SigMonad = SM{
     gsunit :: (Set HSImport, HSExpr)
