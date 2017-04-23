@@ -579,5 +579,9 @@ data Signature
   = SigOpen (Set String)
   | SigMonad
 
+data SigMonad = SM{
+    gsunit :: (Set HSImport, HSExpr)
+  }
+
 sigCode :: Signature -> String
 sigCode s = s `seq` $gsfatal "sigCode next"
