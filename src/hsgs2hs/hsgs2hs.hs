@@ -568,7 +568,8 @@ globalEnv = Env{
             (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright"),
-                    gsbind = (Set.singleton $ HSIVar "GSI.Either" "gseitherbind", HSVar "gseitherbind")
+                    gsbind = (Set.singleton $ HSIVar "GSI.Either" "gseitherbind", HSVar "gseitherbind"),
+                    gsmap = (Set.singleton $ HSIVar "GSI.Either" "gseithermap", HSVar "gseithermap")
                 },
                 Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
               ]
@@ -611,7 +612,8 @@ data Signature
 
 data SigMonad = SM{
     gsunit :: (Set HSImport, HSExpr),
-    gsbind :: (Set HSImport, HSExpr)
+    gsbind :: (Set HSImport, HSExpr),
+    gsmap :: (Set HSImport, HSExpr)
   }
 
 sigCode :: Signature -> String
