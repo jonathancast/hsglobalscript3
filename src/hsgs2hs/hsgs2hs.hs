@@ -548,7 +548,10 @@ globalEnv = Env{
         ),
         ("either-for", \ as -> case as of
             (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
-                Just $ SigMonad SM{ gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright") },
+                Just $ SigMonad SM{
+                    gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright"),
+                    gsbind = (Set.singleton $ HSIVar "GSI.Either" "gseitherbind", HSVar "gseitherbind")
+                },
                 Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
               ]
             _ -> return []
@@ -589,7 +592,8 @@ data Signature
   | SigMonad SigMonad
 
 data SigMonad = SM{
-    gsunit :: (Set HSImport, HSExpr)
+    gsunit :: (Set HSImport, HSExpr),
+    gsbind :: (Set HSImport, HSExpr)
   }
 
 sigCode :: Signature -> String
