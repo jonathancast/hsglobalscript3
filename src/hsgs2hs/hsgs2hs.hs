@@ -424,6 +424,9 @@ compileMonadGens env [] pos1 s = return (
   ) where
     (unitis, unithse) = gsunit s
 
+compileMonadGenArg :: Env -> Pos -> Generator -> SigMonad -> Compiler (Set HSImport, HSExpr)
+compileMonadGenArg env pos g s = $gsfatal "compileMonadGenArg next"
+
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
     (is, hse) <- compileImpGenArg env pos g
