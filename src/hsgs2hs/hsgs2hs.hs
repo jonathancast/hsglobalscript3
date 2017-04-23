@@ -410,6 +410,10 @@ compileImpGensArg env pos gs pos1 = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
+compileMonadGens :: Env -> [(Pos, Generator)] -> Pos -> Signature -> Compiler (Set HSImport, HSExpr)
+compileMonadGens env ((pos, g):gs) pos1 s = $gsfatal "compileMonadGens env ((pos, g):gs) pos1 s next"
+compileMonadGens env [] pos1 s = $gsfatal "compileMonadGens env [] pos1 s next"
+
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
     (is, hse) <- compileImpGenArg env pos g
