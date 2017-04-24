@@ -40,6 +40,7 @@ ok_diff_compiler '-- case expressions where the pattern-bound variables are used
 ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-extraction.hs
 ok_diff_compiler '-- prefix operators --' hsgs2hs prefix-expression.hsgs prefix-expression.hs
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
+ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
 
 # log{} literals
 
