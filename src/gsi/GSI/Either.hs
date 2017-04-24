@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Either (gseitherFor, gsleft, gsright, gsleft_view, gsright_view) where
+module GSI.Either (gseitherFor, gseitherbind, gsleft, gsright, gsleft_view, gsright_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsav, gsundefined_value)
@@ -7,6 +7,9 @@ import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view, gsbcundefined)
 
 gseitherFor :: GSValue
 gseitherFor = $gsundefined_value
+
+gseitherbind :: GSValue
+gseitherbind = $gsundefined_value
 
 gsleft :: GSValue
 gsleft = $gslambda $ \ x -> $gsbcconstr (gsvar "left") [ $gsav x ]
