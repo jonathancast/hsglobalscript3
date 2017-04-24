@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbccomposegen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
@@ -169,6 +170,9 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
     msgv <- gsprepare_w pos msg
     msgs <- $gsfmterrormsg msgv
     aceEnterExpr [StackTrace pos cs] (k msgs) st
+
+gsbccomposegen_w :: Pos -> GSArg -> GSArg -> (GSValue -> GSExpr) -> GSExpr
+gsbccomposegen_w pos gsbind gen0 gen1 = gsbcimplementationfailure_w $gshere $ "gsbccomposegen_w next"
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
