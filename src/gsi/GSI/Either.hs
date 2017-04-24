@@ -13,7 +13,7 @@ gseitherbind :: GSValue
 gseitherbind = $gslambda $ \ e -> $gsbcarg $ \ k -> $gsbcprim gspriminsufficientcases e
 
 gseithermap :: GSValue
-gseithermap = $gsundefined_value
+gseithermap = $gslambda $ \ f -> $gsbcarg $ \ e -> $gsbcprim gspriminsufficientcases e
 
 gsleft :: GSValue
 gsleft = $gslambda $ \ x -> $gsbcconstr (gsvar "left") [ $gsav x ]
