@@ -3,10 +3,11 @@ module GSI.Either (gseitherFor, gseitherbind, gseithermap, gsleft, gsright, gsle
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsav, gsundefined_value)
-import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view, gsbcundefined)
+import GSI.ByteCode (gsbcarg, gsbcprim, gsbcconstr, gsbcconstr_view, gsbcundefined)
+import GSI.CalculusPrims (gspriminsufficientcases)
 
 gseitherFor :: GSValue
-gseitherFor = $gsundefined_value
+gseitherFor = $gslambda $ \ gen -> $gsbcarg $ \ k -> $gsbcprim gspriminsufficientcases gen
 
 gseitherbind :: GSValue
 gseitherbind = $gsundefined_value
