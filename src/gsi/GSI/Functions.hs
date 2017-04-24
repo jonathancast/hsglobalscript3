@@ -82,6 +82,7 @@ gsevalForApi ev = do
         Right x -> return x
         Left (GSExcUndefined st) -> throwIO $ TEError $ GSErrUnimpl st
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
+        Left (GSExcInsufficientCases pos1 err) -> throwIO $ TEError $ GSErrInsufficientCases pos1 err
         Left (e :: GSException) -> $apiImplementationFailure $ "gsevalForApi (eval threw unknown exception (" ++ show e ++ ")) next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
