@@ -96,6 +96,7 @@ gsbcapp_w pos f args = GSExpr $ \ st cs -> do
     aceEnterExpr [StackTrace pos cs] f (map (GSStackArg (StackTrace pos cs)) asv ++ st)
 
 gsbcapparg_w :: Pos -> GSArg -> [GSArg] -> GSExpr
+gsbcapparg_w pos (GSArgVar f) as = gsbcapply_w pos f as
 gsbcapparg_w pos f as = gsbcimplementationfailure_w $gshere $ "gsbcapparg_w pos " ++ argCode f ++ " as next"
 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
