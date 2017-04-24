@@ -179,7 +179,7 @@ gsbccomposegen_w :: Pos -> GSArg -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbccomposegen_w pos gsbind gen0 gen1 = gsbcapparg_w pos gsbind [ gen0, $gsae $ gsbcimplementationfailure_w $gshere $ "gsbccomposegen_w next" ]
 
 gsbcexecgen_w :: Pos -> GSArg -> GSArg -> GSExpr
-gsbcexecgen_w pos gsmap e = gsbcimplementationfailure_w $gshere $ "gsbcexecgen_w next"
+gsbcexecgen_w pos gsmap e = gsbcapparg_w pos gsmap [ $gsae $ gsbcimplementationfailure_w $gshere $ "gsbcexecgen_w next", $gsae $ gsbcimplementationfailure_w $gshere $ "gsbcexecgen_w next" ]
 
 gsbcvarbind_w :: Pos -> GSArg -> GSVar -> GSArg -> GSExpr
 gsbcvarbind_w pos gsmap x e = gsbcimplementationfailure_w $gshere $ "gsbcvarbind_w next"
