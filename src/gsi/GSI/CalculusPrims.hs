@@ -42,6 +42,7 @@ gsmergeenv pos x (GSThunk ys) = do
     gsmergeenv pos x yv
 gsmergeenv pos ex@GSImplementationFailure{} ey = return ex
 gsmergeenv pos ex ey@GSImplementationFailure{} = return ey
+gsmergeenv pos ex@GSError{} ey = return ex
 gsmergeenv pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
 gsmergeenv pos ex ey = return $ $gsimplementationfailure $ "gsmergeenv " ++ gsvCode ex ++ ' ' : gsvCode ey ++ " next"
 
