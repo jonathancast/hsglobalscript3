@@ -188,7 +188,7 @@ gsbcvarbind_w :: Pos -> GSArg -> GSVar -> GSArg -> GSExpr
 gsbcvarbind_w pos gsmap x e = gsbcapparg_w pos gsmap [ $gsae $ gsbcimplementationfailure_w $gshere $ "gsbcvarbind_w next", e ]
 
 gsbcemptygen_w :: Pos -> GSArg -> GSExpr
-gsbcemptygen_w pos gsunit = gsbcapparg_w pos gsunit [ $gsae $ gsbcimplementationfailure_w $gshere $ "gsbcemptygen_w next" ]
+gsbcemptygen_w pos gsunit = gsbcapparg_w pos gsunit [ $gsae $ gsbcrecord_w pos [] ]
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
