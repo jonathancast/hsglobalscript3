@@ -20,7 +20,7 @@ gseitherbind = $gslambda $ \ e -> $gsbcarg $ \ k -> $gsbcapply gsanalyze [ $gsav
 gseithermap :: GSValue
 gseithermap = $gslambda $ \ f -> $gsbcarg $ \ e -> $gsbcapply gsanalyze [ $gsav e,
     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "x"),
-        $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbcapply gsright [ $gsae $ $gsbcundefined ],
+        $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbcapply gsright [ $gsae $ $gsbcapply f [ $gsav x ] ],
     $gsae $ $gsbcarg $ \ e -> $gsbcprim gspriminsufficientcases e
   ]]
 
