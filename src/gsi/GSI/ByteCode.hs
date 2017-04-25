@@ -182,7 +182,7 @@ gsbccomposegen_w pos gsbind gsunit gen0 gen1 = gsbcapparg_w pos gsbind [ gen0, $
   ]]
 
 gsbcexecgen_w :: Pos -> GSArg -> GSArg -> GSExpr
-gsbcexecgen_w pos gsmap e = gsbcapparg_w pos gsmap [ $gsae $ gsbcimplementationfailure_w $gshere $ "gsbcexecgen_w next", e ]
+gsbcexecgen_w pos gsmap e = gsbcapparg_w pos gsmap [ $gsae $ gsbcarg_w $gshere $ \ _ -> gsbcrecord_w pos [], e ]
 
 gsbcvarbind_w :: Pos -> GSArg -> GSVar -> GSArg -> GSExpr
 gsbcvarbind_w pos gsmap x e = gsbcapparg_w pos gsmap [ $gsae $ gsbcimplementationfailure_w $gshere $ "gsbcvarbind_w next", e ]
