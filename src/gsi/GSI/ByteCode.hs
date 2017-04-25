@@ -178,7 +178,7 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
 gsbccomposegen_w :: Pos -> GSArg -> GSArg -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbccomposegen_w pos gsbind gsunit gen0 gen1 = gsbcapparg_w pos gsbind [ gen0, $gsae $ gsbcarg_w $gshere $ \ env0 ->
     gsbcapparg_w pos gsbind [ $gsae $ gen1 env0, $gsae $ gsbcarg_w $gshere $ \ env1 ->
-    gsbcimplementationfailure_w $gshere $ "gsbccomposegen_w next"
+        gsbcapparg_w pos gsunit [ $gsae $ gsbcprim_w $gshere gsmergeenv env0 env1 ]
   ]]
 
 gsbcexecgen_w :: Pos -> GSArg -> GSArg -> GSExpr
