@@ -37,6 +37,9 @@ gsmergeenv :: Pos -> GSValue -> GSValue -> IO GSValue
 gsmergeenv pos (GSThunk xs) (GSThunk ys) = do
     (xv, yv) <- gspareval pos xs ys
     gsmergeenv pos xv yv
+gsmergeenv pos (GSThunk xs) y = do
+    xv <- evalSync [StackTrace pos []] xs
+    gsmergeenv pos xv y
 gsmergeenv pos x (GSThunk ys) = do
     yv <- evalSync [StackTrace pos []] ys
     gsmergeenv pos x yv
