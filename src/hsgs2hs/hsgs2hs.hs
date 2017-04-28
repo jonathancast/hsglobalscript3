@@ -607,6 +607,7 @@ data Env = Env {
 
 boundVars :: Pattern -> Set String
 boundVars (PVar _ x) = Set.singleton x
+boundVars (PDiscard _) = Set.empty
 boundVars (PView _ _) = Set.empty
 boundVars (PApp p0 p1) = boundVars p0 `Set.union` boundVars p1
 boundVars p = $gsfatal $ "boundVars " ++ patCode p ++ " next"
