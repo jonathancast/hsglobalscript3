@@ -24,7 +24,9 @@ gslist_w pos (x:xn) = GSConstr pos (gsvar ":") [ x, gslist_w pos xn ]
 gslazylist_w :: Pos -> [GSValue] -> IO GSValue
 gslazylist_w pos xn = gsthunk_w pos $ GSExpr $ \ st cs -> case xn of
     [] -> return $ GSConstr pos (gsvar "nil") []
-    x:xn1 -> return $ $gsimplementationfailure "gslazylist_w (x:xn1) next"
+    x:xn1 -> do
+        xn1v <- gslazylist_w pos xn1
+        return $ GSConstr pos (gsvar ":") [ x, xn1v ]
 
 gsstring = varE 'gsstring_w `appE` gshere
 
