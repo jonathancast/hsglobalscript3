@@ -35,6 +35,8 @@ gsmany = $gslambda $ \ p -> $gsbcundefined
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
+gsparser_or = $gsundefined_value
+
 gsempty = $gslambda $ \ k -> $gsbcenter gsprimempty
 
 gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprimempty ]
