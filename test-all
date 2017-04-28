@@ -26,4 +26,5 @@ cd ../doc &&
 echo '# Acme-driven documentation system' &&
 cd ../gsdoc &&
     ./integration-test &&
+echo 'All tests passed' &&
 true
