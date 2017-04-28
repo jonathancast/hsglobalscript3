@@ -21,7 +21,7 @@ gsposFmt :: GSValue
 gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
     [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
-gsparserFor = $gsundefined_value
+gsparserFor = $gslambda $ \ gens -> $gsbcarg $ \ e -> $gsbcundefined
 
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
