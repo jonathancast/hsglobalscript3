@@ -1,0 +1,3 @@
+#! /usr/local/plan9/bin/rc -e
+
+echo -i$HSGLOBALSCRIPT/src/libgsi
