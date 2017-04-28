@@ -150,6 +150,7 @@ pattern env = empty
     patternAtom = empty
         <|> PView <$> getPos <*> ident
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
+        <|> PDiscard <$> (getPos <* underscoreTerm)
 
 generator :: Env -> Parser Char Generator
 generator env = empty
