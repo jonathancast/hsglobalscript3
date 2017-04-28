@@ -4,6 +4,7 @@ module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
 import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcundefined, gsbcconstr_view)
+import GSI.List (gsnil)
 $gsimports
 
 gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
@@ -31,7 +32,10 @@ gsparser_map = $gslambda $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply
 
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
-gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [ $gsae $ $gsbcundefined, $gsae $ $gsbcundefined ]
+gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [
+    $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
+    $gsae $ $gsbcundefined
+  ]
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
