@@ -546,6 +546,7 @@ globalEnv = Env{
         ("gsv", (Set.singleton $ HSIVar "GSI.Log" "gsloggsv", HSVar "gsloggsv")),
         ("impfor", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpfor", HSVar "gsimpfor")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
+        ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil", HSVar "gsnil")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
         ("parser-for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.unit", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit")),
