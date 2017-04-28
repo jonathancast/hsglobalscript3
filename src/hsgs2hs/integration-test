@@ -5,7 +5,7 @@ ghc --make `{./ghcoptions} Test.hs
 
 . $GLOBALSCRIPT/bin/test-fns
 
-ghc --make `{./ghcoptions} hsgs2hs.hs
+./build
 
 ok_diff_compiler '-- empty file --' hsgs2hs empty-file.hsgs empty-file.hs
 ok_script '-- empty directory --' hsgs2hs-empty ./hsgs2hs ./test-fixtures/empty-dir

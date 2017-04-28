@@ -1,3 +1,4 @@
-#! /usr/local/plan9/bin/rc
+#! /usr/local/plan9/bin/rc -e
 
+./build
 install hsgs2hs $HSGLOBALSCRIPT/bin/hsgs2hs
