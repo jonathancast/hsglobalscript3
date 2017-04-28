@@ -25,9 +25,11 @@ gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
-gsempty = $gslambda $ \ k -> $gsbcconstr (gsvar "empty") []
+gsempty = $gslambda $ \ k -> $gsbcenter gsprimempty
 
 gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsae $ $gsbcundefined ]
+
+gsprimempty = $gsconstr (gsvar "empty") []
 
 gsempty_view :: GSValue
 gsempty_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
