@@ -2,15 +2,13 @@
 
 $HSGLOBALSCRIPT/bin/hsgs2hs .
 
-ghcoptions=(-i$HSGLOBALSCRIPT/src/libgsi)
-
-ghc $ghcoptions --make Test.hs
+ghc `{./ghcoptions} --make Test.hs
 ./Test
 
 . $GLOBALSCRIPT/bin/test-fns
 
-ghc $ghcoptions --make test-gsi.hs
-ghc $ghcoptions --make gsi.hs
+ghc `{./ghcoptions} --make test-gsi.hs
+ghc `{./ghcoptions} --make gsi.hs
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
 
