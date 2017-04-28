@@ -41,6 +41,8 @@ gsempty = $gslambda $ \ k -> $gsbcenter gsprimempty
 
 gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprimempty ]
 
+gsprimor = $gsundefined_value
+
 gsprimempty = $gsconstr (gsvar "empty") []
 
 gsempty_view :: GSValue
