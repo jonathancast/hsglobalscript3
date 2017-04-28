@@ -31,7 +31,7 @@ gsparser_map = $gslambda $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply
 
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
-gsmany = $gsundefined_value
+gsmany = $gslambda $ \ p -> $gsbcundefined
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
