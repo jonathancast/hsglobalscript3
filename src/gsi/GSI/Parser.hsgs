@@ -35,7 +35,8 @@ gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [ $gsae $ $gsbcundefined, $gs
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
-gsparser_or = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcundefined
+gsparser_or = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
+    $gsbcapply gsprimor [ $gsae $ $gsbcundefined, $gsae $ $gsbcundefined ]
 
 gsempty = $gslambda $ \ k -> $gsbcenter gsprimempty
 
