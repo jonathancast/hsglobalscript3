@@ -547,6 +547,7 @@ globalEnv = Env{
         ("impfor", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpfor", HSVar "gsimpfor")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
+        ("parser-for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.unit", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit")),
         ("pos.fmt", (Set.singleton $ HSIVar "GSI.Parser" "gsposFmt", HSVar "gsposFmt")),
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
@@ -589,6 +590,17 @@ globalEnv = Env{
                     gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright"),
                     gsbind = (Set.singleton $ HSIVar "GSI.Either" "gseitherbind", HSVar "gseitherbind"),
                     gsmap = (Set.singleton $ HSIVar "GSI.Either" "gseithermap", HSVar "gseithermap")
+                },
+                Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
+              ]
+            _ -> return []
+        ),
+        ("parser-for", \ as -> case as of
+            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
+                Just $ SigMonad SM{
+                    gsunit = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit"),
+                    gsbind = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_bind", HSVar "gsparser_bind"),
+                    gsmap = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")
                 },
                 Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
               ]

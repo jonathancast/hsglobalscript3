@@ -329,6 +329,11 @@ globalEnv = Env{
             EMonadGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
             EOpen <$> expr env,
             Nothing
+        )),
+        ("parser-for", \ env -> (
+            EMonadGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
+            EOpen <$> expr env,
+            Nothing
         ))
     ],
     leftops = Map.fromList [
