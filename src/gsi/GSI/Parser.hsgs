@@ -27,7 +27,7 @@ gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
 
 gsempty = $gslambda $ \ k -> $gsbcenter gsprimempty
 
-gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsae $ $gsbcundefined ]
+gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprimempty ]
 
 gsprimempty = $gsconstr (gsvar "empty") []
 
