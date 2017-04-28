@@ -56,6 +56,7 @@ gsprimor = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=p0,p1,| analyze 
 |]
 
 gsprimempty = $gsconstr (gsvar "empty") []
+gsprimunitplus = $gslambda $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
 
 gsempty_view :: GSValue
 gsempty_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
