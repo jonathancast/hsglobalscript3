@@ -26,7 +26,8 @@ gsparserFor = $gslambda $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_bind [
 gsparser_bind = $gslambda $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply f [ $gsav x, $gsav k ] ]
 
-gsparser_map = $gsundefined_value
+gsparser_map = $gslambda $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
+    $gsbcapply k [ $gsae $ $gsbcundefined ] ]
 
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
