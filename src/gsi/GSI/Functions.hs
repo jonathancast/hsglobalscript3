@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalExternal, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazystring, gslazystring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalExternal, gsfmterrormsg) where
 
 import Control.Exception (Exception(..), throwIO, try)
 
@@ -30,6 +30,11 @@ gsstring = varE 'gsstring_w `appE` gshere
 
 gsstring_w :: Pos -> String -> GSValue
 gsstring_w pos s = gslist_w pos $ map GSRune s
+
+gslazystring = varE 'gslazystring_w `appE` gshere
+
+gslazystring_w :: Pos -> String -> IO GSValue
+gslazystring_w pos s = gslazylist_w pos $ map GSRune s
 
 gsnatural = varE 'gsnatural_w `appE` gshere
 
