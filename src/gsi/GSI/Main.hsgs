@@ -36,7 +36,9 @@ gsprocessargs = $gslambda $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -
         )
 |]
 
-file = [gs:value| <|> parser.unit file.document |]
+file = [gs:value|
+    <|> parser-for. parser.unit file.document
+|]
 
 gsprocessDocument = $gslambda $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
