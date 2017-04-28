@@ -32,6 +32,8 @@ gsparser_map = $gslambda $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply
 
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
+gsparser_map2 = $gsundefined_value
+
 gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [
     $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
     $gsae $ $gsbcundefined
