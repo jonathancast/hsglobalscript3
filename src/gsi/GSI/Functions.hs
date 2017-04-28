@@ -11,7 +11,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), throwGSError, fmtError)
 import GSI.ThreadType (ThreadException(..))
-import GSI.Value (GSValue(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -20,6 +20,11 @@ gslist = varE 'gslist_w `appE` gshere
 gslist_w :: Pos -> [GSValue] -> GSValue
 gslist_w pos [] = GSConstr pos (gsvar "nil") []
 gslist_w pos (x:xn) = GSConstr pos (gsvar ":") [ x, gslist_w pos xn ]
+
+gslazylist_w :: Pos -> [GSValue] -> IO GSValue
+gslazylist_w pos xn = gsthunk_w pos $ GSExpr $ \ st cs -> case xn of
+    [] -> return $ GSConstr pos (gsvar "nil") []
+    x:xn1 -> return $ $gsimplementationfailure "gslazylist_w (x:xn1) next"
 
 gsstring = varE 'gsstring_w `appE` gshere
 
