@@ -375,6 +375,10 @@ compilePat env (PVar pos v) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` HSString v
   )
+compilePat env (PDiscard pos) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos
+  )
 compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
 compilePat env p@PView{} = compilePatApp env p []
 compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
