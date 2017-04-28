@@ -195,6 +195,7 @@ data Pattern
   = PVar Pos String
   | PView Pos String
   | PApp Pattern Pattern
+  | PDiscard Pos
 
 data Generator
   = ExecGenerator Pos Expr
@@ -378,6 +379,7 @@ patCode :: Pattern -> String
 patCode PView{} = "PView"
 patCode PVar{} = "PVar"
 patCode PApp{} = "PApp"
+patCode PDiscard{} = "PDiscard"
 
 genCode :: Generator -> String
 genCode ExecGenerator{} = "ExecGenerator"
