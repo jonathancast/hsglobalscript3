@@ -9,10 +9,11 @@ $gsimports
 gsparse = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
     [gs:expr hsvs=gsparsew,p,gsprimunit,pos,s,| gsparsew (p gsprimunit) pos s |]
 
-gsparsew = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=p,pos,s,| analyze p.
+gsparsew = $gslambda $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=gsparsew,p,pos,s,| analyze p.
     case empty. left (pos.fmt pos qq{empty})
     case unit-plus 'x 'p1. (analyze s.
         case nil. right x
+        case _:_. gsparsew p1 pos s
     )
 |]
 
