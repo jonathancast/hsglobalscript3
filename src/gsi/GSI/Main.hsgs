@@ -40,7 +40,7 @@ file = [gs:value hsvs=pragmas,|
     <|> parser-for _ ← pragmas;. parser.unit file.document
 |]
 
-pragmas = [gs:value| <|> parser.unit nil |]
+pragmas = [gs:value| many empty |]
 
 gsprocessDocument = $gslambda $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
