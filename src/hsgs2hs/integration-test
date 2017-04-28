@@ -62,6 +62,7 @@ ok_diff_compiler '-- print-error function --' hsgs2hs print-error.hsgs print-err
 
 # Different kinds of patterns
 
+ok_diff_compiler '-- discard patterns --' hsgs2hs discard-pattern.hsgs discard-pattern.hs
 ok_diff_compiler '-- view patterns --' hsgs2hs view-pattern.hsgs view-pattern.hs
 ok_diff_compiler '-- operator views --' hsgs2hs operator-view.hsgs operator-view.hs
 
