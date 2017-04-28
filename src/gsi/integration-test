@@ -1,6 +1,6 @@
 #! /usr/local/plan9/bin/rc -e
 
-$HSGLOBALSCRIPT/bin/hsgs2hs .
+./build
 
 ghc `{./ghcoptions} --make Test.hs
 ./Test
@@ -8,7 +8,6 @@ ghc `{./ghcoptions} --make Test.hs
 . $GLOBALSCRIPT/bin/test-fns
 
 ghc `{./ghcoptions} --make test-gsi.hs
-ghc `{./ghcoptions} --make gsi.hs
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
 
