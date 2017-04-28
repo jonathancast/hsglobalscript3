@@ -25,7 +25,7 @@ import GSI.ThreadType (Thread, ThreadDataComponent(..), component, threadTypeNam
 import GSI.Thread (withThreadData)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
-import GSI.Functions (gsstring, gsapiEvalString)
+import GSI.Functions (gslazystring, gsapiEvalString)
 
 gsenvGetArgs = $gsimpprim gsprimenvGetArgs :: GSValue
 
@@ -69,7 +69,7 @@ gsprimfileRead pos t fn = do
     mbs <- try $ let ?enc = UTF8Strict in readFile fns
     case mbs of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimfileRead " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
-        Right s -> return $ $gsstring s
+        Right s -> $gslazystring s
 
 gsprintError :: GSValue
 gsprintError = $gsimpprim gsprimprintError
