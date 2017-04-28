@@ -23,6 +23,8 @@ gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
 
 gsparserFor = $gslambda $ \ gens -> $gsbcarg $ \ e -> $gsbcundefined
 
+gsparser_bind = $gsundefined_value
+
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
 gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
