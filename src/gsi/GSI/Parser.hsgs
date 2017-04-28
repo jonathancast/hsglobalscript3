@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_unit, gsparser_unary_or, gsempty, gsempty_view) where
+module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, gsparser_unit, gsparser_unary_or, gsempty, gsempty_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
@@ -25,6 +25,8 @@ gsparserFor = $gslambda $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_bind [
 
 gsparser_bind = $gslambda $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply f [ $gsav x, $gsav k ] ]
+
+gsparser_map = $gsundefined_value
 
 gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
