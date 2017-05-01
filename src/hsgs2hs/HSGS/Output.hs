@@ -20,6 +20,7 @@ data HSImport
 data HSExpr
   = HSConstr String
   | HSVar String
+  | HSChar Char
   | HSString String
   | HSInteger Integer
   | HSList [HSExpr]
@@ -39,6 +40,7 @@ hsiCode HSIVar{} = "HSIVar"
 hsCode :: HSExpr -> String
 hsCode HSConstr{} = "HSConstr"
 hsCode HSVar{} = "HSVar"
+hsCode HSChar{} = "HSChar"
 hsCode HSString{} = "HSString"
 hsCode HSInteger{} = "HSInteger"
 hsCode HSList{} = "HSList"
