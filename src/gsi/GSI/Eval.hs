@@ -52,6 +52,7 @@ evalSync cs mv = do
             GSConstr{} -> return v
             GSRecord{} -> return v
             GSNatural{} -> return v
+            GSRune{} -> return v
             v@(GSClosure _ bco) -> case bco of
                 GSImp{} -> return v
                 GSLambda{} -> return v
