@@ -36,7 +36,7 @@ gsparser_map2 = $gslambda $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcar
     $gsbcapply p0 [ $gsae $ $gsbcundefined
   ]
 
-gsparser_char = $gslambda $ \ ch -> $gsbcundefined
+gsparser_char = $gslambda $ \ ch -> [gs:expr| undefined |]
 
 gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [
     $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
