@@ -566,6 +566,7 @@ globalEnv = Env{
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
         ("process-document", (Set.singleton $ HSIVar "GSI.Main" "gsprocessDocument", HSVar "gsprocessDocument")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright")),
+        ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),
         ("type-check-document", (Set.singleton $ HSIVar "GSI.Main" "gstypeCheckDocument", HSVar "gstypeCheckDocument")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined"))
     ],
