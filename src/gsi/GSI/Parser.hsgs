@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, gsparser_unit, gsparser_char, gsmany, gsparser_unary_or, gsempty, gsempty_view) where
+module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, gsparser_unit, gsparser_char, gsmany, gsparser_unary_or, gsempty, gsempty_view, gsparser_advanceRune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
@@ -84,3 +84,5 @@ gsunitplus_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbc
 
 gssymbol_view :: GSValue
 gssymbol_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
+
+gsparser_advanceRune = $gsundefined_value

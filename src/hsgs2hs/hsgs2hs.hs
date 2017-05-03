@@ -532,6 +532,7 @@ compileError pos msg = lift $ Left $ fmtPos pos msg
 globalEnv :: Env
 globalEnv = Env{
     gsvars = Map.fromList [
+        ("advance-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_advanceRune", HSVar "gsparser_advanceRune")),
         ("analyze", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyze", HSVar "gsanalyze")),
         ("analyze-impM", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyzeImpM", HSVar "gsanalyzeImpM")),
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
