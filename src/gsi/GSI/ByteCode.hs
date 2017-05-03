@@ -34,12 +34,7 @@ gsbcundefined_w pos = GSExpr $ \ st cs -> aceThrow (GSError (GSErrUnimpl (StackT
 gsbchere = varE 'gsbchere_w `appE` gshere
 
 gsbchere_w :: Pos -> GSExpr
-gsbchere_w pos = GSExpr $ \ st cs -> aceReturn res st where
-    res = GSRecord $gshere $ Map.fromList [
-        (gsvar "filename", $gsstring (filename pos)),
-        (gsvar "line", $gsnatural (line pos)),
-        (gsvar "col", $gsnatural (col pos))
-      ]
+gsbchere_w pos = GSExpr $ \ st cs -> aceReturn (GSExternal (toExternal pos)) st
 
 gsbcrecord = varE 'gsbcrecord_w `appE` gshere
 

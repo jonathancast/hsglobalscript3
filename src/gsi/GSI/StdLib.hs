@@ -5,7 +5,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSArg, GSExpr, gsundefined_value, gslambda, gsav, gsae, gsvCode)
+import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda, gsav, gsae, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_w, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gscompose :: GSValue
@@ -61,4 +61,7 @@ gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
         $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "line")) $ \ pos_line_n ->
         $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "col")) $ \ pos_col_n ->
         k $ Pos pos_filename_s pos_line_n pos_col_n
+    GSExternal e -> case fromExternal e of
+        Nothing -> $gsbcimplementationfailure $ "gsbcevalpos_w (GSExternal (not a Pos)) next"
+        Just pos -> k pos
     _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"

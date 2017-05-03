@@ -164,6 +164,7 @@ class Typeable e => GSExternal e where
     externalType = show . typeRep
 
 -- ↓ Instances that are here because we depend on the modules the types are in
+instance GSExternal Pos
 instance GSExternal Thread
 instance GSExternal ThreadData
 
