@@ -74,6 +74,16 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPRetur
       )
     p0 `difference_w` p1 = $gsfatal $ pCode p0 ++ " `difference_w` " ++ pCode p1 ++ " next"
 
+    difference1_w :: PrimParser s a -> PrimParser s (PrimParser s b) -> PrimParser s (PrimParser s a)
+    p0 `difference1_w` PPFail e0 e1 = PPReturnPlus p0 $ PPFail [] []
+    p0 `difference1_w` PPReturnPlus p1 pp1 = (p0 `difference_w` p1) `difference1_w` pp1
+    p0 `difference1_w` SymbolOrEof ek1 sk1 = SymbolOrEof (p0 `difference1_w` ek1) (\ ch ->
+        case sk1 ch of
+            Left exp1 -> Right $ PPReturnPlus p0 $ PPFail [] []
+            Right p1' -> Right $ p0 `difference1_w` p1'
+      )
+    p0 `difference1_w` p1 = $gsfatal $ "p0 `difference1_w` " ++ pCode p1 ++ " next"
+
     negate_w :: PrimParser s a -> b -> PrimParser s b
     negate_w (PPReturnPlus y p) x = PPFail [] []
     negate_w (SymbolOrEof ek sk) x = SymbolOrEof (negate_w ek x) (\c -> case sk c of
