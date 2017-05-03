@@ -240,7 +240,10 @@ ident :: Parser Char String
 ident = lexeme identName
 
 identName :: Parser Char String
-identName = (++) <$> alphaNumComp <*> (concat <$> many ((:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp))
+identName = (++) <$> alphaNumComp <*> (concat <$> many cont <* notFollowedBy cont) where
+    cont =
+            (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
+        <|> (:) <$> matching "separator" (`elem` ".") <*> operatorComp
 
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
