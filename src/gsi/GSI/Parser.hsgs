@@ -44,7 +44,10 @@ gsparser_char = $gslambda $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch
 
 gsparser_matching = $gslambda $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
     $gsbcconstr (gsvar "symbol-or-eof") [ $gsae $gsbcundefined, $gsae $ $gsbcarg $ \ c ->
-        [gs:expr hsvs=p,c,| analyze p c. |]
+        [gs:expr hsvs=p,c,k,| analyze p c.
+            case false. left undefined
+            case true. right (k c)
+        |]
     ]
 
 gsparser_displayRune = $gsundefined_value
