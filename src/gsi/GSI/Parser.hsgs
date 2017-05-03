@@ -38,7 +38,8 @@ gsparser_map2 = $gslambda $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcar
 
 gsparser_char = $gslambda $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
 
-gsparser_matching = $gsundefined_value
+gsparser_matching = $gslambda $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
+    $gsbcconstr (gsvar "symbol-or-eof") [ $gsae $gsbcundefined, $gsae $gsbcundefined ]
 
 gsparser_displayRune = $gsundefined_value
 
