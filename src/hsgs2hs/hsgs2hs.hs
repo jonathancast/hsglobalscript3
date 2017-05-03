@@ -586,6 +586,7 @@ globalEnv = Env{
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft_view", HSVar "gsleft_view")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil_view", HSVar "gsnil_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
+        ("symbol-or-eof", (Set.singleton $ HSIVar "GSI.Parser" "gssymbol_view", HSVar "gssymbol_view")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
         ("unit-plus", (Set.singleton $ HSIVar "GSI.Parser" "gsunitplus_view", HSVar "gsunitplus_view"))
     ],
