@@ -65,6 +65,8 @@ notFollowedBy p = Parser (\ k -> k () `difference_w` runParser p (\ x -> PPRetur
     Lookahead p0 `difference_w` SymbolOrEof ek1 sk1 = Lookahead (p0 `difference_w` SymbolOrEof ek1 sk1)
     GetPos k `difference_w` PPReturnPlus y p3 = PPFail [] []
     GetPos k `difference_w` SymbolOrEof ek1 sk1 = GetPos $ \ pos -> k pos `difference_w` SymbolOrEof ek1 sk1
+    SymbolOrEof ek0 sk0 `difference_w` PPReturnPlus y p3 = PPFail [] []
+    SymbolOrEof ek0 sk0 `difference_w` Lookahead p1 = Lookahead (SymbolOrEof ek0 sk0 `difference1_w` p1)
     SymbolOrEof ek0 sk0 `difference_w` SymbolOrEof ek1 sk1 = SymbolOrEof (ek0 `difference_w` ek1) (\ ch ->
         case (sk0 ch, sk1 ch) of
             (Left exp0, Left exp1) -> Left exp0
