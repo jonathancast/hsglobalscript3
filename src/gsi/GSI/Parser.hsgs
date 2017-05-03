@@ -40,6 +40,8 @@ gsparser_char = $gslambda $ \ ch -> [gs:expr| undefined |]
 
 gsparser_matching = $gsundefined_value
 
+gsparser_displayRune = $gsundefined_value
+
 gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [
     $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
     $gsae $ $gsbcapply gsparser_map2 [ $gsav gscons, $gsav p, $gsae $ $gsbcundefined ]
