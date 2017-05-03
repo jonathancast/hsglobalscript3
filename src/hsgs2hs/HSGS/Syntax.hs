@@ -219,9 +219,6 @@ operator env = lexeme $ do
     v <- operatorComp
     return v
 
-operatorComp :: Parser Char String
-operatorComp = ((:) <$> opStartChar <*> many opContChar) <* notFollowedBy opContChar
-
 lambdalike :: Env -> Maybe String -> Parser Char Expr
 lambdalike env mbv = do
     pos <- getPos
@@ -265,6 +262,9 @@ idContChar = matching "identifier continuation character" isAlphaNum
 
 keywordOp :: String -> Parser Char ()
 keywordOp s = lexeme $ string s <* notFollowedBy opContChar
+
+operatorComp :: Parser Char String
+operatorComp = ((:) <$> opStartChar <*> many opContChar) <* notFollowedBy opContChar
 
 opStartChar :: Parser Char Char
 opStartChar = matching "operator start character" (\ c -> isSymbol c || (isPunctuation c && not (c `elem` "()[]{}〈〉《》`_,;.'\"\\")))
