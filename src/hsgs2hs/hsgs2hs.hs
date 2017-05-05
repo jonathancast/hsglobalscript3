@@ -296,6 +296,7 @@ compileExpr env (EApp f (ArgField pos1 m)) = do
         HSVar "gsbcfield_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` (HSVar "gsvar" `HSApp` HSString m)
       )
 compileExpr env (EApp f a) = $gsfatal $ "compileExpr (EApp f " ++ argCode a ++ ") next"
+compileExpr env (EGens gs pos1) = compileGens env gs pos1
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 compileBody :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
