@@ -114,6 +114,7 @@ expr env = empty
                 s <- char '{' *> quoteItems env [] <* char '}'
                 return (v, s)
             return $ EQLO pos0 v s
+        <|> uncurry EGens <$> angleBrackets ((,) <$> generators env <*> getPos)
     exprArg = empty
         <|> ArgExpr <$> getPos <*> exprAtom
         <|> ArgField <$> getPos <*> (keywordOp "#" *> ident)
