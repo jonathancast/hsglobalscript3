@@ -152,6 +152,9 @@ pattern env = empty
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
         <|> PDiscard <$> (getPos <* underscoreTerm)
 
+generators :: Env -> Parser Char [(Pos, Generator)]
+generators env = ((,) <$> getPos <*> generator env) `endBy` semicolon
+
 generator :: Env -> Parser Char Generator
 generator env = empty
     <|> ExecGenerator <$> getPos <*> (underscoreTerm *> keywordOp "←" *> expr env)
