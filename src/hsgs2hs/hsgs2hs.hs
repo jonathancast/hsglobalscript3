@@ -474,6 +474,10 @@ compileMonadGen env pos (BindGenerator x pos1 e) s = do
       )
 compileMonadGen env pos g s = $gsfatal $ "compileMonadGen env pos " ++ genCode g ++ " s next"
 
+compileGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
+compileGens env ((pos, g):ps) pos1 = $gsfatal "compileGens env ((pos, g):ps) pos1 next"
+compileGens env [] pos1 = $gsfatal "compileGens env [] pos1 next"
+
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
     (is, hse) <- compileImpGenArg env pos g
