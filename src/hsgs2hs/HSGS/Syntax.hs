@@ -181,6 +181,7 @@ data Expr
   | ENumber Pos Integer
   | EQLO Pos String [QLOItem]
   | EPat Pattern
+  | EGens [(Pos, Generator)] Pos
   | EImpGens [(Pos, Generator)] Pos
   | EMonadGens [(Pos, Generator)] Pos
   | EOpen Expr
@@ -373,6 +374,7 @@ eCode EUnary{} = "EUnary"
 eCode ENumber{} = "ENumber"
 eCode EQLO{} = "EQLO"
 eCode EPat{} = "EPat"
+eCode EGens{} = "EGens"
 eCode EImpGens{} = "EImpGens"
 eCode EMonadGens{} = "EMonadGens"
 eCode EOpen{} = "EOpen"
