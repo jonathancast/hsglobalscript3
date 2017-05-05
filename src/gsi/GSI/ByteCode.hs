@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
-    gsbccomposegen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptygen_w,
+    gsbccomposegen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
@@ -185,8 +185,8 @@ gsbcexecgen_w pos gsmap e = gsbcapparg_w pos gsmap [ $gsae $ gsbcarg_w $gshere $
 gsbcvarbind_w :: Pos -> GSArg -> GSVar -> GSArg -> GSExpr
 gsbcvarbind_w pos gsmap x e = gsbcapparg_w pos gsmap [ $gsae $ gsbcarg_w $gshere $ \ v -> gsbcrecord_w pos [(x, $gsav v)], e ]
 
-gsbcemptygen_w :: Pos -> GSArg -> GSExpr
-gsbcemptygen_w pos gsunit = gsbcapparg_w pos gsunit [ $gsae $ gsbcrecord_w pos [] ]
+gsbcemptymonadgen_w :: Pos -> GSArg -> GSExpr
+gsbcemptymonadgen_w pos gsunit = gsbcapparg_w pos gsunit [ $gsae $ gsbcrecord_w pos [] ]
 
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 

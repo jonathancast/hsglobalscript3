@@ -4,7 +4,7 @@ import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcapply_w)
 import GSI.ByteCode (gsbcarg_w)
 import GSI.ByteCode (gsbccomposegen_w)
-import GSI.ByteCode (gsbcemptygen_w)
+import GSI.ByteCode (gsbcemptymonadgen_w)
 import GSI.ByteCode (gsbcenter_w)
 import GSI.ByteCode (gsbclfield_w)
 import GSI.ByteCode (gsbcvarbind_w)
@@ -15,6 +15,6 @@ import GSI.Either (gsright)
 import GSI.Syn (gsvar)
 
 {-# LINE 2 "./test-fixtures/either-for-bind-generator.hsgs" #-}
-(gsbcapply_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 21) gseitherFor [ GSArgExpr (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (gsbccomposegen_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (GSArgVar gseitherbind) (GSArgVar gsright) (GSArgExpr (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (gsbcvarbind_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (GSArgVar gseithermap) (gsvar "x") (GSArgVar a))) (\ env -> gsbcemptygen_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 39) (GSArgVar gsright))), GSArgExpr (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) (gsbcarg_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) (\ env -> gsbclfield_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) (gsvar "x") env (\ x0 -> gsbcenter_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) y))) ])
+(gsbcapply_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 21) gseitherFor [ GSArgExpr (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (gsbccomposegen_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (GSArgVar gseitherbind) (GSArgVar gsright) (GSArgExpr (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (gsbcvarbind_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 32) (GSArgVar gseithermap) (gsvar "x") (GSArgVar a))) (\ env -> gsbcemptymonadgen_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 39) (GSArgVar gsright))), GSArgExpr (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) (gsbcarg_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) (\ env -> gsbclfield_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) (gsvar "x") env (\ x0 -> gsbcenter_w (Pos "./test-fixtures/either-for-bind-generator.hsgs" 2 41) y))) ])
 {-# LINE 2 "./test-fixtures/either-for-bind-generator.hsgs" #-}
                                             
