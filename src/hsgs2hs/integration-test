@@ -39,6 +39,7 @@ ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-e
 ok_diff_compiler '-- prefix operators --' hsgs2hs prefix-expression.hsgs prefix-expression.hs
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
 ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
+ok_diff_compiled '-- empty structure literals --' hsgs2hs empty-structure-literal.hsgs .hs runghc `{./test-ghcoptions}
 
 # log{} literals
 
