@@ -331,21 +331,9 @@ globalEnv = Env{
                 <|> lambdalike env (Just "case")
             )
         )),
-        ("impfor", \ env -> (
-            EImpGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
-            EOpen <$> expr env,
-            Nothing
-        )),
-        ("either-for", \ env -> (
-            EMonadGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
-            EOpen <$> expr env,
-            Nothing
-        )),
-        ("parser-for", \ env -> (
-            EMonadGens <$> (((,) <$> getPos <*> generator env) `endBy` semicolon) <*> getPos,
-            EOpen <$> expr env,
-            Nothing
-        ))
+        ("impfor", \ env -> (EImpGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
+        ("either-for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
+        ("parser-for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing))
     ],
     leftops = Map.fromList [
         ("<|>", ())
