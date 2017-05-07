@@ -476,7 +476,13 @@ compileMonadGen env pos (BindGenerator x pos1 e) s = do
 compileMonadGen env pos g s = $gsfatal $ "compileMonadGen env pos " ++ genCode g ++ " s next"
 
 compileGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
-compileGens env ((pos, g):ps) pos1 = $gsfatal "compileGens env ((pos, g):ps) pos1 next"
+compileGens env ((pos, g):gs) pos1 = do
+    (is, hse) <- compileGenArg env pos g
+    (ist, hst) <- compileGens env gs pos1
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbccomposegen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` is `Set.union` ist,
+        HSVar "gsbccomposegen_w" `HSApp` hspos pos `HSApp` hse `HSApp` (HSLambda ["env"] hst)
+      )
 compileGens env [] pos1 = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptygen_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcemptygen_w" `HSApp` hspos pos1
