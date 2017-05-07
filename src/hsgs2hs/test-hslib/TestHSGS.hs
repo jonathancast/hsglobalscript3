@@ -31,5 +31,5 @@ formatTestValueAtom v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValu
 
 formatFields :: [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
 formatFields ((v, x):fs) k = formatTestValue x $ \ xds -> formatFields fs $ \ fsds ->
-    k $ formatVarBindAtom v . (" ∝ "++) . xds . ("; "++) . fsds
+    k $ formatVarBindAtom v . (" = "++) . xds . ("; "++) . fsds
 formatFields [] k = k id
