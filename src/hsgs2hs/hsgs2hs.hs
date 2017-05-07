@@ -490,14 +490,20 @@ compileGens env [] pos1 = return (
 
 compileGenArg :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
 compileGenArg env pos g = do
-    (is, hse) <- compileGen env g
+    (is, hse) <- compileGen env pos g
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileGen :: Env -> Generator -> Compiler (Set HSImport, HSExpr)
-compileGen env g = $gsfatal $ "compileGen env " ++ genCode g ++ " next"
+compileGen :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
+compileGen env pos (MatchGenerator v pos1 e) = do
+    (is, hse) <- compileArg env pos1 e Nothing
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarmatch_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIVar "GSI.Syn" "gsvar" ] `Set.union` is,
+        HSVar "gsbcvarmatch_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v) `HSApp` hse
+      )
+compileGen env pos g = $gsfatal $ "compileGen env pos " ++ genCode g ++ " next"
 
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
