@@ -175,7 +175,8 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
     aceEnterExpr [StackTrace pos cs] (k msgs) st
 
 gsbccomposegen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbccomposegen_w pos gen0 gen1 = gsbcimplementationfailure_w $gshere "gsbccomposegen_w next"
+gsbccomposegen_w pos gen0 gen1 = gsbcforce_w $gshere gen0 $ \ env0 -> gsbcforce_w $gshere ($gsae $ gen1 env0) $ \ env1 ->
+    gsbcprim_w $gshere gsmergeenv env0 env1
 
 gsbcvarmatch_w :: Pos -> GSVar -> GSArg -> GSExpr
 gsbcvarmatch_w pos v e = gsbcrecord_w pos [(v, e)]
