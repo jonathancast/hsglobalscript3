@@ -491,6 +491,9 @@ compileGens env [] pos1 = return (
 compileGenArg :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
 compileGenArg env pos g = $gsfatal "compileGenArg env pos g next"
 
+compileGen :: Env -> Generator -> Compiler (Set HSImport, HSExpr)
+compileGen env g = $gsfatal $ "compileGen env " ++ genCode g ++ " next"
+
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
     (is, hse) <- compileImpGenArg env pos g
