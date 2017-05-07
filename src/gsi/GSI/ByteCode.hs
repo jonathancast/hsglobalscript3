@@ -3,7 +3,7 @@
 module GSI.ByteCode (
     gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbcemptygen_w,
-    gsbccomposegen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
+    gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
@@ -177,8 +177,8 @@ gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
 gsbcemptygen_w :: Pos -> GSExpr
 gsbcemptygen_w pos = gsbcrecord_w pos []
 
-gsbccomposegen_w :: Pos -> GSArg -> GSArg -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbccomposegen_w pos gsbind gsunit gen0 gen1 = gsbcapparg_w pos gsbind [ gen0, $gsae $ gsbcarg_w $gshere $ \ env0 ->
+gsbccomposemonadgen_w :: Pos -> GSArg -> GSArg -> GSArg -> (GSValue -> GSExpr) -> GSExpr
+gsbccomposemonadgen_w pos gsbind gsunit gen0 gen1 = gsbcapparg_w pos gsbind [ gen0, $gsae $ gsbcarg_w $gshere $ \ env0 ->
     gsbcapparg_w pos gsbind [ $gsae $ gen1 env0, $gsae $ gsbcarg_w $gshere $ \ env1 ->
         gsbcapparg_w pos gsunit [ $gsae $ gsbcprim_w $gshere gsmergeenv env0 env1 ]
   ]]
