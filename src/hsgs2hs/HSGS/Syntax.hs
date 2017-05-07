@@ -204,7 +204,8 @@ data Pattern
   | PDiscard Pos
 
 data Generator
-  = ExecGenerator Pos Expr
+  = MatchGenerator String Pos Expr
+  | ExecGenerator Pos Expr
   | BindGenerator String Pos Expr
 
 data Param
@@ -388,5 +389,6 @@ patCode PApp{} = "PApp"
 patCode PDiscard{} = "PDiscard"
 
 genCode :: Generator -> String
+genCode MatchGenerator{} = "MatchGenerator"
 genCode ExecGenerator{} = "ExecGenerator"
 genCode BindGenerator{} = "BindGenerator"
