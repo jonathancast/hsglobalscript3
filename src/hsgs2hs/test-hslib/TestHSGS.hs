@@ -5,6 +5,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos)
 import GSI.Syn (GSVar, formatVarBindAtom)
+import GSI.Error (fmtErrorShort)
 import GSI.Value (GSValue(..), GSExpr, gsthunk, gsvCode)
 import GSI.Eval (evalSync)
 
@@ -16,6 +17,7 @@ printTestValue v = formatTestValue v (putStrLn . ($ ""))
 
 formatTestValue :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValue v@GSImplementationFailure{} k = formatTestValueAtom v k
+formatTestValue v@GSError{} k = formatTestValueAtom v k
 formatTestValue (GSThunk ts) k = do
     v <- evalSync [StackTrace $gshere []] ts
     formatTestValue v k
@@ -24,6 +26,7 @@ formatTestValue v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "+
 
 formatTestValueAtom :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValueAtom (GSImplementationFailure pos msg) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msg++) . ('>':)
+formatTestValueAtom (GSError err) k = k $ ('<':) . (fmtErrorShort err++) . ('>':)
 formatTestValueAtom (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
     False -> formatFields (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
