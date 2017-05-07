@@ -70,6 +70,7 @@ ok_diff_compiler '-- operator views --' hsgs2hs operator-view.hsgs operator-view
 # Different kinds of generators
 
 ok_diff_compiler '-- variable definition binds --' hsgs2hs bound-variable-bind-impfor.hsgs bound-variable-bind-impfor.hs
+ok_diff_compiled '-- variable definition matches --' hsgs2hs bound-variable-match.hsgs .hs runghc `{./test-ghcoptions}
 
 # Different monads
 
