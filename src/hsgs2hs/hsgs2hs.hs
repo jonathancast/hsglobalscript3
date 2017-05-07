@@ -489,7 +489,7 @@ compileGens env [] pos1 = return (
   )
 
 compileGenArg :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
-compileGenArg env pos g = $gsfatal "compileMonadGenArg env pos g next"
+compileGenArg env pos g = $gsfatal "compileGenArg env pos g next"
 
 compileImpGens :: Env -> [(Pos, Generator)] -> Pos -> Compiler (Set HSImport, HSExpr)
 compileImpGens env ((pos, g):gs) pos1 = do
