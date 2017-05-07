@@ -4,6 +4,7 @@ module TestHSGS (printTestExpr) where
 import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos)
+import GSI.Syn (GSVar, formatVarBindAtom)
 import GSI.Value (GSValue(..), GSExpr, gsthunk, gsvCode)
 import GSI.Eval (evalSync)
 
@@ -25,5 +26,10 @@ formatTestValueAtom :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValueAtom (GSImplementationFailure pos msg) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msg++) . ('>':)
 formatTestValueAtom (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
-    False -> k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom (GSRecord _ fs) next>"++)
+    False -> formatFields (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
 formatTestValueAtom v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
+
+formatFields :: [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
+formatFields ((v, x):fs) k = formatTestValue x $ \ xds -> formatFields fs $ \ fsds ->
+    k $ formatVarBindAtom v . (" ∝ "++) . xds . ("; "++) . fsds
+formatFields [] k = k id
