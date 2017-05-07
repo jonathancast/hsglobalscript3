@@ -158,6 +158,7 @@ generators env = ((,) <$> getPos <*> generator env) `endBy` semicolon
 
 generator :: Env -> Parser Char Generator
 generator env = empty
+    <|> MatchGenerator <$> (lexeme (char '\'') *> ident) <*> getPos <*> (keywordOp "∝" *> expr env)
     <|> ExecGenerator <$> getPos <*> (underscoreTerm *> keywordOp "←" *> expr env)
     <|> BindGenerator <$> (lexeme (char '\'') *> ident) <*> getPos <*> (keywordOp "←" *> expr env)
 
