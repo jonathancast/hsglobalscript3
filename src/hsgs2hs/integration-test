@@ -40,6 +40,7 @@ ok_diff_compiler '-- prefix operators --' hsgs2hs prefix-expression.hsgs prefix-
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
 ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
 ok_diff_compiled '-- empty structure literals --' hsgs2hs empty-structure-literal.hsgs .hs runghc `{./test-ghcoptions}
+ok_diff_compiled '-- additions --' hsgs2hs natural-addition.hsgs .hs runghc `{./test-ghcoptions}
 
 # log{} literals
 
