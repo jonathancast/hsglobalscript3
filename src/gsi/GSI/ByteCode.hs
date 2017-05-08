@@ -44,7 +44,7 @@ gsbcrecord_w pos fs = GSExpr $ \ st cs -> do
     fs' <- forM fs $ \ (v, fa) -> do
         fv <- gsprepare_w pos fa
         return (v, fv)
-    return $ GSRecord pos $ Map.fromList fs'
+    aceReturn (GSRecord pos $ Map.fromList fs') st
 
 gsbcconstr = varE 'gsbcconstr_w `appE` gshere
 
