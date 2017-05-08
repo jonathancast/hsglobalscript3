@@ -22,6 +22,7 @@ formatTestValue (GSThunk ts) k = do
     v <- evalSync [StackTrace $gshere []] ts
     formatTestValue v k
 formatTestValue v@GSRecord{} k = formatTestValueAtom v k
+formatTestValue v@GSNatural{} k = formatTestValueAtom v k
 formatTestValue v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "++) . (gsvCode v++) . (" next>"++)
 
 formatTestValueAtom :: GSValue -> ((String -> String) -> IO a) -> IO a
@@ -30,6 +31,7 @@ formatTestValueAtom (GSError err) k = k $ ('<':) . (fmtErrorShort err++) . ('>':
 formatTestValueAtom (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
     False -> formatFields (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
+formatTestValueAtom (GSNatural n) k = k $ shows n
 formatTestValueAtom v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
 
 formatFields :: [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
