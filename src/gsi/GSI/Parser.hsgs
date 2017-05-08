@@ -85,4 +85,6 @@ gsunitplus_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbc
 gssymbol_view :: GSValue
 gssymbol_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
-gsparser_advanceRune = $gslambda $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,| analyze rune.≡ c r{\n}. |]
+gsparser_advanceRune = $gslambda $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
+    case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
+|]
