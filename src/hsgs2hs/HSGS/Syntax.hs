@@ -11,7 +11,7 @@ import Data.Char (isAlpha, isAlphaNum, isSpace, isSymbol, isPunctuation)
 
 import GSI.Util (Pos, gsfatal)
 
-import HSGS.Parser (Parser, notFollowedBy, getPos, matching, symbol, char, string, (<?>), endBy, pfail)
+import HSGS.Parser (Parser, notFollowedBy, getPos, matching, symbol, char, string, (<?>), many1, endBy, pfail)
 
 interpolation :: Parser Char SourceComp
 interpolation = empty
@@ -94,6 +94,7 @@ expr env = empty
     <|> exprApp
     <|> lambdalike env Nothing
     <|> exprLeftList
+    <|> exprLeftOps
   where
     exprLeftList = empty
         <|> do
@@ -102,6 +103,17 @@ expr env = empty
             pos1 <- getPos
             e <- exprApp <|> lambdalike env Nothing
             return $ EUnary pos0 op `EApp` ArgExpr pos1 e
+    exprLeftOps = empty
+        <|> do
+            pos0 <- getPos
+            e0 <- exprApp
+            oes <- many1 $ do
+                posop <- getPos
+                op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ leftops env
+                pose <- getPos
+                e1 <- exprApp
+                return (posop, op, pose, e1)
+            return $ foldl (\ e0 (posop, op, pose, e1) -> EVar posop op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pose e1) e0 oes
     exprApp = foldl EApp <$> exprAtom <*> many exprArg
     exprAtom = empty
         <|> parens (expr env)
