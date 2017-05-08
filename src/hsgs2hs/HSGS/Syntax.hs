@@ -350,6 +350,7 @@ globalEnv = Env{
         ("parser-for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing))
     ],
     leftops = Map.fromList [
+        ("+", ()),
         ("<|>", ())
     ]
   }
