@@ -33,7 +33,7 @@ gsparserFor = $gslambda $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_bind [
 gsparser_bind = $gslambda $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply f [ $gsav x, $gsav k ] ]
 
-gsparser_then = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcundefined
+gsparser_then = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcapply p0 [ $gsae $ $gsbcarg $ \ _ -> $gsbcapply p1 [ $gsav k ] ]
 
 gsparser_map = $gslambda $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply k [ $gsae $ $gsbcundefined ] ]
