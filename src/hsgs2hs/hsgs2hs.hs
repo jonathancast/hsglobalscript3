@@ -187,6 +187,7 @@ compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
         Nothing -> Set.empty
         Just (SigOpen vs) -> vs
         Just sg -> $gsfatal $ "compileArg (EOpen e) " ++ sigCode sg ++ " next"
+compileArg env pos e@EGens{} s = compileExprToArg env pos e
 compileArg env pos (EImpGens gs pos1) s = compileImpGensArg env pos gs pos1
 compileArg env pos (EMonadGens gs pos1) (Just (SigMonad s)) = compileMonadGensArg env pos gs pos1 s
 compileArg env pos (EMonadGens gs pos1) (Just s) = compileError pos $ "monadic generators with invalid signature " ++ sigCode s ++ "!"
