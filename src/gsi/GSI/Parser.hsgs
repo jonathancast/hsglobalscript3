@@ -46,6 +46,7 @@ gsparser_map2 = $gslambda $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcar
 
 gsparser_string = $gslambda $ \ s -> [gs:expr hsvs=s,| analyze s.
     case 'c:'s1. char c *> string s1
+    case nil. parser.unit 〈〉
 |]
 
 gsparser_char = $gslambda $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
