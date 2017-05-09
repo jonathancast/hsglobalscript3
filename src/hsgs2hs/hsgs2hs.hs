@@ -609,7 +609,8 @@ globalEnv = Env{
         ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
         ("type-check-document", (Set.singleton $ HSIVar "GSI.Main" "gstypeCheckDocument", HSVar "gstypeCheckDocument")),
-        ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined"))
+        ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
+        ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda"))
     ],
     gsimplicits = Map.fromList [
         ("error", [ ImHere ]),
@@ -633,6 +634,10 @@ globalEnv = Env{
         ("unit-plus", (Set.singleton $ HSIVar "GSI.Parser" "gsunitplus_view", HSVar "gsunitplus_view"))
     ],
     gssignatures = Map.fromList [
+        ("λ", \ as -> case as of
+            (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
+            _ -> return []
+        ),
         ("case", \ as -> case as of
             (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
             _ -> return []

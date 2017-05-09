@@ -350,6 +350,7 @@ globalEnv = Env{
                 <|> lambdalike env (Just "case")
             )
         )),
+        ("λ", \ env -> (EPat <$> pattern env, EOpen <$> expr env, Nothing)),
         ("impfor", \ env -> (EImpGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
         ("either-for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
         ("parser-for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing))
