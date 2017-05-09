@@ -1,0 +1,4 @@
+import TestHSGS (printTestExpr)
+$gsimports
+
+main = printTestExpr [gs:expr| (λ 'n. n + 1) 2 |]
