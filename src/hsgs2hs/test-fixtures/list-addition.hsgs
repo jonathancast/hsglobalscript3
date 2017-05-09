@@ -1,0 +1,4 @@
+import TestHSGS (printTestExpr)
+$gsimports
+
+main = printTestExpr [gs:expr| + 1 + 2 + 3 |]
