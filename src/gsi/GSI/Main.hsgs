@@ -42,7 +42,7 @@ file = [gs:value hsvs=pragmas,|
 
 pragmas = [gs:value| many (
     <|> parser-for
-        _ ← char r{#};
+        _ ← string qq{#};
       . empty
 ) |]
 
