@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, gsparser_unit, gsparser_char, gsmany, gsparser_unary_or, gsempty, gsempty_view, gsparser_advanceRune) where
+module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, gsparser_unit, gsparser_string, gsparser_char, gsmany, gsparser_unary_or, gsempty, gsempty_view, gsparser_advanceRune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
@@ -41,6 +41,9 @@ gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 gsparser_map2 = $gslambda $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
     $gsbcapply p0 [ $gsae $ $gsbcundefined
   ]
+
+gsparser_string = $gslambda $ \ s -> [gs:expr hsvs=s,| analyze s.
+|]
 
 gsparser_char = $gslambda $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
 
