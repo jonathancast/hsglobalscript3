@@ -5,7 +5,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSArg, GSExpr, gslambda, gsae, gsav, gsvCode)
+import GSI.Value (GSValue(..), GSArg, GSExpr, gslambda_value, gsae, gsav, gsvCode)
 import GSI.Functions (gsstring)
 import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcenter, gsbcforce, gsbcevalnatural, gsbcimplementationfailure)
 import GSI.List (gsappend, gscons, gsnil)
@@ -24,4 +24,4 @@ gsbcstringlit_w :: Pos -> String -> GSExpr
 gsbcstringlit_w pos s = foldr (\ ch e1 -> $gsbcapply gscons [ $gsav $ GSRune ch, $gsae e1 ]) ($gsbcenter gsnil) s
 
 gsfmtdecimal :: GSValue
-gsfmtdecimal = $gslambda $ \ n -> $gsbcevalnatural ($gsav n) $ \ n_hs -> $gsbcenter ($gsstring (show n_hs))
+gsfmtdecimal = $gslambda_value $ \ n -> $gsbcevalnatural ($gsav n) $ \ n_hs -> $gsbcenter ($gsstring (show n_hs))

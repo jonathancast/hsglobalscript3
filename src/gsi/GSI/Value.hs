@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
     GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
-    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda, gslambda_w,
+    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
@@ -98,7 +98,7 @@ gsapply = varE 'gsapply_w `appE` gshere
 
 gsapply_w pos fn args = fmap GSThunk $ newMVar $ GSApply pos fn args
 
-gslambda = varE 'gslambda_w `appE` gshere
+gslambda_value = varE 'gslambda_w `appE` gshere
 
 gslambda_w :: Pos -> (GSValue -> GSExpr) -> GSValue
 gslambda_w pos f = GSClosure [StackTrace pos []] (GSLambda (GSRawExpr . f)) where

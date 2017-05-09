@@ -2,15 +2,15 @@
 module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_bind, gsparser_map, gsparser_unit, gsparser_string, gsparser_char, gsmany, gsparser_unary_or, gsempty, gsempty_view, gsparser_advanceRune) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue, gslambda, gsconstr, gsundefined_value, gsav, gsae)
+import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
 import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcundefined, gsbcconstr_view)
 import GSI.List (gsnil, gscons)
 $gsimports
 
-gsparse = $gslambda $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
+gsparse = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
     [gs:expr hsvs=gsparsew,adv,p,gsprimunit,pos,s,| gsparsew adv (p gsprimunit) pos s |]
 
-gsparsew = $gslambda $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=gsparsew,adv,p,pos,s,| analyze p.
+gsparsew = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=gsparsew,adv,p,pos,s,| analyze p.
     case empty. left (pos.fmt pos qq{empty})
     case unit-plus 'x 'p1. (analyze s.
         case nil. right x
@@ -25,33 +25,33 @@ gsparsew = $gslambda $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $
 |]
 
 gsposFmt :: GSValue
-gsposFmt = $gslambda $ \ pos -> $gsbcarg $ \ msg ->
+gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
     [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
-gsparserFor = $gslambda $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_bind [ $gsav gens, $gsav e ]
+gsparserFor = $gslambda_value $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_bind [ $gsav gens, $gsav e ]
 
-gsparser_bind = $gslambda $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
+gsparser_bind = $gslambda_value $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply f [ $gsav x, $gsav k ] ]
 
-gsparser_then = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcapply p0 [ $gsae $ $gsbcarg $ \ _ -> $gsbcapply p1 [ $gsav k ] ]
+gsparser_then = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcapply p0 [ $gsae $ $gsbcarg $ \ _ -> $gsbcapply p1 [ $gsav k ] ]
 
-gsparser_map = $gslambda $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
+gsparser_map = $gslambda_value $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply k [ $gsae $ $gsbcundefined ] ]
 
-gsparser_unit = $gslambda $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
+gsparser_unit = $gslambda_value $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
-gsparser_map2 = $gslambda $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
+gsparser_map2 = $gslambda_value $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
     $gsbcapply p0 [ $gsae $ $gsbcundefined
   ]
 
-gsparser_string = $gslambda $ \ s -> [gs:expr hsvs=s,| analyze s.
+gsparser_string = $gslambda_value $ \ s -> [gs:expr hsvs=s,| analyze s.
     case 'c:'s1. char c *> string s1
     case nil. parser.unit 〈〉
 |]
 
-gsparser_char = $gslambda $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
+gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
 
-gsparser_matching = $gslambda $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
+gsparser_matching = $gslambda_value $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
     $gsbcconstr (gsvar "symbol-or-eof") [ $gsae $gsbcundefined, $gsae $ $gsbcarg $ \ c ->
         [gs:expr hsvs=p,c,k,| analyze p c.
             case false. left undefined
@@ -61,37 +61,37 @@ gsparser_matching = $gslambda $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
 
 gsparser_displayRune = $gsundefined_value
 
-gsmany = $gslambda $ \ p -> $gsbcapply gsparser_or [
+gsmany = $gslambda_value $ \ p -> $gsbcapply gsparser_or [
     $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
     $gsae $ $gsbcapply gsparser_map2 [ $gsav gscons, $gsav p, $gsae $ $gsbcundefined ]
   ]
 
-gsparser_unary_or = $gslambda $ \ p -> $gsbcenter p
+gsparser_unary_or = $gslambda_value $ \ p -> $gsbcenter p
 
-gsparser_or = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
+gsparser_or = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
     $gsbcapply gsprimor [ $gsae $ $gsbcapply p0 [ $gsav k ], $gsae $ $gsbcapply p1 [ $gsav k ] ]
 
-gsempty = $gslambda $ \ k -> $gsbcenter gsprimempty
+gsempty = $gslambda_value $ \ k -> $gsbcenter gsprimempty
 
-gsprimunit = $gslambda $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprimempty ]
+gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprimempty ]
 
-gsprimor = $gslambda $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,gsprimunitplus,p0,p1,| analyze p0.
+gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,gsprimunitplus,p0,p1,| analyze p0.
     case unit-plus 'x 'p01. gsprimunitplus x (gsprimor p01 p1)
     case empty. p1
 |]
 
 gsprimempty = $gsconstr (gsvar "empty") []
-gsprimunitplus = $gslambda $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
+gsprimunitplus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
 
 gsempty_view :: GSValue
-gsempty_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
+gsempty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
 
 gsunitplus_view :: GSValue
-gsunitplus_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
+gsunitplus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
 
 gssymbol_view :: GSValue
-gssymbol_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
+gssymbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
-gsparser_advanceRune = $gslambda $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
+gsparser_advanceRune = $gslambda_value $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
     case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
 |]

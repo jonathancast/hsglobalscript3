@@ -8,7 +8,7 @@ import System.Exit (ExitCode(..), exitWith)
 import System.IO (hPutStrLn, stderr)
 
 import GSI.Util (gsfatal, gshere)
-import GSI.Value (gslambda, gsapply, gsundefined_value, gsav, gsae)
+import GSI.Value (gslambda_value, gsapply, gsundefined_value, gsav, gsae)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody)
@@ -25,7 +25,7 @@ main = do
 
 gstyc = $gsundefined_value
 
-gsrun = $gslambda $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
+gsrun = $gslambda_value $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
     td <- [gs:bind hsvs=args,| gsiThreadData args |]
     t <- [gs:bind hsvs=td,prog,| createThread td prog |]
     [gs:body hsvs=t,| execMainThread t |]

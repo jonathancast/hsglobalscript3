@@ -19,7 +19,7 @@ import System.Posix.Files (getFileStatus, isDirectory)
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (fmtError)
-import GSI.Value (GSValue(..), gslambda, gsimpprim, gsundefined_value, gsvCode)
+import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsundefined_value, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (Thread, ThreadDataComponent(..), component, threadTypeName)
 import GSI.Thread (withThreadData)
@@ -98,4 +98,4 @@ gsprimprintError pos t msg =
     $apiImplementationFailure $ "gsprimprintError " ++ gsvCode msg ++ " next"
 
 gsENOENT_view :: GSValue
-gsENOENT_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ err -> $gsbcconstr_view "ENOENT" ek sk err
+gsENOENT_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ err -> $gsbcconstr_view "ENOENT" ek sk err

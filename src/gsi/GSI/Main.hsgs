@@ -2,18 +2,18 @@
 module GSI.Main (gsmain) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gslambda, gsconstr, gsundefined_value, gsav)
+import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
 import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcundefined, gsbcconstr_view)
 $gsimports
 
 -- Main function (call this to start your interpreter)
-gsmain = $gslambda $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,| impfor
+gsmain = $gslambda_value $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,| impfor
         'args ← env.get-args;
     . gsprocessargs args gstyc gsrun
 |]
 
 -- Loops over arguments to process them
-gsprocessargs = $gslambda $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,args,file,gspos,| analyze args.
+gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,args,file,gspos,| analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
@@ -46,22 +46,22 @@ pragmas = [gs:value| many (
       . empty
 ) |]
 
-gsprocessDocument = $gslambda $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
+gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
         _ ← type-check-document pos gstyc;
         'p ← compile-document pos;
     . right p
 |]
 
-gstypeCheckDocument = $gslambda $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr| right undefined |]
+gstypeCheckDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr| right undefined |]
 
-gscompileDocument = $gslambda $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
+gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
 gsfileDocument = $gsconstr (gsvar "document") []
 
-gsfileDocument_view = $gslambda $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
-gspos = $gslambda $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
+gspos = $gslambda_value $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
     (gsvar "line", $gsav l),
     (gsvar "col", $gsav c)

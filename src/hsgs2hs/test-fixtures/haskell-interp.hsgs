@@ -1,1 +1,1 @@
-$gslambda $ \ gsrun -> $gsbcimpfor $ do
+$gslambda_value $ \ gsrun -> $gsbcimpfor $ do

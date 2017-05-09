@@ -5,19 +5,19 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda, gsav, gsae, gsvCode)
+import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsav, gsae, gsvCode)
 import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_w, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gscompose :: GSValue
-gscompose = $gslambda $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
+gscompose = $gslambda_value $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
 
-gsanalyze = $gslambda $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
+gsanalyze = $gslambda_value $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
 
-gsanalyzeImpM = $gslambda $ \ a -> $gsbcarg $ \cs -> $gsbcimpfor $ do
+gsanalyzeImpM = $gslambda_value $ \ a -> $gsbcarg $ \cs -> $gsbcimpfor $ do
     x <- $gsbcimpbind $ $gsav a
     $gsbcimpbody $ $gsae $ $gsbcapply cs [ $gsav x ]
 
-gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x ->
+gscase = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ c -> case c of
         GSConstr pos cv [r] | cv == gsvar "1" -> $gsbcapply b [$gsav r]
         GSConstr pos cv [] | cv == gsvar "0" -> $gsbcapply e [$gsav x]
@@ -25,7 +25,7 @@ gscase = $gslambda $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $ \ x -
         _ -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ gsvCode c ++ ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
 
 gsimpfor :: GSValue
-gsimpfor = $gslambda $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
+gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
     env <- $gsbcimpbind $ $gsav g
     $gsbcimpbody $ $gsae $ $gsbcapply e [ $gsav env ]
 
@@ -44,12 +44,12 @@ gsbcevalstring_w pos sa k = w id sa where
         GSConstr _ s_c s_as -> $gsbcimplementationfailure $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c ") next"
         _ -> $gsbcimplementationfailure $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
 
-gserror = $gslambda $ \ posv -> $gsbcarg $ \ msgv ->
+gserror = $gslambda_value $ \ posv -> $gsbcarg $ \ msgv ->
     gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
     $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
     $gsbcerror pos_hs msg_s
 
-gsundefined = $gslambda $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
+gsundefined = $gslambda_value $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
         gsbcundefined_w pos_hs
 
 gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
