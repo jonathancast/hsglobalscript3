@@ -95,6 +95,7 @@ expr env = empty
     <|> lambdalike env Nothing
     <|> exprLeftList
     <|> exprLeftOps
+    <|> exprNonOps
   where
     exprLeftList = empty
         <|> do
@@ -119,6 +120,14 @@ expr env = empty
                 e <- lambdalike env Nothing
                 return [(pos0, op, pos1, e)]
     eleftop pos0 e0 (posop, op, pose, e1) = EVar posop op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pose e1
+    exprNonOps = do
+        pos0 <- getPos
+        e0 <- exprApp
+        pos1 <- getPos
+        op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ nonops env
+        pos2 <- getPos
+        e1 <- exprApp <|> lambdalike env Nothing
+        return $ EVar pos1 op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos2 e1
     exprApp = foldl EApp <$> exprAtom <*> many exprArg
     exprAtom = empty
         <|> parens (expr env)
