@@ -97,16 +97,14 @@ expr env = empty
     <|> exprLeftOps
     <|> exprNonOps
   where
-    exprLeftList = empty
-        <|> do
-            ((pos0, op, pos1, e1):os) <- parseLeftops
-            return $ foldl (eleftop pos0) (EUnary pos0 op `EApp` ArgExpr pos1 e1) os
-    exprLeftOps = empty
-        <|> do
-            pos0 <- getPos
-            e0 <- exprApp
-            oes <- parseLeftops
-            return $ foldl (eleftop pos0) e0 oes
+    exprLeftList = do
+        ((pos0, op, pos1, e1):os) <- parseLeftops
+        return $ foldl (eleftop pos0) (EUnary pos0 op `EApp` ArgExpr pos1 e1) os
+    exprLeftOps = do
+        pos0 <- getPos
+        e0 <- exprApp
+        oes <- parseLeftops
+        return $ foldl (eleftop pos0) e0 oes
     parseLeftops = do
         pos0 <- getPos
         op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ leftops env
