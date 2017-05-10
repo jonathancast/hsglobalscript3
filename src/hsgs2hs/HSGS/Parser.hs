@@ -2,6 +2,8 @@
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
 module HSGS.Parser (Parser, parse, getPos, symbol, matching, char, string, notFollowedBy, (<?>), many1, endBy, pfail, Advanceable(..), advanceStr) where
 
+import qualified Data.Set as Set
+
 import Control.Applicative (Alternative(..))
 
 import Data.Char (isPrint)
@@ -31,7 +33,7 @@ parse p pos s = process $ parse_w (runParser p $ \ x -> PPReturnPlus x (PPFail [
         Right p' -> parse_w p' (advance c pos) s'
     parse_w p pos s = $gsfatal $ "parse " ++ pCode p ++ " next"
 
-    fmtError e0 e1 = concat (map ("; "++) e0) ++ fmt e1 where
+    fmtError e0 e1 = concat (map ("; "++) e0) ++ fmt (Set.toList $ Set.fromList $ e1) where
         fmt [] = ""
         fmt [exp0] = "; expecting " ++ exp0
         fmt [exp0, exp1] = "; expecting " ++ exp0 ++ " or " ++ exp1
