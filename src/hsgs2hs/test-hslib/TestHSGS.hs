@@ -4,7 +4,7 @@ module TestHSGS (printTestExpr) where
 import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos)
-import GSI.Syn (GSVar, formatVarBindAtom)
+import GSI.Syn (GSVar, fmtVarAtom, formatVarBindAtom)
 import GSI.Error (fmtErrorShort)
 import GSI.Value (GSValue(..), GSExpr, gsthunk, gsvCode)
 import GSI.Eval (evalSync)
@@ -23,6 +23,7 @@ formatTestValue (GSThunk ts) k = do
     formatTestValue v k
 formatTestValue v@GSRecord{} k = formatTestValueAtom v k
 formatTestValue v@GSNatural{} k = formatTestValueAtom v k
+formatTestValue (GSConstr _ v as) k = formatArgs as $ \ ds -> k (fmtVarAtom v . ds)
 formatTestValue v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "++) . (gsvCode v++) . (" next>"++)
 
 formatTestValueAtom :: GSValue -> ((String -> String) -> IO a) -> IO a
@@ -33,6 +34,10 @@ formatTestValueAtom (GSRecord _ fs) k = case Map.null fs of
     False -> formatFields (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
 formatTestValueAtom (GSNatural n) k = k $ shows n
 formatTestValueAtom v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
+
+formatArgs :: [GSValue] -> ((String -> String) -> IO a) -> IO a
+formatArgs (x:xn) k = formatTestValueAtom x $ \ xds -> formatArgs xn $ \ xnds -> k $ (' ':) . xds . xnds
+formatArgs [] k = k id
 
 formatFields :: [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
 formatFields ((v, x):fs) k = formatTestValue x $ \ xds -> formatFields fs $ \ fsds ->
