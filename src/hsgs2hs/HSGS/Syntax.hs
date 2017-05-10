@@ -359,12 +359,15 @@ globalEnv = Env{
         ("*>", ()),
         ("+", ()),
         ("<|>", ())
+    ],
+    nonops = Map.fromList [
     ]
   }
 
 data Env = Env {
     lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr))),
-    leftops :: Map String ()
+    leftops :: Map String (),
+    nonops :: Map String ()
   }
 
 scCode :: SourceComp -> String
