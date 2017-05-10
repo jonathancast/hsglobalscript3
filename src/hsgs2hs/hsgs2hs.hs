@@ -610,7 +610,8 @@ globalEnv = Env{
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
         ("type-check-document", (Set.singleton $ HSIVar "GSI.Main" "gstypeCheckDocument", HSVar "gstypeCheckDocument")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
-        ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda"))
+        ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
+        ("≠", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_neq", HSVar "gsnatural_neq"))
     ],
     gsimplicits = Map.fromList [
         ("error", [ ImHere ]),

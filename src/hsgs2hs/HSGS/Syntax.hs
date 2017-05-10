@@ -368,6 +368,7 @@ globalEnv = Env{
         ("<|>", ())
     ],
     nonops = Map.fromList [
+        ("≠", ())
     ]
   }
 
