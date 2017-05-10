@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Syn (GSVar, gsvar, fmtVarAtom, formatVarBindAtom) where -- §hs{GSVar} is deliberately §emph{abstract}
+module GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom) where -- §hs{GSVar} is deliberately §emph{abstract}
 
 import Data.Char (isPunctuation, isSymbol, isDigit, isLetter, isUpper)
 
@@ -27,9 +27,9 @@ fmtVarAtom (GSVarNum n) = shows n
 fmtVarAtom (GSVarAlphaNum s) = (s++)
 fmtVarAtom v = ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':)
 
-formatVarBindAtom :: GSVar -> String -> String
-formatVarBindAtom (GSVarAlphaNum s) = ('\'':) . (s++)
-formatVarBindAtom v = ('\'':) . ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':)
+fmtVarBindAtom :: GSVar -> String -> String
+fmtVarBindAtom (GSVarAlphaNum s) = ('\'':) . (s++)
+fmtVarBindAtom v = ('\'':) . ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':)
 
 gsvarCode :: GSVar -> String
 gsvarCode GSVarSym{} = "GSVarSym"

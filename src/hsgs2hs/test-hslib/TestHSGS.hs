@@ -4,7 +4,7 @@ module TestHSGS (printTestExpr) where
 import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos)
-import GSI.Syn (GSVar, fmtVarAtom, formatVarBindAtom)
+import GSI.Syn (GSVar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (fmtErrorShort)
 import GSI.Value (GSValue(..), GSExpr, gsthunk, gsvCode)
 import GSI.Eval (evalSync)
@@ -41,5 +41,5 @@ formatArgs [] k = k id
 
 formatFields :: [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
 formatFields ((v, x):fs) k = formatTestValue x $ \ xds -> formatFields fs $ \ fsds ->
-    k $ formatVarBindAtom v . (" = "++) . xds . ("; "++) . fsds
+    k $ fmtVarBindAtom v . (" = "++) . xds . ("; "++) . fsds
 formatFields [] k = k id
