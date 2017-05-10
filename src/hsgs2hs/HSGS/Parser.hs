@@ -39,7 +39,7 @@ parse p pos s = process $ parse_w (runParser p $ \ x -> PPReturnPlus x (PPFail [
         fmt [exp0, exp1] = "; expecting " ++ exp0 ++ " or " ++ exp1
         fmt exp = "; expecting " ++ fmt' exp where
             fmt' [] = "<unknown>"
-            fmt' [exp0] = " or " ++ exp0
+            fmt' [exp0] = "or " ++ exp0
             fmt' (exp0:exp) = exp0 ++ ", " ++ fmt' exp
 
 pfail :: String -> Parser s a
