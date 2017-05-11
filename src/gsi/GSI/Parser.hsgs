@@ -86,6 +86,7 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,g
 
 gsprimempty = $gsconstr (gsvar "empty") []
 gsprimunitplus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
+gsprimsymbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
 
 gsempty_view :: GSValue
 gsempty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
