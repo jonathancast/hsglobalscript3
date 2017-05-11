@@ -80,6 +80,8 @@ gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x,
 gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,gsprimunitplus,p0,p1,| analyze p0.
     case empty. p1
     case unit-plus 'x 'p01. gsprimunitplus x (gsprimor p01 p1)
+    case symbol-or-eof 'ek0 'sk0. (analyze p1.
+    )
 |]
 
 gsprimempty = $gsconstr (gsvar "empty") []
