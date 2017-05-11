@@ -42,7 +42,7 @@ ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generat
 ok_diff_compiled '-- empty structure literals --' hsgs2hs empty-structure-literal.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- additions --' hsgs2hs natural-addition.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- lists --' hsgs2hs list-addition.hsgs .hs runghc `{./test-ghcoptions}
-TODO=TODO ok_diff_compiled '-- non-associative operators --' hsgs2hs inequality.hsgs .hs runghc `{./test-ghcoptions}
+ok_diff_compiled '-- non-associative operators --' hsgs2hs inequality.hsgs .hs runghc `{./test-ghcoptions}
 
 # log{} literals
 
