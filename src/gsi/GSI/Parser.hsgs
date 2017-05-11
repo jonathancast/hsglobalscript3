@@ -81,7 +81,10 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,g
     case empty. p1
     case unit-plus 'x 'p01. gsprimunitplus x (gsprimor p01 p1)
     case symbol-or-eof 'ek0 'sk0. (analyze p1.
-        case symbol-or-eof 'ek1 'sk1. gsprimsymbol undefined undefined
+        case symbol-or-eof 'ek1 'sk1. gsprimsymbol undefined (λ 'c. analyze sk0 c.
+            case left 'e. (analyze sk1 c.
+            )
+        )
     )
 |]
 
