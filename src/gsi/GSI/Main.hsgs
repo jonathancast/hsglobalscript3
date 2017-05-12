@@ -40,10 +40,15 @@ file = [gs:value hsvs=pragmas,|
     <|> parser-for _ ← pragmas;. parser.unit file.document
 |]
 
-pragmas = [gs:value| many (
-    <|> parser-for
-        _ ← string qq{#};
-      . empty
+pragmas = [gs:value hsvs=pragmawhitespace,| pragmawhitespace *> many empty |]
+
+pragmawhitespace = [gs:value| many (
+    <|> (
+        *> string qq{#!}
+        *> many (matching log{comment body character} (λ 'c. c ≠ r{\n}))
+        *> char r{\n}
+        *> parser.unit 〈〉
+    )
 ) |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
