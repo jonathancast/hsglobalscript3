@@ -611,7 +611,7 @@ globalEnv = Env{
         ("type-check-document", (Set.singleton $ HSIVar "GSI.Main" "gstypeCheckDocument", HSVar "gstypeCheckDocument")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
-        ("≠", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_neq", HSVar "gsnatural_neq"))
+        ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))
     ],
     gsimplicits = Map.fromList [
         ("error", [ ImHere ]),
