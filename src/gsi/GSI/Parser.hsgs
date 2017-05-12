@@ -64,7 +64,7 @@ gsparser_displayRune = $gsundefined_value
 
 gsmany = $gslambda_value $ \ p -> $gsbcapply gsparser_or [
     $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
-    $gsae $ $gsbcapply gsparser_map2 [ $gsav gscons, $gsav p, $gsae $ $gsbcundefined ]
+    $gsae $ $gsbcapply gsparser_map2 [ $gsav gscons, $gsav p, $gsae $ $gsbcapply gsmany [ $gsav p ] ]
   ]
 
 gsparser_unary_or = $gslambda_value $ \ p -> $gsbcenter p
