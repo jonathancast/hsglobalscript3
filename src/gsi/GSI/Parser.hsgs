@@ -43,8 +43,7 @@ gsparser_map = $gslambda_value $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsb
 gsparser_unit = $gslambda_value $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
 gsparser_map2 = $gslambda_value $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
-    $gsbcapply p0 [ $gsae $ $gsbcundefined
-  ]
+    [gs:expr hsvs=f,p0,p1,k,| p0 (λ 'x0. p1 (λ 'x1. k (f x0 x1))) |]
 
 gsparser_string = $gslambda_value $ \ s -> [gs:expr hsvs=s,| analyze s.
     case 'c:'s1. char c *> string s1
