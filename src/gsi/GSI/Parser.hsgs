@@ -16,6 +16,7 @@ gsparsew = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsb
         case nil. right x
         case _:_. gsparsew adv p1 pos s
     )
+    case get-pos 'k. gsparsew adv (k pos) pos s
     case symbol-or-eof 'ek 'sk. (analyze s.
         case 'c:'s1. (analyze sk c.
             case left 'e. left (pos.fmt pos undefined)
