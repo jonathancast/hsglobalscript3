@@ -113,5 +113,6 @@ gssymbol_view :: GSValue
 gssymbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
 gsparser_advanceRune = $gslambda_value $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
+    case true. 〈 'filename ∝ pos #filename; 'line ∝ pos #line + 1; 'col ∝ 1; 〉
     case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
 |]
