@@ -38,8 +38,7 @@ gsparser_then = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $
 
 gsparser_unary_then = $gslambda_value $ \ p0 -> $gsbcenter p0
 
-gsparser_map = $gslambda_value $ \ f -> $gsbcarg $ \ p -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
-    $gsbcapply k [ $gsae $ $gsbcundefined ] ]
+gsparser_map = [gs:value| λ 'f. λ 'p. λ 'k. p (λ 'x. k undefined) |]
 
 gsparser_unit = $gslambda_value $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
 
