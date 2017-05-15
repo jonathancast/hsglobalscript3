@@ -271,19 +271,16 @@ field :: Parser Char String
 field = lexeme $ name
 
 name :: Parser Char String
-name = empty
-    <|> (++) <$> alphaNumComp <*> (concat <$> many cont <* notFollowedBy cont)
-    <|> (++) <$> numComp <*> (concat <$> many cont <* notFollowedBy cont)
-  where
-    cont =
-            (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
-        <|> (:) <$> matching "separator" (`elem` ".") <*> operatorComp
+name = nameOf alphaNumComp <|> nameOf numComp
 
 ident :: Parser Char String
 ident = lexeme identName
 
 identName :: Parser Char String
-identName = (++) <$> alphaNumComp <*> (concat <$> many cont <* notFollowedBy cont) where
+identName = nameOf alphaNumComp
+
+nameOf :: Parser Char String -> Parser Char String
+nameOf init = (++) <$> init <*> (concat <$> many cont <* notFollowedBy cont) where
     cont =
             (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
         <|> (:) <$> matching "separator" (`elem` ".") <*> operatorComp
