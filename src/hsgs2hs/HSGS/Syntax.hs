@@ -141,7 +141,7 @@ expr env = empty
         <|> uncurry EGens <$> angleBrackets ((,) <$> generators env <*> getPos)
     exprArg = empty
         <|> ArgExpr <$> getPos <*> exprAtom
-        <|> ArgField <$> getPos <*> (keywordOp "#" *> ident)
+        <|> ArgField <$> getPos <*> (keywordOp "#" *> field)
 
 quoteItems :: Env -> [Char] -> Parser Char [QLOItem]
 quoteItems env qs = empty
@@ -267,6 +267,18 @@ lambdalike env mbv = do
         Just pe -> EApp ef2 <$> (ArgExpr <$> getPos <*> pe)
     return ef3
 
+field :: Parser Char String
+field = lexeme $ name
+
+name :: Parser Char String
+name = empty
+    <|> (++) <$> alphaNumComp <*> (concat <$> many cont <* notFollowedBy cont)
+    <|> (++) <$> numComp <*> (concat <$> many cont <* notFollowedBy cont)
+  where
+    cont =
+            (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
+        <|> (:) <$> matching "separator" (`elem` ".") <*> operatorComp
+
 ident :: Parser Char String
 ident = lexeme identName
 
@@ -275,6 +287,9 @@ identName = (++) <$> alphaNumComp <*> (concat <$> many cont <* notFollowedBy con
     cont =
             (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
         <|> (:) <$> matching "separator" (`elem` ".") <*> operatorComp
+
+numComp :: Parser Char String
+numComp = ((:) <$> digit <*> many digit) <* notFollowedBy digit
 
 alphaNumComp :: Parser Char String
 alphaNumComp = ((:) <$> idStartChar <*> many idContChar) <* notFollowedBy idContChar
