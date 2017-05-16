@@ -182,7 +182,7 @@ generators env = ((,) <$> getPos <*> generator env) `endBy` semicolon
 
 generator :: Env -> Parser Char Generator
 generator env = empty
-    <|> MatchGenerator <$> (lexeme (char '\'') *> ident) <*> getPos <*> (keywordOp "∝" *> expr env)
+    <|> MatchGenerator <$> boundName <*> getPos <*> (keywordOp "∝" *> expr env)
     <|> ExecGenerator <$> getPos <*> (underscoreTerm *> keywordOp "←" *> expr env)
     <|> BindGenerator <$> (lexeme (char '\'') *> ident) <*> getPos <*> (keywordOp "←" *> expr env)
 
@@ -272,6 +272,9 @@ field = lexeme $ name
 
 name :: Parser Char String
 name = nameOf alphaNumComp <|> nameOf numComp
+
+boundName :: Parser Char String
+boundName = lexeme (char '\'') *> lexeme (nameOf alphaNumComp <|> nameOf numComp)
 
 ident :: Parser Char String
 ident = lexeme identName
