@@ -57,7 +57,7 @@ gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-r
 gsparser_matching = $gslambda_value $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
     $gsbcconstr (gsvar "symbol-or-eof") [ $gsae $gsbcundefined, $gsae $ $gsbcarg $ \ c ->
         [gs:expr hsvs=p,c,k,| analyze p c.
-            case false. left undefined
+            case false. left 〈 '0 ∝ undefined; '1 ∝ undefined; 〉
             case true. right (k c)
         |]
     ]
