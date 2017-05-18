@@ -148,11 +148,13 @@ processFVS :: [Param] -> Set String
 processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 
 compileValue :: Env -> Pos -> Expr -> Compiler (Set HSImport, HSExpr)
-compileValue env _ (EVar pos1 v) = do
-    (isv, ev) <- case Map.lookup v (gsvars env) of
-        Nothing -> compileError pos1 $ v ++ " not in scope"
-        Just (isv, ev) -> return (isv, ev)
-    return (isv, ev)
+compileValue env pos e@(EVar pos1 v) = case Map.lookup v (gsimplicits env) of
+    Just _ -> compileThunk env pos e
+    Nothing -> do
+        (isv, ev) <- case Map.lookup v (gsvars env) of
+            Nothing -> compileError pos1 $ v ++ " not in scope"
+            Just (isv, ev) -> return (isv, ev)
+        return (isv, ev)
 compileValue env pos e@EApp{} = compileThunk env pos e
 compileValue env pos e = $gsfatal $ "compileValue " ++ eCode e ++ " next"
 
