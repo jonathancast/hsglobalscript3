@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module TestHSGS (printTestExpr) where
+module TestHSGS (printTestExpr, printTestValue) where
 
 import qualified Data.Map as Map
 
