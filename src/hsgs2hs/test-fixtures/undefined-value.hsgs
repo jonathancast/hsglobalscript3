@@ -1,0 +1,4 @@
+import TestHSGS (printTestValue)
+$gsimports
+
+main = printTestValue [gs:value| undefined |]
