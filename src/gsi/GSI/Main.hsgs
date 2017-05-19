@@ -49,6 +49,10 @@ pragmawhitespace = [gs:value| many (
         *> char r{\n}
         *> parser.unit 〈〉
     )
+    <|> (
+        *> string qq{\n}
+        *> parser.unit 〈〉
+    )
 ) |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
