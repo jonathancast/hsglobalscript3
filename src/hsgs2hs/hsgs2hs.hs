@@ -172,7 +172,7 @@ compileArg env pos e@EQLO{} s = compileExprToArg env pos e
 compileArg env pos (EVar pos1 v) s = case Map.lookup v (gsimplicits env) of
     Nothing -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
-            Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
+            Nothing -> lift $ Left $ fmtPos pos1 $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
         return (
             Set.singleton (HSIType "GSI.Value" "GSArg") `Set.union` isv,
