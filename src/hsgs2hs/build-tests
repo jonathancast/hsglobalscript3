@@ -1,0 +1,5 @@
+#! /usr/local/plan9/bin/rc -e
+
+ghc --make `{./ghcoptions} Test.hs
+
+./build
