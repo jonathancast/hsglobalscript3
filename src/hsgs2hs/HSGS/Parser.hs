@@ -135,6 +135,7 @@ PPFail e0 e1 `or_w` SymbolOrEof ek1 sk1 = SymbolOrEof (PPFail e0 e1 `or_w` ek1) 
     Right p1 -> Right p1
   )
 PPFail e0 e1 `or_w` GetPos k1 = GetPos $ \ pos -> PPFail e0 e1 `or_w` k1 pos
+PPFail e0 e1 `or_w` Lookahead p1 = Lookahead (mapPrim (PPFail e0 e1 `or_w`) p1)
 PPReturnPlus x p0 `or_w` PPFail e2 e3 = PPReturnPlus x (p0 `or_w` PPFail e2 e3)
 PPReturnPlus x p0 `or_w` PPReturnPlus y p1 = PPReturnPlus x (p0 `or_w` PPReturnPlus y p1)
 PPReturnPlus x p0 `or_w` GetPos k1 = PPReturnPlus x (p0 `or_w` GetPos k1)
