@@ -18,6 +18,11 @@ interpolation = empty
     <|> do
         keyword "gsimports"
         return SCImports
+    <|> do
+        keyword "gsdeclare"
+        gsv <- ident
+        hsv <- hsident
+        return $ SCDeclare gsv hsv
 
 quote :: Env -> Pos -> Parser Char SourceComp
 quote env pos = empty
