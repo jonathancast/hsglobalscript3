@@ -394,6 +394,23 @@ data Env = Env {
     nonops :: Map String ()
   }
 
+hsident :: Parser Char String
+hsident = hslexeme ((:) <$> hsidStartChar <*> many hsidContChar) <* notFollowedBy hsidContChar
+
+hsidStartChar :: Parser Char Char
+hsidStartChar = matching "identifier" isAlpha
+
+hsidContChar :: Parser Char Char
+hsidContChar = matching "identifier continuation character" isAlphaNum
+
+hslexeme :: Parser Char a -> Parser Char a
+hslexeme p = p <* hswhitespace
+
+hswhitespace :: Parser Char ()
+hswhitespace = empty
+    <|> return ()
+    <|> matching "whitespace" isSpace *> hswhitespace
+
 scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
 scCode SCPos{} = "SCPos"
