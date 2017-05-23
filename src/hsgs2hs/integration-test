@@ -27,6 +27,10 @@ ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impf
 ok_diff_compiler '-- open expressions with bound variables --' hsgs2hs bound-variable-open-expression.hsgs bound-variable-open-expression.hs
 ok_diff_compiler '-- values (thunks) --' hsgs2hs application-value.hsgs application-value.hs
 
+# Different kinds of declarations
+
+ok_diff_compiled '-- variable declarations --' hsgs2hs variable-decl.hsgs .hs runghc `{./test-ghcoptions}
+
 # Different kinds of expressions
 
 ok_diff_compiler '-- number literals --' hsgs2hs number.hsgs number.hs
