@@ -63,7 +63,7 @@ mkMod (c:s) = c : mkMod s
 compileHSGSSource :: String -> FilePath -> String -> Either String String
 compileHSGSSource m fn s =
    splitInput (Pos fn 1 1) s >>=
-   compileSource m >>=
+   compileSource globalEnv m >>=
    formatOutput >>=
    return . concat . (("{-# LINE 1 " ++ show fn ++ " #-}\n"):)
 
@@ -112,23 +112,23 @@ formatExprAtom (HSList es) = fmt es where
     fmt' (e:es) = formatExpr e . (", "++) . fmt' es
 formatExprAtom e = $gsfatal $ "formatExprAtom " ++ hsCode e ++ " next"
 
-compileSource :: String -> [SourceComp] -> Either String [DestComp]
-compileSource m (SCChar c:scs) = (DCChar c:) <$> compileSource m scs
-compileSource m (SCPos pos:scs) = (DCPos pos:) <$> compileSource m scs
-compileSource m (SCImports:scs) = do
-    dcs <- compileSource m scs
+compileSource :: Env -> String -> [SourceComp] -> Either String [DestComp]
+compileSource env m (SCChar c:scs) = (DCChar c:) <$> compileSource env m scs
+compileSource env m (SCPos pos:scs) = (DCPos pos:) <$> compileSource env m scs
+compileSource env m (SCImports:scs) = do
+    dcs <- compileSource env m scs
     return $ DCImports (gatherImports m Set.empty dcs) : dcs
-compileSource m (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps globalEnv) pos e Nothing) <*> compileSource m scs
-compileSource m (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps globalEnv) e) <*> compileSource m scs
-compileSource m (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource m scs
-compileSource m (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps globalEnv) pos (processFVS ps) e) <*> compileSource m scs
-compileSource m (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat globalEnv p <*> compileSource m scs
-compileSource m (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg globalEnv pos p <*> compileSource m scs
-compileSource m (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps globalEnv) pos e) <*> compileSource m scs
-compileSource m (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBind (processHSVS ps globalEnv) pos e) <*> compileSource m scs
-compileSource m (SCValue pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileValue (processHSVS ps globalEnv) pos e) <*> compileSource m scs
-compileSource m (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
-compileSource m [] = return []
+compileSource env m (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps env) pos e Nothing) <*> compileSource env m scs
+compileSource env m (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps env) e) <*> compileSource env m scs
+compileSource env m (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps env) pos (processFVS ps) e) <*> compileSource env m scs
+compileSource env m (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps env) pos (processFVS ps) e) <*> compileSource env m scs
+compileSource env m (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat env p <*> compileSource env m scs
+compileSource env m (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg env pos p <*> compileSource env m scs
+compileSource env m (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps env) pos e) <*> compileSource env m scs
+compileSource env m (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBind (processHSVS ps env) pos e) <*> compileSource env m scs
+compileSource env m (SCValue pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileValue (processHSVS ps env) pos e) <*> compileSource env m scs
+compileSource env m (sc:scs) = $gsfatal $ "compileSource " ++ scCode sc ++ " next"
+compileSource env m [] = return []
 
 gatherImports :: String -> Set HSImport -> [DestComp] -> Set HSImport
 gatherImports m is (DCChar _:dcs) = gatherImports m is dcs
