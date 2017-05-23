@@ -190,6 +190,7 @@ data SourceComp
   = SCChar Char
   | SCPos Pos
   | SCImports
+  | SCDeclare String String
   | SCArg Pos [Param] Expr
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
@@ -397,6 +398,7 @@ scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
 scCode SCPos{} = "SCPos"
 scCode SCImports{} = "SCImports"
+scCode SCDeclare{} = "SCDeclare"
 scCode SCArg{} = "SCArg"
 scCode SCExpr{} = "SCExpr"
 scCode SCOpenExpr{} = "SCOpenExpr"
