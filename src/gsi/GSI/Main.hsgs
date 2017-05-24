@@ -40,7 +40,11 @@ $gsdeclare pragmas pragmas;
 $gsdeclare expr expr;
 
 file = [gs:value|
-    <|> parser-for _ ← pragmas; 'pos ← get-pos;. parser.unit (file.document pos)
+    <|> parser-for
+            _ ← pragmas;
+            'pos ← get-pos;
+            'mb ← optional expr;
+        . parser.unit (file.document pos)
 |]
 
 pragmas = [gs:value hsvs=pragmawhitespace,| pragmawhitespace *> many empty |]
