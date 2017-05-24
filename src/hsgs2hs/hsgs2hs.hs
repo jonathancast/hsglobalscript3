@@ -604,6 +604,7 @@ globalEnv = Env{
         ("many", (Set.singleton $ HSIVar "GSI.Parser" "gsmany", HSVar "gsmany")),
         ("matching", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_matching", HSVar "gsparser_matching")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil", HSVar "gsnil")),
+        ("optional", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_optional", HSVar "gsparser_optional")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
         ("parser-for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.unit", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit")),
