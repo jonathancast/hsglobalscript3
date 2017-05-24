@@ -64,7 +64,9 @@ pragmawhitespace = [gs:value| many (
 
 $gsdeclare ident ident
 
-expr = [gs:value| empty |]
+expr = [gs:value|
+    <|> parser.map undefined ident
+|]
 
 ident = [gs:value| empty |]
 
