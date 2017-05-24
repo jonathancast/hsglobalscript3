@@ -79,7 +79,7 @@ $gsdeclare difference-w gsparser_difference_w
 
 gsparser_notFollowedBy = [gs:value| λ 'p. λ 'k. difference-w (k 〈〉) (p undefined) |]
 
-gsparser_difference_w = [gs:value| undefined |]
+gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0. |]
 
 gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav k ]
 
