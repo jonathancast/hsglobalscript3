@@ -37,6 +37,7 @@ gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ g
 |]
 
 $gsdeclare pragmas pragmas;
+$gsdeclare expr expr;
 
 file = [gs:value|
     <|> parser-for _ ← pragmas; 'pos ← get-pos;. parser.unit (file.document pos)
@@ -56,6 +57,8 @@ pragmawhitespace = [gs:value| many (
         *> parser.unit 〈〉
     )
 ) |]
+
+expr = [gs:value| undefined |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
