@@ -70,7 +70,7 @@ expr = [gs:value|
 
 $gsdeclare ident-start-char identStartChar
 
-ident = [gs:value| parser.map2 undefined ident-start-char empty |]
+ident = [gs:value| parser.map2 undefined ident-start-char (many empty) |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 
