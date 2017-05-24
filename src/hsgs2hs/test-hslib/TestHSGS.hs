@@ -29,10 +29,17 @@ formatTestValue v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "+
 formatTestValueAtom :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValueAtom (GSImplementationFailure pos msg) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msg++) . ('>':)
 formatTestValueAtom (GSError err) k = k $ ('<':) . (fmtErrorShort err++) . ('>':)
+formatTestValueAtom (GSThunk ts) k = do
+    v <- evalSync [StackTrace $gshere []] ts
+    formatTestValueAtom v k
+formatTestValueAtom (GSConstr pos c []) k = k $ fmtVarAtom c
 formatTestValueAtom (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
     False -> formatFields (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
 formatTestValueAtom (GSNatural n) k = k $ shows n
+formatTestValueAtom (GSRune r) k
+    | r `elem` "/\\§()[]{}\n\t" = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom (GSRune "++) . shows r . (") next>"++)
+    | otherwise = k $ ("r/"++) . (r:) . ('/':)
 formatTestValueAtom v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
 
 formatArgs :: [GSValue] -> ((String -> String) -> IO a) -> IO a
