@@ -38,7 +38,7 @@ gsparser_bind = $gslambda_value $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gs
 
 gsparser_then = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcapply p0 [ $gsae $ $gsbcarg $ \ _ -> $gsbcapply p1 [ $gsav k ] ]
 
-gsparser_unary_then = $gslambda_value $ \ p0 -> $gsbcenter p0
+gsparser_unary_then = [gs:value| λ 'p0. p0 |]
 
 gsparser_after = [gs:value| λ 'p0. λ 'p1. λ 'k. p0 (λ 'x0. p1 (λ 'x1. k x0)) |]
 
