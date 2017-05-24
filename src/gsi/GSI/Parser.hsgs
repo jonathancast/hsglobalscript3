@@ -66,10 +66,7 @@ gsparser_displayRune = $gsundefined_value
 
 gsparser_optional = [gs:value| λ 'p. parser.unit undefined <|> parser.map undefined p |]
 
-gsmany = $gslambda_value $ \ p -> $gsbcapply gsparser_or [
-    $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
-    $gsae $ $gsbcapply gsparser_map2 [ $gsav [gs:value| (:) |], $gsav p, $gsae $ $gsbcapply gsmany [ $gsav p ] ]
-  ]
+gsmany = [gs:value| λ 'p. parser.unit nil <|> parser.map2 (:) p (many p) |]
 
 gsparser_unary_or = $gslambda_value $ \ p -> $gsbcenter p
 
