@@ -77,7 +77,7 @@ gsparser_or = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
 
 $gsdeclare difference-w gsparser_difference_w
 
-gsparser_notFollowedBy = [gs:value| undefined |]
+gsparser_notFollowedBy = [gs:value| λ 'p. λ 'k. difference-w (k 〈〉) (p undefined) |]
 
 gsparser_difference_w = [gs:value| undefined |]
 
