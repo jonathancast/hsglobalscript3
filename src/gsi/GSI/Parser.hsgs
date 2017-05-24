@@ -64,7 +64,7 @@ gsparser_matching = $gslambda_value $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k 
 
 gsparser_displayRune = $gsundefined_value
 
-gsparser_optional = [gs:value| λ 'p. parser.unit undefined <|> undefined |]
+gsparser_optional = [gs:value| λ 'p. parser.unit undefined <|> parser.map undefined undefined |]
 
 gsmany = $gslambda_value $ \ p -> $gsbcapply gsparser_or [
     $gsae $ $gsbcapply gsparser_unit [ $gsav gsnil ],
