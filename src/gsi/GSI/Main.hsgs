@@ -58,7 +58,7 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
-expr = [gs:value| undefined |]
+expr = [gs:value| empty |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
