@@ -408,7 +408,7 @@ hsidStartChar :: Parser Char Char
 hsidStartChar = matching "identifier" isAlpha
 
 hsidContChar :: Parser Char Char
-hsidContChar = matching "identifier continuation character" isAlphaNum
+hsidContChar = matching "identifier continuation character" (\ ch -> isAlphaNum ch || ch == '_')
 
 hslexeme :: Parser Char a -> Parser Char a
 hslexeme p = p <* hswhitespace
