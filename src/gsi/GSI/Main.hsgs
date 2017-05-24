@@ -62,7 +62,11 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare ident ident
+
 expr = [gs:value| empty |]
+
+ident = [gs:value| empty |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
