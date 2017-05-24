@@ -134,6 +134,7 @@ expr env = empty
     exprApp = foldl EApp <$> exprAtom <*> many exprArg
     exprAtom = empty
         <|> parens (expr env)
+        <|> parens (EVar <$> getPos <*> operator env)
         <|> EVar <$> getPos <*> var env
         <|> ENumber <$> getPos <*> decimal
         <|> do
