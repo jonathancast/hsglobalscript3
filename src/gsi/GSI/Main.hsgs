@@ -68,7 +68,11 @@ expr = [gs:value|
     <|> parser.map undefined ident
 |]
 
+$gsdeclare ident-start-char identStartChar
+
 ident = [gs:value| parser.map2 undefined empty empty |]
+
+identStartChar = [gs:value| empty |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
