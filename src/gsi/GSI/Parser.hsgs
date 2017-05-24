@@ -75,7 +75,11 @@ gsparser_unary_or = $gslambda_value $ \ p -> $gsbcenter p
 gsparser_or = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
     $gsbcapply gsprimor [ $gsae $ $gsbcapply p0 [ $gsav k ], $gsae $ $gsbcapply p1 [ $gsav k ] ]
 
+$gsdeclare difference-w gsparser_difference_w
+
 gsparser_notFollowedBy = [gs:value| undefined |]
+
+gsparser_difference_w = [gs:value| undefined |]
 
 gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav k ]
 
