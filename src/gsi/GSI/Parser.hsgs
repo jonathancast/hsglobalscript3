@@ -36,7 +36,7 @@ gsparserFor = $gslambda_value $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_
 gsparser_bind = $gslambda_value $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
     $gsbcapply f [ $gsav x, $gsav k ] ]
 
-gsparser_then = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k -> $gsbcapply p0 [ $gsae $ $gsbcarg $ \ _ -> $gsbcapply p1 [ $gsav k ] ]
+gsparser_then = [gs:value| λ 'p0. λ 'p1. λ 'k. p0 (λ 'x0. p1 k) |]
 
 gsparser_unary_then = [gs:value| λ 'p0. p0 |]
 
