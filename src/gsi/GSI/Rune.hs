@@ -1,9 +1,11 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Rune (gsrune_neq, gsruneEq) where
+module GSI.Rune (gsisLower, gsrune_neq, gsruneEq) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcundefined, gsbcimplementationfailure)
+
+gsisLower = $gsundefined_value
 
 gsrune_neq = $gslambda_value $ \ c0 -> $gsbcarg $ \ c1 -> $gsbcforce ($gsav c0) $ \ c0_0 -> $gsbcforce ($gsav c1) $ \ c1_0 -> case (c0_0, c1_0) of
     (GSRune c0hs, GSRune c1hs) ->
