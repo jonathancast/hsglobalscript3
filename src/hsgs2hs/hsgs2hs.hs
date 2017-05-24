@@ -575,6 +575,7 @@ globalEnv = Env{
         ("*>", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_then", HSVar "gsparser_then")),
         ("+", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_add", HSVar "gsnatural_add")),
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons", HSVar "gscons")),
+        ("<*", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_after", HSVar "gsparser_after")),
         ("<|>", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_or", HSVar "gsparser_or")),
         ("advance-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_advanceRune", HSVar "gsparser_advanceRune")),
         ("analyze", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyze", HSVar "gsanalyze")),

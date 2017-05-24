@@ -387,6 +387,7 @@ globalEnv = Env{
     leftops = Map.fromList [
         ("*>", ()),
         ("+", ()),
+        ("<*", ()),
         ("<|>", ())
     ],
     nonops = Map.fromList [
