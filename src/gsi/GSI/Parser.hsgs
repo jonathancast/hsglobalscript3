@@ -84,7 +84,9 @@ $gsdeclare prim.lookahead gsprimlookahead
 
 $gsdeclare negate-w gsparser_negate_w
 
-gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0. |]
+gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
+    case unit-plus 'x 'p01. prim.lookahead (negate-w p1 (prim.unit-plus x p01))
+|]
 
 gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
 |]
