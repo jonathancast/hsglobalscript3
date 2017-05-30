@@ -122,15 +122,9 @@ gsprimunitplus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "
 gsprimlookahead = $gslambda_value $ \ p -> $gsbcconstr (gsvar "lookahead") [ $gsav p ]
 gsprimsymbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
 
-gsempty_view :: GSValue
 gsempty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
-
-gsunitplus_view :: GSValue
 gsunitplus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
-
 gsparser_getPos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "get-pos" ek sk e
-
-gssymbol_view :: GSValue
 gssymbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
 gsparser_advanceRune = $gslambda_value $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
