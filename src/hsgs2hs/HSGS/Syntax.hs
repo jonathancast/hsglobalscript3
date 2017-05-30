@@ -22,7 +22,7 @@ interpolation = empty
         keyword "gsdeclare"
         gsv <- ident
         hsv <- hsident
-        return $ SCDeclare gsv hsv
+        return $ SCDeclareVar gsv hsv
 
 quote :: Env -> Pos -> Parser Char SourceComp
 quote env pos = empty
@@ -196,7 +196,7 @@ data SourceComp
   = SCChar Char
   | SCPos Pos
   | SCImports
-  | SCDeclare String String
+  | SCDeclareVar String String
   | SCArg Pos [Param] Expr
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
@@ -422,7 +422,7 @@ scCode :: SourceComp -> String
 scCode SCChar{} = "SCChar"
 scCode SCPos{} = "SCPos"
 scCode SCImports{} = "SCImports"
-scCode SCDeclare{} = "SCDeclare"
+scCode SCDeclareVar{} = "SCDeclareVar"
 scCode SCArg{} = "SCArg"
 scCode SCExpr{} = "SCExpr"
 scCode SCOpenExpr{} = "SCOpenExpr"
