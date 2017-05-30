@@ -106,6 +106,8 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,g
         case empty. get-pos k0
         case symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. gsprimor (k0 pos) (gsprimsymbol ek1 sk1))
     )
+    case prim.lookahead 'p01. (analyze p1.
+    )
     case symbol-or-eof 'ek0 'sk0. (analyze p1.
         case symbol-or-eof 'ek1 'sk1. gsprimsymbol undefined (λ 'c. analyze sk0 c.
             case left 'e0. (analyze sk1 c.
