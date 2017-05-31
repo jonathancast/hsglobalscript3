@@ -7,9 +7,11 @@ import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcundefined, g
 import GSI.List (gsnil, gscons)
 $gsimports
 
+$gsdeclare prim.unit gsprimunit
+
 $gsdeclare parse-w gsparsew
 
-gsparse = [gs:value hsvs=gsprimunit,| λ 'adv. λ 'p. λ 'pos. λ 's. parse-w adv (p gsprimunit) pos s |]
+gsparse = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. parse-w adv (p prim.unit) pos s |]
 
 $gsdeclare fmt-error gsfmtError
 
@@ -104,7 +106,6 @@ $gsdeclare view prim.lookahead gslookahead_view
 $gsdeclare view prim.symbol-or-eof gssymbol_view
 
 $gsdeclare prim.<|> gsprimor
-$gsdeclare prim.unit gsprimunit
 
 gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,gsprimunitplus,gsprimsymbol,p0,p1,| analyze p0.
     case empty. p1
