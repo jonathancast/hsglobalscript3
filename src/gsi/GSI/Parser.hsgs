@@ -7,20 +7,24 @@ import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcundefined, g
 import GSI.List (gsnil, gscons)
 $gsimports
 
-gsparse = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
-    [gs:expr hsvs=gsparsew,adv,p,gsprimunit,pos,s,| gsparsew adv (p gsprimunit) pos s |]
+$gsdeclare parse-w gsparsew
 
-gsparsew = [gs:value hsvs=gsparsew,gsfmtError,| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
+gsparse = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
+    [gs:expr hsvs=adv,p,gsprimunit,pos,s,| parse-w adv (p gsprimunit) pos s |]
+
+$gsdeclare fmt-error gsfmtError
+
+gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     case empty. left (pos.fmt pos qq{empty})
     case unit-plus 'x 'p1. (analyze s.
         case nil. right x
-        case _:_. gsparsew adv p1 pos s
+        case _:_. parse-w adv p1 pos s
     )
-    case get-pos 'k. gsparsew adv (k pos) pos s
+    case get-pos 'k. parse-w adv (k pos) pos s
     case symbol-or-eof 'ek 'sk. (analyze s.
         case 'c:'s1. (analyze sk c.
-            case left 'e. left (pos.fmt pos (gsfmtError (e #0) (e #1)))
-            case right 'p1. gsparsew adv p1 (adv c pos) s1
+            case left 'e. left (pos.fmt pos (fmt-error (e #0) (e #1)))
+            case right 'p1. parse-w adv p1 (adv c pos) s1
         )
     )
 |]
