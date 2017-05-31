@@ -107,9 +107,9 @@ $gsdeclare view prim.symbol-or-eof gssymbol_view
 
 $gsdeclare prim.<|> gsprimor
 
-gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,gsprimunitplus,gsprimsymbol,p0,p1,| analyze p0.
+gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,gsprimsymbol,p0,p1,| analyze p0.
     case empty. p1
-    case unit-plus 'x 'p01. gsprimunitplus x (gsprimor p01 p1)
+    case unit-plus 'x 'p01. prim.unit-plus x (gsprimor p01 p1)
     case get-pos 'k0. (analyze p1.
         case empty. get-pos k0
         case symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. gsprimor (k0 pos) (gsprimsymbol ek1 sk1))
