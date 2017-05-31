@@ -10,7 +10,7 @@ $gsimports
 gsparse = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
     [gs:expr hsvs=gsparsew,adv,p,gsprimunit,pos,s,| gsparsew adv (p gsprimunit) pos s |]
 
-gsparsew = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s -> [gs:expr hsvs=gsparsew,gsfmtError,adv,p,pos,s,| analyze p.
+gsparsew = [gs:value hsvs=gsparsew,gsfmtError,| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     case empty. left (pos.fmt pos qq{empty})
     case unit-plus 'x 'p1. (analyze s.
         case nil. right x
