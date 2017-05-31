@@ -595,6 +595,7 @@ globalEnv = Env{
         ("file.read", (Set.singleton $ HSIVar "GSI.Env" "gsfileRead", HSVar "gsfileRead")),
         ("file.stat", (Set.singleton $ HSIVar "GSI.Env" "gsfileStat", HSVar "gsfileStat")),
         ("fmtdecimal", (Set.singleton $ HSIVar "GSI.String" "gsfmtdecimal", HSVar "gsfmtdecimal")),
+        ("for", (Set.singleton $ HSIVar "GSI.StdLib" "gsfor", HSVar "gsfor")),
         ("get-pos", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_getPos", HSVar "gsparser_getPos")),
         ("gsapply", (Set.singleton $ HSIVar "GSI.GSI" "gsigsapply", HSVar "gsigsapply")),
         ("gsiThreadData", (Set.singleton $ HSIVar "GSI.GSI" "gsigsiThreadData", HSVar "gsigsiThreadData")),
@@ -658,6 +659,10 @@ globalEnv = Env{
             (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
             _ -> return []
         ),
+        ("for", \ as -> case as of
+            (_, EGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
+            _ -> return []
+        ),
         ("impfor", \ as -> case as of
             (_, EImpGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
             _ -> return []
@@ -706,6 +711,7 @@ gensBoundVars :: [Generator] -> Set String
 gensBoundVars gs = Set.unions $ map genBoundVars gs
 
 genBoundVars :: Generator -> Set String
+genBoundVars (MatchGenerator x _ _) = Set.singleton x
 genBoundVars (ExecGenerator _ _) = Set.empty
 genBoundVars (BindGenerator x _ _) = Set.singleton x
 genBoundVars g = $gsfatal $ "genBoundVars " ++ genCode g ++ " next"

@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsimpfor, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
+module GSI.StdLib (gslambda, gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -29,6 +29,9 @@ gscase = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ e -> $gsbcarg $
         GSConstr pos cv [] | cv == gsvar "0" -> $gsbcapply e [$gsav x]
         GSConstr pos cc args -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ fmtVarAtom cc ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
         _ -> $gsbcimplementationfailure $ "gscase (pattern returns " ++ gsvCode c ++ ") next" -- Probably §hs{$gsbcbranch ($gsav e) ($gsav b) c}
+
+gsfor :: GSValue
+gsfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcforce ($gsav g) $ \ env -> $gsbcapply e [ $gsav env ]
 
 gsimpfor :: GSValue
 gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
