@@ -9,8 +9,7 @@ $gsimports
 
 $gsdeclare parse-w gsparsew
 
-gsparse = $gslambda_value $ \ adv -> $gsbcarg $ \ p -> $gsbcarg $ \ pos -> $gsbcarg $ \ s ->
-    [gs:expr hsvs=adv,p,gsprimunit,pos,s,| parse-w adv (p gsprimunit) pos s |]
+gsparse = [gs:value hsvs=gsprimunit,| λ 'adv. λ 'p. λ 'pos. λ 's. parse-w adv (p gsprimunit) pos s |]
 
 $gsdeclare fmt-error gsfmtError
 
