@@ -591,6 +591,7 @@ globalEnv = Env{
         ("env.get-args", (Set.singleton $ HSIVar "GSI.Env" "gsenvGetArgs", HSVar "gsenvGetArgs")),
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),
         ("execMainThread", (Set.singleton $ HSIVar "GSI.GSI" "gsiexecMainThread", HSVar "gsiexecMainThread")),
+        ("false", (Set.singleton $ HSIVar "GSI.Bool" "gsfalse", HSVar "gsfalse")),
         ("file.document", (Set.singleton $ HSIVar "GSI.Main" "gsfileDocument", HSVar "gsfileDocument")),
         ("file.read", (Set.singleton $ HSIVar "GSI.Env" "gsfileRead", HSVar "gsfileRead")),
         ("file.stat", (Set.singleton $ HSIVar "GSI.Env" "gsfileStat", HSVar "gsfileStat")),
