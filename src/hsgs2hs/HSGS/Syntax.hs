@@ -398,6 +398,8 @@ globalEnv = Env{
         ("<*", ()),
         ("<|>", ())
     ],
+    rightops = Map.fromList [
+    ],
     nonops = Map.fromList [
         ("≠", ())
     ]
@@ -406,6 +408,7 @@ globalEnv = Env{
 data Env = Env {
     lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr))),
     leftops :: Map String (),
+    rightops :: Map String (),
     nonops :: Map String ()
   }
 
