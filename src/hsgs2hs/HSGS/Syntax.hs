@@ -102,55 +102,47 @@ param = empty
 
 expr :: Env -> Parser Char Expr
 expr env = empty
-    <|> exprApp
-    <|> lambdalike env Nothing
+    <|> exprOp
     <|> exprLeftList
-    <|> exprLeftOps
-    <|> exprRightOps
-    <|> exprNonOps
   where
+    exprOp = empty
+        <|> do
+            pos0 <- getPos
+            e0 <- exprApp
+            empty
+                <|> return e0
+                <|> do
+                    oes <- parseOps $ leftops env
+                    return $ foldl (eleftop pos0) e0 oes
+                <|> do
+                    oes <- parseOps $ rightops env
+                    let (posop, op, pos1, e1) = foldr1 erightop oes
+                    return $ EVar posop op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos1 e1
+                <|> do
+                    pos1 <- getPos
+                    op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ nonops env
+                    pos2 <- getPos
+                    e1 <- exprApp <|> lambdalike env Nothing
+                    return $ EVar pos1 op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos2 e1
+        <|> lambdalike env Nothing
     exprLeftList = do
-        ((pos0, op, pos1, e1):os) <- parseLeftops
+        ((pos0, op, pos1, e1):os) <- parseOps $ leftops env
         return $ foldl (eleftop pos0) (EUnary pos0 op `EApp` ArgExpr pos1 e1) os
-    exprLeftOps = do
+    parseOps ops = do
         pos0 <- getPos
-        e0 <- exprApp
-        oes <- parseLeftops
-        return $ foldl (eleftop pos0) e0 oes
-    parseLeftops = do
-        pos0 <- getPos
-        op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ leftops env
+        op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys ops
         pos1 <- getPos
         empty
             <|> do
                 e <- exprApp
-                os <- return [] <|> parseLeftops
+                os <- return [] <|> parseOps ops
                 return ((pos0, op, pos1, e):os)
             <|> do
                 e <- lambdalike env Nothing
                 return [(pos0, op, pos1, e)]
     eleftop pos0 e0 (posop, op, pose, e1) = EVar posop op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pose e1
-    exprRightOps = do
-        oes <- parseRightops
-        pos1 <- getPos
-        e1 <- exprApp <|> lambdalike env Nothing
-        let (_, e) = foldr erightop (pos1, e1) oes
-        return e
-    parseRightops = many $ do
-        pos0 <- getPos
-        e0 <- exprApp
-        posop <- getPos
-        op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ rightops env
-        return (pos0, e0, posop, op)
-    erightop (pos0, e0, posop, op) (pos1, e1) = (pos0, EVar posop op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos1 e1)
-    exprNonOps = do
-        pos0 <- getPos
-        e0 <- exprApp
-        pos1 <- getPos
-        op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ nonops env
-        pos2 <- getPos
-        e1 <- exprApp <|> lambdalike env Nothing
-        return $ EVar pos1 op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos2 e1
+    erightop (posop0, op0, pose0, e0) (posop1, op1, pose1, e1) =
+        (posop0, op0, pose0, EVar posop1 op1 `EApp` ArgExpr pose0 e0 `EApp` ArgExpr pose1 e1)
     exprApp = foldl EApp <$> exprAtom <*> many exprArg
     exprAtom = empty
         <|> parens (expr env)
