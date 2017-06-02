@@ -99,7 +99,7 @@ $gsdeclare difference-w gsparser_difference_w
 
 gsparser_notFollowedBy = [gs:value| λ 'p. λ 'k. difference-w (k 〈〉) (p undefined) |]
 
-$gsdeclare prim.unit-plus gsprimunitplus
+$gsdeclare prim.unit-plus gsprim_unit_plus
 $gsdeclare prim.lookahead gsprimlookahead
 
 $gsdeclare negate-w gsparser_negate_w
@@ -146,7 +146,7 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,g
 |]
 
 gsprim_empty = $gsconstr (gsvar "empty") []
-gsprimunitplus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
+gsprim_unit_plus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
 gsprimlookahead = $gslambda_value $ \ p -> $gsbcconstr (gsvar "lookahead") [ $gsav p ]
 gsprimsymbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
 
