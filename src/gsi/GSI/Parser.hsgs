@@ -17,9 +17,10 @@ gsparse = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv (p
 $gsdeclare fmt-error gsfmtError
 
 gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
-    -- > case nil. left (pos.fmt (err #0) (fmt-error (err #01) (err #2)))
+    -- > case nil. left (pos.fmt (err #0) (fmt-error (err #1) (err #2)))
     case 'x0 : nil. (analyze x0 #1.
         case true. right (x0 #0)
+        case false. left (pos.fmt (err #0) (fmt-error (err #1) (err #2)))
     )
     case 'x0 : 'xn1. parse-process xn1 err
 |]
