@@ -14,6 +14,7 @@ data DestComp
 
 data HSImport
   = HSIType String String
+  | HSITypeName String String
   | HSIVar String String
   deriving (Eq, Ord)
 
@@ -26,6 +27,7 @@ data HSExpr
   | HSList [HSExpr]
   | HSApp HSExpr HSExpr
   | HSLambda [String] HSExpr
+  | HSAsType HSExpr String
 
 dcCode :: DestComp -> String
 dcCode DCChar{} = "DCChar"
@@ -35,6 +37,7 @@ dcCode DCExpr{} = "DCExpr"
 
 hsiCode :: HSImport -> String
 hsiCode HSIType{} = "HSIType"
+hsiCode HSITypeName{} = "HSITypeName"
 hsiCode HSIVar{} = "HSIVar"
 
 hsCode :: HSExpr -> String
@@ -46,3 +49,4 @@ hsCode HSInteger{} = "HSInteger"
 hsCode HSList{} = "HSList"
 hsCode HSApp{} = "HSApp"
 hsCode HSLambda{} = "HSLambda"
+hsCode HSAsType{} = "HSAsType"
