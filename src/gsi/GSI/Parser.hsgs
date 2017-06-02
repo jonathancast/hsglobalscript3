@@ -126,6 +126,7 @@ $gsdeclare prim.symbol-or-eof gsprim_symbol
 gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
     case prim.unit-plus 'x 'p1. prim.empty
     case prim.symbol-or-eof 'ek 'sk. prim.symbol-or-eof undefined (λ 'c. analyze sk c.
+        case left 'e. right (prim.unit x)
         case right 'p1. right (negate-w p1 x)
     )
 |]
