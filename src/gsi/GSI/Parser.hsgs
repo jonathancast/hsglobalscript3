@@ -123,6 +123,7 @@ gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
 $gsdeclare prim.symbol-or-eof gsprim_symbol
 
 gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
+    case prim.unit-plus 'x 'p1. prim.empty
     case prim.symbol-or-eof 'ek 'sk. prim.symbol-or-eof undefined (λ 'c. analyze sk c.
         case right 'p1. right (negate-w p1 x)
     )
