@@ -97,7 +97,7 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     . right p
 |]
 
-gstypeCheckDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr| right undefined |]
+gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. right undefined |]
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
