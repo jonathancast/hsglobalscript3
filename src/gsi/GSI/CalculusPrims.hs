@@ -3,11 +3,13 @@ module GSI.CalculusPrims (gsparand, gsmergeenv, gspriminsufficientcases) where
 
 import qualified Data.Map as Map
 
+import Control.Concurrent.MVar (readMVar)
+
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (awaitAny)
 import GSI.Error (GSError(..))
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSThunk(..), gsimplementationfailure, gsvCode)
+import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfailure, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 
 gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
@@ -84,7 +86,11 @@ fmtValueAtom :: GSValue -> IO (String -> String)
 fmtValueAtom GSError{} = return ('_':)
 fmtValueAtom (GSConstr pos c []) = return (fmtVarAtom c)
 fmtValueAtom v@GSConstr{} = fmtParens <$> fmtValue v
-fmtValueAtom GSThunk{} = return ('_':)
+fmtValueAtom (GSThunk t) = do
+    ts <- readMVar t
+    case ts of
+        GSTSIndirection v -> fmtValueAtom v
+        _ -> return ('_':)
 fmtValueAtom (GSRune r)
     | r `elem` "/\\§()[]{}" = return $ ("r/"++) . ('\\':) . (r:) . ('/':)
     | r == '\n' = return $ ("r/\\n/"++)
