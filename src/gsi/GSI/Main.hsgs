@@ -74,7 +74,7 @@ $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
 
 ident = [gs:value|
-    parser.map2 undefined ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char
+    lexeme (parser.map2 undefined ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
 |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
