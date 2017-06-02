@@ -31,6 +31,8 @@ $gsdeclare view prim.unit-plus gsprim_unit_plus_view
 $gsdeclare view prim.get-pos gsprim_get_pos_view
 $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
+$gsdeclare process-lookahead gsparse_process_lookahead
+
 gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     case prim.empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
     case prim.unit-plus 'x 'p1. for 'r1 ∝ parse-w adv p1 pos s;. 〈
@@ -46,6 +48,8 @@ gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
         )
     )
 |]
+
+gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. undefined |]
 
 gsposFmt :: GSValue
 gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
