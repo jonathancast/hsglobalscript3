@@ -30,7 +30,7 @@ gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ g
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document 'pos 'mb. (analyze process-document pos gstyc.
+                    case file.document 'pos 'mb. (analyze process-document pos gstyc mb.
                         case right 'prog. gsrun prog as
                     )
                 )
@@ -88,7 +88,7 @@ lexeme = [gs:value| λ 'p. p <* whitespace |]
 
 whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
-gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
+gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,| λ 'mbe.
     either-for
         _ ← type-check-document pos gstyc;
         'p ← compile-document pos;
