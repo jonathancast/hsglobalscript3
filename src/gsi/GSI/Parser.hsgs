@@ -29,6 +29,7 @@ $gsdeclare prim.empty gsprim_empty
 $gsdeclare view prim.empty gsprim_empty_view
 $gsdeclare view prim.unit-plus gsprim_unit_plus_view
 $gsdeclare view prim.get-pos gsprim_get_pos_view
+$gsdeclare view prim.lookahead gsprim_lookahead_view
 $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
 $gsdeclare process-lookahead gsparse_process_lookahead
@@ -40,6 +41,7 @@ gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
         '1 ∝ r1 #1;
     〉
     case prim.get-pos 'k. parse-w adv (k pos) pos s
+    case prim.lookahead 'pp. for 'res ∝ parse-w adv pp pos s;. parse-w adv (process-lookahead prim.empty (res #0) (res #1)) pos s
     case prim.symbol-or-eof 'ek 'sk. (analyze s.
         case nil. parse-w adv ek pos s
         case 'c:'s1. (analyze sk c.
@@ -124,8 +126,6 @@ gsempty = $gslambda_value $ \ k -> $gsbcenter gsprim_empty
 gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprim_empty ]
 
 $gsdeclare prim.symbol-or-eof gsprim_symbol
-
-$gsdeclare view prim.lookahead gsprim_lookahead_view
 
 $gsdeclare prim.<|> gsprimor
 
