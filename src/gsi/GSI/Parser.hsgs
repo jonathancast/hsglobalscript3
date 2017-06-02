@@ -141,6 +141,7 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,p
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
+        case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
             case left 'e0. (analyze sk1 c.
                 case left 'e1. left 〈 '0 ∝ undefined; '1 ∝ undefined; 〉
