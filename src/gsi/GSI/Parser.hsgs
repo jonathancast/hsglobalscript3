@@ -27,7 +27,7 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
 $gsdeclare view empty gsprim_empty_view
 $gsdeclare view unit-plus gsprim_unit_plus_view
 $gsdeclare view get-pos gsprim_get_pos_view
-$gsdeclare view symbol-or-eof gssymbol_view
+$gsdeclare view symbol-or-eof gsprim_symbol_view
 
 gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     case empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
@@ -120,7 +120,7 @@ gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x,
 $gsdeclare prim.symbol-or-eof gsprim_symbol
 
 $gsdeclare view prim.lookahead gsprim_lookahead_view
-$gsdeclare view prim.symbol-or-eof gssymbol_view
+$gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
 $gsdeclare prim.<|> gsprimor
 
@@ -156,7 +156,7 @@ gsprim_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e 
 gsprim_unit_plus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
 gsprim_get_pos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "get-pos" ek sk e
 gsprim_lookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lookahead" ek sk e
-gssymbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
+gsprim_symbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
 gsparser_advanceRune = $gslambda_value $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
     case true. 〈 'filename ∝ pos #filename; 'line ∝ pos #line + 1; 'col ∝ 1; 〉
