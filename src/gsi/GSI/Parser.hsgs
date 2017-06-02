@@ -130,7 +130,7 @@ gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x,
 
 $gsdeclare prim.<|> gsprimor
 
-gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,p0,p1,| analyze p0.
+gsprimor = [gs:value hsvs=gsprimor,| λ 'p0. λ 'p1. analyze p0.
     case prim.empty. p1
     case prim.unit-plus 'x 'p01. prim.unit-plus x (gsprimor p01 p1)
     case prim.get-pos 'k0. (analyze p1.
