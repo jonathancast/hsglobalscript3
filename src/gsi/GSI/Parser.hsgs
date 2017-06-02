@@ -51,7 +51,7 @@ gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     )
 |]
 
-gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. undefined |]
+gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn. |]
 
 gsposFmt :: GSValue
 gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
