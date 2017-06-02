@@ -24,13 +24,13 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
     case 'x0 : 'xn1. parse-process xn1 err
 |]
 
-$gsdeclare view empty gsprim_empty_view
+$gsdeclare view prim.empty gsprim_empty_view
 $gsdeclare view unit-plus gsprim_unit_plus_view
 $gsdeclare view get-pos gsprim_get_pos_view
 $gsdeclare view symbol-or-eof gsprim_symbol_view
 
 gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
-    case empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
+    case prim.empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
     case unit-plus 'x 'p1. for 'r1 ∝ parse-w adv p1 pos s;. 〈
         '0 ∝ 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 : r1 #0;
         '1 ∝ r1 #1;
@@ -125,10 +125,10 @@ $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 $gsdeclare prim.<|> gsprimor
 
 gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,p0,p1,| analyze p0.
-    case empty. p1
+    case prim.empty. p1
     case unit-plus 'x 'p01. prim.unit-plus x (gsprimor p01 p1)
     case get-pos 'k0. (analyze p1.
-        case empty. get-pos k0
+        case prim.empty. get-pos k0
         case symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. gsprimor (k0 pos) (prim.symbol-or-eof ek1 sk1))
     )
     case prim.lookahead 'p01. (analyze p1.
