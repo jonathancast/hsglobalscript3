@@ -77,7 +77,7 @@ gsparser_string = $gslambda_value $ \ s -> [gs:expr hsvs=s,| analyze s.
 gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
 
 gsparser_matching = $gslambda_value $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
-    $gsbcconstr (gsvar "symbol-or-eof") [ $gsav gsprimempty, $gsae $ $gsbcarg $ \ c ->
+    $gsbcconstr (gsvar "symbol-or-eof") [ $gsav gsprim_empty, $gsae $ $gsbcarg $ \ c ->
         [gs:expr hsvs=p,c,k,| analyze p c.
             case false. left 〈 '0 ∝ undefined; '1 ∝ undefined; 〉
             case true. right (k c)
@@ -113,9 +113,9 @@ gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
 
 gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav k ]
 
-gsempty = $gslambda_value $ \ k -> $gsbcenter gsprimempty
+gsempty = $gslambda_value $ \ k -> $gsbcenter gsprim_empty
 
-gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprimempty ]
+gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprim_empty ]
 
 $gsdeclare view prim.lookahead gslookahead_view
 $gsdeclare view prim.symbol-or-eof gssymbol_view
@@ -145,7 +145,7 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,g
     )
 |]
 
-gsprimempty = $gsconstr (gsvar "empty") []
+gsprim_empty = $gsconstr (gsvar "empty") []
 gsprimunitplus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
 gsprimlookahead = $gslambda_value $ \ p -> $gsbcconstr (gsvar "lookahead") [ $gsav p ]
 gsprimsymbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
