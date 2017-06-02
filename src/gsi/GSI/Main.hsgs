@@ -28,7 +28,7 @@ gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ g
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document 'pos. (analyze process-document pos gstyc.
+                    case file.document 'pos 'mb. (analyze process-document pos gstyc.
                         case right 'prog. gsrun prog as
                     )
                 )
@@ -44,7 +44,7 @@ file = [gs:value|
             _ ← pragmas;
             'pos ← get-pos;
             'mb ← optional expr;
-        . parser.unit (file.document pos)
+        . parser.unit (file.document pos mb)
 |]
 
 pragmas = [gs:value hsvs=pragmawhitespace,| pragmawhitespace *> many empty |]
@@ -97,7 +97,7 @@ gstypeCheckDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr|
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
-gsfileDocument = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "document") [ $gsav pos ]
+gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
