@@ -68,6 +68,8 @@ expr = [gs:value|
     <|> parser.map undefined ident
 |]
 
+$gsdeclare lexeme lexeme
+
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
 
@@ -77,6 +79,8 @@ ident = [gs:value|
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
+
+lexeme = [gs:value| λ 'p. p <* undefined |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
