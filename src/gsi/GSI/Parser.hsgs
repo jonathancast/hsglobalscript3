@@ -9,22 +9,32 @@ $gsimports
 
 $gsdeclare prim.unit gsprimunit
 
+$gsdeclare parse-process gsparse_process
 $gsdeclare parse-w gsparsew
 
-gsparse = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. parse-w adv (p prim.unit) pos s |]
+gsparse = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv (p prim.unit) pos s;. parse-process (res #0) (res #1) |]
 
 $gsdeclare fmt-error gsfmtError
 
-gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
-    case empty. left (pos.fmt pos qq{empty})
-    case unit-plus 'x 'p1. (analyze s.
-        case nil. right x
-        case _:_. parse-w adv p1 pos s
+gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
+    -- > case nil. left (pos.fmt (err #0) (fmt-error (err #01) (err #2)))
+    case 'x0 : nil. (analyze x0 #1.
+        case true. right (x0 #0)
     )
+    case 'x0 : 'xn1. parse-process xn1 err
+|]
+
+gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
+    case empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
+    case unit-plus 'x 'p1. for 'r1 ∝ parse-w adv p1 pos s;. 〈
+        '0 ∝ 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 : r1 #0;
+        '1 ∝ r1 #1;
+    〉
     case get-pos 'k. parse-w adv (k pos) pos s
     case symbol-or-eof 'ek 'sk. (analyze s.
+        case nil. parse-w adv ek pos s
         case 'c:'s1. (analyze sk c.
-            case left 'e. left (pos.fmt pos (fmt-error (e #0) (e #1)))
+            case left 'e. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ e #0; '2 ∝ e #1; 〉; 〉
             case right 'p1. parse-w adv p1 (adv c pos) s1
         )
     )
@@ -62,7 +72,7 @@ gsparser_string = $gslambda_value $ \ s -> [gs:expr hsvs=s,| analyze s.
 gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
 
 gsparser_matching = $gslambda_value $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
-    $gsbcconstr (gsvar "symbol-or-eof") [ $gsae $gsbcundefined, $gsae $ $gsbcarg $ \ c ->
+    $gsbcconstr (gsvar "symbol-or-eof") [ $gsav gsprimempty, $gsae $ $gsbcarg $ \ c ->
         [gs:expr hsvs=p,c,k,| analyze p c.
             case false. left 〈 '0 ∝ undefined; '1 ∝ undefined; 〉
             case true. right (k c)
@@ -118,7 +128,7 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,g
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
     case symbol-or-eof 'ek0 'sk0. (analyze p1.
-        case symbol-or-eof 'ek1 'sk1. gsprimsymbol undefined (λ 'c. analyze sk0 c.
+        case symbol-or-eof 'ek1 'sk1. gsprimsymbol (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
             case left 'e0. (analyze sk1 c.
                 case left 'e1. left 〈 '0 ∝ undefined; '1 ∝ undefined; 〉
                 case right 'p3. right p3
