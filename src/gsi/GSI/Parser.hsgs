@@ -24,7 +24,7 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
     case 'x0 : 'xn1. parse-process xn1 err
 |]
 
-$gsdeclare view empty gsempty_view
+$gsdeclare view empty gsprim_empty_view
 $gsdeclare view unit-plus gsunitplus_view
 $gsdeclare view get-pos gsparser_getPos_view
 $gsdeclare view symbol-or-eof gssymbol_view
@@ -152,7 +152,7 @@ gsprim_unit_plus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar
 gsprim_lookahead = $gslambda_value $ \ p -> $gsbcconstr (gsvar "lookahead") [ $gsav p ]
 gsprim_symbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
 
-gsempty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
+gsprim_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
 gsunitplus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
 gsparser_getPos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "get-pos" ek sk e
 gslookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lookahead" ek sk e
