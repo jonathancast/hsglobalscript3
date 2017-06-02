@@ -88,6 +88,8 @@ lexeme = [gs:value| λ 'p. p <* whitespace |]
 
 whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
+$gsdeclare type-check-document gstypeCheckDocument
+
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
         _ ← type-check-document pos gstyc;
