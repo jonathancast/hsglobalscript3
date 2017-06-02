@@ -27,7 +27,7 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
 $gsdeclare view prim.empty gsprim_empty_view
 $gsdeclare view prim.unit-plus gsprim_unit_plus_view
 $gsdeclare view prim.get-pos gsprim_get_pos_view
-$gsdeclare view symbol-or-eof gsprim_symbol_view
+$gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
 gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     case prim.empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
@@ -36,7 +36,7 @@ gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
         '1 ∝ r1 #1;
     〉
     case prim.get-pos 'k. parse-w adv (k pos) pos s
-    case symbol-or-eof 'ek 'sk. (analyze s.
+    case prim.symbol-or-eof 'ek 'sk. (analyze s.
         case nil. parse-w adv ek pos s
         case 'c:'s1. (analyze sk c.
             case left 'e. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ e #0; '2 ∝ e #1; 〉; 〉
@@ -120,7 +120,6 @@ gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x,
 $gsdeclare prim.symbol-or-eof gsprim_symbol
 
 $gsdeclare view prim.lookahead gsprim_lookahead_view
-$gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
 $gsdeclare prim.<|> gsprimor
 
@@ -129,13 +128,13 @@ gsprimor = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> [gs:expr hsvs=gsprimor,p
     case prim.unit-plus 'x 'p01. prim.unit-plus x (gsprimor p01 p1)
     case prim.get-pos 'k0. (analyze p1.
         case prim.empty. get-pos k0
-        case symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. gsprimor (k0 pos) (prim.symbol-or-eof ek1 sk1))
+        case prim.symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. gsprimor (k0 pos) (prim.symbol-or-eof ek1 sk1))
     )
     case prim.lookahead 'p01. (analyze p1.
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
-    case symbol-or-eof 'ek0 'sk0. (analyze p1.
-        case symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
+    case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
+        case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
             case left 'e0. (analyze sk1 c.
                 case left 'e1. left 〈 '0 ∝ undefined; '1 ∝ undefined; 〉
                 case right 'p3. right p3
