@@ -88,7 +88,7 @@ lexeme = [gs:value| λ 'p. p <* whitespace |]
 
 whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
-gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,| λ 'mbe.
+gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
         _ ← type-check-document pos gstyc;
         'p ← compile-document pos;
