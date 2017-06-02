@@ -80,7 +80,11 @@ ident = [gs:value|
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
+$gsdeclare whitespace whitespace
+
 lexeme = [gs:value| λ 'p. p <* undefined |]
+
+whitespace = [gs:value| undefined |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
