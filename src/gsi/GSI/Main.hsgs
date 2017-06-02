@@ -12,6 +12,8 @@ gsmain = $gslambda_value $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsproc
     . gsprocessargs args gstyc gsrun
 |]
 
+$gsdeclare process-document gsprocessDocument
+
 -- Loops over arguments to process them
 gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,args,file,gspos,| analyze args.
     case 'a : 'as. analyze-impM file.stat a.
