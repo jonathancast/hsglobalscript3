@@ -51,7 +51,11 @@ gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     )
 |]
 
-gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn. |]
+$gsdeclare prim.<|> gsprimor
+
+gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn.
+    case 'x:'xn1. process-lookahead (prim.<|> p (x #0)) xn1 err
+|]
 
 gsposFmt :: GSValue
 gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
@@ -127,8 +131,6 @@ gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav
 gsempty = $gslambda_value $ \ k -> $gsbcenter gsprim_empty
 
 gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprim_empty ]
-
-$gsdeclare prim.<|> gsprimor
 
 gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.empty. p1
