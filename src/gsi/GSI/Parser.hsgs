@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_map2, gsparser_matching, gsparser_string, gsparser_char, gsparser_optional, gsmany, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsempty_view, gsparser_advanceRune) where
+module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_map2, gsparser_matching, gsparser_string, gsparser_char, gsparser_optional, gsmany, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsparser_advanceRune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
@@ -23,6 +23,8 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
     )
     case 'x0 : 'xn1. parse-process xn1 err
 |]
+
+$gsdeclare view empty gsempty_view
 
 gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
     case empty. 〈 '0 ∝ nil; '1 ∝ 〈 '0 ∝ pos; '1 ∝ qq{empty}; '2 ∝ nil; 〉; 〉
