@@ -25,6 +25,7 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
 |]
 
 $gsdeclare view empty gsempty_view
+$gsdeclare view unit-plus gsunitplus_view
 $gsdeclare view get-pos gsparser_getPos_view
 $gsdeclare view symbol-or-eof gssymbol_view
 
