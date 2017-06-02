@@ -84,7 +84,7 @@ $gsdeclare whitespace whitespace
 
 lexeme = [gs:value| λ 'p. p <* whitespace |]
 
-whitespace = [gs:value| undefined |]
+whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
 gsprocessDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ gstyc -> [gs:expr hsvs=pos,gstyc,|
     either-for
