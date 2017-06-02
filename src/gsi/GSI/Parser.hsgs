@@ -116,7 +116,10 @@ gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.unit-plus 'x 'p01. prim.lookahead (negate-w p1 (prim.unit-plus x p01))
 |]
 
+$gsdeclare prim.symbol-or-eof gsprim_symbol
+
 gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
+    case prim.symbol-or-eof 'ek 'sk. prim.symbol-or-eof undefined undefined
 |]
 
 gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav k ]
@@ -124,8 +127,6 @@ gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav
 gsempty = $gslambda_value $ \ k -> $gsbcenter gsprim_empty
 
 gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprim_empty ]
-
-$gsdeclare prim.symbol-or-eof gsprim_symbol
 
 $gsdeclare prim.<|> gsprimor
 
