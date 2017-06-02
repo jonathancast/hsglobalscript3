@@ -82,7 +82,7 @@ identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
 $gsdeclare whitespace whitespace
 
-lexeme = [gs:value| λ 'p. p <* undefined |]
+lexeme = [gs:value| λ 'p. p <* whitespace |]
 
 whitespace = [gs:value| undefined |]
 
