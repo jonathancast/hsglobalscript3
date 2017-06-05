@@ -1,9 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Maybe (gsmaybe, gsnothing) where
+module GSI.Maybe (gsmaybe, gsnothing, gsjust) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gslambda_value, gsconstr)
-import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+import GSI.Value (gslambda_value, gsconstr, gsav)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 
 $gsimports
 
@@ -12,5 +12,6 @@ gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb.
 |]
 
 gsnothing = $gsconstr (gsvar "nothing") []
+gsjust = $gslambda_value $ \ x -> $gsbcconstr (gsvar "just") [ $gsav x ]
 
 gsnothing_view =  $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "nothing" ek sk e
