@@ -100,6 +100,7 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
 $gsdeclare type-check-expr gstype_check_expr
 
 gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-checker.for
+        _ ← maybe (type-checker.unit undefined) type-check-expr mbe;
         _ ← gstyc undefined;
     . type-checker.unit undefined
 )|]
