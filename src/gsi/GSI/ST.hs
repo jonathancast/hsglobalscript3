@@ -3,7 +3,7 @@ module GSI.ST (gsstrun) where
 
 import GSI.Util (Pos)
 import GSI.Value (GSValue(..), gsprim, gsundefined_value, gsimplementationfailure, gsvCode)
-import GSI.ThreadType (ThreadData(..), threadStateCode)
+import GSI.ThreadType (ThreadData(..), ThreadState(..), threadStateCode)
 import GSI.Thread (createThread, waitThread)
 
 gsstrun :: GSValue
@@ -13,7 +13,9 @@ gsprim_st_run :: Pos -> GSValue -> IO GSValue
 gsprim_st_run pos a = do
     t <- createThread pos stThreadData a
     st <- waitThread t
-    return $ $gsimplementationfailure $ "gsprim_st_run (state is " ++ threadStateCode st ++ ") next"
+    case st of
+        ThreadStateError err -> return $ GSError err
+        _ -> return $ $gsimplementationfailure $ "gsprim_st_run (state is " ++ threadStateCode st ++ ") next"
 
 stThreadData = ThreadData{
     component = Nothing,
