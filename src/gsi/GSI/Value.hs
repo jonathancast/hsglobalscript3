@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
     GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
-    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w,
+    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsprim, gsprim_w,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
@@ -135,6 +135,20 @@ gsprepare_w :: Pos -> GSArg -> IO GSValue
 gsprepare_w pos0 (GSArgExpr pos1 e) = gsthunk_w pos1 e
 gsprepare_w pos0 (GSArgVar v) = return v
 gsprepare_w pos a = return $ GSImplementationFailure $gshere $ "gsprepare_w " ++ argCode a ++ " next"
+
+gsprim = varE 'gsprim_w `appE` gshere
+
+gsprim_w :: GSPrimType f => Pos -> (Pos -> f) -> GSValue
+gsprim_w pos f = GSClosure [StackTrace pos []] (gsprim_ww (f pos))
+
+class GSPrimType f where
+    gsprim_ww :: f -> GSBCO
+
+instance GSPrimType (IO GSValue) where
+    gsprim_ww f = GSRawExpr $ GSExpr $ \ st cs -> f
+
+instance GSPrimType f => GSPrimType (GSValue -> f) where
+    gsprim_ww f = GSLambda $ \ x -> gsprim_ww (f x)
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
