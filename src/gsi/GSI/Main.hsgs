@@ -101,7 +101,7 @@ gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. right undefined |]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
-gstype_checker_unit = [gs:value| λ 'x. impunit undefined |]
+gstype_checker_unit = [gs:value| λ 'x. impunit (right x) |]
 
 gstype_checker_bind = [gs:value| λ 'a. λ 'k. analyze-impM a.
 |]
