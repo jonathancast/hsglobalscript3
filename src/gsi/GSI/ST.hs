@@ -4,14 +4,15 @@ module GSI.ST (gsstrun) where
 import GSI.Util (Pos)
 import GSI.Value (GSValue(..), gsprim, gsundefined_value, gsimplementationfailure, gsvCode)
 import GSI.ThreadType (ThreadData(..), ThreadState(..), threadStateCode)
-import GSI.Thread (createThread, waitThread)
+import GSI.Thread (createThread, waitThread, createPromise)
 
 gsstrun :: GSValue
 gsstrun = $gsprim gsprim_st_run :: GSValue
 
 gsprim_st_run :: Pos -> GSValue -> IO GSValue
 gsprim_st_run pos a = do
-    t <- createThread pos stThreadData a
+    pr <- createPromise
+    t <- createThread pos stThreadData a (Just pr)
     st <- waitThread t
     case st of
         ThreadStateUnimpl pos err -> return $ GSImplementationFailure pos err

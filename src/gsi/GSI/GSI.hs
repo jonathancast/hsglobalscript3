@@ -38,7 +38,7 @@ gsiprimcreateThread :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimcreateThread pos t tdv vv = do
     td <- gsapiEvalExternal pos tdv
     GSIGSValue v <- gsapiEvalExternal pos vv
-    t <- createThread pos td v
+    t <- createThread pos td v Nothing
     return $ GSExternal $ toExternal t
 
 gsiexecMainThread :: GSValue

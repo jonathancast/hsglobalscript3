@@ -18,8 +18,8 @@ import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
 
-createThread :: Pos -> ThreadData -> GSValue -> IO Thread
-createThread pos d v = do
+createThread :: Pos -> ThreadData -> GSValue -> Maybe Promise -> IO Thread
+createThread pos d v mbp = do
     rec
         w <- newEvent
         sv <- newMVar ThreadStateRunning
