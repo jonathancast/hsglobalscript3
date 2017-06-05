@@ -5,7 +5,7 @@ module GSI.ByteCode (
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
-    gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w,
+    gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
     gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
@@ -216,6 +216,8 @@ gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 gsbcimpbody_w :: Pos -> GSArg -> GSBCImp GSValue
 gsbcimpbody_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ t -> apiCallExpr pos0 e t
 gsbcimpbody_w pos a = GSBCImp $ \t -> $apiImplementationFailure $ "gsbcimpbody_w " ++ argCode a ++ " next"
+
+gsbcimpunit = varE 'gsbcimpunit_w `appE` gshere
 
 gsbcimpunit_w :: Pos -> GSArg -> GSBCImp GSValue
 gsbcimpunit_w pos a = GSBCImp $ \ t -> gsprepare_w pos a
