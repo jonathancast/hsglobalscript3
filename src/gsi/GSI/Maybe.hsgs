@@ -2,4 +2,4 @@ module GSI.Maybe (gsmaybe) where
 
 $gsimports
 
-gsmaybe = [gs:value| undefined |]
+gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb. |]
