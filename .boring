@@ -18,3 +18,4 @@ src/gsi/gsi$
 bin/gsi$
 src/gsi/GSI/Parser.hs$
 src/gsi/gsi.hs$
+src/gsi/GSI/Maybe.hs$

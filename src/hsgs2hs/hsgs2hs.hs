@@ -615,6 +615,7 @@ globalEnv = Env{
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
         ("many", (Set.singleton $ HSIVar "GSI.Parser" "gsmany", HSVar "gsmany")),
         ("matching", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_matching", HSVar "gsparser_matching")),
+        ("maybe", (Set.singleton $ HSIVar "GSI.Maybe" "gsmaybe", HSVar "gsmaybe")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil", HSVar "gsnil")),
         ("not-followed-by", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_notFollowedBy", HSVar "gsparser_notFollowedBy")),
         ("optional", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_optional", HSVar "gsparser_optional")),

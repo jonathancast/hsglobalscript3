@@ -1,0 +1,5 @@
+module GSI.Maybe (gsmaybe) where
+
+$gsimports
+
+gsmaybe = [gs:value| undefined |]
