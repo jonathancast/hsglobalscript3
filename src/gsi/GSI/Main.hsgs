@@ -97,7 +97,10 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     . right p
 |]
 
-gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. right undefined |]
+gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. st.run (type-checker.for
+        _ ← gstyc undefined;
+    . type-checker.unit undefined
+)|]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
