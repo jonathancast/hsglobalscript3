@@ -35,7 +35,9 @@ createThread pos d v mbp = do
                     Just (TEError err) -> return $ ThreadStateError err
                     Just (TEImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
                     _ -> return $ ThreadStateUnimpl $gshere $ "Thread execution threw unknown exception " ++ displayException e
-                Right _ -> return $ ThreadStateUnimpl $gshere $ "Successful execution of a thread next"
+                Right v -> do
+                    maybe (return ()) (`updatePromise` v) mbp
+                    return ThreadStateSuccess
             wakeup $ wait t
     return t
 
