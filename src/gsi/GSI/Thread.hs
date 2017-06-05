@@ -41,8 +41,7 @@ createThread pos d v = do
 
 execMainThread :: Thread -> IO ()
 execMainThread t = do
-    await $ wait t
-    st <- readMVar $ state t
+    st <- waitThread t
     case st of
         ThreadStateUnimpl pos err -> throwIO $ GSExcImplementationFailure pos err
         ThreadStateError err -> throwGSError err
