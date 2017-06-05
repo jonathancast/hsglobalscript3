@@ -14,8 +14,9 @@ gsprim_st_run pos a = do
     t <- createThread pos stThreadData a
     st <- waitThread t
     case st of
+        ThreadStateUnimpl pos err -> return $ GSImplementationFailure pos err
         ThreadStateError err -> return $ GSError err
-        _ -> return $ $gsimplementationfailure $ "gsprim_st_run (state is " ++ threadStateCode st ++ ") next"
+        _ -> return $ $gsimplementationfailure $ "st.run (state is " ++ threadStateCode st ++ ") next"
 
 stThreadData = ThreadData{
     component = Nothing,
