@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Main (gsmain) where
+module GSI.Main (gsmain, gstype_checker_unit) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
