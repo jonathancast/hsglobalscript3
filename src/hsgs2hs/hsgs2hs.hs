@@ -628,6 +628,7 @@ globalEnv = Env{
         ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue", HSVar "gstrue")),
+        ("type-checker.for", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_for", HSVar "gstype_checker_for")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
         ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))
@@ -685,6 +686,17 @@ globalEnv = Env{
                     gsunit = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit"),
                     gsbind = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_bind", HSVar "gsparser_bind"),
                     gsmap = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")
+                },
+                Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
+              ]
+            _ -> return []
+        ),
+        ("type-checker.for", \ as -> case as of
+            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
+                Just $ SigMonad SM{
+                    gsunit = (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_unit", HSVar "gstype_checker_unit"),
+                    gsbind = (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_bind", HSVar "gstype_checker_bind"),
+                    gsmap = (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_map", HSVar "gstype_checker_map")
                 },
                 Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
               ]
