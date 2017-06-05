@@ -1,6 +1,6 @@
 {-# LANGUAGE ViewPatterns, Rank2Types, RecursiveDo, ScopedTypeVariables, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Thread (createThread, execMainThread, waitThread, withThreadData) where
+module GSI.Thread (createThread, execMainThread, waitThread, withThreadData, createPromise, readPromise) where
 
 import Control.Monad (join)
 
@@ -55,3 +55,12 @@ waitThread t = do
 
 withThreadData :: Thread -> (ThreadData -> a) -> a
 withThreadData (Thread{threadData = d}) k = k d
+
+createPromise :: IO Promise
+createPromise = Promise <$> newEmptyMVar
+
+updatePromise :: Promise -> GSValue -> IO ()
+updatePromise (Promise mv) v = putMVar mv v
+
+readPromise :: Promise -> IO GSValue
+readPromise (Promise mv) = readMVar mv
