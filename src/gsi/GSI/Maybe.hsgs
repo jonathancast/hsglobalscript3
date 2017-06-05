@@ -1,5 +1,11 @@
-module GSI.Maybe (gsmaybe) where
+{-# LANGUAGE TemplateHaskell #-}
+module GSI.Maybe (gsmaybe, gsnothing) where
+
+import GSI.Syn (gsvar)
+import GSI.Value (gsconstr)
 
 $gsimports
 
 gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb. |]
+
+gsnothing = $gsconstr (gsvar "nothing") []
