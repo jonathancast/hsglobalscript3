@@ -1,6 +1,6 @@
 {-# LANGUAGE ViewPatterns, Rank2Types, RecursiveDo, ScopedTypeVariables, TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Thread (createThread, execMainThread, withThreadData) where
+module GSI.Thread (createThread, execMainThread, waitThread, withThreadData) where
 
 import Control.Monad (join)
 
@@ -48,6 +48,11 @@ execMainThread t = do
         ThreadStateError err -> throwGSError err
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
+
+waitThread :: Thread -> IO ThreadState
+waitThread t = do
+    await $ wait t
+    readMVar $ state t
 
 withThreadData :: Thread -> (ThreadData -> a) -> a
 withThreadData (Thread{threadData = d}) k = k d
