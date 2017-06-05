@@ -2,10 +2,13 @@
 module GSI.Maybe (gsmaybe, gsnothing) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gsconstr)
+import GSI.Value (gslambda_value, gsconstr)
+import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 
 $gsimports
 
 gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb. |]
 
 gsnothing = $gsconstr (gsvar "nothing") []
+
+gsnothing_view =  $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "nothing" ek sk e
