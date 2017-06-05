@@ -626,6 +626,7 @@ globalEnv = Env{
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright")),
         ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),
+        ("st.run", (Set.singleton $ HSIVar "GSI.ST" "gsstrun", HSVar "gsstrun")),
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue", HSVar "gstrue")),
         ("type-checker.for", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_for", HSVar "gstype_checker_for")),
