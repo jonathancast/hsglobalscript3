@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
+module GSI.StdLib (gslambda, gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -37,6 +37,8 @@ gsimpfor :: GSValue
 gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
     env <- $gsbcimpbind $ $gsav g
     $gsbcimpbody $ $gsae $ $gsbcapply e [ $gsav env ]
+
+gsimpunit = $gsundefined_value
 
 -- This should be in GSI.String, but that would end up causing a circular dependency with this module so it goes here instead
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
