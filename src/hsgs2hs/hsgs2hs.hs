@@ -630,6 +630,7 @@ globalEnv = Env{
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue", HSVar "gstrue")),
         ("type-checker.for", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_for", HSVar "gstype_checker_for")),
+        ("type-checker.>>=", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_bind", HSVar "gstype_checker_bind")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
         ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))

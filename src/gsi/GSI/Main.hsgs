@@ -103,6 +103,8 @@ gstype_checker_for = [gs:value| undefined |]
 
 gstype_checker_unit = [gs:value| undefined |]
 
+gstype_checker_bind = [gs:value| undefined |]
+
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
