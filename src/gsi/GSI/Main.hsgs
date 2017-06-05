@@ -92,12 +92,12 @@ $gsdeclare type-check-document gstypeCheckDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
-        _ ← type-check-document pos gstyc;
+        _ ← type-check-document pos gstyc mbe;
         'p ← compile-document pos;
     . right p
 |]
 
-gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. st.run (type-checker.for
+gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-checker.for
         _ ← gstyc undefined;
     . type-checker.unit undefined
 )|]
