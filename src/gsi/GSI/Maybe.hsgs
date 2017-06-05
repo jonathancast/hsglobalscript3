@@ -7,7 +7,9 @@ import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 
 $gsimports
 
-gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb. |]
+gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb.
+    case nothing. ek
+|]
 
 gsnothing = $gsconstr (gsvar "nothing") []
 
