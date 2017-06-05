@@ -50,6 +50,7 @@ getPos = Parser (\ k -> GetPos k)
 
 (<?>) :: Parser s a -> String -> Parser s a
 p <?> s = Parser (\ k -> w (runParser p k)) where
+    w (PPFail e0 e1) = PPFail [] [s]
     w (SymbolOrEof ek sk) = SymbolOrEof (w ek) (\ c -> case sk c of
         Left _ -> Left ([], [s])
         Right p1 -> Right p1
