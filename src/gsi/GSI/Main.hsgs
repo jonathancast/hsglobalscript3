@@ -103,7 +103,8 @@ gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
 gstype_checker_unit = [gs:value| undefined |]
 
-gstype_checker_bind = [gs:value| undefined |]
+gstype_checker_bind = [gs:value| λ 'a. λ 'k. analyze-impM a.
+|]
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
