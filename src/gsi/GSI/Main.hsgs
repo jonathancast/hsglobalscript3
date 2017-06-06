@@ -105,7 +105,7 @@ gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-check
     . type-checker.unit undefined
 )|]
 
-gstype_check_expr = [gs:value| undefined |]
+gstype_check_expr = [gs:value| λ 'e. analyze e. |]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
