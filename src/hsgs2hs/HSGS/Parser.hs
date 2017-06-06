@@ -197,6 +197,7 @@ displayChar c = ('\'':) . display '\'' c . ('\'':)
 instance ParserDisplay Char where
     display q ch | isPrint ch && ch /= q = (ch:)
     display q ch | q == ch = ('\\':) . (ch:)
+    display q '\n' = ("\\n"++)
     display q ch = $gsfatal $ "display " ++ show ch ++ " next"
 
 newtype Parser s a = Parser { runParser :: forall b. (a -> PrimParser s b) -> PrimParser s b }
