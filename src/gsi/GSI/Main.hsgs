@@ -109,7 +109,9 @@ gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-check
 
 $gsdeclare view expr.var gsexpr_var_view
 
-gstype_check_expr = [gs:value| λ 'e. analyze e. |]
+gstype_check_expr = [gs:value| λ 'e. analyze e.
+    case expr.var 'v. undefined
+|]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
