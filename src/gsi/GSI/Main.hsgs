@@ -90,22 +90,24 @@ lexeme = [gs:value| λ 'p. p <* whitespace |]
 
 whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
+$gsdeclare type-checker.run gstype_checker_run
+
 $gsdeclare type-check-document gstypeCheckDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
-        _ ← type-check-document pos gstyc mbe;
+        _ ← type-checker.run (type-check-document pos gstyc mbe);
         'p ← compile-document pos;
     . right p
 |]
 
 $gsdeclare type-check-expr gstype_check_expr
 
-gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-checker.for
+gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
         _ ← maybe (type-checker.unit undefined) type-check-expr mbe;
         _ ← gstyc undefined;
     . type-checker.unit undefined
-)|]
+|]
 
 $gsdeclare view expr.var gsexpr_var_view
 
@@ -115,6 +117,8 @@ gstype_check_expr = [gs:value| λ 'e. analyze e.
     case expr.var 'v. (analyze-type-checker-M get-type v.
     )
 |]
+
+gstype_checker_run = [gs:value| λ 'a. st.run a |]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
