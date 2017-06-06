@@ -9,6 +9,7 @@ $gsimports
 
 gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb.
     case nothing. ek
+    case just 'x. sk x
 |]
 
 gsnothing = $gsconstr (gsvar "nothing") []
