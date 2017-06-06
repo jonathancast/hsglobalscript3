@@ -64,6 +64,8 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare expr.var gsexpr_var
+
 $gsdeclare ident ident
 
 expr = [gs:value|
@@ -124,6 +126,8 @@ gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsunde
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+
+gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 
 gspos = $gslambda_value $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
