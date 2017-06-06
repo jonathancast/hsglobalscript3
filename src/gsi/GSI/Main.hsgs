@@ -96,7 +96,7 @@ $gsdeclare type-check-document gstypeCheckDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
-        _ ← type-checker.run (type-check-document pos gstyc mbe);
+        _ ← type-checker.run (type-check-document pos gstyc mbe) undefined;
         'p ← compile-document pos;
     . right p
 |]
@@ -118,18 +118,18 @@ gstype_check_expr = [gs:value| λ 'e. analyze e.
     )
 |]
 
-gstype_checker_run = [gs:value| λ 'a. st.run a |]
+gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
-gstype_checker_unit = [gs:value| λ 'x. impunit (right x) |]
+gstype_checker_unit = [gs:value| λ 'x. λ 'env. impunit (right x) |]
 
-gstype_checker_map = [gs:value| λ 'f. λ 'a. analyze-impM a.
+gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. analyze-impM a env.
     case right 'x. impunit (right (f x))
 |]
 
-gstype_checker_bind = [gs:value| λ 'a. λ 'k. analyze-impM a.
-    case right 'x. k x
+gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. analyze-impM a env.
+    case right 'x. k x env
 |]
 
 gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
