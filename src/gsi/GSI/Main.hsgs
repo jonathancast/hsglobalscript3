@@ -107,6 +107,8 @@ gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-check
     . type-checker.unit undefined
 )|]
 
+$gsdeclare view expr.var gsexpr_var_view
+
 gstype_check_expr = [gs:value| λ 'e. analyze e. |]
 
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
@@ -128,6 +130,8 @@ gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsva
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
 gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
+
+gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
 
 gspos = $gslambda_value $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
