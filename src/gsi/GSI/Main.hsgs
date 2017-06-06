@@ -109,6 +109,8 @@ gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. st.run (type-check
 
 $gsdeclare view expr.var gsexpr_var_view
 
+$gsdeclare get-type gstype_checker_get_type
+
 gstype_check_expr = [gs:value| λ 'e. analyze e.
     case expr.var 'v. undefined
 |]
@@ -124,6 +126,8 @@ gstype_checker_map = [gs:value| λ 'f. λ 'a. analyze-impM a.
 gstype_checker_bind = [gs:value| λ 'a. λ 'k. analyze-impM a.
     case right 'x. k x
 |]
+
+gstype_checker_get_type = [gs:value| undefined |]
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
