@@ -69,7 +69,7 @@ $gsdeclare expr.var gsexpr_var
 $gsdeclare ident ident
 
 expr = [gs:value|
-    <|> parser.map undefined ident
+    <|> parser.map expr.var ident
 |]
 
 $gsdeclare lexeme lexeme
