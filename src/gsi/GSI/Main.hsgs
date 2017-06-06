@@ -128,7 +128,7 @@ gstype_checker_bind = [gs:value| λ 'a. λ 'k. analyze-impM a.
     case right 'x. k x
 |]
 
-gstype_checker_analyze = [gs:value| undefined |]
+gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
 gstype_checker_get_type = [gs:value| undefined |]
 
