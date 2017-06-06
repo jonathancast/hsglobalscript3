@@ -585,6 +585,7 @@ globalEnv = Env{
         ("advance-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_advanceRune", HSVar "gsparser_advanceRune")),
         ("analyze", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyze", HSVar "gsanalyze")),
         ("analyze-impM", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyzeImpM", HSVar "gsanalyzeImpM")),
+        ("analyze-type-checker-M", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_analyze", HSVar "gstype_checker_analyze")),
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
         ("char", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_char", HSVar "gsparser_char")),
         ("compile-document", (Set.singleton $ HSIVar "GSI.Main" "gscompileDocument", HSVar "gscompileDocument")),

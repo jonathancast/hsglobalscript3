@@ -127,6 +127,8 @@ gstype_checker_bind = [gs:value| λ 'a. λ 'k. analyze-impM a.
     case right 'x. k x
 |]
 
+gstype_checker_analyze = [gs:value| undefined |]
+
 gstype_checker_get_type = [gs:value| undefined |]
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]

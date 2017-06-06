@@ -386,6 +386,13 @@ globalEnv = Env{
                 <|> expr env,
             Nothing
         )),
+        ("analyze-type-checker-M", \ env -> (
+            expr env,
+            empty
+                <|> EMissingCase <$> getPos
+                <|> expr env,
+            Nothing
+        )),
         ("case", \ env -> (
             EPat <$> pattern env,
             EOpen <$> expr env,
