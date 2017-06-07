@@ -131,6 +131,7 @@ gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. analyze-impM a env.
 |]
 
 gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. analyze-impM a env.
+    case left 'err. impunit (left err)
     case right 'x. k x env
 |]
 
