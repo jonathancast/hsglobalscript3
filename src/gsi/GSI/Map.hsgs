@@ -2,10 +2,15 @@
 module GSI.Map (gsordered_map_get, gsordered_map_empty) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gsconstr)
+import GSI.Value (gslambda_value, gsconstr)
+import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 $gsimports
+
+$gsdeclare view empty gsordered_map_empty_view
 
 gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
 |]
 
 gsordered_map_empty = $gsconstr (gsvar "empty") []
+
+gsordered_map_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
