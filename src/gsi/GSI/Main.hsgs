@@ -135,7 +135,7 @@ gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. analyze-impM a env.
 
 gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
-gstype_checker_env_empty = [gs:value| 〈〉 |]
+gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
 gstype_checker_get_type = [gs:value| λ 'v. λ 'env. ordered-map.get v (env #types) |]
 
