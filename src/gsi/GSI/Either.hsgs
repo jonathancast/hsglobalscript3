@@ -11,12 +11,9 @@ $gsimports
 gseitherFor :: GSValue
 gseitherFor = $gslambda_value $ \ gen -> $gsbcarg $ \ k -> $gsbcapply gseitherbind [ $gsav gen, $gsav k ]
 
-gseitherbind :: GSValue
-gseitherbind = $gslambda_value $ \ e -> $gsbcarg $ \ k -> $gsbcapply gsanalyze [ $gsav e,
-    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "x"),
-        $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbcapply k [ $gsav x ],
-    $gsae $ $gsbcarg $ \ e -> $gsbcprim gspriminsufficientcases e
-  ]]
+gseitherbind = [gs:value| λ 'e. λ 'k. analyze e.
+    case right 'x. k x
+|]
 
 gseithermap = [gs:value| λ 'f. λ 'e. analyze e.
     case left 'e. left e
