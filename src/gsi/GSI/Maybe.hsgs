@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Maybe (gsmaybe, gsnothing, gsjust) where
+module GSI.Maybe (gsmaybe, gsnothing, gsjust, gsnothing_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
