@@ -9,6 +9,7 @@ $gsimports
 $gsdeclare view empty gsordered_map_empty_view
 
 gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
+    case empty. nothing
 |]
 
 gsordered_map_empty = $gsconstr (gsvar "empty") []
