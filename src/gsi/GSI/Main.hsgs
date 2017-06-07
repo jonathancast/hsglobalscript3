@@ -31,6 +31,9 @@ gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ g
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
                     case file.document 'pos 'mb. (analyze process-document pos gstyc mb.
+                        case left 'err. impfor
+                                _ ← print-error qq{§(err)\n};
+                            . error log{Errors next}
                         case right 'prog. gsrun prog as
                     )
                 )
