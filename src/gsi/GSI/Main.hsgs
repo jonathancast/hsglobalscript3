@@ -126,6 +126,7 @@ gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 gstype_checker_unit = [gs:value| λ 'x. λ 'env. impunit (right x) |]
 
 gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. analyze-impM a env.
+    case left 'err. impunit (left err)
     case right 'x. impunit (right (f x))
 |]
 
