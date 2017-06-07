@@ -19,6 +19,7 @@ gseitherbind = $gslambda_value $ \ e -> $gsbcarg $ \ k -> $gsbcapply gsanalyze [
   ]]
 
 gseithermap = [gs:value| λ 'f. λ 'e. analyze e.
+    case left 'e. left e
     case right 'x. right (f x)
 |]
 
