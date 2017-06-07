@@ -17,6 +17,7 @@ gsprim_st_run pos a = do
     case st of
         ThreadStateUnimpl pos err -> return $ GSImplementationFailure pos err
         ThreadStateError err -> return $ GSError err
+        ThreadStateImplementationFailure pos err -> return $ GSImplementationFailure pos err
         ThreadStateSuccess -> readPromise pr
         _ -> return $ $gsimplementationfailure $ "st.run (state is " ++ threadStateCode st ++ ") next"
 
