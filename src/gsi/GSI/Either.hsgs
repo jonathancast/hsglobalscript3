@@ -12,6 +12,7 @@ gseitherFor :: GSValue
 gseitherFor = $gslambda_value $ \ gen -> $gsbcarg $ \ k -> $gsbcapply gseitherbind [ $gsav gen, $gsav k ]
 
 gseitherbind = [gs:value| λ 'e. λ 'k. analyze e.
+    case left 'e. left e
     case right 'x. k x
 |]
 
