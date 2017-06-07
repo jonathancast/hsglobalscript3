@@ -622,6 +622,7 @@ globalEnv = Env{
         ("not-followed-by", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_notFollowedBy", HSVar "gsparser_notFollowedBy")),
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing", HSVar "gsnothing")),
         ("optional", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_optional", HSVar "gsparser_optional")),
+        ("ordered-map.get", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_get", HSVar "gsordered_map_get")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
         ("parser-for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.map", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")),

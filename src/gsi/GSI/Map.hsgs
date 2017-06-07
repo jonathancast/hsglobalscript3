@@ -1,0 +1,7 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSI.Map (gsordered_map_get) where
+
+$gsimports
+
+gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
+|]
