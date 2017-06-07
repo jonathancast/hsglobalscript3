@@ -161,6 +161,7 @@ compileValue env pos e@(EVar pos1 v) = case Map.lookup v (gsimplicits env) of
             Nothing -> compileError pos1 $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
         return (isv, ev)
+compileValue env pos e@EGens{} = compileThunk env pos e
 compileValue env pos e@EApp{} = compileThunk env pos e
 compileValue env pos e = $gsfatal $ "compileValue " ++ eCode e ++ " next"
 
