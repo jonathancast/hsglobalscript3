@@ -137,7 +137,7 @@ gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
 gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
-gstype_checker_get_type = [gs:value| λ 'v. λ 'env. ordered-map.get v (env #types) |]
+gstype_checker_get_type = [gs:value| λ 'v. λ 'env. impunit (right (ordered-map.get v (env #types))) |]
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
 
