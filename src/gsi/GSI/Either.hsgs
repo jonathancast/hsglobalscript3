@@ -18,12 +18,9 @@ gseitherbind = $gslambda_value $ \ e -> $gsbcarg $ \ k -> $gsbcapply gsanalyze [
     $gsae $ $gsbcarg $ \ e -> $gsbcprim gspriminsufficientcases e
   ]]
 
-gseithermap :: GSValue
-gseithermap = $gslambda_value $ \ f -> $gsbcarg $ \ e -> $gsbcapply gsanalyze [ $gsav e,
-    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsright_view ($gsbcvarpattern "x"),
-        $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbcapply gsright [ $gsae $ $gsbcapply f [ $gsav x ] ],
-    $gsae $ $gsbcarg $ \ e -> $gsbcprim gspriminsufficientcases e
-  ]]
+gseithermap = [gs:value| λ 'f. λ 'e. analyze e.
+    case right 'x. right (f x)
+|]
 
 gsleft :: GSValue
 gsleft = $gslambda_value $ \ x -> $gsbcconstr (gsvar "left") [ $gsav x ]
