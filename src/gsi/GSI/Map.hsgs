@@ -1,7 +1,11 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Map (gsordered_map_get) where
+module GSI.Map (gsordered_map_get, gsordered_map_empty) where
 
+import GSI.Syn (gsvar)
+import GSI.Value (gsconstr)
 $gsimports
 
 gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
 |]
+
+gsordered_map_empty = $gsconstr (gsvar "empty") []
