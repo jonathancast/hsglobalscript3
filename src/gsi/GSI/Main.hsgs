@@ -118,7 +118,7 @@ $gsdeclare view expr.var gsexpr_var_view
 $gsdeclare get-type gstype_checker_get_type
 
 gstype_check_expr = [gs:value| λ 'e. analyze e.
-    case expr.var 'v. (analyze-type-checker-M get-type v.
+    case expr.var 'v. (analyze-type-checker-M get-type undefined v.
     )
 |]
 
@@ -142,7 +142,7 @@ gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
 gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
-gstype_checker_get_type = [gs:value| λ 'v. λ 'env. analyze ordered-map.get v (env #types).
+gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get v (env #types).
     case nothing. impunit (left undefined)
 |]
 
