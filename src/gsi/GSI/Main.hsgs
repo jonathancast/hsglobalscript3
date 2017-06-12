@@ -96,11 +96,13 @@ whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 $gsdeclare type-checker.run gstype_checker_run
 $gsdeclare type-checker.env.empty gstype_checker_env_empty
 
+$gsdeclare type-checker.global-env gstype_checker_global_env
+
 $gsdeclare type-check-document gstypeCheckDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
-        _ ← type-checker.run (type-check-document pos gstyc mbe) type-checker.env.empty;
+        _ ← type-checker.run (type-check-document pos gstyc mbe) type-checker.global-env;
         'p ← compile-document pos;
     . right p
 |]
@@ -139,6 +141,10 @@ gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. analyze-impM a env.
 |]
 
 gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
+
+gstype_checker_global_env = [gs:value|
+    type-checker.env.empty
+|]
 
 gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
