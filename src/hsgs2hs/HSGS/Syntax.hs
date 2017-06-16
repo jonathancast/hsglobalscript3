@@ -415,6 +415,7 @@ globalEnv = Env{
         ("<|>", ())
     ],
     rightops = Map.fromList [
+        ("$", ()),
         (":", ())
     ],
     nonops = Map.fromList [

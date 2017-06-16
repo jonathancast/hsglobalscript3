@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -16,6 +16,8 @@ gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
 
 gscompose :: GSValue
 gscompose = $gslambda_value $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
+
+gsapply_fn = $gslambda_value $ \ f -> $gsbcarg $ \ x -> $gsbcapply f [ $gsav x ]
 
 gsanalyze = $gslambda_value $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
 

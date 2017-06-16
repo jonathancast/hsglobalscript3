@@ -578,6 +578,7 @@ compileError pos msg = lift $ Left $ fmtPos pos msg
 globalEnv :: Env
 globalEnv = Env{
     gsvars = Map.fromList [
+        ("$", (Set.singleton $ HSIVar "GSI.StdLib" "gsapply_fn", HSVar "gsapply_fn")),
         ("*>", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_then", HSVar "gsparser_then")),
         ("+", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_add", HSVar "gsnatural_add")),
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons", HSVar "gscons")),
