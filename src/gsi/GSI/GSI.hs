@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -7,6 +7,7 @@ import Control.Exception (SomeException, try, throwIO, fromException)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
+import GSI.Syn (gsvar)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsundefined_value, gsundefined_value_w, gsav)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
@@ -15,7 +16,7 @@ import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcexternal, gsbcundefined)
 import GSI.Env (GSEnvArgs(..))
-import GSI.StdLib (gsbcevalpos)
+import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 
 gsigsinject = $gslambda_value $ \ v -> $gsbcexternal (GSIGSValue v)
 
@@ -30,6 +31,8 @@ gsiprimgsapply pos t fv asv = do
 
 gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal $ GSIGSValue $ gsundefined_value_w pos
+
+gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread

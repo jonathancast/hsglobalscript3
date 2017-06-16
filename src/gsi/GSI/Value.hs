@@ -179,6 +179,7 @@ class Typeable e => GSExternal e where
 
 -- ↓ Instances that are here because we depend on the modules the types are in
 instance GSExternal Pos
+instance GSExternal GSVar
 instance GSExternal Thread
 instance GSExternal ThreadData
 
