@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Map (gsordered_map_get, gsordered_map_empty) where
+module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_empty) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr)
@@ -7,6 +7,9 @@ import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 $gsimports
 
 $gsdeclare view empty gsordered_map_empty_view
+
+gsordered_map_insert = [gs:value| λ 'cmp. λ 'k. λ 'v. λ 'm. analyze m.
+|]
 
 gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
     case empty. nothing
