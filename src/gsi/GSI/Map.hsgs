@@ -2,13 +2,17 @@
 module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_empty) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gslambda_value, gsconstr)
-import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+import GSI.Value (gslambda_value, gsconstr, gsav)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
+
+$gsdeclare prim.empty gsordered_map_empty
+$gsdeclare prim.branch gsordered_map_prim_branch
 
 $gsdeclare view empty gsordered_map_empty_view
 
 gsordered_map_insert = [gs:value| λ 'cmp. λ 'k. λ 'v. λ 'm. analyze m.
+    case empty. prim.branch k v prim.empty prim.empty
 |]
 
 gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
@@ -16,5 +20,6 @@ gsordered_map_get = [gs:value| λ 'k. λ 'm. analyze m.
 |]
 
 gsordered_map_empty = $gsconstr (gsvar "empty") []
+gsordered_map_prim_branch = $gslambda_value $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ l -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav k, $gsav v, $gsav l, $gsav r ]
 
 gsordered_map_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
