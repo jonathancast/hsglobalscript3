@@ -154,7 +154,7 @@ gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
 $gsdeclare fmt-var gsfmt_var
 
-gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get v (env #types).
+gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
     case nothing. impunit (left (pos.fmt pos qq{§(fmt-var v) not in scope}))
 |]
 
