@@ -19,3 +19,4 @@ src/gsi/test-gsi
 *bin/gsi
 *src/gsi/GSI/Parser.hs
 *src/gsi/gsi.hs
+src/gsi/GSI/Map.hs
