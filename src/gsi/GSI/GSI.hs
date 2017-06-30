@@ -14,7 +14,7 @@ import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadD
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcexternal, gsbcundefined)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcundefined)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 
@@ -88,4 +88,4 @@ newtype GSIGSValue = GSIGSValue GSValue
 
 instance GSExternal GSIGSValue
 
-gsigsvar_compare = $gsundefined_value
+gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> $gsbcundefined
