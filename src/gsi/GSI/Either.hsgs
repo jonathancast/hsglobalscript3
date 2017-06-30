@@ -3,7 +3,7 @@ module GSI.Either (gseitherFor, gseitherbind, gseithermap, gsleft, gsright, gsle
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsav, gsae, gsundefined_value)
-import GSI.ByteCode (gsbcarg, gsbclfield, gsbcapply, gsbcprim, gsbcconstr, gsbcviewpattern, gsbcconstr_view, gsbcvarpattern, gsbcundefined)
+import GSI.ByteCode (gsbcarg, gsbclfield, gsbcapply, gsbcconstr, gsbcviewpattern, gsbcconstr_view, gsbcvarpattern, gsbcundefined)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.StdLib (gsanalyze, gscase)
 $gsimports
