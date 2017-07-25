@@ -80,9 +80,9 @@ $gsdeclare lexeme lexeme
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
 
-ident = [gs:value|
+ident = [gs:value| parser.map gsvar (
     lexeme (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
-|]
+)|]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
