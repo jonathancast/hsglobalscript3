@@ -6,12 +6,13 @@ module GSI.Value (
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
-    gsvCode, bcoCode, argCode, gsstCode, gstsCode
+    gsvCode, bcoCode, argCode, gsstCode, gstsCode, whichExternal
   ) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
 
+import Data.Functor.Identity (Identity(..))
 import Data.Typeable (Typeable(..), cast, typeRep)
 
 import Control.Concurrent (MVar, newMVar)
@@ -176,6 +177,9 @@ class Typeable e => GSExternal e where
     externalType :: proxy e -> String
 
     externalType = show . typeRep
+
+whichExternal :: SomeGSExternal -> String
+whichExternal (SomeGSExternal e) = externalType (Identity e)
 
 -- ↓ Instances that are here because we depend on the modules the types are in
 instance GSExternal Pos
