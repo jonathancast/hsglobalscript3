@@ -7,14 +7,14 @@ import Control.Exception (SomeException, try, throwIO, fromException)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.Syn (gsvar)
+import GSI.Syn (GSVar, gsvar)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsundefined_value, gsundefined_value_w, gsav, gsvCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcundefined, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 
@@ -90,5 +90,9 @@ instance GSExternal GSIGSValue
 
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)
+        | Just v0hsv <- fromExternal v0e, Just v1hsv <- fromExternal v1e -> case compare (v0hsv :: GSVar) (v1hsv :: GSVar) of
+            lt -> $gsbcconstr (gsvar "lt") []
+            eq -> $gsbcconstr (gsvar "eq") []
+            gt -> $gsbcconstr (gsvar "gt") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
