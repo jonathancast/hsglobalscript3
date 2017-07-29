@@ -665,6 +665,7 @@ globalEnv = Env{
         ("file.document", (Set.singleton $ HSIVar "GSI.Main" "gsfileDocument_view", HSVar "gsfileDocument_view")),
         ("just", (Set.singleton $ HSIVar "GSI.Maybe" "gsjust_view", HSVar "gsjust_view")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft_view", HSVar "gsleft_view")),
+        ("lt", (Set.singleton $ HSIVar "GSI.OrderTotal" "gsord_lt_view", HSVar "gsord_lt_view")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil_view", HSVar "gsnil_view")),
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing_view", HSVar "gsnothing_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),

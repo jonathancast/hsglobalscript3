@@ -1,0 +1,8 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSI.OrderTotal (gsord_lt_view) where
+
+import GSI.Value (gslambda_value)
+import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+$gsimports
+
+gsord_lt_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lt" ek sk e
