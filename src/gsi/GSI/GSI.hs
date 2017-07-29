@@ -92,9 +92,9 @@ instance GSExternal GSIGSValue
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)
         | Just v0hsv <- fromExternal v0e, Just v1hsv <- fromExternal v1e -> case compare (v0hsv :: GSVar) (v1hsv :: GSVar) of
-            lt -> $gsbcconstr (gsvar "lt") []
-            eq -> $gsbcconstr (gsvar "eq") []
-            gt -> $gsbcconstr (gsvar "gt") []
+            LT -> $gsbcconstr (gsvar "lt") []
+            EQ -> $gsbcconstr (gsvar "eq") []
+            GT -> $gsbcconstr (gsvar "gt") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
 
