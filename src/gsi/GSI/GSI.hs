@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData, gsigsvar_compare) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -7,7 +7,7 @@ import Control.Exception (SomeException, try, throwIO, fromException)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
-import GSI.Syn (GSVar, gsvar)
+import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsundefined_value, gsundefined_value_w, gsav, gsvCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
@@ -17,6 +17,7 @@ import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
+import GSI.String (gsbcstringlit)
 
 gsigsinject = $gslambda_value $ \ v -> $gsbcexternal (GSIGSValue v)
 
@@ -96,3 +97,9 @@ gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gs
             gt -> $gsbcconstr (gsvar "gt") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
+
+gsigsvar_fmtAtom = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> case vv of
+    GSExternal ve
+        | Just vhsv <- fromExternal ve -> $gsbcstringlit (fmtVarAtom vhsv "")
+        | otherwise -> $gsbcimplementationfailure $ "gsigsvar_fmt " ++ whichExternal ve ++ " next"
+    _ -> $gsbcimplementationfailure $ "gsigsvar_fmt " ++ gsvCode vv ++ " next"

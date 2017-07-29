@@ -152,10 +152,8 @@ gstype_checker_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈〉 |]
 
 gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
-$gsdeclare fmt-var gsfmt_var
-
 gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
-    case nothing. impunit (left (pos.fmt pos qq{§(fmt-var v) not in scope}))
+    case nothing. impunit (left (pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}))
 |]
 
 gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
@@ -167,8 +165,6 @@ gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ 
 gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 
 gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
-
-gsfmt_var = [gs:value| λ 'v. v |] -- FIXME: variables should not be strings!
 
 gspos = $gslambda_value $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
