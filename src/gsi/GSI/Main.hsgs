@@ -120,8 +120,7 @@ $gsdeclare view expr.var gsexpr_var_view
 $gsdeclare get-type gstype_checker_get_type
 
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
-    case expr.var 'v. (analyze-type-checker-M get-type pos v.
-    )
+    case expr.var 'v. get-type pos v
 |]
 
 gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
