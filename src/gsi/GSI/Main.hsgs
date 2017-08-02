@@ -148,7 +148,9 @@ gstype_checker_global_env = [gs:value|
     type-checker.env.empty
 |]
 
-gstype_checker_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈〉 |]
+gstype_checker_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
+    'types ∝ ordered-map.insert gsvar.compare v ty (env #types);
+〉 |]
 
 gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 
