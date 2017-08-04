@@ -16,6 +16,7 @@ import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.Env (GSEnvArgs(..))
 import GSI.Main (gsmain)
+$gsimports
 
 main = do
     as <- newMVar . GSEnvArgs . $gslist . map $gsstring =<< getArgs

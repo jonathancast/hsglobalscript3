@@ -22,3 +22,4 @@ src/gsi/GSI/Maybe.hs$
 src/gsi/GSI/Map.hs$
 src/gsi/GSI/Either.hs$
 src/gsi/GSI/OrderTotal.hs$
+src/gsi/test-gsi.hs$
