@@ -27,8 +27,7 @@ main = do
 
 gstyc = [gs:value| λ 'ty. type-checker.unit 〈〉 |]
 
-gsrun = [gs:value| λ 'x. type-checker.for
-    . undefined
+gsrun = [gs:value| λ 'x. λ 'as. analyze-impM gseval-sync x.
 |]
 
 data TestGSIThread = TestGSIThread{
