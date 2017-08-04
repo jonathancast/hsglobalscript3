@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, GSIThread(..), gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, gsievalSync, GSIThread(..), gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -88,6 +88,8 @@ gsiThreadComponents =
 newtype GSIGSValue = GSIGSValue GSValue
 
 instance GSExternal GSIGSValue
+
+gsievalSync = $gslambda_value $ \ x -> $gsbcundefined
 
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)

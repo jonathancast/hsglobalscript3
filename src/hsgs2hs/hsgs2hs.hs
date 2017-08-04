@@ -606,6 +606,7 @@ globalEnv = Env{
         ("for", (Set.singleton $ HSIVar "GSI.StdLib" "gsfor", HSVar "gsfor")),
         ("get-pos", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_getPos", HSVar "gsparser_getPos")),
         ("gsapply", (Set.singleton $ HSIVar "GSI.GSI" "gsigsapply", HSVar "gsigsapply")),
+        ("gseval-sync", (Set.singleton $ HSIVar "GSI.GSI" "gsievalSync", HSVar "gsievalSync")),
         ("gsiThreadData", (Set.singleton $ HSIVar "GSI.GSI" "gsigsiThreadData", HSVar "gsigsiThreadData")),
         ("gsinject", (Set.singleton $ HSIVar "GSI.GSI" "gsigsinject", HSVar "gsigsinject")),
         ("gsmain", (Set.singleton $ HSIVar "GSI.Main" "gsmain", HSVar "gsmain")),
