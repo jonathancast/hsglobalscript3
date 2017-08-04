@@ -27,7 +27,9 @@ main = do
 
 gstyc = [gs:value| λ 'ty. type-checker.unit 〈〉 |]
 
-gsrun = $gsundefined_value
+gsrun = [gs:value| λ 'x. type-checker.for
+    . undefined
+|]
 
 data TestGSIThread = TestGSIThread{
     envArgs :: MVar GSEnvArgs
