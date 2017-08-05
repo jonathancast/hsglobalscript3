@@ -187,6 +187,9 @@ instance GSExternal GSVar
 instance GSExternal Thread
 instance GSExternal ThreadData
 
+-- ↓ Instances that are here because they go here
+instance GSExternal GSValue
+
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSError{} = "GSError"

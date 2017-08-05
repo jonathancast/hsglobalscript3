@@ -19,19 +19,19 @@ import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
 
-gsigsinject = $gslambda_value $ \ v -> $gsbcexternal (GSIGSValue v)
+gsigsinject = $gslambda_value $ \ v -> $gsbcexternal v
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 
 gsiprimgsapply :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimgsapply pos t fv asv = do
-    GSIGSValue f <- gsapiEvalExternal pos fv
-    as <- gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ (GSIGSValue a) -> return a)
+    f <- gsapiEvalExternal pos fv :: IO GSValue
+    as <- (gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ a -> return a)) :: IO [GSValue]
     $apiImplementationFailure $ "gsiprimgsapply next"
 
 gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
-    $gsbcexternal $ GSIGSValue $ gsundefined_value_w pos
+    $gsbcexternal $ gsundefined_value_w pos
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
 
@@ -41,7 +41,7 @@ gsicreateThread = $gsimpprim gsiprimcreateThread
 gsiprimcreateThread :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimcreateThread pos t tdv vv = do
     td <- gsapiEvalExternal pos tdv
-    GSIGSValue v <- gsapiEvalExternal pos vv
+    v <- gsapiEvalExternal pos vv
     t <- createThread pos td v Nothing
     return $ GSExternal $ toExternal t
 
@@ -84,10 +84,6 @@ gsiThreadData d = ThreadData{
 gsiThreadComponents =
     insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
     emptyThreadDataComponents
-
-newtype GSIGSValue = GSIGSValue GSValue
-
-instance GSExternal GSIGSValue
 
 gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> case v of
     GSExternal e
