@@ -89,7 +89,10 @@ newtype GSIGSValue = GSIGSValue GSValue
 
 instance GSExternal GSIGSValue
 
-gsievalSync = $gslambda_value $ \ x -> $gsbcundefined
+gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> case v of
+    GSExternal e
+        | otherwise -> $gsbcimplementationfailure $ "gsievalSync " ++ whichExternal e ++ " next"
+    _ -> $gsbcimplementationfailure $ "gsievalSync " ++ gsvCode v ++ " next"
 
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)
