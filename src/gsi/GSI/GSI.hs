@@ -9,12 +9,12 @@ import Component.Monad (mvarContents)
 import GSI.Util (Pos, fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..))
-import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsundefined_value, gsundefined_value_w, gsav, gsvCode, whichExternal)
+import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure, gsbcimpprim)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -85,10 +85,15 @@ gsiThreadComponents =
     insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
     emptyThreadDataComponents
 
-gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> case v of
-    GSExternal e
-        | otherwise -> $gsbcimplementationfailure $ "gsievalSync " ++ whichExternal e ++ " next"
-    _ -> $gsbcimplementationfailure $ "gsievalSync " ++ gsvCode v ++ " next"
+gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> $gsbcimpprim gsiprimevalSync v
+
+gsiprimevalSync :: Pos -> Thread -> GSValue -> IO GSValue
+gsiprimevalSync pos t (GSExternal e)
+    | Just v <- fromExternal e = case v of
+        GSError e -> return $ $gsconstr (gsvar "error") [ gsexternal e ]
+        _ -> $apiImplementationFailure $ "gsievalSync (GSExternal " ++ gsvCode v ++ ") next"
+    | otherwise = $apiImplementationFailure $ "gsievalSync " ++ whichExternal e ++ " next"
+gsiprimevalSync pos t v = $apiImplementationFailure $ "gsievalSync " ++ gsvCode v ++ " next"
 
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)
