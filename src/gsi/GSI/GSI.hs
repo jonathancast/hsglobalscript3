@@ -89,9 +89,8 @@ gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> $gsbcimppri
 
 gsiprimevalSync :: Pos -> Thread -> GSValue -> IO GSValue
 gsiprimevalSync pos t (GSExternal e)
-    | Just v <- fromExternal e = case v of
-        GSError e -> return $ $gsconstr (gsvar "error") [ gsexternal e ]
-        _ -> $apiImplementationFailure $ "gsievalSync (GSExternal " ++ gsvCode v ++ ") next"
+    | Just (GSError err) <- fromExternal e = return $ $gsconstr (gsvar "error") [ gsexternal err ]
+    | Just v <- fromExternal e = $apiImplementationFailure $ "gsievalSync (GSExternal " ++ gsvCode v ++ ") next"
     | otherwise = $apiImplementationFailure $ "gsievalSync " ++ whichExternal e ++ " next"
 gsiprimevalSync pos t v = $apiImplementationFailure $ "gsievalSync " ++ gsvCode v ++ " next"
 
