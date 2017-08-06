@@ -122,6 +122,9 @@ class GSBCImpPrimType f r where
 instance GSBCImpPrimType (IO GSValue) GSExpr where
     gsbcimpprim_ww pos f = GSExpr $ \ st cs -> aceReturn (GSClosure [StackTrace pos []] (GSImp f)) st
 
+instance GSBCImpPrimType f r => GSBCImpPrimType (GSValue -> f) (GSValue -> r) where
+    gsbcimpprim_ww pos f v = gsbcimpprim_ww pos (\ t -> f t v)
+
 gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (Pos -> Thread -> f) -> r
 gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
 
