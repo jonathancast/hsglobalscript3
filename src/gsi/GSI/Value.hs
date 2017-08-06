@@ -185,6 +185,7 @@ whichExternal :: SomeGSExternal -> String
 whichExternal (SomeGSExternal e) = externalType (Identity e)
 
 -- ↓ Instances that are here because we depend on the modules the types are in
+instance GSExternal GSError
 instance GSExternal GSVar
 instance GSExternal Pos
 instance GSExternal Thread
