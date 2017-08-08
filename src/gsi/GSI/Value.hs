@@ -6,6 +6,7 @@ module GSI.Value (
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
+    fmtExternal,
     gsvCode, bcoCode, argCode, gsstCode, gstsCode, whichExternal
   ) where
 
@@ -178,8 +179,13 @@ class Typeable e => GSExternal e where
     fromExternal (SomeGSExternal e) = cast e
 
     externalType :: proxy e -> String
+    fmtExternal_w :: e -> IO (String -> String)
 
     externalType = show . typeRep
+    fmtExternal_w e = return (externalType (Identity e)++)
+
+fmtExternal :: SomeGSExternal -> IO (String -> String)
+fmtExternal (SomeGSExternal e) = fmtExternal_w e
 
 whichExternal :: SomeGSExternal -> String
 whichExternal (SomeGSExternal e) = externalType (Identity e)
