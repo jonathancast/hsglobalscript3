@@ -104,7 +104,7 @@ $gsdeclare compile-document gscompileDocument
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
         _ ← type-checker.run (type-check-document pos gstyc mbe) type-checker.global-env;
-        'p ← compile-document pos;
+        'p ← compile-document pos mbe;
     . right p
 |]
 
@@ -160,7 +160,7 @@ gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-ma
     case just 'ty. impunit (right ty)
 |]
 
-gscompileDocument = [gs:value| λ 'pos. right (gsundefined pos) |]
+gscompileDocument = [gs:value| λ 'pos. λ 'mbe. right (gsundefined pos) |]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
