@@ -13,7 +13,7 @@ import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsconstr, gsimppr
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
-import GSI.Functions (gsapiEvalExternal, gsapiEvalList)
+import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
@@ -90,6 +90,7 @@ gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> $gsbcimppri
 gsiprimevalSync :: Pos -> Thread -> GSValue -> IO GSValue
 gsiprimevalSync pos t (GSExternal e)
     | Just (GSError err) <- fromExternal e = return $ $gsconstr (gsvar "error") [ gsexternal err ]
+    | Just (GSClosure st bco) <- fromExternal e = return $ $gsconstr (gsvar "closure") [ $gslist $ map gsexternal st, gsexternal bco ]
     | Just v <- fromExternal e = $apiImplementationFailure $ "gsievalSync (GSExternal " ++ gsvCode v ++ ") next"
     | otherwise = $apiImplementationFailure $ "gsievalSync " ++ whichExternal e ++ " next"
 gsiprimevalSync pos t v = $apiImplementationFailure $ "gsievalSync " ++ gsvCode v ++ " next"
