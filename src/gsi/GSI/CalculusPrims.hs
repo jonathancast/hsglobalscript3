@@ -9,7 +9,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (awaitAny)
 import GSI.Error (GSError(..))
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfailure, gsvCode)
+import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfailure, gsvCode, whichExternal)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 
 gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
@@ -95,6 +95,7 @@ fmtValueAtom (GSRune r)
     | r `elem` "/\\§()[]{}" = return $ ("r/"++) . ('\\':) . (r:) . ('/':)
     | r == '\n' = return $ ("r/\\n/"++)
     | otherwise = return $ ("r/"++) . (r:) . ('/':)
+fmtValueAtom (GSExternal e) = return $ ('<':) . (whichExternal e++) . ('>':)
 fmtValueAtom v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
 
 fmtParens :: (String -> String) -> String -> String
