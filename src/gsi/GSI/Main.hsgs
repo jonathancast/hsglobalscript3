@@ -104,7 +104,7 @@ $gsdeclare compile-document gscompileDocument
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
         _ ← type-checker.run (type-check-document pos gstyc mbe) type-checker.global-env;
-        'p ← compile-document pos mbe;
+        'p ← compile-document pos undefined mbe;
     . right p
 |]
 
@@ -162,7 +162,7 @@ gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-ma
 
 $gsdeclare compile-expr gscompileExpr
 
-gscompileDocument = [gs:value| λ 'pos. λ 'mbe. analyze mbe.
+gscompileDocument = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
     case nothing. right (gsundefined pos)
     case just 'e. compile-expr pos undefined e
 |]
