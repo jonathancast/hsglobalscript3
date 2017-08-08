@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, gsievalSync, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsresult_error_view) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, gsievalSync, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsresult_error_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -14,7 +14,7 @@ import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadD
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply, gsbcenter, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -115,5 +115,9 @@ gsigsvar_fmtAtom = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> case 
         | Just vhsv <- fromExternal ve -> $gsbcstringlit (fmtVarAtom vhsv "")
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_fmt " ++ whichExternal ve ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_fmt " ++ gsvCode vv ++ " next"
+
+gsvalue_error_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
+    (GSExternal e) | Just (GSError err) <- fromExternal e -> $gsbcapply sk [ $gsav $ gsexternal err ]
+    _ -> $gsbcenter ek
 
 gsresult_error_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ r -> $gsbcconstr_view "error" ek sk r
