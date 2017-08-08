@@ -188,10 +188,12 @@ whichExternal (SomeGSExternal e) = externalType (Identity e)
 instance GSExternal GSError
 instance GSExternal GSVar
 instance GSExternal Pos
+instance GSExternal StackTrace
 instance GSExternal Thread
 instance GSExternal ThreadData
 
 -- ↓ Instances that are here because they go here
+instance GSExternal GSBCO
 instance GSExternal GSValue
 
 gsvCode :: GSValue -> String
