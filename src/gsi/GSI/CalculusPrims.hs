@@ -71,6 +71,7 @@ gspriminsufficientcases pos (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th
     gspriminsufficientcases pos v
 gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
+gspriminsufficientcases pos (GSExternal e) = return $ GSError $ GSErrInsufficientCases pos $ '<' : whichExternal e ++ '>' : ""
 gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
 
 -- §begin§itemize
