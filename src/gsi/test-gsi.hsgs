@@ -28,8 +28,8 @@ main = do
 gstyc = [gs:value| λ 'ty. type-checker.unit 〈〉 |]
 
 gsrun = [gs:value| λ 'x. λ 'as. analyze x.
+    case gsvalue.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
     case _. (analyze-impM gseval-sync x.
-        case gsresult.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
     )
 |]
 
