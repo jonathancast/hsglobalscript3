@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, gsievalSync, GSIThread(..), gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, gsievalSync, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -8,7 +8,7 @@ import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Error (GSError(..), GSException(..))
+import GSI.Error (GSError(..), GSException(..), fmtError)
 import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
@@ -93,6 +93,12 @@ gsiprimevalSync pos t (GSExternal e)
     | Just v <- fromExternal e = $apiImplementationFailure $ "gsievalSync (GSExternal " ++ gsvCode v ++ ") next"
     | otherwise = $apiImplementationFailure $ "gsievalSync " ++ whichExternal e ++ " next"
 gsiprimevalSync pos t v = $apiImplementationFailure $ "gsievalSync " ++ gsvCode v ++ " next"
+
+gsigsfmtError = $gslambda_value $ \ e -> $gsbcforce ($gsav e) $ \ ev -> case ev of
+    GSExternal ee
+        | Just hse <- fromExternal ee -> $gsbcstringlit (fmtError hse)
+        | otherwise -> $gsbcimplementationfailure $ "gsigsfmtError " ++ whichExternal ee ++ " next"
+    _ -> $gsbcimplementationfailure $ "gsigsfmtError " ++ gsvCode ev ++ " next"
 
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)
