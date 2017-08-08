@@ -98,6 +98,8 @@ $gsdeclare type-checker.env.empty gstype_checker_env_empty
 
 $gsdeclare type-checker.global-env gstype_checker_global_env
 
+$gsdeclare compiler.global-env gscompiler_global_env
+
 $gsdeclare type-check-document gstypeCheckDocument
 $gsdeclare compile-document gscompileDocument
 
@@ -171,6 +173,8 @@ gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
     )
 |]
+
+gscompiler_global_env = [gs:value| undefined |]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
