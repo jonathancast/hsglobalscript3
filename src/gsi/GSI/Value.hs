@@ -202,6 +202,7 @@ instance GSExternal ThreadData
 instance GSExternal GSBCO
 
 instance GSExternal GSValue where
+    fmtExternal_w (GSClosure _ bco) = return $ ("GSValue"++) . (' ':) . ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':)
     fmtExternal_w v = return $ ("GSValue"++) . (' ':) . (gsvCode v++)
 
 gsvCode :: GSValue -> String
