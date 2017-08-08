@@ -175,7 +175,10 @@ gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     )
 |]
 
-gscompiler_global_env = [gs:value| ordered-map.empty |]
+gscompiler_global_env = [gs:value|
+    ordered-map.insert gsvar.compare (gsvar qq{gsmain}) undefined $
+    ordered-map.empty
+|]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
