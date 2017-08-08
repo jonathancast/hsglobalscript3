@@ -106,7 +106,7 @@ $gsdeclare compile-document gscompileDocument
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
         _ ← type-checker.run (type-check-document pos gstyc mbe) type-checker.global-env;
-        'p ← compile-document pos undefined mbe;
+        'p ← compile-document pos compiler.global-env mbe;
     . right p
 |]
 
