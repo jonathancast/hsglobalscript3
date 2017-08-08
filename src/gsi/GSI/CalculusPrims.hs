@@ -9,7 +9,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (awaitAny)
 import GSI.Error (GSError(..))
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfailure, gsvCode, whichExternal)
+import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfailure, gsvCode, whichExternal, fmtExternal)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 
 gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
@@ -71,7 +71,7 @@ gspriminsufficientcases pos (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th
     gspriminsufficientcases pos v
 gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
-gspriminsufficientcases pos (GSExternal e) = return $ GSError $ GSErrInsufficientCases pos $ '<' : whichExternal e ++ '>' : ""
+gspriminsufficientcases pos (GSExternal e) = GSError . GSErrInsufficientCases pos . ($ "") . (\ ds -> ('<':) . ds . ('>':)) <$> fmtExternal e
 gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
 
 -- §begin§itemize
