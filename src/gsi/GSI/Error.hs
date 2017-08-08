@@ -24,7 +24,7 @@ data GSException
   deriving (Typeable, Show)
 
 instance Exception GSException where
-    displayException (GSExcUndefined st) = fmtStackTrace st "undefined"
+    displayException (GSExcUndefined st) = fmtStackTrace st "Undefined"
     displayException (GSExcInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
     displayException (GSExcError pos err) = fmtPos pos $ "Error: " ++ err
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
