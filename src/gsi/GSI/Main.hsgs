@@ -99,6 +99,7 @@ $gsdeclare type-checker.env.empty gstype_checker_env_empty
 $gsdeclare type-checker.global-env gstype_checker_global_env
 
 $gsdeclare type-check-document gstypeCheckDocument
+$gsdeclare compile-document gscompileDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
