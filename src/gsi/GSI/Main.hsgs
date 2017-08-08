@@ -168,7 +168,7 @@ gscompileDocument = [gs:value| λ 'pos. λ 'mbe. analyze mbe.
 |]
 
 gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
-    case expr.var 'v. (analyze ordered-map.get gsvar.compare v undefined.
+    case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
     )
 |]
 
