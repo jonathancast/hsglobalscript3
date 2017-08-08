@@ -168,6 +168,8 @@ gscompileDocument = [gs:value| λ 'pos. λ 'mbe. analyze mbe.
 |]
 
 gscompileExpr = [gs:value| λ 'pos. λ 'e. analyze e.
+    case expr.var 'v. (analyze ordered-map.get gsvar.compare v undefined.
+    )
 |]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
