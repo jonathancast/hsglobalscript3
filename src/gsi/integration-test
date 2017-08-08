@@ -12,6 +12,7 @@ echo '## test-gsi'
 
 ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./test-gsi no-such-file.gs
 ok_grep_errors '-- variable not in scope --' 'foo not in scope' ./test-gsi unbound-variable.gs
+ok_grep_errors '-- empty source file --' 'empty-file.gs:1:1: Undefined' ./test-gsi empty-file.gs
 
 echo '## gsi'
 
