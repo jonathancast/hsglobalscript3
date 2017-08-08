@@ -164,6 +164,7 @@ $gsdeclare compile-expr gscompileExpr
 
 gscompileDocument = [gs:value| λ 'pos. λ 'mbe. analyze mbe.
     case nothing. right (gsundefined pos)
+    case just 'e. compile-expr pos e
 |]
 
 gscompileExpr = [gs:value| λ 'pos. λ 'e. analyze e.
