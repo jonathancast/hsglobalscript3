@@ -160,7 +160,7 @@ gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-ma
     case just 'ty. impunit (right ty)
 |]
 
-gscompileDocument = $gslambda_value $ \ pos -> [gs:expr hsvs=pos,| right (gsundefined pos) |]
+gscompileDocument = [gs:value| λ 'pos. right (gsundefined pos) |]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
