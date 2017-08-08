@@ -200,7 +200,9 @@ instance GSExternal ThreadData
 
 -- ↓ Instances that are here because they go here
 instance GSExternal GSBCO
-instance GSExternal GSValue
+
+instance GSExternal GSValue where
+    fmtExternal_w v = return $ ("GSValue"++) . (' ':) . (gsvCode v++)
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
