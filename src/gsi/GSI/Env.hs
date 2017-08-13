@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsfileRead, gsprintError, gsENOENT_view) where
+module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
@@ -70,6 +70,12 @@ gsprimfileRead pos t fn = do
     case mbs of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimfileRead " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
         Right s -> $gslazystring s
+
+gsprint :: GSValue
+gsprint = $gsimpprim gsprimprint
+
+gsprimprint :: Pos -> Thread -> GSValue -> IO GSValue
+gsprimprint pos t msg = $apiImplementationFailure "gsprimprint  next"
 
 gsprintError :: GSValue
 gsprintError = $gsimpprim gsprimprintError

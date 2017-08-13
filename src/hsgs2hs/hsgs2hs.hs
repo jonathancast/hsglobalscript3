@@ -637,6 +637,7 @@ globalEnv = Env{
         ("parser.map2", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map2", HSVar "gsparser_map2")),
         ("parser.unit", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit")),
         ("pos.fmt", (Set.singleton $ HSIVar "GSI.Parser" "gsposFmt", HSVar "gsposFmt")),
+        ("print", (Set.singleton $ HSIVar "GSI.Env" "gsprint", HSVar "gsprint")),
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright")),
         ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),
