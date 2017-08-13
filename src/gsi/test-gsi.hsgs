@@ -29,6 +29,7 @@ gstyc = [gs:value| λ 'ty. type-checker.unit 〈〉 |]
 
 gsrun = [gs:value| λ 'x. λ 'as. analyze x.
     case gsvalue.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
+    case gsvalue.function 'f. print qq{<function>\n}
 |]
 
 data TestGSIThread = TestGSIThread{
