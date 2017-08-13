@@ -48,6 +48,7 @@ execMainThread t = do
         ThreadStateUnimpl pos err -> throwIO $ GSExcImplementationFailure pos err
         ThreadStateError err -> throwGSError err
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
+        ThreadStateSuccess -> return ()
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
 
 waitThread :: Thread -> IO ThreadState
