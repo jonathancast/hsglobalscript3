@@ -8,7 +8,7 @@ import qualified Data.Map as Map
 import Control.Exception (SomeException, try, fromException)
 
 import Data.Encoding.UTF8 (UTF8(..))
-import System.IO (hPutStrLn, hPutChar, stderr)
+import System.IO (Handle, hPutStrLn, hPutChar, stdout, stderr)
 import System.IO.Encoding (readFile)
 import System.IO.Error (isDoesNotExistError)
 
@@ -72,36 +72,33 @@ gsprimfileRead pos t fn = do
         Right s -> $gslazystring s
 
 gsprint :: GSValue
-gsprint = $gsimpprim gsprimprint
-
-gsprimprint :: Pos -> Thread -> GSValue -> IO GSValue
-gsprimprint pos t msg = $apiImplementationFailure "gsprimprint  next"
+gsprint = $gsimpprim (gsprimprint stdout)
 
 gsprintError :: GSValue
-gsprintError = $gsimpprim gsprimprintError
+gsprintError = $gsimpprim (gsprimprint stderr)
 
-gsprimprintError :: Pos -> Thread -> GSValue -> IO GSValue
-gsprimprintError pos t (GSThunk th) = do
+gsprimprint :: Handle -> Pos -> Thread -> GSValue -> IO GSValue
+gsprimprint h pos t (GSThunk th) = do
     v <- evalSync [StackTrace $gshere [StackTrace pos []]] th
-    gsprimprintError pos t v
-gsprimprintError pos t (GSImplementationFailure pos1 msg) = do
-    hPutStrLn stderr $ fmtPos pos1 $ msg
+    gsprimprint h pos t v
+gsprimprint h pos t (GSImplementationFailure pos1 msg) = do
+    hPutStrLn h $ fmtPos pos1 $ msg
     return $ $gsundefined_value
-gsprimprintError pos t (GSError err) = do
-    hPutStrLn stderr $ fmtError err
+gsprimprint h pos t (GSError err) = do
+    hPutStrLn h $ fmtError err
     return $ $gsundefined_value
-gsprimprintError pos t (GSConstr pos1 c []) | c == gsvar "nil" =
+gsprimprint h pos t (GSConstr pos1 c []) | c == gsvar "nil" =
     return $ $gsundefined_value
-gsprimprintError pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
-    hPutChar stderr ch
-    gsprimprintError pos t s
-gsprimprintError pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
-    hPutStrLn stderr $ fmtPos $gshere $ "gsprimprintError (" ++ gsvCode ch ++ " : _) next"
-    gsprimprintError pos t s
-gsprimprintError pos t (GSConstr pos1 c as) =
-    $apiImplementationFailure $ "gsprimprintError " ++ fmtVarAtom c " next"
-gsprimprintError pos t msg =
-    $apiImplementationFailure $ "gsprimprintError " ++ gsvCode msg ++ " next"
+gsprimprint h pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
+    hPutChar h ch
+    gsprimprint h pos t s
+gsprimprint h pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
+    hPutStrLn h $ fmtPos $gshere $ "gsprimprint (" ++ gsvCode ch ++ " : _) next"
+    gsprimprint h pos t s
+gsprimprint h pos t (GSConstr pos1 c as) =
+    $apiImplementationFailure $ "gsprimprint " ++ fmtVarAtom c " next"
+gsprimprint h pos t msg =
+    $apiImplementationFailure $ "gsprimprint " ++ gsvCode msg ++ " next"
 
 gsENOENT_view :: GSValue
 gsENOENT_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ err -> $gsbcconstr_view "ENOENT" ek sk err
