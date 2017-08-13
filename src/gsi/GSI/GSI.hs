@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, gsievalSync, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -84,16 +84,6 @@ gsiThreadData d = ThreadData{
 gsiThreadComponents =
     insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
     emptyThreadDataComponents
-
-gsievalSync = $gslambda_value $ \ x -> $gsbcforce ($gsav x) $ \ v -> $gsbcimpprim gsiprimevalSync v
-
-gsiprimevalSync :: Pos -> Thread -> GSValue -> IO GSValue
-gsiprimevalSync pos t (GSExternal e)
-    | Just (GSError err) <- fromExternal e = return $ $gsconstr (gsvar "error") [ gsexternal err ]
-    | Just (GSClosure st bco) <- fromExternal e = return $ $gsconstr (gsvar "closure") [ $gslist $ map gsexternal st, gsexternal bco ]
-    | Just v <- fromExternal e = $apiImplementationFailure $ "gsievalSync (GSExternal " ++ gsvCode v ++ ") next"
-    | otherwise = $apiImplementationFailure $ "gsievalSync " ++ whichExternal e ++ " next"
-gsiprimevalSync pos t v = $apiImplementationFailure $ "gsievalSync " ++ gsvCode v ++ " next"
 
 gsigsfmtError = $gslambda_value $ \ e -> $gsbcforce ($gsav e) $ \ ev -> case ev of
     GSExternal ee
