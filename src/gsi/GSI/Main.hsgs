@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Main (gsmain, gstype_checker_for, gstype_checker_unit) where
+module GSI.Main (gsmain, gstype_checker_unify, gstype_checker_for, gstype_checker_unit) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
@@ -124,6 +124,9 @@ $gsdeclare get-type gstype_checker_get_type
 
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
     case expr.var 'v. get-type pos v
+|]
+
+gstype_checker_unify = [gs:value| λ 'ty0. λ 'ty1. analyze ty0.
 |]
 
 gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
