@@ -341,21 +341,25 @@ compileBind env pos e = do
 
 compileOpenExpr :: Env -> Pos -> Set String -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileOpenExpr env pos fvs e = do
+    (is', k, env') <- compileLocalEnv env pos fvs
+    (is, hse) <- compileExpr env' e
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos" ] `Set.union` is' `Set.union` is,
+        HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` k hse
+      )
+
+compileLocalEnv :: Env -> Pos -> Set String -> Compiler (Set HSImport, HSExpr -> HSExpr, Env)
+compileLocalEnv env pos fvs = do
     vshsvs <- forM (Set.toList fvs) $ \ v -> do
         hsv <- getGenSym
         return (v, hsv)
-    let env' = env{ gsvars = Map.fromList [ (v, (Set.empty, HSVar hsv)) | (v, hsv) <- vshsvs ] `Map.union` gsvars env }
-    (is, hse) <- compileExpr env' e
-    let (is', hse') = foldr (\ (v, hsv) (is0, hse0) -> (
+    let (is, k) = foldr (\ (v, hsv) (is0, k0) -> (
                 Set.fromList [ HSIVar "GSI.ByteCode" "gsbclfield_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` is0,
-                HSVar "gsbclfield_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v) `HSApp` HSVar "env" `HSApp` (HSLambda [hsv] hse0)
+                \ e -> HSVar "gsbclfield_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v) `HSApp` HSVar "env" `HSApp` (HSLambda [hsv] (k0 e))
             ))
-            (is, hse)
+            (Set.empty, id)
             vshsvs
-    return (
-        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos" ] `Set.union` is',
-        HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` HSLambda ["env"] hse'
-      )
+    return $ (is, HSLambda ["env"] . k, env{ gsvars = Map.fromList [ (v, (Set.empty, HSVar hsv)) | (v, hsv) <- vshsvs ] `Map.union` gsvars env })
 
 compileOpenArg :: Env -> Pos -> Set String -> Expr -> Compiler (Set HSImport, HSExpr)
 compileOpenArg env pos fvs e = do
