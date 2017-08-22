@@ -467,16 +467,26 @@ compileMonadGens env ((pos, g):gs) pos1 s = do
     let (bindis, bindhse) = gsbind s
     let (unitis, unithse) = gsunit s
     (is, hse) <- compileMonadGenArg env pos g s
-    (ist, hst) <- compileMonadGens env gs pos1 s
+    (ist, hst) <- compileOpenMonadGens env (genBoundVars g) gs pos1 s
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbccomposemonadgen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` bindis `Set.union` unitis `Set.union` is `Set.union` ist,
-        HSVar "gsbccomposemonadgen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgVar" `HSApp` bindhse) `HSApp` (HSConstr "GSArgVar" `HSApp` unithse) `HSApp` hse `HSApp` (HSLambda ["env"] hst)
+        HSVar "gsbccomposemonadgen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgVar" `HSApp` bindhse) `HSApp` (HSConstr "GSArgVar" `HSApp` unithse) `HSApp` hse `HSApp` hst
       )
 compileMonadGens env [] pos1 s = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcemptymonadgen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` unitis,
     HSVar "gsbcemptymonadgen_w" `HSApp` hspos pos1 `HSApp` (HSConstr "GSArgVar" `HSApp` unithse)
   ) where
     (unitis, unithse) = gsunit s
+
+compileOpenMonadGens :: Env -> Set String -> [(Pos, Generator)] -> Pos -> SigMonad -> Compiler (Set HSImport, HSExpr)
+compileOpenMonadGens env fvs gs pos1 s = do
+    -- If we have generators, compile them in the environment with §hs{fvs} in scope.
+    -- Otherwise, compile them in env because we have nothing to do.
+    (is', k, env') <- case gs of
+        ((pos, g):_) -> compileLocalEnv env pos fvs
+        [] -> return (Set.empty, HSLambda ["env"], env)
+    (is, hse) <- compileMonadGens env' gs pos1 s
+    return (is' `Set.union` is, k hse)
 
 compileMonadGenArg :: Env -> Pos -> Generator -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGenArg env pos g s = do
