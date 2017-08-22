@@ -1,0 +1,25 @@
+{-# LANGUAGE TemplateHaskell #-}
+
+import Control.Exception (SomeException, catch, displayException)
+
+import System.Exit (ExitCode(..), exitWith)
+import System.IO (hPutStrLn, stderr)
+
+import GSI.Util (fmtPos, gshere)
+import GSI.ThreadType (ThreadData(..), fetchThreadDataComponent, emptyThreadDataComponents)
+import GSI.Thread (createThread, execMainThread)
+$gsimports
+
+prog = [gs:value| impfor 's0 ← impunit qq{world}; 's1 ← impunit qq{Hello, §(s0)!};. print qq{§(s1)\n} |]
+
+main = do
+    t <- createThread $gshere (testGSIThreadData TestGSIThreadData{}) prog Nothing
+    execMainThread t
+  `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
+
+data TestGSIThreadData = TestGSIThreadData{}
+
+testGSIThreadData d = ThreadData{
+    component = fetchThreadDataComponent emptyThreadDataComponents d,
+    threadTypeName = fmtPos $gshere "TestGSIThread"
+  }

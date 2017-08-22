@@ -82,6 +82,7 @@ ok_diff_compiler '-- operator views --' hsgs2hs operator-view.hsgs operator-view
 
 ok_diff_compiler '-- variable definition binds --' hsgs2hs bound-variable-bind-impfor.hsgs bound-variable-bind-impfor.hs
 ok_diff_compiled '-- variable definition matches --' hsgs2hs bound-variable-match.hsgs .hs runghc `{./test-ghcoptions}
+ok_diff_compiled '-- variable binds are in scope in subsequent generators --' hsgs2hs bound-variable-bind-in-generator.hsgs .hs runghc `{./test-ghcoptions}
 
 # Different monads
 
