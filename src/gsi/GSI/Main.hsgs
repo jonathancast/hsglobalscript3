@@ -166,7 +166,11 @@ gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-ma
     case just 'ty. impunit (right ty)
 |]
 
+$gsdeclare type.unifiable-var gstype_unifiable_var
+
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor. impunit (right undefined) |]
+
+gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
 
 $gsdeclare compile-expr gscompileExpr
 
