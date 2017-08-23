@@ -130,8 +130,13 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
 $gsdeclare view type.unifiable-var gstype_unifiable_var_view
 $gsdeclare view type.app gstype_app_view
 
+$gsdeclare type-checker.unify-var gstype_checker_unify_var
+
 gstype_checker_unify = [gs:value| λ 'ty0. λ 'ty1. analyze ty0.
     case type.unifiable-var 'v0. analyze ty1.
+|]
+
+gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. undefined
 |]
 
 gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
