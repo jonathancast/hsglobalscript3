@@ -114,7 +114,7 @@ $gsdeclare type-checker.new-unifiable-var gs_type_checker_new_unifiable_var
 $gsdeclare type-check-expr gstype_check_expr
 
 gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
-        'ty ← maybe (type-checker.unit undefined) (type-check-expr pos) mbe;
+        'ty ← maybe type-checker.new-unifiable-var (type-check-expr pos) mbe;
         _ ← gstyc ty;
     . type-checker.unit undefined
 |]
