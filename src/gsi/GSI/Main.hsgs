@@ -100,7 +100,7 @@ $gsdeclare type-checker.global-env gstype_checker_global_env
 
 $gsdeclare compiler.global-env gscompiler_global_env
 
-$gsdeclare type-check.document gstypeCheckDocument
+$gsdeclare type-check.document gstype_check_document
 $gsdeclare compile-document gscompileDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
@@ -113,7 +113,7 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
 $gsdeclare type-checker.new-unifiable-var gs_type_checker_new_unifiable_var
 $gsdeclare type-check-expr gstype_check_expr
 
-gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
+gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
         'ty ← maybe type-checker.new-unifiable-var (type-check-expr pos) mbe;
         _ ← gstyc ty;
     . type-checker.unit undefined
