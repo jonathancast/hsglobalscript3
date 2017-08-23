@@ -127,6 +127,8 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
     case expr.var 'v. get-type pos v
 |]
 
+$gsdeclare view type.unifiable-var gstype_unifiable_var_view
+
 gstype_checker_unify = [gs:value| λ 'ty0. λ 'ty1. analyze ty0.
 |]
 
@@ -171,6 +173,8 @@ $gsdeclare type.unifiable-var gstype_unifiable_var
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor. impunit (right (type.unifiable-var undefined)) |]
 
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
+
+gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
 
 $gsdeclare compile-expr gscompileExpr
 
