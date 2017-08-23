@@ -110,6 +110,7 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     . right p
 |]
 
+$gsdeclare type-checker.new-unifiable-var gs_type_checker_new_unifiable_var
 $gsdeclare type-check-expr gstype_check_expr
 
 gstypeCheckDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
@@ -164,6 +165,8 @@ gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-ma
     case nothing. impunit (left (pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}))
     case just 'ty. impunit (right ty)
 |]
+
+gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor. impunit (right undefined) |]
 
 $gsdeclare compile-expr gscompileExpr
 
