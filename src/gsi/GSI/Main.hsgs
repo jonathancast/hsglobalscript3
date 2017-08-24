@@ -139,7 +139,7 @@ gstype_checker_unify = [gs:value| λ 'ty0. λ 'ty1. analyze ty0.
 
 $gsdeclare type-checker.is-free-in gstype_checker_is_free_in
 
-gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. undefined
+gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.is-free-in v ty.
 |]
 
 gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
