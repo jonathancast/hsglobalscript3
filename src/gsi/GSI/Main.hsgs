@@ -143,6 +143,8 @@ gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type
 |]
 
 gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
+    case type.app 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
+    )
 |]
 
 gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
