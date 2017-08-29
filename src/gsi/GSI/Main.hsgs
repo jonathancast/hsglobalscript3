@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Main (gsmain, gstype_const, gstype_structure, gstype_app, gstype_checker_unify, gstype_checker_for, gstype_checker_unit) where
+module GSI.Main (gsmain, gstype_const, gstype_structure, gstype_app, gstype_checker_unify, gstype_checker_for, gstype_checker_unit, gstype_checker_env_empty) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
@@ -94,7 +94,6 @@ lexeme = [gs:value| λ 'p. p <* whitespace |]
 whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
 $gsdeclare type-checker.run gstype_checker_run
-$gsdeclare type-checker.env.empty gstype_checker_env_empty
 
 $gsdeclare type-checker.global-env gstype_checker_global_env
 
