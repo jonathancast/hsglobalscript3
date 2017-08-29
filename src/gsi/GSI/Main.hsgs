@@ -146,6 +146,7 @@ gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
         case false. type-checker.is-free-in v ty1
     )
     case type.const 'c. type-checker.unit false
+    case type.structure 'e. type-checker.unit false
 |]
 
 gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
