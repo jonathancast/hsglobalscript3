@@ -195,6 +195,7 @@ gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "
 
 gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
 gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
+gstype_structure_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "structure" ek sk ty
 gstype_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "app" ek sk ty
 
 $gsdeclare compile-expr gscompileExpr

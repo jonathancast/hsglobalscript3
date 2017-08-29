@@ -717,7 +717,8 @@ globalEnv = Env{
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing_view", HSVar "gsnothing_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
-        ("type.const", (Set.singleton $ HSIVar "GSI.Main" "gstype_const_view", HSVar "gstype_const_view"))
+        ("type.const", (Set.singleton $ HSIVar "GSI.Main" "gstype_const_view", HSVar "gstype_const_view")),
+        ("type.structure", (Set.singleton $ HSIVar "GSI.Main" "gstype_structure_view", HSVar "gstype_structure_view"))
     ],
     gssignatures = Map.fromList [
         ("λ", \ as -> case as of
