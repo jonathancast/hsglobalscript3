@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Main (gsmain, gstype_const, gstype_app, gstype_checker_unify, gstype_checker_for, gstype_checker_unit) where
+module GSI.Main (gsmain, gstype_const, gstype_structure, gstype_app, gstype_checker_unify, gstype_checker_for, gstype_checker_unit) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
@@ -191,6 +191,7 @@ gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor. impunit (right (
 
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
 gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
+gstype_structure = $gslambda_value $ \ e -> $gsbcconstr (gsvar "structure") [ $gsav e ]
 gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
 
 gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
