@@ -1,10 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.ST (gsstrun, gsstrefnew, gsstgetvar) where
 
-import Data.IORef (IORef, newIORef)
+import Data.IORef (IORef, newIORef, readIORef)
 
 import GSI.Util (Pos, StackTrace(..), gshere)
-import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsprim, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode)
+import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsprim, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
 import GSI.ByteCode (gsbcforce, gsbcapply)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadState(..), threadStateCode)
@@ -34,6 +34,8 @@ gsprim_st_ref_new pos t x = gsexternal . GSSTRef <$> newIORef x
 gsstgetvar = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> $gsbcapply ($gsimpprim gsprim_st_get_var) [ $gsav v0 ]
 
 gsprim_st_get_var :: Pos -> Thread -> GSValue -> IO GSValue
+gsprim_st_get_var pos t (GSExternal e) | Just (GSSTRef r) <- fromExternal e = readIORef r
+gsprim_st_get_var pos t (GSExternal e) = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ whichExternal e ++ " next"
 gsprim_st_get_var pos t v = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ gsvCode v ++ " next"
 
 stThreadData = ThreadData{
