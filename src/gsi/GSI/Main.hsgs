@@ -167,6 +167,8 @@ gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. analyze-impM a env.
 
 gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
+gstype_checker_get_var = [gs:value| λ 'v. λ 'env. st.get-var v |]
+
 $gsdeclare type-checker.env.type.insert gstype_checker_env_type_insert
 
 gstype_checker_global_env = [gs:value|
