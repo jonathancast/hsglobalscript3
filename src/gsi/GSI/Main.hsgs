@@ -132,8 +132,10 @@ $gsdeclare view type.app gstype_app_view
 $gsdeclare type-checker.unify-var gstype_checker_unify_var
 
 gstype_checker_unify = [gs:value| λ 'ty0. λ 'ty1. analyze ty0.
-    case type.unifiable-var 'v0. analyze ty1.
-        case type.app _ _. type-checker.unify-var v0 ty1
+    case type.unifiable-var 'v0. (analyze-type-checker-M type-checker.get-var v0.
+        -- > analyze ty1.
+        -- >     case type.app _ _. type-checker.unify-var v0 ty1
+    )
 |]
 
 $gsdeclare type-checker.is-free-in gstype_checker_is_free_in
