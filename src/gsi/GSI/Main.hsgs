@@ -200,6 +200,7 @@ gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-va
 gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
 gstype_structure = $gslambda_value $ \ e -> $gsbcconstr (gsvar "structure") [ $gsav e ]
 gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
+gstype_function = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "function") [ $gsav ty0, $gsav ty1 ]
 
 gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
 gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
