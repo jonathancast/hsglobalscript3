@@ -25,7 +25,7 @@ main = do
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
-gstyc = [gs:value| λ 'ty. type-checker.unit 〈〉 |]
+gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.unit 〈〉 |]
 
 gsrun = [gs:value| λ 'x. λ 'as. analyze x.
     case gsvalue.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
