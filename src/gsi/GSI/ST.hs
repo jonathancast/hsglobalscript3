@@ -1,11 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.ST (gsstrun, gsstrefnew, gsstgetvar) where
+module GSI.ST (gsstrun, gsstrefnew, gsstgetvar, gsstsetvar) where
 
-import Data.IORef (IORef, newIORef, readIORef)
+import Data.IORef (IORef, newIORef, readIORef, writeIORef)
+
+import qualified Data.Map as Map
 
 import GSI.Util (Pos, StackTrace(..), gshere)
 import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsprim, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
-import GSI.ByteCode (gsbcforce, gsbcapply)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadState(..), threadStateCode)
 import GSI.Thread (createThread, waitThread, createPromise, readPromise)
@@ -37,6 +39,13 @@ gsprim_st_get_var :: Pos -> Thread -> GSValue -> IO GSValue
 gsprim_st_get_var pos t (GSExternal e) | Just (GSSTRef r) <- fromExternal e = readIORef r
 gsprim_st_get_var pos t (GSExternal e) = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ whichExternal e ++ " next"
 gsprim_st_get_var pos t v = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ gsvCode v ++ " next"
+
+gsstsetvar = $gslambda_value $ \ x -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> $gsbcapply ($gsimpprim gsprim_st_set_var) [ $gsav x, $gsav v0 ]
+
+gsprim_st_set_var :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
+gsprim_st_set_var pos t x (GSExternal e) | Just (GSSTRef r) <- fromExternal e = writeIORef r x >> return (GSRecord $gshere Map.empty)
+gsprim_st_set_var pos t x (GSExternal e) = $apiImplementationFailure $ "gsprim_st_set_var pos t " ++ whichExternal e ++ " next"
+gsprim_st_set_var pos t x v = $apiImplementationFailure $ "gsprim_st_set_var pos t " ++ gsvCode v ++ " next"
 
 stThreadData = ThreadData{
     component = Nothing,
