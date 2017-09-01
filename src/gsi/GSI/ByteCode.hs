@@ -234,7 +234,7 @@ gsbccomposeimpgen_w pos gen0 gen1 = gsbcimpfor_w pos $ do
 gsbcimpexecbind_w :: Pos -> GSArg -> GSExpr
 gsbcimpexecbind_w pos a = gsbcimpfor_w pos $ do
     gsbcimpbind_w $gshere a
-    gsbcimpbody_w $gshere $ $gsae $ gsbcimplementationfailure_w $gshere "gsbcimpexecbind_w next"
+    gsbcimpunit_w $gshere $ $gsav $ GSRecord pos Map.empty
 
 gsbcimpvarbind_w :: Pos -> GSVar -> GSArg -> GSExpr
 gsbcimpvarbind_w pos x a = gsbcimpfor_w pos $ do
