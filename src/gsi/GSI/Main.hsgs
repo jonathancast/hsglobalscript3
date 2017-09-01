@@ -180,7 +180,7 @@ gstype_checker_get_var = [gs:value| λ 'v. λ 'env. impfor 'mb ← st.get-var v;
 gstype_checker_set_var = [gs:value| λ 'x. λ 'v. λ 'env. impfor _ ← st.set-var x v;. impunit (right 〈〉) |]
 
 gstype_checker_incorrect_type = [gs:value| λ 'ty0. λ 'ty1. λ 'env. impfor.
-    impunit (left qq{Incorrect type: §(undefined)})
+    impunit (left (pos.fmt undefined qq{Incorrect type: §(undefined)}))
 |]
 
 $gsdeclare type-checker.env.type.insert gstype_checker_env_type_insert
