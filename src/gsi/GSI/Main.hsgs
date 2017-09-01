@@ -177,7 +177,7 @@ gstype_checker_set_var = [gs:value| λ 'x. λ 'v. λ 'env. impfor _ ← st.set-v
 $gsdeclare type-checker.env.type.insert gstype_checker_env_type_insert
 
 gstype_checker_global_env = [gs:value|
-    type-checker.env.type.insert (gsvar qq{gsmain}) undefined $
+    type-checker.env.type.insert (gsvar qq{gsmain}) (type.function undefined undefined) $
     type-checker.env.empty
 |]
 
