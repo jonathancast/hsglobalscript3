@@ -133,7 +133,7 @@ $gsdeclare type-checker.incorrect-type gstype_checker_incorrect_type
 
 $gsdeclare type-checker.unify-var gstype_checker_unify_var
 
-gstype_checker_unify = [gs:value| λ 'ty0. λ 'ty1. analyze ty0.
+gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
     case type.unifiable-var 'v0. (analyze-type-checker-M type-checker.get-var v0.
         case nothing. (analyze ty1.
             case type.app _ _. type-checker.unify-var v0 ty1
