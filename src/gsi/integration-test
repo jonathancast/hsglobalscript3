@@ -20,3 +20,4 @@ echo '## gsi'
 ok_grep_errors '-- non-existent source file --' 'no-such-file.gs: Could not load' ./gsi no-such-file.gs
 ok_grep_errors '-- empty source file --' 'empty-file.gs:1:1: Undefined' ./gsi empty-file.gs
 ok_grep_errors '-- #! lines --' 'empty-shebang-line.gs:2:1: Undefined' ./gsi empty-shebang-line.gs
+ok_grep_errors '-- gsmain with no arguments --' 'bare-gsmain.gsi.gs:1:1: Incorrect type: .* → .* is not gsi.m' ./gsi bare-gsmain.gsi.gs
