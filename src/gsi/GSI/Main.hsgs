@@ -155,6 +155,7 @@ gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
         case false. type-checker.is-free-in v ty1
     )
     case type.const 'c. type-checker.unit false
+    case type.empty-signature. type-checker.unit false
     case type.structure 'e. type-checker.unit false
 |]
 
@@ -197,7 +198,7 @@ gstype_checker_fmt_type = [gs:value| λ 'ty. analyze ty.
             's0 ← type-checker.fmt-type ty0;
             's1 ← type-checker.fmt-type ty1;
         . type-checker.unit qq{§(s0) → §(s1)}
-    case type.structure 'η. type-checker.unit qq{〈〉}
+    case type.empty-signature. type-checker.unit qq{〈〉}
 |]
 
 $gsdeclare type-checker.env.type.insert gstype_checker_env_type_insert
@@ -246,16 +247,16 @@ $gsdeclare type.unifiable-var gstype_unifiable_var
 
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
 
-gstype_empty_signature = [gs:value| type.structure type-checker.env.empty |]
-
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
 gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
+gstype_empty_signature = $gsconstr (gsvar "empty-signature") []
 gstype_structure = $gslambda_value $ \ e -> $gsbcconstr (gsvar "structure") [ $gsav e ]
 gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
 gstype_function = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "function") [ $gsav ty0, $gsav ty1 ]
 
 gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
 gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
+gstype_empty_signature_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "empty-signature" ek sk ty
 gstype_structure_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "structure" ek sk ty
 gstype_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "app" ek sk ty
 gstype_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "function" ek sk ty
