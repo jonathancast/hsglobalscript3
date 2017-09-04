@@ -195,9 +195,33 @@ gstype_checker_fmt_type = [gs:value| λ 'ty. analyze ty.
 
 $gsdeclare type-checker.env.type.insert gstype_checker_env_type_insert
 
+$gsdeclare type-checker.gstyc.type gstype_checker_gstyc_type
+$gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
+$gsdeclare type-checker.args.type gstype_checker_args_type
+
 gstype_checker_global_env = [gs:value|
-    type-checker.env.type.insert (gsvar qq{gsmain}) (type.function undefined undefined) $
+    type-checker.env.type.insert (gsvar qq{gsmain}) (
+        type.function type-checker.gstyc.type $
+            type.function type-checker.gsrun.type $
+                type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
+    ) $
     type-checker.env.empty
+|]
+
+gstype_checker_gstyc_type = [gs:value|
+    type.function (type.const (gsvar qq{pos.t})) $
+        type.function (type.const (gsvar qq{type.t})) $
+            type.app (type.const (gsvar qq{type-checker.m})) type.empty-signature
+|]
+
+gstype_checker_gsrun_type = [gs:value|
+    type.function (type.const (gsvar qq{gsvalue.t})) $
+        type.function type-checker.args.type $
+            type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
+|]
+
+gstype_checker_args_type = [gs:value|
+    type.app (type.const (gsvar qq{list.t})) $ type.app (type.const (gsvar qq{list.t})) $ type.const (gsvar qq{rune.t})
 |]
 
 gstype_checker_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
