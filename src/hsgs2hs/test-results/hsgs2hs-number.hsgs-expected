@@ -1,8 +1,0 @@
-{-# LINE 1 "./test-fixtures/number.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.ByteCode (gsbcnatural_w)
-
-{-# LINE 2 "./test-fixtures/number.hsgs" #-}
-(gsbcnatural_w (Pos "./test-fixtures/number.hsgs" 2 11) 1)
-{-# LINE 2 "./test-fixtures/number.hsgs" #-}
-              

@@ -34,7 +34,6 @@ ok_diff_compiled '-- variable declarations --' hsgs2hs variable-decl.hsgs .hs ru
 
 # Different kinds of expressions
 
-ok_diff_compiler '-- number literals --' hsgs2hs number.hsgs number.hs
 ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
 ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expression.hs
 ok_diff_compiled '-- for expressions --' hsgs2hs variable-for.hsgs .hs runghc `{./test-ghcoptions}
