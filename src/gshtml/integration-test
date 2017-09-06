@@ -1,6 +1,6 @@
 #! /usr/local/plan9/bin/rc -e
 
-. $GLOBALSCRIPT/bin/test-fns
+. $GS_SPEC/bin/test-fns
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
 
