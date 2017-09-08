@@ -96,7 +96,7 @@ gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-r
 $gsdeclare prim.symbol-or-eof gsprim_symbol
 
 gsparser_matching = [gs:value| λ 'cat. λ 'p. λ 'k. prim.symbol-or-eof prim.empty $ λ 'c. analyze p c.
-    case false. left 〈 '0 ∝ nil; '1 ∝ undefined; 〉
+    case false. left 〈 '0 ∝ nil; '1 ∝ cat:nil; 〉
     case true. right (k c)
 |]
 
