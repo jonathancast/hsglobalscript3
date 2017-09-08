@@ -93,13 +93,12 @@ gsparser_string = $gslambda_value $ \ s -> [gs:expr hsvs=s,| analyze s.
 
 gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
 
-gsparser_matching = $gslambda_value $ \ cat -> $gsbcarg $ \ p -> $gsbcarg $ \ k ->
-    $gsbcconstr (gsvar "symbol-or-eof") [ $gsav gsprim_empty, $gsae $ $gsbcarg $ \ c ->
-        [gs:expr hsvs=p,c,k,| analyze p c.
-            case false. left 〈 '0 ∝ nil; '1 ∝ undefined; 〉
-            case true. right (k c)
-        |]
-    ]
+$gsdeclare prim.symbol-or-eof gsprim_symbol
+
+gsparser_matching = [gs:value| λ 'cat. λ 'p. λ 'k. prim.symbol-or-eof prim.empty $ λ 'c. analyze p c.
+    case false. left 〈 '0 ∝ nil; '1 ∝ undefined; 〉
+    case true. right (k c)
+|]
 
 gsparser_displayRune = $gsundefined_value
 
@@ -124,8 +123,6 @@ $gsdeclare negate-w gsparser_negate_w
 gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.unit-plus 'x 'p01. prim.lookahead (negate-w p1 (prim.unit-plus x p01))
 |]
-
-$gsdeclare prim.symbol-or-eof gsprim_symbol
 
 gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
     case prim.unit-plus 'x 'p1. prim.empty
