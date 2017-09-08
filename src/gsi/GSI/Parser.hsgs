@@ -179,4 +179,4 @@ gsparser_advanceRune = $gslambda_value $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsv
     case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
 |]
 
-gsparser_print_rune = [gs:value| λ 'c. undefined |]
+gsparser_print_rune = [gs:value| λ 'c. qq{'§(c:nil)'} |]
