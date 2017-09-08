@@ -46,7 +46,7 @@ gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
     case prim.symbol-or-eof 'ek 'sk. (analyze s.
         case nil. parse-w adv pr ek pos s
         case 'c:'s1. (analyze sk c.
-            case left 'e. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); §(fmt-error (e #0) (e #1))}; 〉
+            case left 'e. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(pr c); §(fmt-error (e #0) (e #1))}; 〉
             case right 'p1. parse-w adv pr p1 (adv c pos) s1
         )
     )
