@@ -12,7 +12,7 @@ $gsdeclare prim.unit gsprimunit
 $gsdeclare parse-process gsparse_process
 $gsdeclare parse-w gsparsew
 
-gsparse = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv undefined (p prim.unit) pos s;. parse-process (res #0) (res #1) |]
+gsparse = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv pr (p prim.unit) pos s;. parse-process (res #0) (res #1) |]
 
 $gsdeclare fmt-error gsfmtError
 
