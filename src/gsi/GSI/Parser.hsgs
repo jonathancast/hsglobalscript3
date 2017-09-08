@@ -12,7 +12,7 @@ $gsdeclare prim.unit gsprimunit
 $gsdeclare parse-process gsparse_process
 $gsdeclare parse-w gsparsew
 
-gsparse = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv (p prim.unit) pos s;. parse-process (res #0) (res #1) |]
+gsparse = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv undefined (p prim.unit) pos s;. parse-process (res #0) (res #1) |]
 
 $gsdeclare fmt-error gsfmtError
 
@@ -35,19 +35,19 @@ $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
 $gsdeclare process-lookahead gsparse_process_lookahead
 
-gsparsew = [gs:value| λ 'adv. λ 'p. λ 'pos. λ 's. analyze p.
+gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
     case prim.empty. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); empty}; 〉
-    case prim.unit-plus 'x 'p1. for 'r1 ∝ parse-w adv p1 pos s;. 〈
+    case prim.unit-plus 'x 'p1. for 'r1 ∝ parse-w adv pr p1 pos s;. 〈
         '0 ∝ 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 : r1 #0;
         '1 ∝ r1 #1;
     〉
-    case prim.get-pos 'k. parse-w adv (k pos) pos s
-    case prim.lookahead 'pp. for 'res ∝ parse-w adv pp pos s;. parse-w adv (process-lookahead prim.empty (res #0) (res #1)) pos s
+    case prim.get-pos 'k. parse-w adv pr (k pos) pos s
+    case prim.lookahead 'pp. for 'res ∝ parse-w adv pr pp pos s;. parse-w adv pr (process-lookahead prim.empty (res #0) (res #1)) pos s
     case prim.symbol-or-eof 'ek 'sk. (analyze s.
-        case nil. parse-w adv ek pos s
+        case nil. parse-w adv pr ek pos s
         case 'c:'s1. (analyze sk c.
             case left 'e. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); §(fmt-error (e #0) (e #1))}; 〉
-            case right 'p1. parse-w adv p1 (adv c pos) s1
+            case right 'p1. parse-w adv pr p1 (adv c pos) s1
         )
     )
 |]
