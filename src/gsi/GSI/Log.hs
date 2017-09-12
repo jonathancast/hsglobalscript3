@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gsloggsv) where
+module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gsloggsv, gslog_fmt) where
 
 import Language.Haskell.TH.Lib (varE, appE)
 
@@ -38,3 +38,5 @@ gsbclogstring = varE 'gsbclogstring_w `appE` gshere
 
 gsbclogstring_w :: Pos -> String -> GSExpr
 gsbclogstring_w pos s = foldr (\ ch k -> gsbcapply_w pos gscompose [ $gsae $ gsbcapply_w pos gslogchar [$gsav $ GSRune ch], $gsae k ]) ($gsbcenter gslogempty) s
+
+gslog_fmt = $gsundefined_value

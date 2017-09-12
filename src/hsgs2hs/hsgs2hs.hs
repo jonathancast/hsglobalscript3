@@ -658,6 +658,7 @@ globalEnv = Env{
         ("is-space", (Set.singleton $ HSIVar "GSI.Rune" "gsisSpace", HSVar "gsisSpace")),
         ("just", (Set.singleton $ HSIVar "GSI.Maybe" "gsjust", HSVar "gsjust")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
+        ("log.fmt", (Set.singleton $ HSIVar "GSI.Log" "gslog_fmt", HSVar "gslog_fmt")),
         ("many", (Set.singleton $ HSIVar "GSI.Parser" "gsmany", HSVar "gsmany")),
         ("matching", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_matching", HSVar "gsparser_matching")),
         ("maybe", (Set.singleton $ HSIVar "GSI.Maybe" "gsmaybe", HSVar "gsmaybe")),
