@@ -65,6 +65,7 @@ gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
 
 gsfmtError = [gs:value| λ 'errs. λ 'exps. analyze errs.
     case nil. (analyze exps.
+        case 'exp0:nil. qq{expected §(log.fmt exp0)}
     )
 |]
 
