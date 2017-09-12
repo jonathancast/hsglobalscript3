@@ -67,11 +67,17 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare expr.atom gsexpr_atom
+
+expr = [gs:value|
+    <|> expr.atom
+|]
+
 $gsdeclare expr.var gsexpr_var
 
 $gsdeclare ident ident
 
-expr = [gs:value|
+gsexpr_atom = [gs:value|
     <|> parser.map expr.var ident
 |]
 
