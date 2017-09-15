@@ -133,6 +133,8 @@ $gsdeclare get-type gstype_checker_get_type
 
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
     case expr.var 'v. get-type pos v
+    case expr.app 'ef 'ex. type-checker.for
+        . undefined
 |]
 
 $gsdeclare view type.unifiable-var gstype_unifiable_var_view
