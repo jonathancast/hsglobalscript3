@@ -72,7 +72,7 @@ $gsdeclare expr.atom gsexpr_atom
 $gsdeclare expr.app gsexpr_app
 
 expr = [gs:value|
-    <|> expr.atom
+    <|> (parser.unit (foldl expr.app) <*> expr.atom <*> many expr.atom)
 |]
 
 $gsdeclare expr.var gsexpr_var
