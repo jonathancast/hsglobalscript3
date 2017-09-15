@@ -3,20 +3,15 @@ module GSI.List (gsappend, gsfoldl, gscons, gsnil, gscons_view, gsnil_view) wher
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), gsundefined_value, gslambda_value, gsae, gsav, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcprim, gsbcenter, gsbclfield, gsbcforce, gsbcimplementationfailure, gsbcconstr, gsbcconstr_view, gsbcviewpattern, gsbcvarpattern)
-import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.StdLib (gsanalyze, gscase)
+import GSI.Value (GSValue(..), gslambda_value, gsav)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 gsappend :: GSValue
-gsappend = $gslambda_value $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $gsav xn,
-    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "x") ($gsbcvarpattern "xn1"),
-        $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbclfield (gsvar "xn1") env $ \ xn1 ->
-            $gsbcapply gscons [ $gsav x, $gsae [gs:expr hsvs=xn1,ys,| xn1 <> ys |] ]
-    ,
-    [gs:arg hsvs=ys,| case nil. ys |]
-  ]]
+gsappend = [gs:value| λ 'xn. λ 'ys. analyze xn.
+    case 'x:'xn1. x : (xn1 <> ys)
+    case nil. ys
+|]
 
 gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case nil. z
