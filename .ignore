@@ -23,3 +23,4 @@ src/gsi/GSI/Map.hs
 src/gsi/GSI/Either.hs
 src/gsi/GSI/OrderTotal.hs
 src/gsi/test-gsi.hs
+src/gsi/GSI/List.hs
