@@ -21,7 +21,7 @@ gsappend = $gslambda_value $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $
     $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
   ]]]
 
-gsfoldl = $gsundefined_value
+gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn. |]
 
 gscons :: GSValue
 gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
