@@ -127,6 +127,7 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
 |]
 
 $gsdeclare view expr.var gsexpr_var_view
+$gsdeclare view expr.app gsexpr_app_view
 
 $gsdeclare get-type gstype_checker_get_type
 
@@ -293,6 +294,7 @@ gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
 
 gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
+gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e
 
 gspos = $gslambda_value $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
     (gsvar "filename", $gsav fn),
