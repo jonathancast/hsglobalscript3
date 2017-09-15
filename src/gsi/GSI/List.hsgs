@@ -15,11 +15,8 @@ gsappend = $gslambda_value $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $
         $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbclfield (gsvar "xn1") env $ \ xn1 ->
             $gsbcapply gscons [ $gsav x, $gsae $ $gsbcapply gsappend [ $gsav xn1, $gsav ys ] ]
     ,
-    $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gsnil_view,
-        $gsae $ $gsbcarg $ \ env -> $gsbcenter ys
-    ,
-    $gsae $ $gsbcarg $ \ args -> $gsbcprim gspriminsufficientcases args
-  ]]]
+    [gs:arg hsvs=ys,| case nil. ys |]
+  ]]
 
 gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case nil. z
