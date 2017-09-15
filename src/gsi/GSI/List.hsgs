@@ -13,7 +13,7 @@ gsappend :: GSValue
 gsappend = $gslambda_value $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $gsav xn,
     $gsae $ $gsbcapply gscase [ $gsae $ $gsbcviewpattern gscons_view ($gsbcvarpattern "x") ($gsbcvarpattern "xn1"),
         $gsae $ $gsbcarg $ \ env -> $gsbclfield (gsvar "x") env $ \ x -> $gsbclfield (gsvar "xn1") env $ \ xn1 ->
-            $gsbcapply gscons [ $gsav x, $gsae $ $gsbcapply gsappend [ $gsav xn1, $gsav ys ] ]
+            $gsbcapply gscons [ $gsav x, $gsae [gs:expr hsvs=xn1,ys,| xn1 <> ys |] ]
     ,
     [gs:arg hsvs=ys,| case nil. ys |]
   ]]
