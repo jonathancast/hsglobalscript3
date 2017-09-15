@@ -23,6 +23,7 @@ gsappend = $gslambda_value $ \ xn -> $gsbcarg $ \ ys -> $gsbcapply gsanalyze [ $
 
 gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case nil. z
+    case 'x:'xn1. foldl f (f z x) xn1
 |]
 
 gscons :: GSValue
