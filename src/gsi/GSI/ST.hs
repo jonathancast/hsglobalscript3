@@ -6,15 +6,14 @@ import Data.IORef (IORef, newIORef, readIORef, writeIORef)
 import qualified Data.Map as Map
 
 import GSI.Util (Pos, StackTrace(..), gshere)
-import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsprim, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply)
+import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply, gsbcprim)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadState(..), threadStateCode)
 import GSI.Thread (createThread, waitThread, createPromise, readPromise)
 import API (apiImplementationFailure)
 
-gsstrun :: GSValue
-gsstrun = $gsprim gsprim_st_run :: GSValue
+gsstrun = $gslambda_value $ \ a -> $gsbcprim gsprim_st_run a
 
 gsprim_st_run :: Pos -> GSValue -> IO GSValue
 gsprim_st_run pos a = do
