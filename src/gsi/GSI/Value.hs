@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
+    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
     fmtExternal,
-    gsvCode, bcoCode, argCode, gsstCode, gstsCode, whichExternal
+    gsvCode, bcoCode, argCode, gstsCode, whichExternal
   ) where
 
 import Data.Map (Map)
@@ -57,8 +57,6 @@ data GSArg
   | GSArgVar GSValue
 
 newtype GSExpr = GSExpr (forall a. [StackTrace] -> GSExprCont a -> IO a)
-
-data GSStackFrame
 
 data GSExprCont a = GSExprCont {
     gsreturn :: GSValue -> IO a,
@@ -213,9 +211,6 @@ bcoCode GSLambda{} = "GSLambda"
 argCode :: GSArg -> String
 argCode GSArgExpr{} = "GSArgExpr"
 argCode GSArgVar{} = "GSArgVar"
-
-gsstCode :: GSStackFrame -> String
-gsstCode = $gsfatal "gsstCode next"
 
 gstsCode :: GSThunkState -> String
 gstsCode GSTSExpr{} = "GSTSExpr"

@@ -7,7 +7,7 @@ import Control.Concurrent (MVar, forkIO, modifyMVar)
 import GSI.Util (StackTrace(..), gshere)
 import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSStackFrame(..), GSThunkState(..), gsfield_w, gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSThunkState(..), gsfield_w, gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnter, aceArg)
 

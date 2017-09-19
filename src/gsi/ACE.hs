@@ -3,7 +3,7 @@
 module ACE (aceEnter, aceEnterExpr, aceForce, aceArg, aceReturn, aceThrow) where
 
 import GSI.Util (Pos, StackTrace(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gsstCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
