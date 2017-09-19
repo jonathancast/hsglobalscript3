@@ -20,11 +20,11 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceForce, aceArg, aceReturn, aceThrow)
+import ACE (aceEnter, aceForce, aceArg, aceThrow)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -35,7 +35,7 @@ gsbcundefined_w pos = GSExpr $ \ cs sk -> aceThrow (GSError (GSErrUnimpl (StackT
 gsbchere = varE 'gsbchere_w `appE` gshere
 
 gsbchere_w :: Pos -> GSExpr
-gsbchere_w pos = GSExpr $ \ cs sk -> aceReturn (GSExternal (toExternal pos)) sk
+gsbchere_w pos = GSExpr $ \ cs sk -> gsreturn sk (GSExternal (toExternal pos))
 
 gsbcrecord = varE 'gsbcrecord_w `appE` gshere
 
@@ -44,22 +44,22 @@ gsbcrecord_w pos fs = GSExpr $ \ cs sk -> do
     fs' <- forM fs $ \ (v, fa) -> do
         fv <- gsprepare_w pos fa
         return (v, fv)
-    aceReturn (GSRecord pos $ Map.fromList fs') sk
+    gsreturn sk $ GSRecord pos $ Map.fromList fs'
 
 gsbcconstr = varE 'gsbcconstr_w `appE` gshere
 
 gsbcconstr_w :: Pos -> GSVar -> [GSArg] -> GSExpr
 gsbcconstr_w pos c as = GSExpr $ \ cs sk -> do
     asv <- mapM (gsprepare_w pos) as
-    aceReturn (GSConstr pos c asv) sk
+    gsreturn sk $ GSConstr pos c asv
 
 gsbcexternal = varE 'gsbcexternal_w `appE` gshere
 
 gsbcexternal_w :: GSExternal e => Pos -> e -> GSExpr
-gsbcexternal_w pos e = GSExpr $ \ cs sk -> aceReturn (GSExternal (toExternal e)) sk
+gsbcexternal_w pos e = GSExpr $ \ cs sk -> gsreturn sk $ GSExternal (toExternal e)
 
 gsbcchar_w :: Pos -> Char -> GSExpr
-gsbcchar_w pos ch = GSExpr $ \ cs sk -> aceReturn (GSRune ch) sk
+gsbcchar_w pos ch = GSExpr $ \ cs sk -> gsreturn sk $ GSRune ch
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
@@ -120,7 +120,7 @@ class GSBCImpPrimType f r where
     gsbcimpprim_ww :: Pos -> (Thread -> f) -> r
 
 instance GSBCImpPrimType (IO GSValue) GSExpr where
-    gsbcimpprim_ww pos f = GSExpr $ \ cs sk -> aceReturn (GSClosure [StackTrace pos []] (GSImp f)) sk
+    gsbcimpprim_ww pos f = GSExpr $ \ cs sk -> gsreturn sk $ GSClosure [StackTrace pos []] (GSImp f)
 
 instance GSBCImpPrimType f r => GSBCImpPrimType (GSValue -> f) (GSValue -> r) where
     gsbcimpprim_ww pos f v = gsbcimpprim_ww pos (\ t -> f t v)
@@ -144,7 +144,7 @@ gsbclet_w pos e k = GSExpr $ \ cs sk -> do
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
 gsbcimpfor_w :: Pos -> GSBCImp GSValue -> GSExpr
-gsbcimpfor_w pos a = GSExpr $ \ cs sk -> aceReturn (gsimpfor_w pos a) sk
+gsbcimpfor_w pos a = GSExpr $ \ cs sk -> gsreturn sk $ gsimpfor_w pos a
 
 gsbclfield = varE 'gsbclfield_w `appE` gshere
 
@@ -279,10 +279,10 @@ gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
 
 gsbcvarpattern_ww :: Pos -> GSVar -> GSExpr
 gsbcvarpattern_ww pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
-    aceReturn (GSConstr pos (gsvar "1") [GSRecord pos $ Map.fromList [(v, x)]]) sk
+    gsreturn sk (GSConstr pos (gsvar "1") [GSRecord pos $ Map.fromList [(v, x)]])
 
 gsbcdiscardpattern = varE 'gsbcdiscardpattern_w `appE` gshere
 
 gsbcdiscardpattern_w :: Pos -> GSExpr
 gsbcdiscardpattern_w pos = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
-    aceReturn (GSConstr pos (gsvar "1") [GSRecord pos Map.empty]) sk
+    gsreturn sk (GSConstr pos (gsvar "1") [GSRecord pos Map.empty])

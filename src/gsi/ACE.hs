@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceEnter, aceForce, aceArg, aceReturn, aceThrow) where
+module ACE (aceEnter, aceForce, aceArg, aceThrow) where
 
 import GSI.Util (Pos, StackTrace(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode)
@@ -12,20 +12,17 @@ aceEnter cs v@GSImplementationFailure{} sk = aceThrow v sk
 aceEnter cs (GSThunk th) sk = do
     v <- evalSync cs th
     aceEnter cs v sk
-aceEnter cs v@GSConstr{} sk = aceReturn v sk
-aceEnter cs v@GSRecord{} sk = aceReturn v sk
-aceEnter cs v@GSRune{} sk = aceReturn v sk
-aceEnter cs v@GSNatural{} sk = aceReturn v sk
+aceEnter cs v@GSConstr{} sk = gsreturn sk v
+aceEnter cs v@GSRecord{} sk = gsreturn sk v
+aceEnter cs v@GSRune{} sk = gsreturn sk v
+aceEnter cs v@GSNatural{} sk = gsreturn sk v
 aceEnter cs0 v@(GSClosure cs1 bco) sk = case bco of
     GSRawExpr e -> runGSExpr e (cs1 ++ cs0) sk
-    GSImp{} -> aceReturn v sk
-    GSLambda{} -> aceReturn v sk
+    GSImp{} -> gsreturn sk v
+    GSLambda{} -> gsreturn sk v
     _ -> aceThrow ($gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next") sk
-aceEnter cs v@GSExternal{} sk = aceReturn v sk
+aceEnter cs v@GSExternal{} sk = gsreturn sk v
 aceEnter cs e sk = aceThrow ($gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next") sk
-
-aceReturn :: GSValue -> GSExprCont a -> IO a
-aceReturn v sk = gsreturn sk v
 
 aceForce :: StackTrace -> (GSValue -> GSExpr) -> GSExprCont a -> GSExprCont a
 aceForce c k sk = GSExprCont {
@@ -38,11 +35,11 @@ aceArg c1 a sk = GSExprCont {
     gsreturn = \ v -> case v of
         GSClosure cs (GSLambda f) -> case f a of
             GSRawExpr e -> runGSExpr e (cs ++ [c1]) sk
-            bco@GSImp{} -> aceReturn (GSClosure (cs ++ [c1]) bco) sk
-            bco@GSLambda{} -> aceReturn (GSClosure (cs ++ [c1]) bco) sk
-            bco -> aceThrow ($gsimplementationfailure $ "aceReturn (function; result is " ++ bcoCode bco ++ ") next") sk
-        GSClosure cs bco -> aceThrow ($gsimplementationfailure $ "aceReturn (function is (GSClosure cs " ++ bcoCode bco ++ "); continuation is argument) next") sk
-        f -> aceThrow ($gsimplementationfailure $ "aceReturn (function is " ++ gsvCode f ++ "; continuation is argument) next") sk
+            bco@GSImp{} -> gsreturn sk $ GSClosure (cs ++ [c1]) bco
+            bco@GSLambda{} -> gsreturn sk $ GSClosure (cs ++ [c1]) bco
+            bco -> aceThrow ($gsimplementationfailure $ "aceArg (function; result is " ++ bcoCode bco ++ ") next") sk
+        GSClosure cs bco -> aceThrow ($gsimplementationfailure $ "aceArg (function is (GSClosure cs " ++ bcoCode bco ++ ")) next") sk
+        f -> aceThrow ($gsimplementationfailure $ "aceArg (function is " ++ gsvCode f ++ " next") sk
       ,
     gsthrow = \ v -> aceThrow v sk
   }
