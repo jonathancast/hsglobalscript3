@@ -28,7 +28,7 @@ eval cs mv = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSTSField pos f r -> do
         e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f GSExprCont{ gsreturn = return, gsthrow = return }) >>= updateThunk mv
+        forkIO $ aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f GSExprCont{ gsreturn = updateThunk mv, gsthrow = updateThunk mv })
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)
