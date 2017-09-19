@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceUpdate, aceEnter, aceForce, aceArg, aceField) where
+module ACE (aceUpdate, aceEnter, aceForce, aceArg, aceField, aceEmptyStack) where
 
 import qualified Data.Map as Map
 
@@ -30,8 +30,12 @@ aceEnter cs0 v@(GSClosure cs1 bco) sk = case bco of
 aceEnter cs v@GSExternal{} sk = gsreturn sk v
 aceEnter cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next"
 
-aceUpdate :: MVar (GSThunkState) -> GSExprCont ()
-aceUpdate mv = GSExprCont{ gsreturn = updateThunk, gsthrow = updateThunk } where    
+aceUpdate :: MVar (GSThunkState) -> GSExprCont a -> GSExprCont a
+aceUpdate mv sk = GSExprCont{
+    gsreturn = \ v -> updateThunk v >> gsreturn sk v,
+    gsthrow = \ v -> updateThunk v >> gsthrow sk v
+  }
+  where
     updateThunk v = do
         mbb <- modifyMVar mv $ \ s -> case s of
             GSTSStack b -> return (GSTSIndirection v, Just b)
@@ -68,3 +72,6 @@ aceField c1 f sk = GSExprCont{
       ,
     gsthrow = gsthrow sk
   }
+
+aceEmptyStack :: GSExprCont ()
+aceEmptyStack = GSExprCont{ gsreturn = const $ return (), gsthrow = const $ return () }
