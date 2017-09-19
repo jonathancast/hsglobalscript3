@@ -24,7 +24,7 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceForce, aceArg)
+import ACE (aceEnter, aceForce, aceArg, aceField)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -158,11 +158,7 @@ gsbclfield_w pos f r k = GSExpr $ \ cs sk -> do
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
 gsbcfield_w :: Pos -> GSArg -> GSVar -> GSExpr
-gsbcfield_w pos a f = gsbcforce_w pos a $ \ r -> case r of
-    GSRecord pos1 fs -> case Map.lookup f fs of
-        Just v -> gsbcenter_w pos v
-        Nothing -> gsbcimplementationfailure_w $gshere $ (fmtPos pos1 . ("missing field "++) . fmtVarAtom f) $ ""
-    _ -> gsbcimplementationfailure_w $gshere $ "gsbcfield " ++ gsvCode r ++ " next"
+gsbcfield_w pos a f = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in runGSArg c1 a (aceField c1 f sk)
 
 gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
 
