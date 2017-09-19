@@ -24,13 +24,13 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceForce, aceArg, aceThrow)
+import ACE (aceEnter, aceForce, aceArg)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 
 gsbcundefined_w :: Pos -> GSExpr
-gsbcundefined_w pos = GSExpr $ \ cs sk -> aceThrow (GSError (GSErrUnimpl (StackTrace pos cs))) sk
+gsbcundefined_w pos = GSExpr $ \ cs sk -> gsthrow sk $ GSError (GSErrUnimpl (StackTrace pos cs))
 
 gsbchere = varE 'gsbchere_w `appE` gshere
 
@@ -64,12 +64,12 @@ gsbcchar_w pos ch = GSExpr $ \ cs sk -> gsreturn sk $ GSRune ch
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
 gsbcerror_w :: Pos -> Pos -> String -> GSExpr
-gsbcerror_w _ pos msg = GSExpr $ \ cs sk -> aceThrow (GSError (GSErrError pos msg)) sk
+gsbcerror_w _ pos msg = GSExpr $ \ cs sk -> gsthrow sk $ GSError (GSErrError pos msg)
 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
 gsbcimplementationfailure_w :: Pos -> String -> GSExpr
-gsbcimplementationfailure_w pos msg = GSExpr $ \ cs sk -> aceThrow (GSImplementationFailure pos msg) sk
+gsbcimplementationfailure_w pos msg = GSExpr $ \ cs sk -> gsthrow sk $ GSImplementationFailure pos msg
 
 gsbcarg = varE 'gsbcarg_w `appE` gshere
 
@@ -134,7 +134,7 @@ gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbcforce_w pos e k = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in case e of
     GSArgExpr pos' e' -> runGSExpr e' [c1] (aceForce c1 k sk)
     GSArgVar v -> aceEnter [c1] v (aceForce c1 k sk)
-    _ -> aceThrow ($gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next") sk
+    _ -> gsthrow sk $ $gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next"
 
 gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
 gsbclet_w pos e k = GSExpr $ \ cs sk -> do
