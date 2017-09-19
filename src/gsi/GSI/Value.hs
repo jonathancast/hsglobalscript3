@@ -56,7 +56,7 @@ data GSArg
   = GSArgExpr Pos GSExpr
   | GSArgVar GSValue
 
-newtype GSExpr = GSExpr (forall a. [StackTrace] -> GSExprCont a -> IO a)
+newtype GSExpr = GSExpr { runGSExpr :: forall a. [StackTrace] -> GSExprCont a -> IO a }
 
 data GSExprCont a = GSExprCont {
     gsreturn :: GSValue -> IO a,
