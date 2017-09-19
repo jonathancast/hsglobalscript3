@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (varE, appE)
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda_value, gsundefined_value, gsae, gsav)
-import GSI.ByteCode (gsbcarg, gsbcundefined, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbclfield)
+import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbclfield)
 import GSI.StdLib (gscompose)
 import GSI.List (gscons)
 

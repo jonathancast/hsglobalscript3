@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos(..), StackTrace, gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_ww, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_ww, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ c -> case c of

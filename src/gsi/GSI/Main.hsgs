@@ -3,7 +3,7 @@ module GSI.Main (gsmain, gstype_const, gstype_empty_signature, gstype_app, gstyp
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
-import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcconstr, gsbcundefined, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 -- Main function (call this to start your interpreter)

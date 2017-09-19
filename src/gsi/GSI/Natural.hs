@@ -3,7 +3,7 @@ module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_neq) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcenter, gsbcconstr, gsbcundefined, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcenter, gsbcconstr, gsbcimplementationfailure)
 
 gsnatural_unary_plus = $gslambda_value $ \ n -> $gsbcenter n
 

@@ -5,7 +5,7 @@ import Data.Char (isLower, isSpace)
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcundefined, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcimplementationfailure)
 
 gsisLower = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
     GSRune r0v -> if isLower r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []

@@ -3,7 +3,7 @@ module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_app, gsparser_then, 
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
-import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcundefined, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcconstr, gsbcconstr_view)
 import GSI.List (gsnil, gscons)
 $gsimports
 

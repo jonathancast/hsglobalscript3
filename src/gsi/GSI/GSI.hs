@@ -14,7 +14,7 @@ import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadD
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply, gsbcenter, gsbcexternal, gsbcconstr, gsbcundefined, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply, gsbcenter, gsbcexternal, gsbcconstr, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
