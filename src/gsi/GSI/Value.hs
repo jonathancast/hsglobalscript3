@@ -1,7 +1,7 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, FlexibleInstances, ExistentialQuantification #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
+    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSArg(..), GSStackFrame(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w,
@@ -56,11 +56,16 @@ data GSArg
   = GSArgExpr Pos GSExpr
   | GSArgVar GSValue
 
-newtype GSExpr = GSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+newtype GSExpr = GSExpr (forall a. [GSStackFrame] -> [StackTrace] -> GSExprCont a -> IO a)
 
 data GSStackFrame
   = GSStackForce StackTrace (GSValue -> GSExpr)
   | GSStackArg StackTrace GSValue
+
+data GSExprCont a = GSExprCont {
+    gsreturn :: GSValue -> IO a,
+    gsthrow :: GSValue -> IO a
+  }
 
 type GSThunk = MVar GSThunkState
 
@@ -129,7 +134,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr e
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ st cs -> e st cs GSExprCont{ gsreturn = return, gsthrow = return }
 
 gsprepare = varE 'gsprepare_w `appE` gshere
 

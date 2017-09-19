@@ -13,6 +13,7 @@ import GSI.Error (GSError(..), GSException(..), throwGSError, fmtError)
 import GSI.ThreadType (ThreadException(..))
 import GSI.Value (GSValue(..), GSExpr(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, gsvCode)
 import GSI.Eval (evalSync)
+import ACE (aceReturn)
 import API (apiImplementationFailure)
 
 gslist = varE 'gslist_w `appE` gshere
@@ -22,11 +23,11 @@ gslist_w pos [] = GSConstr pos (gsvar "nil") []
 gslist_w pos (x:xn) = GSConstr pos (gsvar ":") [ x, gslist_w pos xn ]
 
 gslazylist_w :: Pos -> [GSValue] -> IO GSValue
-gslazylist_w pos xn = gsthunk_w pos $ GSExpr $ \ st cs -> case xn of
-    [] -> return $ GSConstr pos (gsvar "nil") []
+gslazylist_w pos xn = gsthunk_w pos $ GSExpr $ \ st cs sk -> case xn of
+    [] -> aceReturn (GSConstr pos (gsvar "nil") []) st sk
     x:xn1 -> do
         xn1v <- gslazylist_w pos xn1
-        return $ GSConstr pos (gsvar ":") [ x, xn1v ]
+        aceReturn (GSConstr pos (gsvar ":") [ x, xn1v ]) st sk
 
 gsstring = varE 'gsstring_w `appE` gshere
 

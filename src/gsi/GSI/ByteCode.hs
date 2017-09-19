@@ -40,18 +40,18 @@ gsbchere_w pos = GSExpr $ \ st cs -> aceReturn (GSExternal (toExternal pos)) st
 gsbcrecord = varE 'gsbcrecord_w `appE` gshere
 
 gsbcrecord_w :: Pos -> [(GSVar, GSArg)] -> GSExpr
-gsbcrecord_w pos fs = GSExpr $ \ st cs -> do
+gsbcrecord_w pos fs = GSExpr $ \ st cs sk -> do
     fs' <- forM fs $ \ (v, fa) -> do
         fv <- gsprepare_w pos fa
         return (v, fv)
-    aceReturn (GSRecord pos $ Map.fromList fs') st
+    aceReturn (GSRecord pos $ Map.fromList fs') st sk
 
 gsbcconstr = varE 'gsbcconstr_w `appE` gshere
 
 gsbcconstr_w :: Pos -> GSVar -> [GSArg] -> GSExpr
-gsbcconstr_w pos c as = GSExpr $ \ st cs -> do
+gsbcconstr_w pos c as = GSExpr $ \ st cs sk -> do
     asv <- mapM (gsprepare_w pos) as
-    aceReturn (GSConstr pos c asv) st
+    aceReturn (GSConstr pos c asv) st sk
 
 gsbcexternal = varE 'gsbcexternal_w `appE` gshere
 
@@ -85,14 +85,14 @@ gsbcenter_w pos v = GSExpr $ \ st cs -> aceEnter [ StackTrace pos cs ] v st
 gsbcapply = varE 'gsbcapply_w `appE` gshere
 
 gsbcapply_w :: Pos -> GSValue -> [GSArg] -> GSExpr
-gsbcapply_w pos f args = GSExpr $ \ st cs -> do
+gsbcapply_w pos f args = GSExpr $ \ st cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnter [ StackTrace pos cs ] f (map (GSStackArg (StackTrace pos cs)) asv ++ st)
+    aceEnter [ StackTrace pos cs ] f (map (GSStackArg (StackTrace pos cs)) asv ++ st) sk
 
 gsbcapp_w :: Pos -> GSExpr -> [GSArg] -> GSExpr
-gsbcapp_w pos f args = GSExpr $ \ st cs -> do
+gsbcapp_w pos f args = GSExpr $ \ st cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnterExpr [StackTrace pos cs] f (map (GSStackArg (StackTrace pos cs)) asv ++ st)
+    aceEnterExpr [StackTrace pos cs] f (map (GSStackArg (StackTrace pos cs)) asv ++ st) sk
 
 gsbcapparg_w :: Pos -> GSArg -> [GSArg] -> GSExpr
 gsbcapparg_w pos (GSArgVar f) as = gsbcapply_w pos f as
@@ -104,9 +104,9 @@ class GSBCPrimType f r where
     gsbcprim_ww :: Pos -> f -> r
 
 instance GSBCPrimType (IO GSValue) GSExpr where
-    gsbcprim_ww pos f = GSExpr $ \ st cs -> do
+    gsbcprim_ww pos f = GSExpr $ \ st cs sk -> do
         v <- f
-        aceEnter [ StackTrace pos cs ] v st
+        aceEnter [ StackTrace pos cs ] v st sk
 
 instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
     gsbcprim_ww pos f v = gsbcprim_ww pos (f v)
@@ -137,9 +137,9 @@ gsbcforce_w pos e k = GSExpr $ \ st cs -> let c1 = StackTrace pos cs in case e o
     _ -> aceThrow ($gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next") st
 
 gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
-gsbclet_w pos e k = GSExpr $ \ st cs -> do
+gsbclet_w pos e k = GSExpr $ \ st cs sk -> do
     v <- gsthunk_w pos e
-    aceEnterExpr [StackTrace pos cs] (k v) st
+    aceEnterExpr [StackTrace pos cs] (k v) st sk
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
 
@@ -149,9 +149,9 @@ gsbcimpfor_w pos a = GSExpr $ \ st cs -> aceReturn (gsimpfor_w pos a) st
 gsbclfield = varE 'gsbclfield_w `appE` gshere
 
 gsbclfield_w :: Pos -> GSVar -> GSValue -> (GSValue -> GSExpr) -> GSExpr
-gsbclfield_w pos f r k = GSExpr $ \ st cs -> do
+gsbclfield_w pos f r k = GSExpr $ \ st cs sk -> do
     v <- gsfield_w pos f r
-    aceEnterExpr [StackTrace pos cs] (k v) st
+    aceEnterExpr [StackTrace pos cs] (k v) st sk
 
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
@@ -172,10 +172,10 @@ gsbcevalnatural_w pos na k = gsbcforce_w pos na $ \ nv -> case nv of
 gsbcfmterrormsg = varE 'gsbcfmterrormsg_w `appE` gshere
 
 gsbcfmterrormsg_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
-gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs -> do
+gsbcfmterrormsg_w pos msg k = GSExpr $ \ st cs sk -> do
     msgv <- gsprepare_w pos msg
     msgs <- $gsfmterrormsg msgv
-    aceEnterExpr [StackTrace pos cs] (k msgs) st
+    aceEnterExpr [StackTrace pos cs] (k msgs) st sk
 
 gsbccomposegen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbccomposegen_w pos gen0 gen1 = gsbcforce_w pos gen0 $ \ env0 -> gsbcforce_w pos ($gsae $ gen1 env0) $ \ env1 ->
