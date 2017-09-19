@@ -1,11 +1,14 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceEnter, aceForce, aceArg, aceField) where
+module ACE (aceUpdate, aceEnter, aceForce, aceArg, aceField) where
 
 import qualified Data.Map as Map
 
+import Control.Concurrent (MVar, modifyMVar)
+
 import GSI.Util (Pos, StackTrace(..), fmtPos)
 import GSI.Syn (GSVar, fmtVarAtom)
+import GSI.RTS (wakeup)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
@@ -26,6 +29,14 @@ aceEnter cs0 v@(GSClosure cs1 bco) sk = case bco of
     _ -> gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next"
 aceEnter cs v@GSExternal{} sk = gsreturn sk v
 aceEnter cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next"
+
+aceUpdate :: MVar (GSThunkState) -> GSExprCont ()
+aceUpdate mv = GSExprCont{ gsreturn = updateThunk, gsthrow = updateThunk } where    
+    updateThunk v = do
+        mbb <- modifyMVar mv $ \ s -> case s of
+            GSTSStack b -> return (GSTSIndirection v, Just b)
+            _ -> return (GSTSIndirection v, Nothing)
+        maybe (return ()) wakeup mbb
 
 aceForce :: StackTrace -> (GSValue -> GSExpr) -> GSExprCont a -> GSExprCont a
 aceForce c k sk = GSExprCont {
