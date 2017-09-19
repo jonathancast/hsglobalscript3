@@ -9,7 +9,7 @@ import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSStackFrame(..), GSThunkState(..), gsfield_w, gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
-import ACE (aceEnter)
+import ACE (aceEnter, aceArg)
 
 data GSResult
   = GSStack Event
@@ -24,7 +24,7 @@ eval cs mv = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) fn (map (GSStackArg (StackTrace pos [])) args) GSExprCont{ gsreturn = return, gsthrow = return } >>= updateThunk mv
+        forkIO $ aceEnter (StackTrace pos [] : cs) fn [] (foldr (\ v sk -> aceArg (StackTrace pos []) v [] sk) GSExprCont{ gsreturn = return, gsthrow = return } args) >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSField pos f r -> do
         e <- newEvent

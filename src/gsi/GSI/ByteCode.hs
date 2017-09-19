@@ -24,7 +24,7 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExternal(..), GSArg(..),
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceEnterExpr, aceForce, aceReturn, aceThrow)
+import ACE (aceEnter, aceEnterExpr, aceForce, aceArg, aceReturn, aceThrow)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -87,12 +87,14 @@ gsbcapply = varE 'gsbcapply_w `appE` gshere
 gsbcapply_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcapply_w pos f args = GSExpr $ \ st cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnter [ StackTrace pos cs ] f (map (GSStackArg (StackTrace pos cs)) asv ++ st) sk
+    let (st', sk') = foldr (\ v (st0, sk0) -> ([], aceArg (StackTrace pos cs) v st0 sk0)) (st, sk) asv
+    aceEnter [ StackTrace pos cs ] f st' sk'
 
 gsbcapp_w :: Pos -> GSExpr -> [GSArg] -> GSExpr
 gsbcapp_w pos f args = GSExpr $ \ st cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnterExpr [StackTrace pos cs] f (map (GSStackArg (StackTrace pos cs)) asv ++ st) sk
+    let (st', sk') = foldr (\ v (st0, sk0) -> ([], aceArg (StackTrace pos cs) v st0 sk0)) (st, sk) asv
+    aceEnterExpr [StackTrace pos cs] f st' sk'
 
 gsbcapparg_w :: Pos -> GSArg -> [GSArg] -> GSExpr
 gsbcapparg_w pos (GSArgVar f) as = gsbcapply_w pos f as

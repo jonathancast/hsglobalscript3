@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceEnter, aceEnterExpr, aceForce, aceReturn, aceThrow) where
+module ACE (aceEnter, aceEnterExpr, aceForce, aceArg, aceReturn, aceThrow) where
 
 import GSI.Util (Pos, StackTrace(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSStackFrame(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gsstCode)
@@ -28,13 +28,6 @@ aceEnterExpr :: [StackTrace] -> GSExpr -> [GSStackFrame] -> GSExprCont a -> IO a
 aceEnterExpr cs (GSExpr e) st k = e st cs k
 
 aceReturn :: GSValue -> [GSStackFrame] -> GSExprCont a -> IO a
-aceReturn (GSClosure cs (GSLambda f)) (k@(GSStackArg c1 a):st) sk = case f a of
-    GSRawExpr e -> aceEnterExpr (cs ++ [c1]) e st sk
-    bco@GSImp{} -> aceReturn (GSClosure (cs ++ [c1]) bco) st sk
-    bco@GSLambda{} -> aceReturn (GSClosure (cs ++ [c1]) bco) st sk
-    bco -> aceThrow ($gsimplementationfailure $ "aceReturn (function; result is " ++ bcoCode bco ++ ") next") st sk
-aceReturn (GSClosure cs bco) (k@(GSStackArg pos a):st) sk = aceThrow ($gsimplementationfailure $ "aceReturn (function is (GSClosure cs " ++ bcoCode bco ++ "); continuation is argument) next") (k:st) sk
-aceReturn f (k@(GSStackArg pos a):st) sk = aceThrow ($gsimplementationfailure $ "aceReturn (function is " ++ gsvCode f ++ "; continuation is argument) next") (k:st) sk
 aceReturn v (k:st) sk = aceThrow ($gsimplementationfailure $ "aceReturn (continuation is " ++ gsstCode k ++ ") next") (k:st) sk
 aceReturn v [] sk = gsreturn sk v
 
@@ -44,7 +37,20 @@ aceForce c k st sk = GSExprCont {
     gsthrow = \ v -> aceThrow v st sk
   }
 
+aceArg :: StackTrace -> GSValue -> [GSStackFrame] -> GSExprCont a -> GSExprCont a
+aceArg c1 a st sk = GSExprCont {
+    gsreturn = \ v -> case v of
+        GSClosure cs (GSLambda f) -> case f a of
+            GSRawExpr e -> aceEnterExpr (cs ++ [c1]) e st sk
+            bco@GSImp{} -> aceReturn (GSClosure (cs ++ [c1]) bco) st sk
+            bco@GSLambda{} -> aceReturn (GSClosure (cs ++ [c1]) bco) st sk
+            bco -> aceThrow ($gsimplementationfailure $ "aceReturn (function; result is " ++ bcoCode bco ++ ") next") st sk
+        GSClosure cs bco -> aceThrow ($gsimplementationfailure $ "aceReturn (function is (GSClosure cs " ++ bcoCode bco ++ "); continuation is argument) next") st sk
+        f -> aceThrow ($gsimplementationfailure $ "aceReturn (function is " ++ gsvCode f ++ "; continuation is argument) next") st sk
+      ,
+    gsthrow = \ v -> aceThrow v st sk
+  }
+
 aceThrow :: GSValue -> [GSStackFrame] -> GSExprCont a -> IO a
-aceThrow v (GSStackArg{}:st) sk = aceThrow v st sk
 aceThrow v (k:st) sk = gsthrow sk $ $gsimplementationfailure $ "aceThrow (continuation is " ++ gsstCode k ++ ") next"
 aceThrow v [] sk = gsthrow sk v
