@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceUpdate, aceEnter, aceForce, aceArg, aceField, aceEmptyStack) where
+module ACE (aceEnter, aceEnterThunkState, aceUpdate, aceForce, aceArg, aceField, aceEmptyStack) where
 
 import qualified Data.Map as Map
 
@@ -9,7 +9,7 @@ import Control.Concurrent (MVar, modifyMVar)
 import GSI.Util (Pos, StackTrace(..), fmtPos)
 import GSI.Syn (GSVar, fmtVarAtom)
 import GSI.RTS (wakeup)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
@@ -29,6 +29,14 @@ aceEnter cs0 v@(GSClosure cs1 bco) sk = case bco of
     _ -> gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next"
 aceEnter cs v@GSExternal{} sk = gsreturn sk v
 aceEnter cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next"
+
+aceEnterThunkState :: [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
+aceEnterThunkState cs (GSTSExpr expr) sk = expr cs sk
+aceEnterThunkState cs (GSApply pos fn args) sk =
+    aceEnter (StackTrace pos [] : cs) fn (foldr (aceArg (StackTrace pos [])) sk args)
+aceEnterThunkState cs (GSTSField pos f r) sk =
+    aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f sk)
+aceEnterThunkState cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
 
 aceUpdate :: MVar (GSThunkState) -> GSExprCont a -> GSExprCont a
 aceUpdate mv sk = GSExprCont{

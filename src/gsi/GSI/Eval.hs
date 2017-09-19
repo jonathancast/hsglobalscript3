@@ -9,7 +9,7 @@ import GSI.RTS (Event, newEvent, await)
 import GSI.Error (GSError(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
-import ACE (aceUpdate, aceEnter, aceArg, aceField, aceEmptyStack)
+import ACE (aceEnter, aceEnterThunkState, aceUpdate, aceArg, aceField, aceEmptyStack)
 
 data GSResult
   = GSStack Event
@@ -18,21 +18,17 @@ data GSResult
 
 eval :: [StackTrace] -> MVar (GSThunkState) -> IO GSResult
 eval cs mv = modifyMVar mv $ \ st -> case st of
-    GSTSExpr expr -> do
-        e <- newEvent
-        forkIO $ expr cs (aceUpdate mv aceEmptyStack)
-        return (GSTSStack e, GSStack e)
-    GSApply pos fn args -> do
-        e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) fn (foldr (\ v sk -> aceArg (StackTrace pos []) v sk) (aceUpdate mv aceEmptyStack) args)
-        return (GSTSStack e, GSStack e)
-    GSTSField pos f r -> do
-        e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f (aceUpdate mv aceEmptyStack))
-        return (GSTSStack e, GSStack e)
+    GSTSExpr{} -> startEval st
+    GSApply{} -> startEval st
+    GSTSField{} -> startEval st
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)
     _ -> return (st, GSIndirection $ $gsimplementationfailure $ "eval (thunk: " ++ gstsCode st ++ ") next")
+  where
+    startEval st = do
+        e <- newEvent
+        forkIO $ aceEnterThunkState cs st (aceUpdate mv aceEmptyStack)
+        return (GSTSStack e, GSStack e)
 
 evalSync :: [StackTrace] -> MVar (GSThunkState) -> IO GSValue
 evalSync cs mv = do
