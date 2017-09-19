@@ -131,10 +131,12 @@ gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbcforce_w pos e k = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in case e of
-    GSArgExpr pos' e' -> runGSExpr e' [c1] (aceForce c1 k sk)
-    GSArgVar v -> aceEnter [c1] v (aceForce c1 k sk)
-    _ -> gsthrow sk $ $gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next"
+gsbcforce_w pos e k = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in runGSArg c1 e (aceForce c1 k sk)
+
+runGSArg :: StackTrace -> GSArg ->  GSExprCont a -> IO a
+runGSArg c1 (GSArgExpr pos' e') sk = runGSExpr e' [c1] sk
+runGSArg c1 (GSArgVar v) sk = aceEnter [c1] v sk
+runGSArg c1 a sk = gsthrow sk $ $gsimplementationfailure $ "runGSArg " ++ argCode a ++ " next"
 
 gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
 gsbclet_w pos e k = GSExpr $ \ cs sk -> do
