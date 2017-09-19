@@ -4,20 +4,29 @@ module ACE (aceEnter, aceEnterThunkState, aceUpdate, aceForce, aceArg, aceField,
 
 import qualified Data.Map as Map
 
+import Control.Monad (join)
+
 import Control.Concurrent (MVar, modifyMVar)
 
 import GSI.Util (Pos, StackTrace(..), fmtPos)
 import GSI.Syn (GSVar, fmtVarAtom)
-import GSI.RTS (wakeup)
+import GSI.RTS (newEvent, wakeup, await)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
-import {-# SOURCE #-} GSI.Eval (GSResult(..), evalSync)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
 aceEnter cs v@GSError{} sk = gsthrow sk v
 aceEnter cs v@GSImplementationFailure{} sk = gsthrow sk v
-aceEnter cs (GSThunk th) sk = do
-    v <- evalSync cs th
-    aceEnter cs v sk
+aceEnter cs (GSThunk mv) sk = join $ modifyMVar mv $ \ st -> case st of
+    GSTSExpr{} -> doEval st
+    GSApply{} -> doEval st
+    GSTSField{} -> doEval st
+    GSTSIndirection v -> return (GSTSIndirection v, aceEnter cs v sk)
+    GSTSStack e -> return (GSTSStack e, await e >> aceEnter cs (GSThunk mv) sk)
+    _ -> return (st, gsthrow sk $ $gsimplementationfailure $ "aceEnter (thunk: " ++ gstsCode st ++ ") next")
+  where
+    doEval st = do
+        e <- newEvent
+        return (GSTSStack e, aceEnterThunkState cs st (aceUpdate mv sk))
 aceEnter cs v@GSConstr{} sk = gsreturn sk v
 aceEnter cs v@GSRecord{} sk = gsreturn sk v
 aceEnter cs v@GSRune{} sk = gsreturn sk v
