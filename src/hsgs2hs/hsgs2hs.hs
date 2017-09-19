@@ -374,13 +374,25 @@ compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
+    -- To implement §hs{ImHere}, we need to find the call stack for the overall application
+    -- That means wrapping the whole appllication in a call to §hs{gsbcwithhere_w}
+    -- Find out if we need to do that now
+    let needHere = case Map.lookup f (gsimplicits env) of
+            Nothing -> False
+            Just ims -> any isImHere ims where
+                isImHere ImHere = True
+                isImHere _ = False
+    let (isctxt, ctxt) = if needHere then
+                (
+                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcwithhere_w", HSIType "GSI.Util" "Pos" ],
+                    \ hse -> HSVar "gsbcwithhere_w" `HSApp` hspos pos `HSApp` (HSLambda ["here"] hse)
+                )
+            else
+                (Set.empty, id)
     as0 <- case Map.lookup f (gsimplicits env) of
         Nothing -> return []
         Just ims -> forM ims $ \ im -> case im of
-            ImHere -> return (
-                Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbchere_w", HSIType "GSI.Util" "Pos" ],
-                HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` (HSVar "gsbchere_w" `HSApp` hspos pos)
-              )
+            ImHere -> return (Set.fromList [ HSIType "GSI.Value" "GSArg" ], HSConstr "GSArgVar" `HSApp` HSVar "here")
             _ -> $gsfatal $ "Compile implicit " ++ imCode im ++ " next"
     sig <- case Map.lookup f (gssignatures env) of
         Nothing -> return []
@@ -388,12 +400,13 @@ compileApp env (EVar pos f) as = do
     as' <- mapM (\ ((pos1, e), s) -> compileArg env pos1 e s) (zip as (sig ++ repeat Nothing))
     return (
         Set.unions $
+            isctxt :
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
             isf :
             map (\ (is, _) -> is) as0 ++
             map (\ (is, _) -> is) as'
         ,
-        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) as')
+        ctxt (HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) as'))
       )
 compileApp env (EUnary pos f) as = do
     (isf, ef) <- case Map.lookup f (gsunaries env) of

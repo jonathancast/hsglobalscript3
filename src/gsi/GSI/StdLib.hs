@@ -3,10 +3,10 @@ module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gs
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos(..), gshere)
+import GSI.Util (Pos(..), StackTrace, gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_w, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcundefined, gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined_ww, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ c -> case c of
@@ -57,13 +57,13 @@ gsbcevalstring_w pos sa k = w id sa where
         GSConstr _ s_c s_as -> $gsbcimplementationfailure $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c ") next"
         _ -> $gsbcimplementationfailure $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
 
-gserror = $gslambda_value $ \ posv -> $gsbcarg $ \ msgv ->
-    gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
+gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
+    gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
     $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
-    $gsbcerror pos_hs msg_s
+    gsbcerror st_hs msg_s
 
-gsundefined = $gslambda_value $ \ posv -> gsbcevalpos_w $gshere ($gsav posv) $ \ pos_hs ->
-        gsbcundefined_w pos_hs
+gsundefined = $gslambda_value $ \ stv -> gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
+    gsbcundefined_ww st_hs
 
 gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
 
@@ -78,3 +78,12 @@ gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
         Nothing -> $gsbcimplementationfailure $ "gsbcevalpos_w (GSExternal (not a Pos)) next"
         Just pos -> k pos
     _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"
+
+gsbcevalstacktrace = varE 'gsbcevalstacktrace_w `appE` gshere
+
+gsbcevalstacktrace_w :: Pos -> GSArg -> (StackTrace -> GSExpr) -> GSExpr
+gsbcevalstacktrace_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
+    GSExternal e -> case fromExternal e of
+        Nothing -> $gsbcimplementationfailure $ "gsbcevalstacktrace_w (GSExternal (not a Pos)) next"
+        Just pos -> k pos
+    _ -> $gsbcimplementationfailure $ "gsbcevalstacktrace_w " ++ gsvCode pos1v ++ " next"

@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbchere, gsbchere_w, gsbcerror, gsbcerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcundefined_ww, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcerror, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -20,7 +20,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsae, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
@@ -32,10 +32,13 @@ gsbcundefined = varE 'gsbcundefined_w `appE` gshere
 gsbcundefined_w :: Pos -> GSExpr
 gsbcundefined_w pos = GSExpr $ \ cs sk -> gsthrow sk $ GSError (GSErrUnimpl (StackTrace pos cs))
 
-gsbchere = varE 'gsbchere_w `appE` gshere
+gsbcundefined_ww :: StackTrace -> GSExpr
+gsbcundefined_ww st = GSExpr $ \ _ sk -> gsthrow sk $ GSError (GSErrUnimpl st)
 
-gsbchere_w :: Pos -> GSExpr
-gsbchere_w pos = GSExpr $ \ cs sk -> gsreturn sk (GSExternal (toExternal pos))
+gsbcwithhere = varE 'gsbcwithhere_w `appE` gshere
+
+gsbcwithhere_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
+gsbcwithhere_w pos k = GSExpr $ \ cs sk -> runGSExpr (k $ gsexternal $ StackTrace pos cs) cs sk
 
 gsbcrecord = varE 'gsbcrecord_w `appE` gshere
 
@@ -61,10 +64,8 @@ gsbcexternal_w pos e = GSExpr $ \ cs sk -> gsreturn sk $ GSExternal (toExternal 
 gsbcchar_w :: Pos -> Char -> GSExpr
 gsbcchar_w pos ch = GSExpr $ \ cs sk -> gsreturn sk $ GSRune ch
 
-gsbcerror = varE 'gsbcerror_w `appE` gshere
-
-gsbcerror_w :: Pos -> Pos -> String -> GSExpr
-gsbcerror_w _ pos msg = GSExpr $ \ cs sk -> gsthrow sk $ GSError (GSErrError pos msg)
+gsbcerror :: StackTrace -> String -> GSExpr
+gsbcerror (StackTrace pos _) msg = GSExpr $ \ _ sk -> gsthrow sk $ GSError (GSErrError pos msg)
 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
