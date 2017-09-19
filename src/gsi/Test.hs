@@ -9,7 +9,7 @@ import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
-import GSI.ByteCode (gsbcundefined_w, gsbcimpbody_w)
+import GSI.ByteCode (gsbcundefined_ww, gsbcimpbody_w)
 import GSI.ThreadType (simpleThreadData)
 import GSI.Thread (createThread, execMainThread)
 
@@ -42,7 +42,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        th <- getThunk =<< (gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1))
+        th <- getThunk =<< (gsthunk_w (Pos file 2 1) $ gsbcundefined_ww (StackTrace (Pos file 3 1) []))
         st <- eval [] th
         case st of
             GSIndirection v -> case v of
@@ -53,7 +53,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
+        fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_ww (StackTrace (Pos file 3 1) [])
         st <- eval [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
         case st of
             GSStack _ -> return ()
@@ -61,7 +61,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        th <- getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
+        th <- getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_ww (StackTrace (Pos file 3 1) []))) [gsundefined_value_w (Pos file 4 1)]
         st <- eval [] th
         case st of
             GSStack _ -> return ()
@@ -69,7 +69,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
+        fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_ww (StackTrace (Pos file 3 1) [])
         v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
@@ -78,7 +78,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
+        v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_ww (StackTrace (Pos file 3 1) []))) [gsundefined_value_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
@@ -86,7 +86,7 @@ main = runTestTT $ TestList $ [
     ,
     TestCase $ do
         let file = "test-file.gs"
-        let v = gsimpfor_w (Pos file 1 1) $ gsbcimpbody_w (Pos file 2 1) $ gsargexpr_w (Pos file 3 1) $ gsbcundefined_w (Pos file 4 1)
+        let v = gsimpfor_w (Pos file 1 1) $ gsbcimpbody_w (Pos file 2 1) $ gsargexpr_w (Pos file 3 1) $ gsbcundefined_ww (StackTrace (Pos file 4 1) [])
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
             GSClosure [StackTrace pos _] bco -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
