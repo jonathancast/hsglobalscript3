@@ -24,7 +24,7 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExternal(..), GSArg(..),
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceEnterExpr, aceReturn, aceThrow)
+import ACE (aceEnter, aceEnterExpr, aceForce, aceReturn, aceThrow)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined = varE 'gsbcundefined_w `appE` gshere
@@ -131,10 +131,10 @@ gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbcforce_w pos e k = GSExpr $ \ st cs -> let c1 = StackTrace pos cs in case e of
-    GSArgExpr pos' e' -> aceEnterExpr [c1] e' (GSStackForce c1 k : st)
-    GSArgVar v -> aceEnter [c1] v (GSStackForce c1 k : st)
-    _ -> aceThrow ($gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next") st
+gsbcforce_w pos e k = GSExpr $ \ st cs sk -> let c1 = StackTrace pos cs in case e of
+    GSArgExpr pos' e' -> aceEnterExpr [c1] e' [] (aceForce c1 k st sk)
+    GSArgVar v -> aceEnter [c1] v [] (aceForce c1 k st sk)
+    _ -> aceThrow ($gsimplementationfailure $ "gsbcforce_w " ++ argCode e ++ " next") st sk
 
 gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
 gsbclet_w pos e k = GSExpr $ \ st cs sk -> do

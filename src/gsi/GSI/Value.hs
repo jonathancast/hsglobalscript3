@@ -59,8 +59,7 @@ data GSArg
 newtype GSExpr = GSExpr (forall a. [GSStackFrame] -> [StackTrace] -> GSExprCont a -> IO a)
 
 data GSStackFrame
-  = GSStackForce StackTrace (GSValue -> GSExpr)
-  | GSStackArg StackTrace GSValue
+  = GSStackArg StackTrace GSValue
 
 data GSExprCont a = GSExprCont {
     gsreturn :: GSValue -> IO a,
@@ -217,7 +216,6 @@ argCode GSArgExpr{} = "GSArgExpr"
 argCode GSArgVar{} = "GSArgVar"
 
 gsstCode :: GSStackFrame -> String
-gsstCode GSStackForce{} = "GSStackForce"
 gsstCode GSStackArg{} = "GSStackArg"
 
 gstsCode :: GSThunkState -> String
