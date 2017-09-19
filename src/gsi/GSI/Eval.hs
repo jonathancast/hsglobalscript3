@@ -7,9 +7,9 @@ import Control.Concurrent (MVar, forkIO, modifyMVar)
 import GSI.Util (StackTrace(..), gshere)
 import GSI.RTS (Event, newEvent, wakeup, await)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSThunkState(..), gsfield_w, gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
-import ACE (aceEnter, aceArg)
+import ACE (aceEnter, aceArg, aceField)
 
 data GSResult
   = GSStack Event
@@ -28,7 +28,7 @@ eval cs mv = modifyMVar mv $ \ st -> case st of
         return (GSTSStack e, GSStack e)
     GSTSField pos f r -> do
         e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) r GSExprCont{ gsreturn = return, gsthrow = return } >>= gsfield_w pos f >>= updateThunk mv
+        forkIO $ aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f GSExprCont{ gsreturn = return, gsthrow = return }) >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)
