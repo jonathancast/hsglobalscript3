@@ -25,7 +25,7 @@ apiCall pos v t = do
 
 apiCallExpr :: Pos -> GSExpr -> Thread -> IO GSValue
 apiCallExpr pos (GSExpr e) t = do
-    v <- e [] [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
+    v <- e [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
     apiCall pos v t
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere

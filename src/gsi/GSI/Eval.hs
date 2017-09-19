@@ -20,15 +20,15 @@ eval :: [StackTrace] -> MVar (GSThunkState) -> IO GSResult
 eval cs mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr expr -> do
         e <- newEvent
-        forkIO $ expr [] cs >>= updateThunk mv
+        forkIO $ expr cs >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSApply pos fn args -> do
         e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) fn [] (foldr (\ v sk -> aceArg (StackTrace pos []) v [] sk) GSExprCont{ gsreturn = return, gsthrow = return } args) >>= updateThunk mv
+        forkIO $ aceEnter (StackTrace pos [] : cs) fn (foldr (\ v sk -> aceArg (StackTrace pos []) v sk) GSExprCont{ gsreturn = return, gsthrow = return } args) >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSField pos f r -> do
         e <- newEvent
-        forkIO $ aceEnter (StackTrace pos [] : cs) r [] GSExprCont{ gsreturn = return, gsthrow = return } >>= gsfield_w pos f >>= updateThunk mv
+        forkIO $ aceEnter (StackTrace pos [] : cs) r GSExprCont{ gsreturn = return, gsthrow = return } >>= gsfield_w pos f >>= updateThunk mv
         return (GSTSStack e, GSStack e)
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
     GSTSStack e -> return (GSTSStack e, GSStack e)

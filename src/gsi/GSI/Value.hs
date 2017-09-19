@@ -56,7 +56,7 @@ data GSArg
   = GSArgExpr Pos GSExpr
   | GSArgVar GSValue
 
-newtype GSExpr = GSExpr (forall a. [GSStackFrame] -> [StackTrace] -> GSExprCont a -> IO a)
+newtype GSExpr = GSExpr (forall a. [StackTrace] -> GSExprCont a -> IO a)
 
 data GSStackFrame
 
@@ -68,7 +68,7 @@ data GSExprCont a = GSExprCont {
 type GSThunk = MVar GSThunkState
 
 data GSThunkState
-  = GSTSExpr ([GSStackFrame] -> [StackTrace] -> IO GSValue)
+  = GSTSExpr ([StackTrace] -> IO GSValue)
   | GSApply Pos GSValue [GSValue]
   | GSTSField Pos GSVar GSValue
   | GSTSStack Event
@@ -132,7 +132,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ st cs -> e st cs GSExprCont{ gsreturn = return, gsthrow = return }
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ cs -> e cs GSExprCont{ gsreturn = return, gsthrow = return }
 
 gsprepare = varE 'gsprepare_w `appE` gshere
 

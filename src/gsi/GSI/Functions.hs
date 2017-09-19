@@ -23,11 +23,11 @@ gslist_w pos [] = GSConstr pos (gsvar "nil") []
 gslist_w pos (x:xn) = GSConstr pos (gsvar ":") [ x, gslist_w pos xn ]
 
 gslazylist_w :: Pos -> [GSValue] -> IO GSValue
-gslazylist_w pos xn = gsthunk_w pos $ GSExpr $ \ st cs sk -> case xn of
-    [] -> aceReturn (GSConstr pos (gsvar "nil") []) st sk
+gslazylist_w pos xn = gsthunk_w pos $ GSExpr $ \ cs sk -> case xn of
+    [] -> aceReturn (GSConstr pos (gsvar "nil") []) sk
     x:xn1 -> do
         xn1v <- gslazylist_w pos xn1
-        aceReturn (GSConstr pos (gsvar ":") [ x, xn1v ]) st sk
+        aceReturn (GSConstr pos (gsvar ":") [ x, xn1v ]) sk
 
 gsstring = varE 'gsstring_w `appE` gshere
 
