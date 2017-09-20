@@ -135,6 +135,9 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
     case expr.var 'v. get-type pos v
     case expr.app 'ef 'ex. type-checker.for
             'tyf ← type-check-expr pos ef;
+            'tyx ← type-check-expr pos ex;
+            'tyy ← type-checker.new-unifiable-var;
+            _ ← type-checker.unify pos tyf (type.function tyx tyy);
         . undefined
 |]
 
