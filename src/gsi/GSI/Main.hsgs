@@ -224,6 +224,10 @@ gstype_checker_global_env = [gs:value|
             type.function type-checker.gsrun.type $
                 type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
     ) $
+    type-checker.env.type.insert (gsvar qq{undefined}) (
+        type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
+    ) $
     type-checker.env.empty
 |]
 
