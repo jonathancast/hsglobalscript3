@@ -673,6 +673,7 @@ globalEnv = Env{
         ("is-lower", (Set.singleton $ HSIVar "GSI.Rune" "gsisLower", HSVar "gsisLower")),
         ("is-space", (Set.singleton $ HSIVar "GSI.Rune" "gsisSpace", HSVar "gsisSpace")),
         ("just", (Set.singleton $ HSIVar "GSI.Maybe" "gsjust", HSVar "gsjust")),
+        ("kind.pointed", (Set.singleton $ HSIVar "GSI.Main" "gskind_pointed", HSVar "gskind_pointed")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
         ("log.fmt", (Set.singleton $ HSIVar "GSI.Log" "gslog_fmt", HSVar "gslog_fmt")),
         ("many", (Set.singleton $ HSIVar "GSI.Parser" "gsmany", HSVar "gsmany")),

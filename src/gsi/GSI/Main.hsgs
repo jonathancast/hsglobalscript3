@@ -271,6 +271,8 @@ gstype_empty_signature_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbc
 gstype_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "app" ek sk ty
 gstype_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "function" ek sk ty
 
+gskind_pointed = $gsconstr (gsvar "pointed") []
+
 $gsdeclare compile-expr gscompileExpr
 
 gscompileDocument = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
