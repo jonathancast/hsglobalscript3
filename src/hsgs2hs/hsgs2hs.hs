@@ -773,6 +773,7 @@ globalEnv = Env{
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
         ("type.const", (Set.singleton $ HSIVar "GSI.Main" "gstype_const_view", HSVar "gstype_const_view")),
         ("type.empty-signature", (Set.singleton $ HSIVar "GSI.Main" "gstype_empty_signature_view", HSVar "gstype_empty_signature_view")),
+        ("type.forall", (Set.singleton $ HSIVar "GSI.Main" "gstype_forall_view", HSVar "gstype_forall_view")),
         ("type.function", (Set.singleton $ HSIVar "GSI.Main" "gstype_function_view", HSVar "gstype_function_view"))
     ],
     gssignatures = Map.fromList [
