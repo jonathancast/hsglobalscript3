@@ -2,10 +2,10 @@
 import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcapply_w)
-import GSI.ByteCode (gsbchere_w)
+import GSI.ByteCode (gsbcwithhere_w)
 import GSI.StdLib (gsundefined)
 
 {-# LINE 2 "./test-fixtures/undefined-argument.hsgs" #-}
-(GSArgExpr (Pos "./test-fixtures/undefined-argument.hsgs" 2 1) (gsbcapply_w (Pos "./test-fixtures/undefined-argument.hsgs" 2 10) gsundefined [ GSArgExpr (Pos "./test-fixtures/undefined-argument.hsgs" 2 10) (gsbchere_w (Pos "./test-fixtures/undefined-argument.hsgs" 2 10)) ]))
+(GSArgExpr (Pos "./test-fixtures/undefined-argument.hsgs" 2 1) (gsbcwithhere_w (Pos "./test-fixtures/undefined-argument.hsgs" 2 10) (\ here -> gsbcapply_w (Pos "./test-fixtures/undefined-argument.hsgs" 2 10) gsundefined [ GSArgVar here ])))
 {-# LINE 2 "./test-fixtures/undefined-argument.hsgs" #-}
                      

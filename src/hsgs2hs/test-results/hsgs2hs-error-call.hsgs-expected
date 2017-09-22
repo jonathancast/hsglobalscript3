@@ -2,10 +2,10 @@
 import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcapply_w)
-import GSI.ByteCode (gsbchere_w)
+import GSI.ByteCode (gsbcwithhere_w)
 import GSI.StdLib (gserror)
 
 {-# LINE 2 "./test-fixtures/error-call.hsgs" #-}
-(gsbcapply_w (Pos "./test-fixtures/error-call.hsgs" 2 21) gserror [ GSArgExpr (Pos "./test-fixtures/error-call.hsgs" 2 21) (gsbchere_w (Pos "./test-fixtures/error-call.hsgs" 2 21)), GSArgVar msg ])
+(gsbcwithhere_w (Pos "./test-fixtures/error-call.hsgs" 2 21) (\ here -> gsbcapply_w (Pos "./test-fixtures/error-call.hsgs" 2 21) gserror [ GSArgVar here, GSArgVar msg ]))
 {-# LINE 2 "./test-fixtures/error-call.hsgs" #-}
                                 
