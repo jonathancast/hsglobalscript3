@@ -370,6 +370,31 @@ compileOpenArg env pos fvs e = do
       )
 
 compileApp :: Env -> Expr -> [(Pos, Expr)] -> StateT Integer (Either String) (Set HSImport, HSExpr)
+compileApp env (EVar pos "value") ((_, EVar pos1 f):[]) = do
+    (isf, ef) <- case Map.lookup f (gsvars env) of
+        Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
+        Just (isf, ef) -> return (isf, ef)
+    return (
+        Set.unions $
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] :
+            isf :
+            []
+        ,
+        HSVar "gsbcenter_w" `HSApp` hspos pos1 `HSApp` ef
+      )
+compileApp env (EVar pos "value") ((_, EVar pos1 f):as) = do
+    (isf, ef) <- case Map.lookup f (gsvars env) of
+        Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
+        Just (isf, ef) -> return (isf, ef)
+    as' <- mapM (\ ((pos2, e), s) -> compileArg env pos2 e s) (zip as (repeat Nothing))
+    return (
+        Set.unions $
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
+            isf :
+            map (\ (is, _) -> is) as'
+        ,
+        HSVar "gsbcapply_w" `HSApp` hspos pos1 `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
+      )
 compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
