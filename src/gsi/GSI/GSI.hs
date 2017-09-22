@@ -1,18 +1,19 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view) where
+module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
 
 import Component.Monad (mvarContents)
 
-import GSI.Util (Pos, fmtPos, gshere)
+import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
 import GSI.Value (GSValue(..), GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
+import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply, gsbcenter, gsbcexternal, gsbcconstr, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
@@ -34,6 +35,13 @@ gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos -
     $gsbcexternal $ gsundefined_value_w pos
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
+
+gsigsevalSync = $gsimpprim $ \ pos t vv -> do
+    v <- gsapiEvalExternal pos vv :: IO GSValue
+    v' <- case v of
+        GSThunk ts -> evalSync [StackTrace pos []] ts
+        _ -> return v
+    return $ gsexternal v'
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
