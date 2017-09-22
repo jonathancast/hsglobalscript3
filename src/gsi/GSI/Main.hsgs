@@ -112,8 +112,8 @@ $gsdeclare compile-document gscompileDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either-for
-        _ ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
-        'p ← compile-document pos compiler.global-env mbe;
+        'mbe1 ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
+        'p ← compile-document pos compiler.global-env mbe1;
     . right p
 |]
 
@@ -121,9 +121,13 @@ $gsdeclare type-checker.new-unifiable-var gs_type_checker_new_unifiable_var
 $gsdeclare type-check-expr gstype_check_expr
 
 gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
-        'ty ← maybe type-checker.new-unifiable-var (type-check-expr pos) mbe;
+        'ty ← type-checker.new-unifiable-var;
+        'mbe1 ← analyze mbe.
+            case nothing. type-checker.unit nothing
+            case just 'e. type-checker.for 'e1 ← type-check-expr pos e ty;. type-checker.unit (just e1)
+        ;
         _ ← gstyc pos ty;
-    . type-checker.unit undefined
+    . type-checker.unit mbe1
 |]
 
 $gsdeclare view expr.var gsexpr_var_view
@@ -131,13 +135,15 @@ $gsdeclare view expr.app gsexpr_app_view
 
 $gsdeclare get-type gstype_checker_get_type
 
-gstype_check_expr = [gs:value| λ 'pos. λ 'e. analyze e.
-    case expr.var 'v. get-type pos v
+gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
+    case expr.var 'v. type-checker.for
+            'tya ← get-type pos v;
+            _ ← type-checker.unify pos tya tye;
+        . type-checker.unit (expr.var v)
     case expr.app 'ef 'ex. type-checker.for
-            'tyf ← type-check-expr pos ef;
-            'tyx ← type-check-expr pos ex;
-            'tyy ← type-checker.new-unifiable-var;
-            _ ← type-checker.unify pos tyf (type.function tyx tyy);
+            'tyx ← type-checker.new-unifiable-var;
+            'ef1 ← type-check-expr pos ef (type.function tyx tye);
+            'ex1 ← type-check-expr pos ex tyx;
         . undefined
 |]
 
@@ -153,16 +159,20 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
         case nothing. (analyze ty1.
             case type.app _ _. type-checker.unify-var v0 ty1
         )
+        case just 'ty01. type-checker.unify pos ty01 ty1
     )
     case type.function 'ty00 'ty01. (analyze ty1.
         case type.app 'ty10 'ty11. type-checker.incorrect-type pos ty0 ty1
+        case type.unifiable-var 'v1. (analyze-type-checker-M type-checker.get-var v1.
+            case nothing. type-checker.unify-var v1 ty0
+        )
     )
 |]
 
 $gsdeclare type-checker.is-free-in gstype_checker_is_free_in
 
 gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.is-free-in v ty.
-    case false. type-checker.set-var ty v
+    case false. type-checker.set-var (just ty) v
 |]
 
 gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
@@ -171,6 +181,9 @@ gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
     )
     case type.const 'c. type-checker.unit false
     case type.empty-signature. type-checker.unit false
+    case type.function 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
+        case false. type-checker.is-free-in v ty1
+    )
 |]
 
 gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
