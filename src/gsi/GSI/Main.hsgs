@@ -141,6 +141,7 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
     case expr.var 'v. type-checker.for
             'tya ← get-type pos v;
             'tyai ← instantiate tya;
+            'im ← get-implicit v;
             _ ← type-checker.unify pos tyai tye;
         . type-checker.unit (expr.var v)
     case expr.app 'ef 'ex. type-checker.for
