@@ -276,6 +276,7 @@ gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-ma
 |]
 
 gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
+    case type.function 'ty0 'ty1. type-checker.unit ty
 |]
 
 $gsdeclare type.unifiable-var gstype_unifiable_var
