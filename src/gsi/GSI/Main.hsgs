@@ -134,6 +134,7 @@ $gsdeclare view expr.var gsexpr_var_view
 $gsdeclare view expr.app gsexpr_app_view
 
 $gsdeclare get-type gstype_checker_get_type
+$gsdeclare get-implicit gstype_checker_get_implicit
 $gsdeclare instantiate gstype_checker_instantiate
 
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
@@ -274,6 +275,10 @@ gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
 gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
     case nothing. impunit (left (pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}))
     case just 'ty. impunit (right ty)
+|]
+
+gstype_checker_get_implicit = [gs:value| λ 'v. λ 'env.
+    impunit (right (ordered-map.get gsvar.compare v (env #implicits)))
 |]
 
 gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
