@@ -287,6 +287,8 @@ $gsdeclare type.unifiable-var gstype_unifiable_var
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
 
 gstype_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
+    case type.function 'ty10 'ty11. type.function (type.subst v ty0 ty10) (type.subst v ty0 ty11)
+    case type.const 'c. ty1
 |]
 
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
