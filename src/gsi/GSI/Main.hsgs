@@ -284,6 +284,9 @@ $gsdeclare type.unifiable-var gstype_unifiable_var
 
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
 
+gstype_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
+|]
+
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
 gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
 gstype_empty_signature = $gsconstr (gsvar "empty-signature") []

@@ -741,6 +741,7 @@ globalEnv = Env{
         ("type.empty-signature", (Set.singleton $ HSIVar "GSI.Main" "gstype_empty_signature", HSVar "gstype_empty_signature")),
         ("type.forall", (Set.singleton $ HSIVar "GSI.Main" "gstype_forall", HSVar "gstype_forall")),
         ("type.function", (Set.singleton $ HSIVar "GSI.Main" "gstype_function", HSVar "gstype_function")),
+        ("type.subst", (Set.singleton $ HSIVar "GSI.Main" "gstype_subst", HSVar "gstype_subst")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
         ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))
