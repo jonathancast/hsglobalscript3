@@ -1,5 +1,6 @@
 #! /usr/local/plan9/bin/rc -e
 
+$HSGLOBALSCRIPT/bin/hsgs2hs $HSGLOBALSCRIPT/src/libgsi
 $HSGLOBALSCRIPT/bin/hsgs2hs .
 
 ghc `{./ghcoptions} --make gsi.hs
