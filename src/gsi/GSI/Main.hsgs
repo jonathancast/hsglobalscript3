@@ -272,9 +272,10 @@ gstype_checker_args_type = [gs:value|
 
 gstype_checker_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'types ∝ ordered-map.insert gsvar.compare v ty (env #types);
+    'implicits ∝ env #implicits;
 〉 |]
 
-gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 〉 |]
+gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'implicits ∝ ordered-map.empty; 〉 |]
 
 gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
     case nothing. impunit (left (pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}))
