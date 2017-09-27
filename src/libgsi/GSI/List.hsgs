@@ -18,7 +18,9 @@ gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case 'x:'xn1. foldl f (f z x) xn1
 |]
 
-gsfoldr = [gs:value| λ 'f. λ 'z. λ 'xn. undefined |]
+gsfoldr = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
+    case nil. z
+|]
 
 gscons :: GSValue
 gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
