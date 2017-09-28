@@ -258,6 +258,7 @@ gstype_checker_global_env = [gs:value|
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
     ) $
+    type-checker.env.implicits.insert (gsvar qq{undefined}) undefined $
     type-checker.env.empty
 |]
 
