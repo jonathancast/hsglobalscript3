@@ -159,7 +159,7 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
 gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
     case implicit.here. type-checker.for
             _ ← type-checker.unify pos (type.const (gsvar qq{stack-trace.t})) ty;
-        . undefined -- > type-checker.unit arg.here
+        . type-checker.unit arg.here
 |]
 
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
