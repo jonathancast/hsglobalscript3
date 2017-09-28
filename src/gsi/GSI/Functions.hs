@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazystring, gslazystring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalExternal, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazystring, gslazystring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
 
 import Control.Exception (Exception(..), throwIO, try)
 
@@ -48,6 +48,11 @@ gsevalChar pos (GSRune ch) = return ch
 gsevalChar pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
 
+gsevalNatural :: Pos -> GSValue -> IO Integer
+gsevalNatural pos (GSNatural n) = return n
+gsevalNatural pos v =
+    throwIO $ GSExcImplementationFailure $gshere $ "gsevalNatural " ++ gsvCode v ++ " next"
+
 gsevalList :: Pos -> GSValue -> IO [GSValue]
 gsevalList pos v = gsevalList_w pos id v where
     gsevalList_w pos ds (GSThunk ts) = do
@@ -83,6 +88,9 @@ gsapiEvalList pos xnv = gsevalForApi $ gsevalList pos xnv
 
 gsapiEvalString :: Pos -> GSValue -> IO String
 gsapiEvalString pos fnv = gsevalForApi $ gsevalString pos fnv
+
+gsapiEvalNatural :: Pos -> GSValue -> IO Integer
+gsapiEvalNatural pos fnv = gsevalForApi $ gsevalNatural pos fnv
 
 gsapiEvalExternal :: GSExternal a => Pos -> GSValue -> IO a
 gsapiEvalExternal pos v = gsevalForApi $ gsevalExternal pos v
