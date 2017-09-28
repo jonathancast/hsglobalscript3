@@ -246,8 +246,8 @@ gstype_checker_zipWithM = [gs:value| λ 'f. λ 'xn. λ 'ys. analyze xn. -- FIXME
     case 'x:'xn1. analyze ys.
         case 'y:'ys1. type-checker.for
                 'z ← f x y;
-                'zs1 ← undefined;
-            . undefined
+                'zs1 ← type-checker.zip-withM f xn1 ys1;
+            . type-checker.unit (z : zs1)
 |]
 
 gstype_checker_get_var = [gs:value| λ 'v. λ 'env. impfor 'mb ← st.get-var v;. impunit (right mb) |]
