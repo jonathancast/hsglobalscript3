@@ -186,6 +186,7 @@ instance GSExternal Thread
 instance GSExternal ThreadData
 
 -- ↓ Instances that are here because they go here
+instance GSExternal GSExpr
 instance GSExternal GSBCO
 
 instance GSExternal GSValue where
