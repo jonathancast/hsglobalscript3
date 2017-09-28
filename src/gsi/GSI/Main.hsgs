@@ -212,6 +212,7 @@ gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
 gstype_checker_mapM = [gs:value| λ 'f. λ 'xn. analyze xn.
     case nil. type-checker.unit nil
+    case 'x:'xn1. type-checker.for 'y ← f x; 'ys1 ← type-checker.mapM f xn1;. type-checker.unit (y : ys1)
 |]
 
 gstype_checker_zipWithM = [gs:value| λ 'f. λ 'xn. λ 'ys. analyze xn. -- FIXME: Not parallel!
