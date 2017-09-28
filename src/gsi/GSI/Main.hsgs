@@ -186,15 +186,16 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
                 _ ← type-checker.unify pos ty00 ty10;
                 _ ← type-checker.unify pos ty01 ty11;
             . type-checker.unit 〈〉
-        case type.unifiable-var 'v1. type-checker.unify-do-var v1 ty0
+        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
     )
     case type.const 'c. (analyze ty1.
-        case type.unifiable-var 'v1. type-checker.unify-do-var v1 ty0
+        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
     )
 |]
 
-gstype_checker_unify_do_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.get-var v.
+gstype_checker_unify_do_var = [gs:value| λ 'pos. λ 'ty. λ 'v. analyze-type-checker-M type-checker.get-var v.
     case nothing. type-checker.unify-var v ty
+    case just 'ty1. type-checker.unify pos ty ty1
 |]
 
 $gsdeclare type-checker.is-free-in gstype_checker_is_free_in
