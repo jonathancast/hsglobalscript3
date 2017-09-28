@@ -1,5 +1,5 @@
-{-# LANGUAGE TemplateHaskell, ExistentialQuantification #-}
-module GSI.GSI (gsigsinject, gsigsapply, gsigsundefined, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
+{-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
+module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -17,10 +17,14 @@ import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcapply, gsbcenter, gsbcexternal, gsbcconstr, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
-import GSI.StdLib (gsbcevalpos, gsbcevalstring)
+import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
 
 gsigsinject = $gslambda_value $ \ v -> $gsbcexternal v
+
+gsigsthunk = $gsimpprim $ \ pos th (posv :: GSValue) (ev :: GSValue) -> do
+    posv1 <- gsapiEvalPos pos posv
+    $apiImplementationFailure $ "gsigsthunk next" :: IO GSValue
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
