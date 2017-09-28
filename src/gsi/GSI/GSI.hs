@@ -9,7 +9,7 @@ import Component.Monad (mvarContents)
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
@@ -24,6 +24,7 @@ gsigsinject = $gslambda_value $ \ v -> $gsbcexternal v
 
 gsigsthunk = $gsimpprim $ \ pos th (posv :: GSValue) (ev :: GSValue) -> do
     posv1 <- gsapiEvalPos pos posv
+    ev1 <- gsapiEvalExternal pos ev :: IO GSExpr
     $apiImplementationFailure $ "gsigsthunk next" :: IO GSValue
 
 gsigsapply :: GSValue
