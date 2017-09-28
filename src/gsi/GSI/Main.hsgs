@@ -159,6 +159,7 @@ $gsdeclare view type.app gstype_app_view
 $gsdeclare type-checker.incorrect-type gstype_checker_incorrect_type
 
 $gsdeclare type-checker.unify-var gstype_checker_unify_var
+$gsdeclare type-checker.unify-do-var gstype_checker_unify_do_var
 
 gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
     case type.unifiable-var 'v0. (analyze-type-checker-M type-checker.get-var v0.
@@ -168,11 +169,22 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
         case just 'ty01. type-checker.unify pos ty01 ty1
     )
     case type.function 'ty00 'ty01. (analyze ty1.
-        case type.app 'ty10 'ty11. type-checker.incorrect-type pos ty0 ty1
+        case type.app _ _. type-checker.incorrect-type pos ty0 ty1
+        case type.function 'ty10 'ty11. type-checker.for
+                _ ← type-checker.unify pos ty00 ty10;
+                _ ← type-checker.unify pos ty01 ty11;
+            . type-checker.unit 〈〉
         case type.unifiable-var 'v1. (analyze-type-checker-M type-checker.get-var v1.
             case nothing. type-checker.unify-var v1 ty0
         )
     )
+    case type.const 'c. (analyze ty1.
+        case type.unifiable-var 'v1. type-checker.unify-do-var v1 ty0
+    )
+|]
+
+gstype_checker_unify_do_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.get-var v.
+    case nothing. type-checker.unify-var v ty
 |]
 
 $gsdeclare type-checker.is-free-in gstype_checker_is_free_in
