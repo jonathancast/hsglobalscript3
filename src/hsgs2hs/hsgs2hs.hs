@@ -738,6 +738,7 @@ globalEnv = Env{
         ("type-checker.set-var", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_set_var", HSVar "gstype_checker_set_var")),
         ("type-checker.unify", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_unify", HSVar "gstype_checker_unify")),
         ("type-checker.unit", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_unit", HSVar "gstype_checker_unit")),
+        ("type-checker.zip-withM", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_zipWithM", HSVar "gstype_checker_zipWithM")),
         ("type.app", (Set.singleton $ HSIVar "GSI.Main" "gstype_app", HSVar "gstype_app")),
         ("type.const", (Set.singleton $ HSIVar "GSI.Main" "gstype_const", HSVar "gstype_const")),
         ("type.empty-signature", (Set.singleton $ HSIVar "GSI.Main" "gstype_empty_signature", HSVar "gstype_empty_signature")),

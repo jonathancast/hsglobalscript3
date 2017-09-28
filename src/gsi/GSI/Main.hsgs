@@ -212,6 +212,9 @@ gstype_checker_mapM = [gs:value| λ 'f. λ 'xn. analyze xn.
     case nil. type-checker.unit nil
 |]
 
+gstype_checker_zipWithM = [gs:value| λ 'f. λ 'xn. λ 'ys. undefined
+|]
+
 gstype_checker_get_var = [gs:value| λ 'v. λ 'env. impfor 'mb ← st.get-var v;. impunit (right mb) |]
 gstype_checker_set_var = [gs:value| λ 'x. λ 'v. λ 'env. impfor _ ← st.set-var x v;. impunit (right 〈〉) |]
 
