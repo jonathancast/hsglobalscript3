@@ -1,8 +1,11 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (gsimplicit_here) where
+module GSDL.Syntax (gsimplicit_here, gsarg_expr) where
 
 import GSI.Syn (gsvar)
-import GSI.Value (gsconstr)
+import GSI.Value (gslambda_value, gsconstr, gsav)
+import GSI.ByteCode (gsbcconstr)
 $gsimports
 
 gsimplicit_here = $gsconstr (gsvar "here") []
+
+gsarg_expr = $gslambda_value $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav e ]

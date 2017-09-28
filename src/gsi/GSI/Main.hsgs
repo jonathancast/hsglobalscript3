@@ -72,7 +72,7 @@ $gsdeclare expr.atom gsexpr_atom
 $gsdeclare expr.app gsexpr_app
 
 expr = [gs:value|
-    <|> (parser.unit (foldl expr.app) <*> expr.atom <*> many expr.atom)
+    <|> parser.unit (foldl (λ 'f. λ 'x. expr.app f (arg.expr x))) <*> expr.atom <*> many expr.atom
 |]
 
 $gsdeclare expr.var gsexpr_var
@@ -131,6 +131,7 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
 |]
 
 $gsdeclare type-check-implicit gstype_check_implicit
+$gsdeclare type-check-arg gstype_check_arg
 
 $gsdeclare view expr.var gsexpr_var_view
 $gsdeclare view expr.app gsexpr_app_view
@@ -151,11 +152,14 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
     case expr.app 'ef 'ex. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
             'ef1 ← type-check-expr pos ef (type.function tyx tye);
-            'ex1 ← type-check-expr pos ex tyx;
+            'ex1 ← type-check-arg pos ex tyx;
         . undefined
 |]
 
 gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
+|]
+
+gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
 |]
 
 $gsdeclare view type.unifiable-var gstype_unifiable_var_view
