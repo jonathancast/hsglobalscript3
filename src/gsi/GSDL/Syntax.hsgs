@@ -1,0 +1,8 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSDL.Syntax (gsimplicit_here) where
+
+import GSI.Syn (gsvar)
+import GSI.Value (gsconstr)
+$gsimports
+
+gsimplicit_here = $gsconstr (gsvar "here") []

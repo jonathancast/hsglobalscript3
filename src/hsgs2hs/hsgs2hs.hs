@@ -696,6 +696,7 @@ globalEnv = Env{
         ("gsvar.compare", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_compare", HSVar "gsigsvar_compare")),
         ("gsvar.fmt-atom", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_fmtAtom", HSVar "gsigsvar_fmtAtom")),
         ("impfor", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpfor", HSVar "gsimpfor")),
+        ("implicit.here", (Set.singleton $ HSIVar "GSDL.Syntax" "gsimplicit_here", HSVar "gsimplicit_here")),
         ("impunit", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpunit", HSVar "gsimpunit")),
         ("is-lower", (Set.singleton $ HSIVar "GSI.Rune" "gsisLower", HSVar "gsisLower")),
         ("is-space", (Set.singleton $ HSIVar "GSI.Rune" "gsisSpace", HSVar "gsisSpace")),
