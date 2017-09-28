@@ -282,6 +282,11 @@ gstype_checker_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'implicits ∝ env #implicits;
 〉 |]
 
+gstype_checker_env_implicits_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
+    'types ∝ env #types;
+    'implicits ∝ ordered-map.insert gsvar.compare v is (env #implicits);
+〉 |]
+
 gstype_checker_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'implicits ∝ ordered-map.empty; 〉 |]
 
 gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
