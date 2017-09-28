@@ -3,10 +3,12 @@ module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gs
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos(..), StackTrace, gshere)
+import GSI.Util (Pos(..), StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsav, gsae, gsvCode)
+import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsfield, gsav, gsae, gsvCode)
 import API (apiImplementationFailure)
+import GSI.Eval (evalSync)
+import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
@@ -81,6 +83,14 @@ gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
     _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"
 
 gsapiEvalPos :: Pos -> GSValue -> IO Pos
+gsapiEvalPos pos (GSThunk th) = do
+    v' <- evalSync [StackTrace pos []] th
+    gsapiEvalPos pos v'
+gsapiEvalPos pos v@GSRecord{} = do
+    filename <- gsapiEvalString pos =<< $gsfield (gsvar "filename") v
+    line <- gsapiEvalNatural pos =<< $gsfield (gsvar "line") v
+    col <- gsapiEvalNatural pos =<< $gsfield (gsvar "col") v
+    return $ Pos filename line col
 gsapiEvalPos pos v = $apiImplementationFailure $ "gsapiEvalPos " ++ gsvCode v ++ " next"
 
 gsbcevalstacktrace = varE 'gsbcevalstacktrace_w `appE` gshere
