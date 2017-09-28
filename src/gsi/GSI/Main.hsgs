@@ -130,6 +130,8 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
     . type-checker.unit mbe1
 |]
 
+$gsdeclare type-check-implicit gstype_check_implicit
+
 $gsdeclare view expr.var gsexpr_var_view
 $gsdeclare view expr.app gsexpr_app_view
 
@@ -151,6 +153,9 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             'ef1 ← type-check-expr pos ef (type.function tyx tye);
             'ex1 ← type-check-expr pos ex tyx;
         . undefined
+|]
+
+gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
 |]
 
 $gsdeclare view type.unifiable-var gstype_unifiable_var_view
