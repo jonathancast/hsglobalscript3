@@ -20,6 +20,7 @@ gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
 
 gsfoldr = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case nil. z
+    case 'x:'xn1. f x (foldr f z xn1)
 |]
 
 gscons :: GSValue
