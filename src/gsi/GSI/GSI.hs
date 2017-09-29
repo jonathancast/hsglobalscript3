@@ -9,13 +9,13 @@ import Component.Monad (mvarContents)
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSArg, GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -54,6 +54,11 @@ gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
 gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ asv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ (f :: GSValue) ->
         $gsbcimplementationfailure "gsigsbcapply next"
+
+gsbcevallist_w :: Pos -> GSArg -> ([GSValue] -> GSExpr) -> GSExpr
+gsbcevallist_w pos a k = w a id where
+    w a d = gsbcforce_w pos a $ \ v -> case v of
+        _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
 
