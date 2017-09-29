@@ -63,6 +63,9 @@ gsevalList pos v = gsevalList_w pos id v where
 
 gsevalString :: Pos -> GSValue -> IO String
 gsevalString pos v = gsevalString_w pos id v where
+    gsevalString_w pos ds (GSThunk th) = do
+        v <- evalSync [StackTrace pos []] th
+        gsevalString_w pos ds v
     gsevalString_w pos ds (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
         ch <- gsevalChar pos chv
         gsevalString_w pos (ds . (ch:)) sv
