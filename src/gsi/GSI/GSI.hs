@@ -54,7 +54,8 @@ gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
 gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ avsv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ (f :: GSValue) ->
         gsbcevallist_w $gshere ($gsav avsv) $ \ avs ->
-            $gsbcimplementationfailure "gsigsbcapply next"
+            foldr (\ av f as0 k -> $gsbcevalexternal ($gsav av) $ \ (a :: GSArg) -> f (as0 . (a:)) k) (\ d k -> k (d [])) avs id $ \ as ->
+                $gsbcimplementationfailure "gsigsbcapply next"
 
 gsbcevallist_w :: Pos -> GSArg -> ([GSValue] -> GSExpr) -> GSExpr
 gsbcevallist_w pos a k = w a id where
