@@ -15,7 +15,7 @@ import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcevalexternal, gsbcapply, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -37,7 +37,9 @@ gsiprimgsapply pos t fv asv = do
     as <- (gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ a -> return a)) :: IO [GSValue]
     $apiImplementationFailure $ "gsiprimgsapply next"
 
-gsigsbcwithhere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcimplementationfailure "gsigsbcwithhere next"
+gsigsbcwithhere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcevalpos ($gsav posv) $ \ pos ->
+    gsbcwithhere_w pos $ \ here ->
+        $gsbcevalexternal ($gsae $ $gsbcapply kv [ $gsav $ gsexternal here ]) $ \ e -> e
 
 gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal $ gsundefined_value_w pos
