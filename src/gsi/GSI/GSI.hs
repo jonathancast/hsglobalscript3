@@ -15,7 +15,7 @@ import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -52,10 +52,10 @@ gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
         $gsbcexternal $ gsbcenter_w pos v
 
 gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ avsv ->
-    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ (f :: GSValue) ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ f ->
         gsbcevallist_w $gshere ($gsav avsv) $ \ avs ->
-            foldr (\ av f as0 k -> $gsbcevalexternal ($gsav av) $ \ (a :: GSArg) -> f (as0 . (a:)) k) (\ d k -> k (d [])) avs id $ \ as ->
-                $gsbcimplementationfailure "gsigsbcapply next"
+            foldr (\ av f as0 k -> $gsbcevalexternal ($gsav av) $ \ a -> f (as0 . (a:)) k) (\ d k -> k (d [])) avs id $ \ as ->
+                $gsbcexternal (gsbcapply_w pos f as)
 
 gsbcevallist_w :: Pos -> GSArg -> ([GSValue] -> GSExpr) -> GSExpr
 gsbcevallist_w pos a k = w a id where
