@@ -673,6 +673,7 @@ globalEnv = Env{
         ("createThread", (Set.singleton $ HSIVar "GSI.GSI" "gsicreateThread", HSVar "gsicreateThread")),
         ("display-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_displayRune", HSVar "gsparser_displayRune")),
         ("either-for", (Set.singleton $ HSIVar "GSI.Either" "gseitherFor", HSVar "gseitherFor")),
+        ("either.mapM", (Set.singleton $ HSIVar "GSI.Either" "gseither_mapM", HSVar "gseither_mapM")),
         ("empty", (Set.singleton $ HSIVar "GSI.Parser" "gsempty", HSVar "gsempty")),
         ("env.get-args", (Set.singleton $ HSIVar "GSI.Env" "gsenvGetArgs", HSVar "gsenvGetArgs")),
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),
