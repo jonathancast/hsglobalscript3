@@ -113,8 +113,7 @@ $gsdeclare compile-document gscompileDocument
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either.for
         'mbe1 ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
-        'p ← compile-document pos compiler.global-env mbe1;
-    . right p
+    . right (compile-document pos compiler.global-env mbe1)
 |]
 
 $gsdeclare type-checker.new-unifiable-var gs_type_checker_new_unifiable_var
@@ -368,7 +367,7 @@ gskind_pointed = $gsconstr (gsvar "pointed") []
 $gsdeclare compile-expr gscompileExpr
 
 gscompileDocument = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
-    case nothing. right (gsbcundefined pos)
+    case nothing. gsbcundefined pos
     case just 'e. compile-expr pos env e
 |]
 
@@ -376,8 +375,8 @@ $gsdeclare compile-app gscompileApp
 
 gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
-        case nothing. left (pos.fmt pos qq{§(gsvar.fmt-atom v) not in the compiler environment})
-        case just 'gsv. right (gsbcenter pos gsv)
+        case nothing. error undefined -- > (logstr (pos.fmt pos qq{§(gsvar.fmt-atom v) not in the compiler environment}))
+        case just 'gsv. gsbcenter pos gsv
     )
     case expr.app 'f 'a. compile-app pos env f (a:nil)
 |]
@@ -386,7 +385,9 @@ $gsdeclare compile-arg gscompile_arg
 
 gscompileApp = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
-        case just 'gsv. either.for 'ase ← either.mapM (compile-arg pos env) as;. right undefined
+        case just 'gsv. for
+                'ase ∝ undefined; -- > map (compile-arg pos env) as;
+            . undefined -- > gsbcapply gsv (map gsae ase)
     )
 |]
 
