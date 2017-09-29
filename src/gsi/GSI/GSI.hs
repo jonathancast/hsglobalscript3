@@ -59,6 +59,9 @@ gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ avsv 
 gsbcevallist_w :: Pos -> GSArg -> ([GSValue] -> GSExpr) -> GSExpr
 gsbcevallist_w pos a k = w a id where
     w a d = gsbcforce_w pos a $ \ v -> case v of
+        GSConstr _ c [] | c == gsvar "nil" -> k (d [])
+        GSConstr _ c [ v0, v1 ] | c == gsvar ":" -> w ($gsav v1) (d . (v0:))
+        GSConstr _ c as -> $gsbcimplementationfailure $ "gsbcevallist " ++ fmtVarAtom c " next"
         _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
