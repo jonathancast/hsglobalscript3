@@ -769,6 +769,7 @@ globalEnv = Env{
     gsviews = Map.fromList [
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view")),
         ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
+        ("arg.here", (Set.singleton $ HSIVar "GSDL.Syntax" "gsarg_here_view", HSVar "gsarg_here_view")),
         ("eq", (Set.singleton $ HSIVar "GSI.OrderTotal" "gsord_eq_view", HSVar "gsord_eq_view")),
         ("false", (Set.singleton $ HSIVar "GSI.Bool" "gsfalse_view", HSVar "gsfalse_view")),
         ("file.document", (Set.singleton $ HSIVar "GSI.Main" "gsfileDocument_view", HSVar "gsfileDocument_view")),
