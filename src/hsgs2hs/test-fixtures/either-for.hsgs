@@ -1,2 +1,2 @@
 $gsimports
-[gs:expr hsvs=x,| either-for. x |]
+[gs:expr hsvs=x,| either.for. x |]

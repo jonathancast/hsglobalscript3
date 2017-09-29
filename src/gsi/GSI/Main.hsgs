@@ -111,7 +111,7 @@ $gsdeclare type-check.document gstype_check_document
 $gsdeclare compile-document gscompileDocument
 
 gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
-    either-for
+    either.for
         'mbe1 ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
         'p ← compile-document pos compiler.global-env mbe1;
     . right p
@@ -384,7 +384,7 @@ gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
 
 gscompileApp = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
-        case just 'gsv. either-for 'ase ← either.mapM undefined as;. right undefined
+        case just 'gsv. either.for 'ase ← either.mapM undefined as;. right undefined
     )
 |]
 

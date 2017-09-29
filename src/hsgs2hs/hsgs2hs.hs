@@ -672,7 +672,7 @@ globalEnv = Env{
         ("char", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_char", HSVar "gsparser_char")),
         ("createThread", (Set.singleton $ HSIVar "GSI.GSI" "gsicreateThread", HSVar "gsicreateThread")),
         ("display-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_displayRune", HSVar "gsparser_displayRune")),
-        ("either-for", (Set.singleton $ HSIVar "GSI.Either" "gseitherFor", HSVar "gseitherFor")),
+        ("either.for", (Set.singleton $ HSIVar "GSI.Either" "gseitherFor", HSVar "gseitherFor")),
         ("either.mapM", (Set.singleton $ HSIVar "GSI.Either" "gseither_mapM", HSVar "gseither_mapM")),
         ("empty", (Set.singleton $ HSIVar "GSI.Parser" "gsempty", HSVar "gsempty")),
         ("env.get-args", (Set.singleton $ HSIVar "GSI.Env" "gsenvGetArgs", HSVar "gsenvGetArgs")),
@@ -806,7 +806,7 @@ globalEnv = Env{
             (_, EImpGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
             _ -> return []
         ),
-        ("either-for", \ as -> case as of
+        ("either.for", \ as -> case as of
             (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright"),
