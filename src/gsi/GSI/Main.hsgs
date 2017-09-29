@@ -383,7 +383,7 @@ gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
 |]
 
 gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
-    case arg.here. undefined
+    case arg.here. gsbcwithhere pos (λ 'here. k (undefined : cas))
 |]
 
 gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
