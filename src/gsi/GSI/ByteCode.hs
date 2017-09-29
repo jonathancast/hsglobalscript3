@@ -20,7 +20,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..))
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, gsae, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, whichExternal, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
@@ -162,7 +162,10 @@ gsbcfield_w pos a f = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in runGSArg
 gsbcevalexternal = varE 'gsbcevalexternal_w `appE` gshere
 
 gsbcevalexternal_w :: GSExternal e => Pos -> GSArg -> (e -> GSExpr) -> GSExpr
-gsbcevalexternal_w pos ne k = gsbcforce_w pos ne $ \ ev -> case ev of
+gsbcevalexternal_w pos ea k = gsbcforce_w pos ea $ \ ev -> case ev of
+    GSExternal e -> case fromExternal e of
+        Just x -> k x
+        Nothing -> gsbcimplementationfailure_w $gshere $ "gsbcevalexternal_w " ++ whichExternal e ++ " next"
     _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalexternal_w " ++ gsvCode ev ++ " next"
 
 gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
