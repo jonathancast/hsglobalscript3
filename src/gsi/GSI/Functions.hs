@@ -49,6 +49,9 @@ gsevalChar pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
 
 gsevalNatural :: Pos -> GSValue -> IO Integer
+gsevalNatural pos (GSThunk th) = do
+    v <- evalSync [StackTrace pos []] th
+    gsevalNatural pos v
 gsevalNatural pos (GSNatural n) = return n
 gsevalNatural pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalNatural " ++ gsvCode v ++ " next"
