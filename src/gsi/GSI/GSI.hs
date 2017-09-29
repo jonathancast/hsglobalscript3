@@ -52,7 +52,8 @@ gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
         $gsbcexternal $ gsbcenter_w pos v
 
 gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ asv ->
-    $gsbcimplementationfailure "gsigsbcapply next"
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ (f :: GSValue) ->
+        $gsbcimplementationfailure "gsigsbcapply next"
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
 
