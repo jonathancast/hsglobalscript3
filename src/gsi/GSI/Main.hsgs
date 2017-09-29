@@ -388,7 +388,7 @@ gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
 
 gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
-        case just 'gsv. undefined -- > gsbcapply gsv cas
+        case just 'gsv. gsbcapply gsv cas
     )
 |]
 
