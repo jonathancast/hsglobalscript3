@@ -382,10 +382,15 @@ gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.app 'f 'a. compile-app pos env f (a:nil)
 |]
 
+$gsdeclare compile-arg gscompile_arg
+
 gscompileApp = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
         case just 'gsv. either.for 'ase ← either.mapM undefined as;. right undefined
     )
+|]
+
+gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. analyze a.
 |]
 
 gscompiler_global_env = [gs:value|
