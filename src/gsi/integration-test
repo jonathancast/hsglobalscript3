@@ -15,6 +15,7 @@ ok_grep_errors '-- variable not in scope --' 'foo not in scope' ./test-gsi unbou
 ok_grep_errors '-- empty source file --' 'empty-file.gs:1:1: Undefined' ./test-gsi empty-file.gs
 ok_diff '-- function variable --' ./test-gsi bare-gsmain.gsi.gs
 ok_grep_errors '-- undefined variable --' 'undefined.gs:1:1: Undefined' ./test-gsi undefined.gs
+ok_grep_errors '-- function application --' 'function-application.gs:1:1: Undefined' ./test-gsi function-application.gs
 
 echo '## gsi'
 
