@@ -420,7 +420,3 @@ gscompiler_global_env = [gs:value|
     ordered-map.insert gsvar.compare (gsvar qq{undefined}) (gsinject (value undefined)) $
     ordered-map.empty
 |]
-
-gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
-
-gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
