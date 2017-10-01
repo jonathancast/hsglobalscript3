@@ -756,12 +756,13 @@ globalEnv = Env{
         ("type-checker.unify", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_unify", HSVar "gstype_checker_unify")),
         ("type-checker.unit", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_unit", HSVar "gstype_checker_unit")),
         ("type-checker.zip-withM", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_zipWithM", HSVar "gstype_checker_zipWithM")),
-        ("type.app", (Set.singleton $ HSIVar "GSI.Main" "gstype_app", HSVar "gstype_app")),
-        ("type.const", (Set.singleton $ HSIVar "GSI.Main" "gstype_const", HSVar "gstype_const")),
-        ("type.empty-signature", (Set.singleton $ HSIVar "GSI.Main" "gstype_empty_signature", HSVar "gstype_empty_signature")),
-        ("type.forall", (Set.singleton $ HSIVar "GSI.Main" "gstype_forall", HSVar "gstype_forall")),
-        ("type.function", (Set.singleton $ HSIVar "GSI.Main" "gstype_function", HSVar "gstype_function")),
+        ("type.app", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_app", HSVar "gstype_app")),
+        ("type.const", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_const", HSVar "gstype_const")),
+        ("type.empty-signature", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_empty_signature", HSVar "gstype_empty_signature")),
+        ("type.forall", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_forall", HSVar "gstype_forall")),
+        ("type.function", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_function", HSVar "gstype_function")),
         ("type.subst", (Set.singleton $ HSIVar "GSI.Main" "gstype_subst", HSVar "gstype_subst")),
+        ("type.unifiable-var", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_unifiable_var", HSVar "gstype_unifiable_var")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
         ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))
@@ -797,10 +798,12 @@ globalEnv = Env{
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing_view", HSVar "gsnothing_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
-        ("type.const", (Set.singleton $ HSIVar "GSI.Main" "gstype_const_view", HSVar "gstype_const_view")),
-        ("type.empty-signature", (Set.singleton $ HSIVar "GSI.Main" "gstype_empty_signature_view", HSVar "gstype_empty_signature_view")),
-        ("type.forall", (Set.singleton $ HSIVar "GSI.Main" "gstype_forall_view", HSVar "gstype_forall_view")),
-        ("type.function", (Set.singleton $ HSIVar "GSI.Main" "gstype_function_view", HSVar "gstype_function_view"))
+        ("type.app", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_app_view", HSVar "gstype_app_view")),
+        ("type.const", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_const_view", HSVar "gstype_const_view")),
+        ("type.empty-signature", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_empty_signature_view", HSVar "gstype_empty_signature_view")),
+        ("type.forall", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_forall_view", HSVar "gstype_forall_view")),
+        ("type.function", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_function_view", HSVar "gstype_function_view")),
+        ("type.unifiable-var", (Set.singleton $ HSIVar "GSDL.Syntax" "gstype_unifiable_var_view", HSVar "gstype_unifiable_var_view"))
     ],
     gssignatures = Map.fromList [
         ("λ", \ as -> case as of

@@ -1,5 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (gsfileDocument, gsfileDocument_view, gskind_pointed, gsexpr_var, gsexpr_app, gsexpr_var_view, gsexpr_app_view, gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view) where
+module GSDL.Syntax (
+    gsfileDocument, gsfileDocument_view,
+    gstype_unifiable_var, gstype_const, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
+    gstype_unifiable_var_view, gstype_const_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
+    gskind_pointed,
+    gsexpr_var, gsexpr_app, gsexpr_var_view, gsexpr_app_view,
+    gsimplicit_here, gsimplicit_here_view,
+    gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view
+  ) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
@@ -9,6 +17,20 @@ $gsimports
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+
+gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
+gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
+gstype_empty_signature = $gsconstr (gsvar "empty-signature") []
+gstype_forall = $gslambda_value $ \ v -> $gsbcarg $ \ ki -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "forall") [ $gsav v, $gsav ki, $gsav ty1 ]
+gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
+gstype_function = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "function") [ $gsav ty0, $gsav ty1 ]
+
+gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
+gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
+gstype_empty_signature_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "empty-signature" ek sk ty
+gstype_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "app" ek sk ty
+gstype_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "function" ek sk ty
+gstype_forall_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "forall" ek sk ty
 
 gskind_pointed = $gsconstr (gsvar "pointed") []
 
