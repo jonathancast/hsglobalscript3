@@ -408,6 +408,7 @@ gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
     case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
         case just 'gsv. gsbcapply pos gsv cas
     )
+    case expr.app 'f 'a. compile-arg pos env a (compile-function pos env f) cas
 |]
 
 gscompiler_global_env = [gs:value|
