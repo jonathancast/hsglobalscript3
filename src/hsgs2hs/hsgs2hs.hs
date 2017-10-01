@@ -687,6 +687,7 @@ globalEnv = Env{
         ("foldr", (Set.singleton $ HSIVar "GSI.List" "gsfoldr", HSVar "gsfoldr")),
         ("for", (Set.singleton $ HSIVar "GSI.StdLib" "gsfor", HSVar "gsfor")),
         ("get-pos", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_getPos", HSVar "gsparser_getPos")),
+        ("gsae", (Set.singleton $ HSIVar "GSI.GSI" "gsigsae", HSVar "gsigsae")),
         ("gsapply", (Set.singleton $ HSIVar "GSI.GSI" "gsigsapply", HSVar "gsigsapply")),
         ("gsav", (Set.singleton $ HSIVar "GSI.GSI" "gsigsav", HSVar "gsigsav")),
         ("gsbcapply", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcapply", HSVar "gsigsbcapply")),

@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
-module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
+module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -9,7 +9,7 @@ import Component.Monad (mvarContents)
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSArg, GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSArg, GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
@@ -66,6 +66,9 @@ gsbcevallist_w pos a k = w a id where
         _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
 
 gsigsav = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ v -> $gsbcexternal ($gsav v)
+
+gsigsae = $gslambda_value $ \ posv -> $gsbcarg $ \ ev ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav ev) $ \ e -> $gsbcexternal (gsargexpr_w pos e)
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
 
