@@ -72,7 +72,7 @@ $gsdeclare expr.atom gsexpr_atom
 $gsdeclare expr.app gsexpr_app
 
 expr = [gs:value|
-    <|> parser.unit (foldl (λ 'f. λ 'x. expr.app f (arg.expr x))) <*> expr.atom <*> many expr.atom
+    <|> parser.unit (foldl expr.app) <*> expr.atom <*> many (parser.unit arg.expr <*> get-pos <*> expr.atom)
 |]
 
 $gsdeclare expr.var gsexpr_var
@@ -162,7 +162,7 @@ gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
 |]
 
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
-    case arg.expr 'e. type-checker.map arg.expr (type-check-expr pos e ty)
+    case arg.expr 'pos1 'e. type-checker.map (arg.expr pos1) (type-check-expr pos1 e ty)
 |]
 
 $gsdeclare view type.unifiable-var gstype_unifiable_var_view
@@ -411,7 +411,7 @@ gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
 |]
 
 gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
-    case arg.expr 'e. k (gsae pos (compile-expr pos env e) : cas)
+    case arg.expr 'pos1 'e. k (gsae pos1 (compile-expr pos1 env e) : cas)
     case arg.here. gsbcwithhere pos (λ 'here. k (gsav here : cas))
 |]
 

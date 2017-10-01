@@ -10,7 +10,7 @@ gsimplicit_here = $gsconstr (gsvar "here") []
 
 gsimplicit_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
 
-gsarg_expr = $gslambda_value $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav e ]
+gsarg_expr = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav pos, $gsav e ]
 gsarg_here = $gsconstr (gsvar "here") []
 
 gsarg_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "expr" ek sk im
