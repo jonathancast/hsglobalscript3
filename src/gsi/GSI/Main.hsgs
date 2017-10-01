@@ -162,6 +162,7 @@ gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
 |]
 
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
+    case arg.expr 'e. undefined
 |]
 
 $gsdeclare view type.unifiable-var gstype_unifiable_var_view
