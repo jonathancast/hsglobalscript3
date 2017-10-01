@@ -15,7 +15,7 @@ gsmain = $gslambda_value $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsproc
 $gsdeclare process-document gsprocessDocument
 
 -- Loops over arguments to process them
-gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,args,file,gspos,| analyze args.
+gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,args,file,| analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
@@ -25,7 +25,7 @@ gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ g
         )
         case right 'st. (analyze st #is.dir.
             case true. gsprocessargs as gstyc gsrun -- Ignore all arguments until we start failing tests for it
-            case false. impfor 's ← file.read a;. (analyze parse advance-rune print-rune file (gspos a 1 1) s.
+            case false. impfor 's ← file.read a;. (analyze parse advance-rune print-rune file 〈 'filename ∝ a; 'line ∝ 1; 'col ∝ 1; 〉 s.
                 case left 'err. impfor
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
@@ -437,5 +437,3 @@ gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "ap
 
 gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
 gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e
-
-gspos = [gs:value| λ 'fn. λ 'l. λ 'c. 〈 'filename ∝ fn; 'line ∝ l; 'col ∝ c; 〉 |]
