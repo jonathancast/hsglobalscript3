@@ -12,10 +12,12 @@ gsmain = $gslambda_value $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsproc
     . gsprocessargs args gstyc gsrun
 |]
 
+$gsdeclare gsprocessargs gsprocessargs
+$gsdeclare file file
 $gsdeclare process-document gsprocessDocument
 
 -- Loops over arguments to process them
-gsprocessargs = $gslambda_value $ \ args -> $gsbcarg $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,args,file,| analyze args.
+gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
