@@ -438,8 +438,4 @@ gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "ap
 gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
 gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e
 
-gspos = $gslambda_value $ \ fn -> $gsbcarg $ \ l -> $gsbcarg $ \ c -> $gsbcrecord [
-    (gsvar "filename", $gsav fn),
-    (gsvar "line", $gsav l),
-    (gsvar "col", $gsav c)
-  ]
+gspos = [gs:value| λ 'fn. λ 'l. λ 'c. 〈 'filename ∝ fn; 'line ∝ l; 'col ∝ c; 〉 |]
