@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.Syntax (
     gsfileDocument, gsfileDocument_view,
+    gstype_subst,
     gstype_unifiable_var, gstype_const, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
@@ -17,6 +18,14 @@ $gsimports
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+
+gstype_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
+    case type.function 'ty10 'ty11. type.function (type.subst v ty0 ty10) (type.subst v ty0 ty11)
+    case type.const 'c. (analyze gsvar.compare v c.
+        case eq. ty0
+        case gt. ty1
+    )
+|]
 
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
 gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
