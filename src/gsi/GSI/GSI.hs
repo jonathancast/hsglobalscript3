@@ -38,8 +38,9 @@ gsiprimgsapply pos t fv asv = do
     $apiImplementationFailure $ "gsiprimgsapply next"
 
 gsigsbcwithhere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcevalpos ($gsav posv) $ \ pos ->
-    gsbcwithhere_w pos $ \ here ->
+    $gsbcexternal (gsbcwithhere_w pos $ \ here ->
         $gsbcevalexternal ($gsae $ $gsbcapply kv [ $gsav $ gsexternal here ]) $ \ e -> e
+    )
 
 gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal $ gsundefined_value_w pos
