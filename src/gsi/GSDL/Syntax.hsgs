@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (gsfileDocument, gsfileDocument_view, gsexpr_var, gsexpr_app, gsexpr_var_view, gsexpr_app_view, gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view) where
+module GSDL.Syntax (gsfileDocument, gsfileDocument_view, gskind_pointed, gsexpr_var, gsexpr_app, gsexpr_var_view, gsexpr_app_view, gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
@@ -9,6 +9,8 @@ $gsimports
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+
+gskind_pointed = $gsconstr (gsvar "pointed") []
 
 gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
