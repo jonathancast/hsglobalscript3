@@ -69,13 +69,9 @@ pragmawhitespace = [gs:value| many (
 
 $gsdeclare expr.atom gsexpr_atom
 
-$gsdeclare expr.app gsexpr_app
-
 expr = [gs:value|
     <|> parser.unit (foldl expr.app) <*> expr.atom <*> many (parser.unit arg.expr <*> get-pos <*> expr.atom)
 |]
-
-$gsdeclare expr.var gsexpr_var
 
 $gsdeclare ident ident
 
@@ -131,9 +127,6 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
 
 $gsdeclare type-check-implicit gstype_check_implicit
 $gsdeclare type-check-arg gstype_check_arg
-
-$gsdeclare view expr.var gsexpr_var_view
-$gsdeclare view expr.app gsexpr_app_view
 
 $gsdeclare get-type gstype_checker_get_type
 $gsdeclare get-implicit gstype_checker_get_implicit
@@ -431,9 +424,3 @@ gscompiler_global_env = [gs:value|
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
-
-gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
-gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
-
-gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
-gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e

@@ -1,10 +1,16 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view) where
+module GSDL.Syntax (gsexpr_var, gsexpr_app, gsexpr_var_view, gsexpr_app_view, gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
+
+gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
+gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
+
+gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
+gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e
 
 gsimplicit_here = $gsconstr (gsvar "here") []
 
