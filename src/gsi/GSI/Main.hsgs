@@ -6,13 +6,11 @@ import GSI.Value (gslambda_value, gsconstr, gsundefined_value, gsav)
 import GSI.ByteCode (gsbcarg, gsbcrecord, gsbcconstr, gsbcconstr_view)
 $gsimports
 
--- Main function (call this to start your interpreter)
-gsmain = $gslambda_value $ \ gstyc -> $gsbcarg $ \ gsrun -> [gs:expr hsvs=gsprocessargs,gstyc,gsrun,| impfor
-        'args ← env.get-args;
-    . gsprocessargs args gstyc gsrun
-|]
-
 $gsdeclare gsprocessargs gsprocessargs
+
+-- Main function (call this to start your interpreter)
+gsmain = [gs:value| λ 'gstyc. λ 'gsrun. impfor 'args ← env.get-args;. gsprocessargs args gstyc gsrun |]
+
 $gsdeclare file file
 $gsdeclare process-document gsprocessDocument
 
