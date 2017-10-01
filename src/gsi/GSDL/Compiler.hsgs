@@ -1,0 +1,33 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSDL.Compiler (gscompileDocument) where
+
+$gsimports
+
+$gsdeclare compile-expr gscompileExpr
+$gsdeclare compile-arg gscompile_arg
+$gsdeclare compile-function gscompileFunction
+
+gscompileDocument = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
+    case nothing. gsbcundefined pos
+    case just 'e. compile-expr pos env e
+|]
+
+gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
+    case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
+        case nothing. error undefined -- > (logstr (pos.fmt pos qq{§(gsvar.fmt-atom v) not in the compiler environment}))
+        case just 'gsv. gsbcenter pos gsv
+    )
+    case expr.app 'f 'a. compile-arg pos env a (compile-function pos env f) nil
+|]
+
+gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
+    case arg.expr 'pos1 'e. k (gsae pos1 (compile-expr pos1 env e) : cas)
+    case arg.here. gsbcwithhere pos (λ 'here. k (gsav here : cas))
+|]
+
+gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
+    case expr.var 'v. (analyze ordered-map.get gsvar.compare v env.
+        case just 'gsv. gsbcapply pos gsv cas
+    )
+    case expr.app 'f 'a. compile-arg pos env a (compile-function pos env f) cas
+|]
