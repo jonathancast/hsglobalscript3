@@ -262,6 +262,9 @@ gstype_checker_incorrect_type = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. type-check
 |]
 
 gstype_checker_fmt_type = [gs:value| λ 'ty. analyze ty.
+    case type.unifiable-var 'v. (analyze-type-checker-M type-checker.get-var v.
+        case nothing. type-checker.unit qq{_}
+    )
     case type.const 'c. type-checker.unit (gsvar.fmt-atom c)
     case type.app 'ty0 'ty1. type-checker.for
             's0 ← type-checker.fmt-type ty0;
