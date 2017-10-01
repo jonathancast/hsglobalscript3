@@ -176,6 +176,8 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
     case type.unifiable-var 'v0. (analyze-type-checker-M type-checker.get-var v0.
         case nothing. (analyze ty1.
             case type.app _ _. type-checker.unify-var v0 ty1
+            case type.unifiable-var 'v1. (analyze st.ref.≡ v0 v1.
+            )
         )
         case just 'ty01. type-checker.unify pos ty01 ty1
     )
