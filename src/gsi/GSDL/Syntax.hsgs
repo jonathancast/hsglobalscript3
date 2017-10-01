@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_here_view) where
+module GSDL.Syntax (gsimplicit_here, gsimplicit_here_view, gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
@@ -13,4 +13,5 @@ gsimplicit_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \
 gsarg_expr = $gslambda_value $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav e ]
 gsarg_here = $gsconstr (gsvar "here") []
 
+gsarg_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "expr" ek sk im
 gsarg_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
