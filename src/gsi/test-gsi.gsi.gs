@@ -1,3 +1,3 @@
 #! /usr/local/hsglobalscript/src/gsi/gsi
 
-gsmain
+gsmain undefined undefined
