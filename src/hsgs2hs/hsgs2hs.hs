@@ -746,6 +746,7 @@ globalEnv = Env{
         ("type-checker.env.implicits.insert",  (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_env_implicits_insert", HSVar "gstype_checker_env_implicits_insert")),
         ("type-checker.for", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_for", HSVar "gstype_checker_for")),
         ("type-checker.get-var", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_get_var", HSVar "gstype_checker_get_var")),
+        ("type-checker.map", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_map", HSVar "gstype_checker_map")),
         ("type-checker.mapM", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_mapM", HSVar "gstype_checker_mapM")),
         ("type-checker.set-var", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_set_var", HSVar "gstype_checker_set_var")),
         ("type-checker.unify", (Set.singleton $ HSIVar "GSI.Main" "gstype_checker_unify", HSVar "gstype_checker_unify")),
