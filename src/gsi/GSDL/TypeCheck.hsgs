@@ -1,0 +1,40 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSDL.TypeCheck (gstype_check_document, gstype_check_expr) where
+
+$gsimports
+
+gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
+        'ty ← type-checker.new-unifiable-var;
+        'mbe1 ← analyze mbe.
+            case nothing. type-checker.unit nothing
+            case just 'e. type-checker.for 'e1 ← type-check-expr pos e ty;. type-checker.unit (just e1)
+        ;
+        _ ← gstyc pos ty;
+    . type-checker.unit mbe1
+|]
+
+gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
+    case expr.var 'v. type-checker.for
+            'tya ← get-type pos v;
+            'tyai ← instantiate tya;
+            'ims ← get-implicit v;
+            'imtys ← type-checker.mapM (λ _. type-checker.new-unifiable-var) ims;
+            _ ← type-checker.unify pos tyai (foldr type.function tye imtys);
+            'imas ← type-checker.zip-withM (type-check-implicit pos) ims imtys;
+        . type-checker.unit (foldl expr.app (expr.var v) imas)
+    case expr.app 'ef 'ex. type-checker.for
+            'tyx ← type-checker.new-unifiable-var;
+            'ef1 ← type-check-expr pos ef (type.function tyx tye);
+            'ex1 ← type-check-arg pos ex tyx;
+        . type-checker.unit (expr.app ef1 ex1)
+|]
+
+gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
+    case implicit.here. type-checker.for
+            _ ← type-checker.unify pos (type.const (gsvar qq{stack-trace.t})) ty;
+        . type-checker.unit arg.here
+|]
+
+gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
+    case arg.expr 'pos1 'e. type-checker.map (arg.expr pos1) (type-check-expr pos1 e ty)
+|]
