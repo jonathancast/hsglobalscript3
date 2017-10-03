@@ -1,0 +1,49 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, gsexpr_atom, ident, lexeme, whitespace) where
+
+$gsimports
+
+file = [gs:value|
+    <|> parser-for
+            _ ← pragmas;
+            'pos ← get-pos;
+            'mb ← optional expr;
+        . parser.unit (file.document pos mb)
+|]
+
+pragmas = [gs:value| pragma.whitespace *> many empty |]
+
+pragmawhitespace = [gs:value| many (
+    <|> (
+        *> string qq{#!}
+        *> many (matching log{comment body character} (λ 'c. c ≠ r{\n}))
+        *> char r{\n}
+        *> parser.unit 〈〉
+    )
+    <|> (
+        *> string qq{\n}
+        *> parser.unit 〈〉
+    )
+) |]
+
+expr = [gs:value|
+    <|> parser.unit (foldl expr.app) <*> expr.atom <*> many (parser.unit arg.expr <*> get-pos <*> expr.atom)
+|]
+
+gsexpr_atom = [gs:value|
+    <|> parser.map expr.var ident
+|]
+
+$gsdeclare ident-start-char identStartChar
+$gsdeclare ident-cont-char identContChar
+
+ident = [gs:value| parser.map gsvar (
+    lexeme (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
+)|]
+
+identStartChar = [gs:value| matching log{ident start character} is-lower |]
+identContChar = [gs:value| matching log{ident cont character} is-lower |]
+
+lexeme = [gs:value| λ 'p. p <* whitespace |]
+
+whitespace = [gs:value| many (matching log{whitespace} is-space) |]

@@ -8,7 +8,6 @@ $gsdeclare gsprocessargs gsprocessargs
 -- Main function (call this to start your interpreter)
 gsmain = [gs:value| λ 'gstyc. λ 'gsrun. impfor 'args ← env.get-args;. gsprocessargs args gstyc gsrun |]
 
-$gsdeclare file file
 $gsdeclare process-document gsprocessDocument
 
 -- Loops over arguments to process them
@@ -37,62 +36,6 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
             )
         )
 |]
-
-$gsdeclare pragmas pragmas;
-$gsdeclare expr expr;
-
-file = [gs:value|
-    <|> parser-for
-            _ ← pragmas;
-            'pos ← get-pos;
-            'mb ← optional expr;
-        . parser.unit (file.document pos mb)
-|]
-
-pragmas = [gs:value hsvs=pragmawhitespace,| pragmawhitespace *> many empty |]
-
-pragmawhitespace = [gs:value| many (
-    <|> (
-        *> string qq{#!}
-        *> many (matching log{comment body character} (λ 'c. c ≠ r{\n}))
-        *> char r{\n}
-        *> parser.unit 〈〉
-    )
-    <|> (
-        *> string qq{\n}
-        *> parser.unit 〈〉
-    )
-) |]
-
-$gsdeclare expr.atom gsexpr_atom
-
-expr = [gs:value|
-    <|> parser.unit (foldl expr.app) <*> expr.atom <*> many (parser.unit arg.expr <*> get-pos <*> expr.atom)
-|]
-
-$gsdeclare ident ident
-
-gsexpr_atom = [gs:value|
-    <|> parser.map expr.var ident
-|]
-
-$gsdeclare lexeme lexeme
-
-$gsdeclare ident-start-char identStartChar
-$gsdeclare ident-cont-char identContChar
-
-ident = [gs:value| parser.map gsvar (
-    lexeme (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
-)|]
-
-identStartChar = [gs:value| matching log{ident start character} is-lower |]
-identContChar = [gs:value| matching log{ident cont character} is-lower |]
-
-$gsdeclare whitespace whitespace
-
-lexeme = [gs:value| λ 'p. p <* whitespace |]
-
-whitespace = [gs:value| many (matching log{whitespace} is-space) |]
 
 $gsdeclare type-checker.global-env gstype_checker_global_env
 

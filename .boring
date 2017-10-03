@@ -28,3 +28,4 @@ src/gsi/GSDL/AST.hs$
 src/gsi/GSDL/Compiler.hs$
 src/gsi/GSDL/TypeChecker.hs$
 src/gsi/GSDL/TypeCheck.hs$
+src/gsi/GSDL/Syntax.hs$
