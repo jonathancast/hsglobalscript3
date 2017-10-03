@@ -24,7 +24,7 @@ src/libgsi/GSI/Either.hs
 src/gsi/GSI/OrderTotal.hs
 src/gsi/test-gsi.hs
 src/libgsi/GSI/List.hs
-src/gsi/GSDL/Syntax.hs
+src/gsi/GSDL/AST.hs
 src/gsi/GSDL/Compiler.hs
 src/gsi/GSDL/TypeChecker.hs
 src/gsi/GSDL/TypeCheck.hs

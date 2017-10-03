@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (
+module GSDL.AST (
     gsfileDocument, gsfileDocument_view,
     gstype_subst,
     gstype_unifiable_var, gstype_const, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
