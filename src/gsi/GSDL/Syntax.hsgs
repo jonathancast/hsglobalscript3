@@ -7,7 +7,7 @@ file = [gs:value|
     <|> parser-for
             _ ← pragmas;
             'pos ← get-pos;
-            'mb ← optional expr;
+            'mb ← whitespace *> optional expr;
         . parser.unit (file.document pos mb)
 |]
 
@@ -44,6 +44,18 @@ ident = [gs:value| parser.map gsvar (
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
+opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
+
 lexeme = [gs:value| λ 'p. p <* whitespace |]
 
-whitespace = [gs:value| many (matching log{whitespace} is-space) |]
+$gsdeclare op-cont-char opContChar
+
+whitespace = [gs:value| many (
+    <|> matching log{whitespace} is-space
+    <|> (
+        *> string qq{--}
+        *> not-followed-by op-cont-char
+        *> many (matching log{non-newline} (rune.≠ r{\n}))
+        *> matching log{newline} (rune.≡ r{\n})
+    )
+) |]
