@@ -125,10 +125,12 @@ $gsdeclare negate-w gsparser_negate_w
 
 gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.unit-plus 'x 'p01. prim.lookahead (negate-w p1 (prim.unit-plus x p01))
+    case prim.get-pos 'k. get-pos (λ 'pos. difference-w (k pos) p1)
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (difference-w ek0 ek1) (λ 'r. analyze sk0 r.
             case right 'p01. (analyze sk1 r.
                 case left _. right p01
+                case right _. left 〈 '0 ∝ nil; '1 ∝ nil; 〉
             )
         )
     )
