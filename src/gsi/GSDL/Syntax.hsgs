@@ -30,9 +30,14 @@ expr = [gs:value|
     <|> parser.unit (foldl expr.app) <*> expr.atom <*> many (parser.unit arg.expr <*> get-pos <*> expr.atom)
 |]
 
+$gsdeclare parens parens
+
 gsexpr_atom = [gs:value|
+    <|> parens expr
     <|> parser.map expr.var ident
 |]
+
+parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
 
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
