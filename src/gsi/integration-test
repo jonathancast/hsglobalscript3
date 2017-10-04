@@ -15,7 +15,7 @@ fn test_gsi_impl { ./test-gsi $* }
 
 test_non_existent_file
 test_empty_file
-test_unbound_file
+test_unbound_variable
 test_function_variable
 test_undefined_variable
 test_function_application
