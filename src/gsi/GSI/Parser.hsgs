@@ -153,9 +153,13 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.unit-plus 'x 'p01. prim.unit-plus x (prim.<|> p01 p1)
     case prim.get-pos 'k0. (analyze p1.
         case prim.empty. get-pos k0
+        case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
+        case prim.get-pos 'k1. get-pos (λ 'pos. prim.<|> (k0 pos) (k1 pos))
         case prim.symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. prim.<|> (k0 pos) (prim.symbol-or-eof ek1 sk1))
     )
     case prim.lookahead 'p01. (analyze p1.
+        case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
+        case prim.lookahead 'p11. prim.lookahead (prim.<|> p01 p11)
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
@@ -169,6 +173,7 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
             )
             case right 'p2. (analyze sk1 c.
                 case left 'e1. right p2
+                case right 'p3. right (prim.<|> p2 p3)
             )
         )
     )
