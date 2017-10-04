@@ -15,7 +15,7 @@ fn test_gsi_impl { ./test-gsi $* }
 
 test_non_existent_file
 test_empty_file
-ok_grep_errors '-- variable not in scope --' 'foo not in scope' ./test-gsi unbound-variable.gs
+test_unbound_file
 ok_diff '-- function variable --' ./test-gsi bare-gsmain.gsi.gs
 ok_grep_errors '-- undefined variable --' 'undefined.gs:1:1: Undefined' ./test-gsi undefined.gs
 ok_grep_errors '-- function application --' 'function-application.gs:1:1: Undefined' ./test-gsi function-application.gs
