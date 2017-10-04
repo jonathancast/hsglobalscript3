@@ -17,7 +17,7 @@ test_non_existent_file
 test_empty_file
 test_unbound_file
 test_function_variable
-ok_grep_errors '-- undefined variable --' 'undefined.gs:1:1: Undefined' ./test-gsi undefined.gs
+test_undefined_variable
 ok_grep_errors '-- function application --' 'function-application.gs:1:1: Undefined' ./test-gsi function-application.gs
 
 echo '## gsi'
