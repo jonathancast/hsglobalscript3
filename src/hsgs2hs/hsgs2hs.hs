@@ -744,7 +744,7 @@ globalEnv = Env{
         ("ordered-map.get", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_get", HSVar "gsordered_map_get")),
         ("ordered-map.insert", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_insert", HSVar "gsordered_map_insert")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
-        ("parser-for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
+        ("parser.for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.map", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")),
         ("parser.map2", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map2", HSVar "gsparser_map2")),
         ("parser.unit", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit")),
@@ -863,7 +863,7 @@ globalEnv = Env{
               ]
             _ -> return []
         ),
-        ("parser-for", \ as -> case as of
+        ("parser.for", \ as -> case as of
             (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit"),

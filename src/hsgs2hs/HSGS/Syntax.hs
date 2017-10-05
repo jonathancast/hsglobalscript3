@@ -405,7 +405,7 @@ globalEnv = Env{
         ("for", \ env -> (EGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
         ("impfor", \ env -> (EImpGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
         ("either.for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
-        ("parser-for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
+        ("parser.for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
         ("type-checker.for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing))
     ],
     leftops = Map.fromList [

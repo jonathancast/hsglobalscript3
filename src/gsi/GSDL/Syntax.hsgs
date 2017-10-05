@@ -4,7 +4,7 @@ module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, gsexpr_atom, ident, l
 $gsimports
 
 file = [gs:value|
-    <|> parser-for
+    <|> parser.for
             _ ← pragmas;
             'pos ← get-pos;
             'mb ← whitespace *> optional expr;
