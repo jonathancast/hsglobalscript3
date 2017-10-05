@@ -4,4 +4,4 @@ module GSDL.Parser (gsdl_parser_get_lambda_like) where
 
 $gsimports
 
-gsdl_parser_get_lambda_like = [gs:value| λ 'v. λ 'env. undefined |]
+gsdl_parser_get_lambda_like = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #lambda-like) |]
