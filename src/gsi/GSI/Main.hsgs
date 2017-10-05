@@ -8,6 +8,7 @@ $gsdeclare gsprocessargs gsprocessargs
 -- Main function (call this to start your interpreter)
 gsmain = [gs:value| λ 'gstyc. λ 'gsrun. impfor 'args ← env.get-args;. gsprocessargs args gstyc gsrun |]
 
+$gsdeclare parser.global-env gsparser_global_env
 $gsdeclare process-document gsprocessDocument
 
 -- Loops over arguments to process them
@@ -21,7 +22,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
         )
         case right 'st. (analyze st #is.dir.
             case true. gsprocessargs as gstyc gsrun -- Ignore all arguments until we start failing tests for it
-            case false. impfor 's ← file.read a;. (analyze parse advance-rune print-rune file 〈 'filename ∝ a; 'line ∝ 1; 'col ∝ 1; 〉 s.
+            case false. impfor 's ← file.read a;. (analyze parse advance-rune print-rune (file parser.global-env) 〈 'filename ∝ a; 'line ∝ 1; 'col ∝ 1; 〉 s.
                 case left 'err. impfor
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
@@ -46,6 +47,8 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
         'mbe1 ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
     . right (compile-document pos compiler.global-env mbe1)
 |]
+
+gsparser_global_env = [gs:value| undefined |]
 
 $gsdeclare type-checker.gstyc.type gstype_checker_gstyc_type
 $gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type

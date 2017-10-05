@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, gsexpr_atom, ident, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, ident, lexeme, whitespace) where
 
 $gsimports
 
-file = [gs:value|
+file = [gs:value| λ 'env.
     <|> parser.for
             _ ← pragmas;
             'pos ← get-pos;
-            'mb ← whitespace *> optional expr;
+            'mb ← whitespace *> optional (expr env);
         . parser.unit (file.document pos mb)
 |]
 
@@ -26,14 +26,16 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
-expr = [gs:value|
-    <|> parser.unit (foldl expr.app) <*> expr.atom <*> many (parser.unit arg.expr <*> get-pos <*> expr.atom)
+expr = [gs:value| λ 'env.
+    <|> parser.unit (foldl expr.app)
+        <*> (expr.atom env)
+        <*> many (parser.unit arg.expr <*> get-pos <*> (expr.atom env))
 |]
 
 $gsdeclare parens parens
 
-gsexpr_atom = [gs:value|
-    <|> parens expr
+gsexpr_atom = [gs:value| λ 'env.
+    <|> parens (expr env)
     <|> parser.map expr.var ident
 |]
 
