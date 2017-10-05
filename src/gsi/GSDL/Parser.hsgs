@@ -1,0 +1,7 @@
+{-# LANGUAGE TemplateHaskell #-}
+
+module GSDL.Parser (gsdl_parser_get_lambda_like) where
+
+$gsimports
+
+gsdl_parser_get_lambda_like = [gs:value| λ 'v. λ 'env. undefined |]
