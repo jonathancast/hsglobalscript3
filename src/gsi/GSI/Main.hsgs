@@ -48,7 +48,7 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     . right (compile-document pos compiler.global-env mbe1)
 |]
 
-gsparser_global_env = [gs:value| undefined |]
+gsparser_global_env = [gs:value| parser.env.empty |]
 
 $gsdeclare type-checker.gstyc.type gstype_checker_gstyc_type
 $gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
