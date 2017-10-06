@@ -36,7 +36,7 @@ $gsdeclare parens parens
 
 gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
-    <|> parser.map expr.var ident
+    <|> parser.map expr.var (ident env)
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
@@ -44,8 +44,14 @@ parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
 
-ident = [gs:value| parser.map gsvar $  lexeme $
-    (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
+ident = [gs:value| λ 'env. lexeme $ parser.for
+        'v ← parser.map gsvar
+            (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
+        ;
+        _ ← analyze parser.get-lambda-like v env.
+            case nothing. parser.unit 〈〉
+        ;
+    . parser.unit v
 |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
