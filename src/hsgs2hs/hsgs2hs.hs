@@ -745,6 +745,7 @@ globalEnv = Env{
         ("ordered-map.insert", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_insert", HSVar "gsordered_map_insert")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
         ("parser.env.empty", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_empty", HSVar "gsdl_parser_env_empty")),
+        ("parser.env.lambda-like.insert", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_lambda_like_insert", HSVar "gsdl_parser_env_lambda_like_insert")),
         ("parser.for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.get-lambda-like", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_get_lambda_like", HSVar "gsdl_parser_get_lambda_like")),
         ("parser.map", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")),
