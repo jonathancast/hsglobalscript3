@@ -48,7 +48,9 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     . right (compile-document pos compiler.global-env mbe1)
 |]
 
-gsparser_global_env = [gs:value| parser.env.empty |]
+gsparser_global_env = [gs:value|
+    parser.env.empty
+|]
 
 $gsdeclare type.consts gstype_consts
 

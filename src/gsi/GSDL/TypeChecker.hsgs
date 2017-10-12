@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.TypeChecker (
     gstype_checker_unify,
-    gstype_checker_instantiate, gs_type_checker_new_unifiable_var, gstype_checker_is_free_in, gstype_checker_incorrect_type, gstype_checker_fmt_type,
+    gstype_checker_instantiate, gstype_checker_subst, gs_type_checker_new_unifiable_var, gstype_checker_is_free_in, gstype_checker_incorrect_type, gstype_checker_fmt_type,
     gstype_checker_get_type, gstype_checker_get_implicit,
     gstype_checker_get_var, gstype_checker_set_var,
     gstype_checker_env_type_insert, gstype_checker_env_implicits_insert, gstype_checker_env_empty,
@@ -64,7 +64,18 @@ gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type
 gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
     case type.function 'ty0 'ty1. type-checker.unit ty
     case type.forall 'v 'ki 'ty1. type-checker.for 'v1 ← type-checker.new-unifiable-var;.
-        type-checker.unit (type.subst v v1 ty1)
+        type-checker.subst v v1 ty1
+|]
+
+gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
+    case type.function 'ty10 'ty11. type-checker.for
+        'ty101 ← type-checker.subst v ty0 ty10;
+        'ty111 ← type-checker.subst v ty0 ty11;
+            . type-checker.unit (type.function ty101 ty111)
+    case type.const 'c. (analyze gsvar.compare v c.
+        case eq. type-checker.unit ty0
+        case gt. type-checker.unit ty1
+    )
 |]
 
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
