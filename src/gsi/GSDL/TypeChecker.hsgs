@@ -1,7 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.TypeChecker (
     gstype_checker_unify,
-    gstype_checker_instantiate, gstype_checker_subst, gs_type_checker_new_unifiable_var, gstype_checker_is_free_in, gstype_checker_incorrect_type, gstype_checker_fmt_type,
+    gstype_checker_instantiate, gstype_checker_subst,
+    gs_type_checker_new_unifiable_var,
+    gstype_checker_incorrect_type, gstype_checker_fmt_type,
     gstype_checker_get_type, gstype_checker_get_implicit,
     gstype_checker_get_var, gstype_checker_set_var,
     gstype_checker_env_type_insert, gstype_checker_env_implicits_insert, gstype_checker_env_empty,
@@ -57,7 +59,9 @@ gstype_checker_unify_do_var = [gs:value| λ 'pos. λ 'ty. λ 'v. analyze-type-ch
     case just 'ty1. type-checker.unify pos ty ty1
 |]
 
-gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.is-free-in v ty.
+$gsdeclare type-checker.is-unifiable-var-free-in gstype_checker_is_unifiable_var_free_in
+
+gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.is-unifiable-var-free-in v ty.
     case false. type-checker.set-var (just ty) v
 |]
 
@@ -80,20 +84,20 @@ gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
 
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
 
-gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
+gstype_checker_is_unifiable_var_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
     case type.unifiable-var 'v1. (analyze st.ref.≡ v v1.
         case false. (analyze-type-checker-M type-checker.get-var v1.
             case nothing. type-checker.unit false
-            case just 'ty1. type-checker.is-free-in v ty1
+            case just 'ty1. type-checker.is-unifiable-var-free-in v ty1
         )
     )
-    case type.app 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
-        case false. type-checker.is-free-in v ty1
+    case type.app 'ty0 'ty1. (analyze-type-checker-M type-checker.is-unifiable-var-free-in v ty0.
+        case false. type-checker.is-unifiable-var-free-in v ty1
     )
     case type.const 'c. type-checker.unit false
     case type.empty-signature. type-checker.unit false
-    case type.function 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
-        case false. type-checker.is-free-in v ty1
+    case type.function 'ty0 'ty1. (analyze-type-checker-M type-checker.is-unifiable-var-free-in v ty0.
+        case false. type-checker.is-unifiable-var-free-in v ty1
     )
 |]
 
