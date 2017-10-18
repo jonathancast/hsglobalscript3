@@ -11,6 +11,8 @@ module GSDL.TypeChecker (
     gstype_checker_run, gstype_checker_unit, gstype_checker_bind, gstype_checker_map
   ) where
 
+import GSI.Value (gslambda_value, gsav)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 $gsdeclare type-checker.unify-do-var gstype_checker_unify_do_var
@@ -59,9 +61,11 @@ gstype_checker_unify_do_var = [gs:value| λ 'pos. λ 'ty. λ 'v. analyze-type-ch
     case just 'ty1. type-checker.unify pos ty ty1
 |]
 
-$gsdeclare type-checker.is-unifiable-var-free-in gstype_checker_is_unifiable_var_free_in
+$gsdeclare type-var.unifiable-var gstype_var_unifiable_var
 
-gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.is-unifiable-var-free-in v ty.
+$gsdeclare type-checker.is-free-in gstype_checker_is_free_in
+
+gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type-checker.is-free-in (type-var.unifiable-var v) ty.
     case false. type-checker.set-var (just ty) v
 |]
 
@@ -84,20 +88,26 @@ gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
 
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
 
-gstype_checker_is_unifiable_var_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
-    case type.unifiable-var 'v1. (analyze st.ref.≡ v v1.
-        case false. (analyze-type-checker-M type-checker.get-var v1.
-            case nothing. type-checker.unit false
-            case just 'ty1. type-checker.is-unifiable-var-free-in v ty1
+$gsdeclare view type-var.unifiable-var gstype_var_unifiable_var_view
+
+gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
+    case type.unifiable-var 'v1. (analyze v.
+        case type-var.unifiable-var 'v0. (analyze st.ref.≡ v0 v1.
+            case false. (analyze-type-checker-M type-checker.get-var v1.
+                case nothing. type-checker.unit false
+                case just 'ty1. type-checker.is-free-in v ty1
+            )
         )
     )
-    case type.app 'ty0 'ty1. (analyze-type-checker-M type-checker.is-unifiable-var-free-in v ty0.
-        case false. type-checker.is-unifiable-var-free-in v ty1
+    case type.app 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
+        case false. type-checker.is-free-in v ty1
     )
-    case type.const 'c. type-checker.unit false
+    case type.const 'c. (analyze v.
+        case type-var.unifiable-var _. type-checker.unit false
+    )
     case type.empty-signature. type-checker.unit false
-    case type.function 'ty0 'ty1. (analyze-type-checker-M type-checker.is-unifiable-var-free-in v ty0.
-        case false. type-checker.is-unifiable-var-free-in v ty1
+    case type.function 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
+        case false. type-checker.is-free-in v ty1
     )
 |]
 
@@ -181,3 +191,7 @@ gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. analyze-impM a env.
     case left 'err. impunit (left err)
     case right 'x. impunit (right (f x))
 |]
+
+gstype_var_unifiable_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "unifiable-var") [ $gsav v ]
+
+gstype_var_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ x -> $gsbcconstr_view "unifiable-var" ek sk x
