@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
-module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
+module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -144,6 +144,14 @@ gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gs
             GT -> $gsbcconstr (gsvar "gt") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
+
+gsigsvar_eq = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
+    (GSExternal v0e, GSExternal v1e)
+        | Just v0hsv <- fromExternal v0e, Just v1hsv <- fromExternal v1e -> case (==) (v0hsv :: GSVar) (v1hsv :: GSVar) of
+            True -> $gsbcconstr (gsvar "true") []
+            False -> $gsbcconstr (gsvar "false") []
+        | otherwise -> $gsbcimplementationfailure $ "gsigsvar_eq " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
+    _ -> $gsbcimplementationfailure $ "gsigsvar_eq " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
 
 gsigsvar_fmtAtom = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> case vv of
     GSExternal ve
