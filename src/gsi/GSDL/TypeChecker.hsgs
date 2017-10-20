@@ -72,8 +72,10 @@ gstype_checker_unify_var = [gs:value| λ 'v. λ 'ty. analyze-type-checker-M type
 
 gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
     case type.function 'ty0 'ty1. type-checker.unit ty
-    case type.forall 'v 'ki 'ty1. type-checker.for 'v1 ← type-checker.new-unifiable-var;.
-        type-checker.subst v v1 ty1
+    case type.forall 'v 'ki 'ty1. type-checker.for
+            'v1 ← type-checker.new-unifiable-var;
+            'ty2 ← type-checker.subst v v1 ty1;
+        . instantiate ty2
 |]
 
 gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
