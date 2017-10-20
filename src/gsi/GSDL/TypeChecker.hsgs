@@ -77,15 +77,18 @@ gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
 |]
 
 gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
-    case type.forall 'v1 'ki 'ty10. (analyze-type-checker-M type-checker.is-free-in (type-var.const v1) ty0.
+    case type.forall 'v1 'ki 'ty10. (analyze gsvar.≡ v v1.
+        case false. (analyze-type-checker-M type-checker.is-free-in (type-var.const v1) ty0.
+            case false. type-checker.for 'ty101 ← type-checker.subst v ty0 ty10;. type-checker.unit (type.forall v1 ki ty101)
+        )
     )
     case type.function 'ty10 'ty11. type-checker.for
         'ty101 ← type-checker.subst v ty0 ty10;
         'ty111 ← type-checker.subst v ty0 ty11;
             . type-checker.unit (type.function ty101 ty111)
-    case type.const 'c. (analyze gsvar.compare v c.
-        case eq. type-checker.unit ty0
-        case gt. type-checker.unit ty1
+    case type.const 'c. (analyze gsvar.≡ v c.
+        case true. type-checker.unit ty0
+        case false. type-checker.unit ty1
     )
 |]
 
