@@ -92,6 +92,7 @@ gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
 gs_type_checker_new_unifiable_var = [gs:value| λ 'env. impfor 'v ← st.ref.new nothing;. impunit (right (type.unifiable-var v)) |]
 
 $gsdeclare view type-var.unifiable-var gstype_var_unifiable_var_view
+$gsdeclare view type-var.const gstype_var_const_view
 
 gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
     case type.unifiable-var 'v1. (analyze v.
@@ -199,3 +200,4 @@ gstype_var_unifiable_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "unifiabl
 gstype_var_const = $gslambda_value $ \ v -> $gsbcconstr (gsvar "const") [ $gsav v ]
 
 gstype_var_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ x -> $gsbcconstr_view "unifiable-var" ek sk x
+gstype_var_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ x -> $gsbcconstr_view "const" ek sk x
