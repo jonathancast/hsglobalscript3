@@ -62,6 +62,7 @@ gstype_checker_unify_do_var = [gs:value| λ 'pos. λ 'ty. λ 'v. analyze-type-ch
 |]
 
 $gsdeclare type-var.unifiable-var gstype_var_unifiable_var
+$gsdeclare type-var.const gstype_var_const
 
 $gsdeclare type-checker.is-free-in gstype_checker_is_free_in
 
@@ -193,5 +194,6 @@ gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. analyze-impM a env.
 |]
 
 gstype_var_unifiable_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "unifiable-var") [ $gsav v ]
+gstype_var_const = $gslambda_value $ \ v -> $gsbcconstr (gsvar "const") [ $gsav v ]
 
 gstype_var_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ x -> $gsbcconstr_view "unifiable-var" ek sk x
