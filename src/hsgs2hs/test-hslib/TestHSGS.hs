@@ -6,7 +6,7 @@ import qualified Data.Map as Map
 import GSI.Util (StackTrace(..), gshere, fmtPos)
 import GSI.Syn (GSVar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (fmtErrorShort)
-import GSI.Value (GSValue(..), GSExpr, gsthunk, gsvCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 
 printTestExpr :: GSExpr -> IO ()
@@ -21,6 +21,8 @@ formatTestValue v@GSError{} k = formatTestValueAtom v k
 formatTestValue (GSThunk ts) k = do
     v <- evalSync [StackTrace $gshere []] ts
     formatTestValue v k
+formatTestValue (GSClosure _ GSLambda{}) k = k $ ("<function>"++)
+formatTestValue (GSClosure _ bco) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue (GSClosure _ "++) . (bcoCode bco++) . (") next>"++)
 formatTestValue v@GSRecord{} k = formatTestValueAtom v k
 formatTestValue v@GSNatural{} k = formatTestValueAtom v k
 formatTestValue (GSConstr _ v as) k = formatArgs as $ \ ds -> k (fmtVarAtom v . ds)

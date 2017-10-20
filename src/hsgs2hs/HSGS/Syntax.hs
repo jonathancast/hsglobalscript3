@@ -143,7 +143,10 @@ expr env = empty
     eleftop pos0 e0 (posop, op, pose, e1) = EVar posop op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pose e1
     erightop (posop0, op0, pose0, e0) (posop1, op1, pose1, e1) =
         (posop0, op0, pose0, EVar posop1 op1 `EApp` ArgExpr pose0 e0 `EApp` ArgExpr pose1 e1)
-    exprApp = foldl EApp <$> exprAtom <*> many exprArg
+    exprApp = foldl EApp <$> exprFun <*> many exprArg
+    exprFun = empty
+        <|> exprAtom
+        <|> special env
     exprAtom = empty
         <|> parens (expr env)
         <|> parens (EVar <$> getPos <*> operator env)
@@ -261,9 +264,9 @@ var :: Env -> Parser Char String
 var env = lexeme $ do
     v <- identName
     notFollowedBy (char '{')
-    case Map.lookup v (lambdas env) of
-        Nothing -> return v
-        Just _ -> pfail $ v ++ " is not variable-like"
+    case Map.member v (lambdas env) || Map.member v (specials env) of
+        False -> return v
+        True -> pfail $ v ++ " is not variable-like"
 
 operator :: Env -> Parser Char String
 operator env = lexeme $ do
@@ -286,6 +289,13 @@ lambdalike env mbv = do
         Nothing -> return ef2
         Just pe -> EApp ef2 <$> (ArgExpr <$> getPos <*> pe)
     return ef3
+
+special :: Env -> Parser Char Expr
+special env = do
+    pos <- getPos
+    foldr (<|>) empty $
+        map (\ (v, f) -> foldl EApp <$> (EVar <$> getPos <*> (keyword v *> return v)) <*> f env) $
+            Map.toList (specials env)
 
 field :: Parser Char String
 field = lexeme $ name
@@ -408,6 +418,9 @@ globalEnv = Env{
         ("parser.for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing)),
         ("type-checker.for", \ env -> (EMonadGens <$> generators env <*> getPos, EOpen <$> expr env, Nothing))
     ],
+    specials = Map.fromList [
+        ("value", \ env -> (:) <$> (ArgExpr <$> getPos <*> (EVar <$> getPos <*> lexeme identName)) <*> return [])
+    ],
     leftops = Map.fromList [
         ("*>", ()),
         ("+", ()),
@@ -427,6 +440,7 @@ globalEnv = Env{
 
 data Env = Env {
     lambdas :: Map String (Env -> (Parser Char Expr, Parser Char Expr, Maybe (Parser Char Expr))),
+    specials :: Map String (Env -> Parser Char [Arg]),
     leftops :: Map String (),
     rightops :: Map String (),
     nonops :: Map String ()

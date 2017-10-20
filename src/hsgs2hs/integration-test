@@ -7,6 +7,8 @@
 . $GS_SPEC/bin/test-fns
 . $GS_SPEC/bin/gs-spec
 
+fn test_gsi_impl { ./test_gsi_impl.rc $* }
+
 ok_diff_compiler '-- empty file --' hsgs2hs empty-file.hsgs empty-file.hs
 ok_script '-- empty directory --' hsgs2hs-empty ./hsgs2hs ./test-fixtures/empty-dir
 ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs single-line.hs
@@ -35,6 +37,7 @@ ok_diff_compiled '-- variable declarations --' hsgs2hs variable-decl.hsgs .hs ru
 # Different kinds of expressions
 
 ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
+test_value_function
 ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expression.hs
 ok_diff_compiled '-- for expressions --' hsgs2hs variable-for.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
