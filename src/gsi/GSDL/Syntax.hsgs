@@ -7,7 +7,7 @@ file = [gs:value| λ 'env.
     <|> parser.for
             _ ← pragmas;
             'pos ← get-pos;
-            'mb ← whitespace *> optional (expr env);
+            'mb ← whitespace *> optional (parser.for 'p ← expr env;. parser.unit (p #0));
         . parser.unit (file.document pos mb)
 |]
 
@@ -34,18 +34,23 @@ expr = [gs:value| λ 'env.
 
 $gsdeclare expr.function.w gsexpr_function_w
 
-gsexpr_function = [gs:value| λ 'env. parser.for 'e ← expr.atom env;. expr.function.w env e |]
+gsexpr_function = [gs:value| λ 'env. parser.for 'p ← expr.atom env;. expr.function.w env (p #0) (p #1) |]
 
-gsexpr_function_w = [gs:value| λ 'env. λ 'e.
-    <|> parser.unit e
-    <|> (parser.for 'a ← parser.unit arg.expr <*> get-pos <*> (expr.atom env);. expr.function.w env (expr.app e a))
+gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
+    <|> parser.unit 〈 '0 ∝ e; '1 ∝ s; 〉
+    <|> (analyze s.
+        case nil. parser.for
+                'pos ← get-pos;
+                'p ← expr.atom env;
+            . expr.function.w env (expr.app e (arg.expr pos (p #0))) nil
+    )
 |]
 
 $gsdeclare parens parens
 
 gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
-    <|> parser.map expr.var (ident env)
+    <|> parser.map (λ 'v. 〈 '0 ∝ expr.var v; '1 ∝ nil; 〉) (ident env)
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
