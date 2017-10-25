@@ -26,10 +26,19 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare expr.function gsexpr_function
+
 expr = [gs:value| λ 'env.
-    <|> parser.unit (foldl expr.app)
-        <*> (expr.atom env)
-        <*> many (parser.unit arg.expr <*> get-pos <*> (expr.atom env))
+    <|> expr.function env
+|]
+
+$gsdeclare expr.function.w gsexpr_function_w
+
+gsexpr_function = [gs:value| λ 'env. parser.for 'e ← expr.atom env;. expr.function.w env e |]
+
+gsexpr_function_w = [gs:value| λ 'env. λ 'e.
+    <|> parser.unit e
+    <|> (parser.for 'a ← parser.unit arg.expr <*> get-pos <*> (expr.atom env);. expr.function.w env (expr.app e a))
 |]
 
 $gsdeclare parens parens
