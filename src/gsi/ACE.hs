@@ -74,7 +74,7 @@ aceArg c1 a sk = GSExprCont {
             bco@GSLambda{} -> gsreturn sk $ GSClosure (cs ++ [c1]) bco
             bco -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function; result is " ++ bcoCode bco ++ ") next"
         GSClosure cs bco -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function is (GSClosure cs " ++ bcoCode bco ++ ")) next"
-        f -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function is " ++ gsvCode f ++ " next"
+        f -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function is " ++ gsvCode f ++ ") next"
       ,
     gsthrow = gsthrow sk
   }
