@@ -50,7 +50,10 @@ $gsdeclare parens parens
 
 gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
-    <|> parser.map (λ 'v. 〈 '0 ∝ expr.var v; '1 ∝ nil; 〉) (ident env)
+    <|> (parser.for 'v ← ident env;. parser.unit 〈
+        '0 ∝ expr.var v;
+        '1 ∝ analyze parser.get-signature v env. case nothing. nil;
+    〉)
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
