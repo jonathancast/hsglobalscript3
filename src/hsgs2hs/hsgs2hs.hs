@@ -749,6 +749,7 @@ globalEnv = Env{
         ("parser.env.lambda-like.insert", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_lambda_like_insert", HSVar "gsdl_parser_env_lambda_like_insert")),
         ("parser.for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.get-lambda-like", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_get_lambda_like", HSVar "gsdl_parser_get_lambda_like")),
+        ("parser.get-signature", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_get_signature", HSVar "gsdl_parser_get_signature")),
         ("parser.map", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")),
         ("parser.map2", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map2", HSVar "gsparser_map2")),
         ("parser.unit", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit")),
