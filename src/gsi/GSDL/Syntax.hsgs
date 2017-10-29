@@ -52,7 +52,7 @@ gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
     <|> (parser.for 'v ← ident env;. parser.unit 〈
         '0 ∝ expr.var v;
-        '1 ∝ analyze parser.get-signature v env. case nothing. nil;
+        '1 ∝ analyze parser.env.signature.get v env. case nothing. nil;
     〉)
 |]
 

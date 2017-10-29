@@ -1,10 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module GSDL.Parser (gsdl_parser_get_signature, gsdl_parser_env_lambda_like_get, gsdl_parser_env_lambda_like_insert, gsdl_parser_env_empty) where
+module GSDL.Parser (gsdl_parser_env_signature_get, gsdl_parser_env_lambda_like_get, gsdl_parser_env_lambda_like_insert, gsdl_parser_env_empty) where
 
 $gsimports
 
-gsdl_parser_get_signature = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #signature) |]
+gsdl_parser_env_signature_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #signature) |]
 gsdl_parser_env_lambda_like_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #lambda-like) |]
 
 gsdl_parser_env_lambda_like_insert = [gs:value| λ 'v. λ 'l. λ 'env. 〈
