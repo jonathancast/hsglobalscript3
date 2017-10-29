@@ -60,6 +60,8 @@ gsexpr_atom = [gs:value| λ 'env.
     〉)
 |]
 
+$gsdeclare pident pident
+
 gspat = [gs:value|
     <|> (parser.for 'v ← undefined *> undefined;. parser.unit undefined)
 |]
@@ -77,6 +79,10 @@ ident = [gs:value| λ 'env. lexeme $ parser.for
             case nothing. parser.unit 〈〉
         ;
     . parser.unit v
+|]
+
+pident = [gs:value| lexeme $ parser.map gsvar
+    (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
 |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
