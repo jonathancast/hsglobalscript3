@@ -6,7 +6,8 @@ module GSDL.AST (
     gskind_pointed,
     gsexpr_var, gsexpr_app, gsexpr_var_view, gsexpr_app_view,
     gsimplicit_here, gsimplicit_here_view,
-    gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view
+    gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
+    gsorder_of_being_pattern
   ) where
 
 import GSI.Syn (gsvar)
@@ -49,3 +50,5 @@ gsarg_here = $gsconstr (gsvar "here") []
 
 gsarg_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "expr" ek sk im
 gsarg_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
+
+gsorder_of_being_pattern = $gsconstr (gsvar "pattern") []

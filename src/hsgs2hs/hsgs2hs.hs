@@ -741,6 +741,7 @@ globalEnv = Env{
         ("not-followed-by", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_notFollowedBy", HSVar "gsparser_notFollowedBy")),
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing", HSVar "gsnothing")),
         ("optional", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_optional", HSVar "gsparser_optional")),
+        ("order-of-being.pattern", (Set.singleton $ HSIVar "GSDL.AST" "gsorder_of_being_pattern", HSVar "gsorder_of_being_pattern")),
         ("ordered-map.empty", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_empty", HSVar "gsordered_map_empty")),
         ("ordered-map.get", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_get", HSVar "gsordered_map_get")),
         ("ordered-map.insert", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_insert", HSVar "gsordered_map_insert")),
