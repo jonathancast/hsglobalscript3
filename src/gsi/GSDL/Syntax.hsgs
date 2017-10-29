@@ -65,7 +65,7 @@ ident = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar
             (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
         ;
-        _ ← analyze parser.get-lambda-like v env.
+        _ ← analyze parser.env.lambda-like.get v env.
             case nothing. parser.unit 〈〉
         ;
     . parser.unit v
