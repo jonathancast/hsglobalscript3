@@ -43,7 +43,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     <|> (parser.for
             'pos ← get-pos;
             'p ← analyze s.
-                case order-of-being.pattern : 's1. parser.for 'p ← undefined;. parser.unit 〈 '0 ∝ undefined; '1 ∝ s1; 〉
+                case order-of-being.pattern : 's1. parser.for 'p ← pat;. parser.unit 〈 '0 ∝ undefined; '1 ∝ s1; 〉
                 case nil. parser.for 'p ← expr.atom env;. parser.unit 〈 '0 ∝ p #0; '1 ∝ nil; 〉
             ;
         . expr.function.w env (expr.app e (arg.expr pos (p #0))) (p #1)
