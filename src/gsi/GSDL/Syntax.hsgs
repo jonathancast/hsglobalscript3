@@ -36,6 +36,8 @@ $gsdeclare expr.function.w gsexpr_function_w
 
 gsexpr_function = [gs:value| λ 'env. parser.for 'p ← expr.atom env;. expr.function.w env (p #0) (p #1) |]
 
+$gsdeclare pat gspat
+
 gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     <|> parser.unit 〈 '0 ∝ e; '1 ∝ s; 〉
     <|> (parser.for
@@ -56,6 +58,10 @@ gsexpr_atom = [gs:value| λ 'env.
         '0 ∝ expr.var v;
         '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
     〉)
+|]
+
+gspat = [gs:value|
+    <|> (parser.for 'v ← undefined *> undefined;. parser.unit undefined)
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
