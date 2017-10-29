@@ -1,4 +1,4 @@
-#! /usr/local/plan9/bin/rc -e
+#! /usr/local/plan9/bin/rc
 
 . $GS_SPEC/bin/test-fns
 . $GS_SPEC/bin/gs-spec
