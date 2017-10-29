@@ -1,6 +1,6 @@
 #! /usr/local/plan9/bin/rc
 
-echo '# trivial Global Script to Haskell translator'
+echo '# trivial Global Script to Haskell translator' &&
 cd $HSGLOBALSCRIPT/src/hsgs2hs &&
     ./integration-test &&
     ./install-all &&
