@@ -49,6 +49,7 @@ gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
 |]
 
 gsparser_global_env = [gs:value|
+    parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : nil) $
     parser.env.empty
 |]
 
