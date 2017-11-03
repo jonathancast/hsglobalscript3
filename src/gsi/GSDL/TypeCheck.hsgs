@@ -27,6 +27,14 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             'ef1 ← type-check-expr pos ef (type.function tyx tye);
             'ex1 ← type-check-arg pos ex tyx;
         . type-checker.unit (expr.app ef1 ex1)
+    case expr.pat 'p. type-checker.for
+            'bvs ← type-checker.unit undefined; -- pat.bound-vars
+            'Γ1 ← type-checker.unit undefined; -- make a type environment from bvs
+            'τ0 ← type-checker.new-unifiable-var;
+            'τ1 ← type-checker.unit undefined; -- turn §gs{Γ1} into a type
+            _ ← type-checker.unify pos (type.function τ0 τ1) tye;
+            'p1 ← type-checker.unit undefined; -- type-check-pat p τ0 Γ1
+        . type-checker.unit (expr.pat p1)
 |]
 
 gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
