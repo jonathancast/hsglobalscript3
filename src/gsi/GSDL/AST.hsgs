@@ -35,20 +35,35 @@ gstype_env_implicits_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
 
 gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'implicits ∝ ordered-map.empty; 〉 |]
 
+gstype_env_empty_view = [gs:value| λ 'ek. λ 'sk. λ 'env. analyze env #types.
+    case ordered-map.empty. (analyze env #implicits.
+        case ordered-map.empty. sk
+        case _. ek
+    )
+    case _. ek
+|]
+
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
+gstype_empty_signature = [gs:value| type.signature type.env.empty |]
+
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]
 gstype_const = $gslambda_value $ \ c -> $gsbcconstr (gsvar "const") [ $gsav c ]
-gstype_empty_signature = $gsconstr (gsvar "empty-signature") []
+gstype_signature = $gslambda_value $ \ env -> $gsbcconstr (gsvar "signature") [ $gsav env ]
 gstype_forall = $gslambda_value $ \ v -> $gsbcarg $ \ ki -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "forall") [ $gsav v, $gsav ki, $gsav ty1 ]
 gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
 gstype_function = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "function") [ $gsav ty0, $gsav ty1 ]
 
+gstype_empty_signature_view = [gs:value| λ 'ek. λ 'sk. λ 'ty. analyze ty.
+    case type.signature type.env.empty. sk
+    case _. ek
+|]
+
 gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
 gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
-gstype_empty_signature_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "empty-signature" ek sk ty
+gstype_signature_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "signature" ek sk ty
 gstype_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "app" ek sk ty
 gstype_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "function" ek sk ty
 gstype_forall_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "forall" ek sk ty

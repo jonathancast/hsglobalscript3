@@ -800,6 +800,7 @@ globalEnv = Env{
         ("type.env.type.insert",  (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_type_insert", HSVar "gstype_env_type_insert")),
         ("type.forall", (Set.singleton $ HSIVar "GSDL.AST" "gstype_forall", HSVar "gstype_forall")),
         ("type.function", (Set.singleton $ HSIVar "GSDL.AST" "gstype_function", HSVar "gstype_function")),
+        ("type.signature", (Set.singleton $ HSIVar "GSDL.AST" "gstype_signature", HSVar "gstype_signature")),
         ("type.unifiable-var", (Set.singleton $ HSIVar "GSDL.AST" "gstype_unifiable_var", HSVar "gstype_unifiable_var")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("whitespace", (Set.singleton $ HSIVar "GSDL.Syntax" "whitespace", HSVar "whitespace")),
@@ -843,8 +844,10 @@ globalEnv = Env{
         ("type.app", (Set.singleton $ HSIVar "GSDL.AST" "gstype_app_view", HSVar "gstype_app_view")),
         ("type.const", (Set.singleton $ HSIVar "GSDL.AST" "gstype_const_view", HSVar "gstype_const_view")),
         ("type.empty-signature", (Set.singleton $ HSIVar "GSDL.AST" "gstype_empty_signature_view", HSVar "gstype_empty_signature_view")),
+        ("type.env.empty", (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_empty_view", HSVar "gstype_env_empty_view")),
         ("type.forall", (Set.singleton $ HSIVar "GSDL.AST" "gstype_forall_view", HSVar "gstype_forall_view")),
         ("type.function", (Set.singleton $ HSIVar "GSDL.AST" "gstype_function_view", HSVar "gstype_function_view")),
+        ("type.signature", (Set.singleton $ HSIVar "GSDL.AST" "gstype_signature_view", HSVar "gstype_signature_view")),
         ("type.unifiable-var", (Set.singleton $ HSIVar "GSDL.AST" "gstype_unifiable_var_view", HSVar "gstype_unifiable_var_view"))
     ],
     gssignatures = Map.fromList [
