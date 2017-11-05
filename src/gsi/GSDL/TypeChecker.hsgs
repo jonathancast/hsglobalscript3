@@ -4,7 +4,7 @@ module GSDL.TypeChecker (
     gstype_checker_instantiate, gstype_checker_subst,
     gs_type_checker_new_unifiable_var,
     gstype_checker_incorrect_type, gstype_checker_fmt_type,
-    gstype_checker_get_type, gstype_checker_get_implicit,
+    gstype_checker_env_get_type, gstype_checker_env_get_implicit,
     gstype_checker_get_var, gstype_checker_set_var,
     gstype_checker_for, gstype_checker_analyze, gstype_checker_mapM, gstype_checker_zipWithM,
     gstype_checker_run, gstype_checker_unit, gstype_checker_bind, gstype_checker_map
@@ -151,12 +151,12 @@ gstype_checker_fmt_type = [gs:value| λ 'ty. analyze ty.
     case type.empty-signature. type-checker.unit qq{〈〉}
 |]
 
-gstype_checker_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
+gstype_checker_env_get_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #types).
     case nothing. impunit (left (pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}))
     case just 'ty. impunit (right ty)
 |]
 
-gstype_checker_get_implicit = [gs:value| λ 'v. λ 'env.
+gstype_checker_env_get_implicit = [gs:value| λ 'v. λ 'env.
     impunit (right (analyze ordered-map.get gsvar.compare v (env #implicits).
         case nothing. nil
         case just 'is. is
