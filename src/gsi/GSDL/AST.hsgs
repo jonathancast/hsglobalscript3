@@ -2,7 +2,7 @@
 module GSDL.AST (
     gstype_env_type_get, gstype_env_type_insert, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_empty,
     gsfileDocument, gsfileDocument_view,
-    gstype_unifiable_var, gstype_const, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
+    gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
     gsexpr_var, gsexpr_app, gsexpr_pat, gsexpr_var_view, gsexpr_app_view, gsexpr_pat_view,
