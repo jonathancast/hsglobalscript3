@@ -15,9 +15,9 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
 
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
     case expr.var 'v. type-checker.for
-            'tya ← get-type pos v;
+            'tya ← type-checker.env.get-type pos v;
             'tyai ← instantiate tya;
-            'ims ← get-implicit v;
+            'ims ← type-checker.env.get-implicit v;
             'imtys ← type-checker.mapM (λ _. type-checker.new-unifiable-var) ims;
             _ ← type-checker.unify pos tyai (foldr type.function tye imtys);
             'imas ← type-checker.zip-withM (type-check-implicit pos) ims imtys;
