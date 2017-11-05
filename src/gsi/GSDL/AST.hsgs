@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.AST (
+    gstype_env_type_insert, gstype_env_implicits_insert, gstype_env_empty,
     gsfileDocument, gsfileDocument_view,
     gstype_unifiable_var, gstype_const, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -14,6 +15,18 @@ import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
+
+gstype_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
+    'types ∝ ordered-map.insert gsvar.compare v ty (env #types);
+    'implicits ∝ env #implicits;
+〉 |]
+
+gstype_env_implicits_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
+    'types ∝ env #types;
+    'implicits ∝ ordered-map.insert gsvar.compare v is (env #implicits);
+〉 |]
+
+gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'implicits ∝ ordered-map.empty; 〉 |]
 
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 

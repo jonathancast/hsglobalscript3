@@ -64,23 +64,23 @@ $gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
 $gsdeclare type-checker.args.type gstype_checker_args_type
 
 gstype_checker_global_env = [gs:value|
-    type-checker.env.type.insert (gsvar qq{λ}) (
+    type.env.type.insert (gsvar qq{λ}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{σ}) kind.pointed $
             type.function (type.pattern (type.consts qq{α}) (type.consts qq{σ})) $
                 type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
                     type.function (type.consts qq{α}) (type.consts qq{β})
     ) $
-    type-checker.env.type.insert (gsvar qq{gsmain}) (
+    type.env.type.insert (gsvar qq{gsmain}) (
         type.function type-checker.gstyc.type $
             type.function type-checker.gsrun.type $
                 type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
     ) $
-    type-checker.env.type.insert (gsvar qq{undefined}) (
+    type.env.type.insert (gsvar qq{undefined}) (
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
     ) $
-    type-checker.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
-    type-checker.env.empty
+    type.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
+    type.env.empty
 |]
 
 gstype_checker_gstyc_type = [gs:value|
