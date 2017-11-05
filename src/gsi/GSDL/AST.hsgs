@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.AST (
-    gstype_env_type_insert, gstype_env_implicits_insert, gstype_env_empty,
+    gstype_env_type_get, gstype_env_type_insert, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_empty,
     gsfileDocument, gsfileDocument_view,
     gstype_unifiable_var, gstype_const, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -16,10 +16,17 @@ import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
+gstype_env_type_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #types) |]
+
 gstype_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'types ∝ ordered-map.insert gsvar.compare v ty (env #types);
     'implicits ∝ env #implicits;
 〉 |]
+
+gstype_env_implicits_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #implicits).
+    case nothing. nil
+    case just 'is. is
+|]
 
 gstype_env_implicits_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
     'types ∝ env #types;
