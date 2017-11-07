@@ -6,7 +6,7 @@ module GSDL.TypeChecker (
     gstype_checker_incorrect_type, gstype_checker_fmt_type,
     gstype_checker_env_get_type, gstype_checker_env_get_implicit,
     gstype_checker_get_var, gstype_checker_set_var,
-    gstype_checker_for, gstype_checker_analyze, gstype_checker_mapM, gstype_checker_zipWithM,
+    gstype_checker_for, gstype_checker_analyze, gstype_checker_foldM, gstype_checker_mapM, gstype_checker_zipWithM,
     gstype_checker_run, gstype_checker_unit, gstype_checker_bind, gstype_checker_map
   ) where
 
@@ -161,6 +161,9 @@ gstype_checker_env_get_implicit = [gs:value| λ 'v. λ 'env. impunit (right (typ
 gstype_checker_for = [gs:value| λ 'gens. λ 'a. type-checker.>>= gens a |]
 
 gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
+
+gstype_checker_foldM = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
+|]
 
 gstype_checker_mapM = [gs:value| λ 'f. λ 'xn. analyze xn.
     case nil. type-checker.unit nil
