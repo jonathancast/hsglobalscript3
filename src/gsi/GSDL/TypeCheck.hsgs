@@ -30,7 +30,7 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             'ex1 ← type-check-arg pos ex tyx;
         . type-checker.unit (expr.app ef1 ex1)
     case expr.pat 'p. type-checker.for
-            'bvs ← type-checker.unit undefined; -- pat.bound-vars
+            'bvs ← pat.bound-vars p;
             'Γ1 ← type-checker.foldM undefined type.env.empty bvs; -- make a type environment from bvs
             'τ0 ← type-checker.new-unifiable-var;
             _ ← type-checker.unify pos (type.function τ0 (type.signature Γ1)) tye;
