@@ -13,6 +13,8 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
     . type-checker.unit mbe1
 |]
 
+$gsdeclare pat.bound-vars gstype_check_pat_bound_vars
+
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
     case expr.var 'v. type-checker.for
             'tya ← type-checker.env.get-type pos v;
@@ -44,4 +46,7 @@ gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
 
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
     case arg.expr 'pos1 'e. type-checker.map (arg.expr pos1) (type-check-expr pos1 e ty)
+|]
+
+gstype_check_pat_bound_vars = [gs:value| λ 'p. analyze p.
 |]
