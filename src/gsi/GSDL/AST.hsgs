@@ -8,6 +8,7 @@ module GSDL.AST (
     gsexpr_var, gsexpr_app, gsexpr_pat, gsexpr_var_view, gsexpr_app_view, gsexpr_pat_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
+    gspat_var,
     gsorder_of_being_pattern, gsorder_of_being_pattern_view
   ) where
 
@@ -87,6 +88,8 @@ gsarg_here = $gsconstr (gsvar "here") []
 
 gsarg_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "expr" ek sk im
 gsarg_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
+
+gspat_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 
 gsorder_of_being_pattern = $gsconstr (gsvar "pattern") []
 
