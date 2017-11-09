@@ -63,7 +63,7 @@ gsexpr_atom = [gs:value| λ 'env.
 $gsdeclare pident pident
 
 gspat = [gs:value|
-    <|> (parser.for 'v ← char r{'} *> pident;. parser.unit undefined)
+    <|> (parser.for 'v ← char r{'} *> pident;. parser.unit (pat.var v))
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
