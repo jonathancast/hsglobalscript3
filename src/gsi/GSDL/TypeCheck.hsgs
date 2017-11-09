@@ -49,4 +49,5 @@ gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
 |]
 
 gstype_check_pat_bound_vars = [gs:value| λ 'p. analyze p.
+    case pat.var 'v. type-checker.unit (v : nil)
 |]
