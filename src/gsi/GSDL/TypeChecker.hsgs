@@ -164,6 +164,7 @@ gstype_checker_analyze = [gs:value| λ 'e. λ 'c. type-checker.>>= e c |]
 
 gstype_checker_foldM = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case 'x:'xn1. type-checker.for 'z1 ← f x z;. type-checker.foldM f z1 xn1
+    case nil. type-checker.unit z
 |]
 
 gstype_checker_mapM = [gs:value| λ 'f. λ 'xn. analyze xn.
