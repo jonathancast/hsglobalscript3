@@ -24,7 +24,7 @@ gstype_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'implicits ∝ env #implicits;
 〉 |]
 
-gstype_env_types = [gs:value| λ 'env. undefined |]
+gstype_env_types = [gs:value| λ 'env. ordered-map.values (env #types) |]
 
 gstype_env_implicits_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #implicits).
     case nothing. nil
