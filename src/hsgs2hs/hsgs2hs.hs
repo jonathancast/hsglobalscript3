@@ -800,6 +800,7 @@ globalEnv = Env{
         ("type.env.implicits.insert",  (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_implicits_insert", HSVar "gstype_env_implicits_insert")),
         ("type.env.type.get", (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_type_get", HSVar "gstype_env_type_get")),
         ("type.env.type.insert",  (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_type_insert", HSVar "gstype_env_type_insert")),
+        ("type.env.types",  (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_types", HSVar "gstype_env_types")),
         ("type.forall", (Set.singleton $ HSIVar "GSDL.AST" "gstype_forall", HSVar "gstype_forall")),
         ("type.function", (Set.singleton $ HSIVar "GSDL.AST" "gstype_function", HSVar "gstype_function")),
         ("type.signature", (Set.singleton $ HSIVar "GSDL.AST" "gstype_signature", HSVar "gstype_signature")),
