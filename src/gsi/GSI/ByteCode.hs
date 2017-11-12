@@ -281,10 +281,8 @@ instance ToGSViewPattern GSExpr where
 
 gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 
-gsbcvarpattern_w pos x = gsbcvarpattern_ww pos (gsvar x)
-
-gsbcvarpattern_ww :: Pos -> GSVar -> GSExpr
-gsbcvarpattern_ww pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
+gsbcvarpattern_w :: Pos -> GSVar -> GSExpr
+gsbcvarpattern_w pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
     gsreturn sk (GSConstr pos (gsvar "1") [GSRecord pos $ Map.fromList [(v, x)]])
 
 gsbcdiscardpattern = varE 'gsbcdiscardpattern_w `appE` gshere

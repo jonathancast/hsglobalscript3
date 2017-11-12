@@ -4,8 +4,9 @@ import GSI.Value (GSExpr)
 import GSI.ByteCode (gsbcvarpattern_w)
 import GSI.ByteCode (gsbcviewpattern_w)
 import GSI.Either (gsright_view)
+import GSI.Syn (gsvar)
 
 {-# LINE 2 "./test-fixtures/view-pattern.hsgs" #-}
-(gsbcviewpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 10) gsright_view (gsbcvarpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 16) "st") :: GSExpr)
+(gsbcviewpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 10) gsright_view (gsbcvarpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 16) (gsvar "st")) :: GSExpr)
 {-# LINE 2 "./test-fixtures/view-pattern.hsgs" #-}
                      
