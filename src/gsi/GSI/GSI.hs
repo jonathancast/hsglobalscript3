@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
-module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
+module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsbcvarpattern, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -15,7 +15,7 @@ import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcimpprim, gsbcconstr_view, gsbcvarpattern_w)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -65,6 +65,10 @@ gsbcevallist_w pos a k = w a id where
         GSConstr _ c [ v0, v1 ] | c == gsvar ":" -> w ($gsav v1) (d . (v0:))
         GSConstr _ c as -> $gsbcimplementationfailure $ "gsbcevallist " ++ fmtVarAtom c " next"
         _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
+
+gsigsbcvarpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
+        $gsbcexternal (gsbcvarpattern_w pos v)
 
 gsigsav = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ v -> $gsbcexternal ($gsav v)
 

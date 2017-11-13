@@ -708,6 +708,7 @@ globalEnv = Env{
         ("gsbcapply", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcapply", HSVar "gsigsbcapply")),
         ("gsbcenter", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcenter", HSVar "gsigsbcenter")),
         ("gsbcundefined", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcundefined", HSVar "gsigsbcundefined")),
+        ("gsbcvarpattern", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcvarpattern", HSVar "gsigsbcvarpattern")),
         ("gsbcwithhere", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcwithhere", HSVar "gsigsbcwithhere")),
         ("gseval-sync", (Set.singleton $ HSIVar "GSI.GSI" "gsigsevalSync", HSVar "gsigsevalSync")),
         ("gsfmt-error", (Set.singleton $ HSIVar "GSI.GSI" "gsigsfmtError", HSVar "gsigsfmtError")),
