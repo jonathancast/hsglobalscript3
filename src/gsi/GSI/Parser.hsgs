@@ -132,6 +132,7 @@ gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
                 case left _. right p01
                 case right _. left 〈 '0 ∝ nil; '1 ∝ nil; 〉
             )
+            case left 'err. left err
         )
     )
 |]
