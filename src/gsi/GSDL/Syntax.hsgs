@@ -68,22 +68,22 @@ gspat = [gs:value|
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
 
-$gsdeclare ident-start-char identStartChar
-$gsdeclare ident-cont-char identContChar
+$gsdeclare ident-chars ident_chars
 
 ident = [gs:value| λ 'env. lexeme $ parser.for
-        'v ← parser.map gsvar
-            (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
-        ;
+        'v ← parser.map gsvar ident-chars;
         _ ← analyze parser.env.lambda-like.get v env.
             case nothing. parser.unit 〈〉
         ;
     . parser.unit v
 |]
 
-pident = [gs:value| lexeme $ parser.map gsvar
-    (parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char)
-|]
+pident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
+
+$gsdeclare ident-start-char identStartChar
+$gsdeclare ident-cont-char identContChar
+
+ident_chars = [gs:value| parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
