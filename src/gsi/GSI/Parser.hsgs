@@ -27,7 +27,9 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
 
 $gsdeclare prim.empty gsprim_empty
 
-$gsdeclare view prim.empty gsprim_empty_view
+$gsdeclare prim.fail gsprim_fail
+
+$gsdeclare view prim.fail gsprim_fail_view
 $gsdeclare view prim.unit-plus gsprim_unit_plus_view
 $gsdeclare view prim.get-pos gsprim_get_pos_view
 $gsdeclare view prim.lookahead gsprim_lookahead_view
@@ -36,7 +38,7 @@ $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 $gsdeclare process-lookahead gsparse_process_lookahead
 
 gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
-    case prim.empty. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); empty}; 〉
+    case prim.fail 'err 'exp. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); §(fmt-error err exp)}; 〉
     case prim.unit-plus 'x 'p1. for 'r1 ∝ parse-w adv pr p1 pos s;. 〈
         '0 ∝ 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 : r1 #0;
         '1 ∝ r1 #1;
@@ -152,10 +154,15 @@ gsempty = $gslambda_value $ \ k -> $gsbcenter gsprim_empty
 gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprim_empty ]
 
 gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
-    case prim.empty. p1
+    case prim.fail 'err0 'exp0. (analyze p1.
+        case prim.fail 'err1 'exp1. prim.fail (err0 <> err1) (exp0 <> exp1)
+        case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
+        case prim.get-pos _. p1
+        case prim.symbol-or-eof _ _. p1
+    )
     case prim.unit-plus 'x 'p01. prim.unit-plus x (prim.<|> p01 p1)
     case prim.get-pos 'k0. (analyze p1.
-        case prim.empty. get-pos k0
+        case prim.fail _ _. get-pos k0
         case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
         case prim.get-pos 'k1. get-pos (λ 'pos. prim.<|> (k0 pos) (k1 pos))
         case prim.symbol-or-eof 'ek1 'sk1. get-pos (λ 'pos. prim.<|> (k0 pos) (prim.symbol-or-eof ek1 sk1))
@@ -166,7 +173,7 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
-        case prim.empty. p0
+        case prim.fail _ _. p0
         case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
         case prim.get-pos 'k1. get-pos (λ 'pos. prim.<|> p0 (k1 pos))
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
@@ -182,12 +189,14 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
     )
 |]
 
-gsprim_empty = $gsconstr (gsvar "empty") []
+gsprim_empty = [gs:value| prim.fail nil nil |]
+
+gsprim_fail = $gslambda_value $ \ err -> $gsbcarg $ \ exp -> $gsbcconstr (gsvar "fail") [ $gsav err, $gsav exp ]
 gsprim_unit_plus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav p ]
 gsprim_lookahead = $gslambda_value $ \ p -> $gsbcconstr (gsvar "lookahead") [ $gsav p ]
 gsprim_symbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
 
-gsprim_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
+gsprim_fail_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "fail" ek sk e
 gsprim_unit_plus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
 gsprim_get_pos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "get-pos" ek sk e
 gsprim_lookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lookahead" ek sk e
