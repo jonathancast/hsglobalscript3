@@ -74,6 +74,7 @@ ident = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
         _ ← analyze parser.env.lambda-like.get v env.
             case nothing. parser.unit 〈〉
+            case just _. parser.fail log{'§(undefined)' is lambda-like}
         ;
     . parser.unit v
 |]
