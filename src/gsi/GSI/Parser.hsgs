@@ -161,7 +161,10 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
         case prim.fail 'err1 'exp1. prim.fail (err0 <> err1) (exp0 <> exp1)
         case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
         case prim.get-pos 'k1. get-pos (λ 'pos. prim.<|> p0 (k1 pos))
-        case prim.symbol-or-eof _ _. p1
+        case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> p0 ek1) (λ 'c. analyze sk1 c.
+            case left 'err1. left 〈 '0 ∝ err0 <> err1 #0; '1 ∝ exp0 <> err1 #1; 〉
+            case right 'p11. right p11
+        )
     )
     case prim.unit-plus 'x 'p01. prim.unit-plus x (prim.<|> p01 p1)
     case prim.get-pos 'k0. (analyze p1.
@@ -176,7 +179,10 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
-        case prim.fail _ _. p0
+        case prim.fail 'err1 'exp1. prim.symbol-or-eof (prim.<|> ek0 p1) (λ 'c. analyze sk0 c.
+            case left 'err0. left 〈 '0 ∝ err0 #0 <> err1; '1 ∝ err0 #1 <> exp1; 〉
+            case right 'p01. right p01
+        )
         case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
         case prim.get-pos 'k1. get-pos (λ 'pos. prim.<|> p0 (k1 pos))
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
