@@ -66,6 +66,7 @@ gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
     [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
 gsfmtError = [gs:value| λ 'errs. λ 'exps. analyze errs.
+    case 'err0:'errs1. qq{§(log.fmt err0); §(fmt-error errs1 exps)}
     case nil. (analyze exps.
         case 'exp0:nil. qq{expected §(log.fmt exp0)}
     )
