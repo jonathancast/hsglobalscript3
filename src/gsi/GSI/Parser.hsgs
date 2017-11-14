@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_map2, gsparser_matching, gsparser_string, gsparser_char, gsparser_optional, gsmany, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsparser_advanceRune, gsparser_print_rune) where
+module GSI.Parser (gsparse, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gsparser_matching, gsparser_string, gsparser_char, gsparser_optional, gsmany, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsparser_advanceRune, gsparser_print_rune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
@@ -87,6 +87,8 @@ gsparser_after = [gs:value| λ 'p0. λ 'p1. λ 'k. p0 (λ 'x0. p1 (λ 'x1. k x0)
 gsparser_map = [gs:value| λ 'f. λ 'p. λ 'k. p (λ 'x. k (f x)) |]
 
 gsparser_unit = $gslambda_value $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
+
+gsparser_fail = [gs:value| λ 'err. λ 'k. prim.fail (err:nil) nil |]
 
 gsparser_map2 = $gslambda_value $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
     [gs:expr hsvs=f,p0,p1,k,| p0 (λ 'x0. p1 (λ 'x1. k (f x0 x1))) |]
