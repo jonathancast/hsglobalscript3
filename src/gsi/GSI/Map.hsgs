@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_values, gsordered_map_empty, gsordered_map_empty_view) where
+module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_values, gsordered_map_to_list, gsordered_map_empty, gsordered_map_empty_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
@@ -32,6 +32,9 @@ gsordered_map_get = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
 gsordered_map_values = [gs:value| λ 'm. analyze m.
     case branch _ _ 'l 'r. ordered-map.values l <> ordered-map.values r
     case empty. nil
+|]
+
+gsordered_map_to_list = [gs:value| λ 'm. analyze m.
 |]
 
 gsordered_map_empty = $gsconstr (gsvar "empty") []
