@@ -1,3 +1,3 @@
 #! /usr/local/hsglobalscript/src/gsi/gsi
 
-gsmain undefined undefined
+gsmain (λ 'pos. undefined) undefined
