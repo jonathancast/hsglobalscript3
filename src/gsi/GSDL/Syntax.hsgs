@@ -27,9 +27,11 @@ pragmawhitespace = [gs:value| many (
 ) |]
 
 $gsdeclare expr.function gsexpr_function
+$gsdeclare expr.lambda-like gsexpr_lambda_like
 
 expr = [gs:value| λ 'env.
     <|> expr.function env
+    <|> expr.lambda-like env
 |]
 
 $gsdeclare expr.function.w gsexpr_function_w
@@ -51,6 +53,23 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
 |]
 
 $gsdeclare keyword keyword
+
+gsexpr_lambda_like = [gs:value| λ 'env. parser.for
+        'v ← parser.choice $ map (λ 'p. keyword (gsvar.name (p #0)) *> parser.unit (p #0)) $ parser.env.lambda-likes env;
+        's ← parser.unit $ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
+        'posh ← get-pos;
+        'h ← analyze s.
+            case order-of-being.pattern : _. parser.map expr.pat pat
+        ;
+        's1 ← parser.unit $ analyze s. case nil. nil case _:'s1. s1;
+        _ ← lexeme (char r{.});
+        'post ← get-pos;
+        't ← analyze s1.
+            case nil. parser.for 'p ← expr env;. parser.unit (p #0)
+        ;
+        's2 ← parser.unit $ analyze s1. case nil. nil case _:'s2. s2;
+    . parser.unit 〈 '0 ∝ expr.app (expr.app (expr.var v) (arg.expr posh h)) (arg.expr post t); '1 ∝ s2; 〉
+|]
 
 $gsdeclare parens parens
 
