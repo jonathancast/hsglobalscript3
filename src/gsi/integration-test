@@ -20,6 +20,7 @@ test_unbound_variable
 test_function_variable
 test_undefined_variable
 test_function_application
+test_function_literal
 
 echo '## gsi'
 
