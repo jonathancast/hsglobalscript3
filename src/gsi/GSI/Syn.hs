@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom) where -- §hs{GSVar} is deliberately §emph{abstract}
+module GSI.Syn (GSVar, gsvar, varName, fmtVarAtom, fmtVarBindAtom) where -- §hs{GSVar} is deliberately §emph{abstract}
 
 import Data.Char (isPunctuation, isSymbol, isDigit, isLetter, isUpper)
 
@@ -20,6 +20,12 @@ gsvar v@(c:_) =
   else if isLetter c && not (isUpper c) then GSVarAlphaNum v
   else if isUpper c then GSVarAlphaNum v
   else $gsfatal $ "gsvar " ++ show v ++ " next"
+
+varName :: GSVar -> String
+varName (GSVarSym o) = o
+varName (GSVarNum n) = show n
+varName (GSVarAlphaNum s) = s
+varName v = ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':) $ ""
 
 fmtVarAtom :: GSVar -> String -> String
 fmtVarAtom (GSVarSym o) = ('(':) . (o++) . (')':)

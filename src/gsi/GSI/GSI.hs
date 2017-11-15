@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
-module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsbcvarpattern, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
+module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcwithhere, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsbcvarpattern, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -7,7 +7,7 @@ import Control.Exception (SomeException, try, throwIO, fromException)
 import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
-import GSI.Syn (GSVar, gsvar, fmtVarAtom)
+import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
 import GSI.Value (GSValue(..), GSArg, GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
@@ -156,6 +156,12 @@ gsigsvar_eq = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0
             False -> $gsbcconstr (gsvar "false") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_eq " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_eq " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
+
+gsigsvar_name = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> case vv of
+    GSExternal ve
+        | Just vhsv <- fromExternal ve -> $gsbcstringlit (varName vhsv)
+        | otherwise -> $gsbcimplementationfailure $ "gsigsvar_name " ++ whichExternal ve ++ " next"
+    _ -> $gsbcimplementationfailure $ "gsigsvar_name " ++ gsvCode vv ++ " next"
 
 gsigsvar_fmtAtom = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> case vv of
     GSExternal ve
