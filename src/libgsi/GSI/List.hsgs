@@ -24,6 +24,8 @@ gsfoldr = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
 |]
 
 gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
+    case 'x:'xn1. f x : map f xn1
+    case nil. nil
 |]
 
 gscons :: GSValue
