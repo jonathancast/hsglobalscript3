@@ -50,6 +50,8 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     )
 |]
 
+$gsdeclare keyword keyword
+
 $gsdeclare parens parens
 
 gsexpr_atom = [gs:value| λ 'env.
@@ -83,6 +85,8 @@ pident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
 
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
+
+keyword = [gs:value| λ 's. lexeme (string s <* not-followed-by ident-cont-char) |]
 
 ident_chars = [gs:value| parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char |]
 
