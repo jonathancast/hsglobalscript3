@@ -35,6 +35,8 @@ gsordered_map_values = [gs:value| λ 'm. analyze m.
 |]
 
 gsordered_map_to_list = [gs:value| λ 'm. analyze m.
+    case branch 'k 'v 'l 'r. ordered-map.to-list l <> 〈 '0 ∝ k; '1 ∝ v; 〉 : ordered-map.to-list r
+    case empty. nil
 |]
 
 gsordered_map_empty = $gsconstr (gsvar "empty") []
