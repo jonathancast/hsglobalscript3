@@ -736,6 +736,7 @@ globalEnv = Env{
         ("lexeme", (Set.singleton $ HSIVar "GSDL.Syntax" "lexeme", HSVar "lexeme")),
         ("log.fmt", (Set.singleton $ HSIVar "GSI.Log" "gslog_fmt", HSVar "gslog_fmt")),
         ("many", (Set.singleton $ HSIVar "GSI.Parser" "gsmany", HSVar "gsmany")),
+        ("map", (Set.singleton $ HSIVar "GSI.List" "gsmap", HSVar "gsmap")),
         ("matching", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_matching", HSVar "gsparser_matching")),
         ("maybe", (Set.singleton $ HSIVar "GSI.Maybe" "gsmaybe", HSVar "gsmaybe")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil", HSVar "gsnil")),

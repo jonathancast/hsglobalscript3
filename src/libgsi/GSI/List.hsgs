@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsfoldl, gsfoldr, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsfoldl, gsfoldr, gsmap, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -21,6 +21,9 @@ gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
 gsfoldr = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case nil. z
     case 'x:'xn1. f x (foldr f z xn1)
+|]
+
+gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
 |]
 
 gscons :: GSValue
