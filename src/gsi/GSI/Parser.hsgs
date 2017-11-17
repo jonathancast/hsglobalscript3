@@ -206,6 +206,11 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
 |]
 
 gsprim_map = [gs:value| λ 'f. λ 'p. analyze p.
+    case prim.fail 'err 'exp. prim.fail err exp
+    case prim.unit-plus 'x 'p1. prim.unit-plus (f x) (prim.map f p1)
+    case prim.symbol-or-eof 'ek0 'sk0. prim.symbol-or-eof (prim.map f ek0) (λ 'c. analyze sk0 c.
+        case right 'p1. right (prim.map f p1)
+    )
 |]
 
 gsprim_empty = [gs:value| prim.fail nil nil |]
