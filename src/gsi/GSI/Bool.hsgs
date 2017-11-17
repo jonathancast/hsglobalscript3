@@ -8,6 +8,7 @@ import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 $gsimports
 
 gsshort_circuit_or = [gs:value| λ 'b0. λ 'b1. analyze b0.
+    case false. b1
 |]
 
 gsfalse :: GSValue
