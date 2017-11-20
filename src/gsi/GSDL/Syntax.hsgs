@@ -107,7 +107,24 @@ $gsdeclare ident-cont-char identContChar
 
 keyword = [gs:value| λ 's. lexeme (string s <* not-followed-by ident-cont-char) |]
 
-ident_chars = [gs:value| parser.map2 (:) ident-start-char (many ident-cont-char) <* not-followed-by ident-cont-char |]
+$gsdeclare max-many gsmax_many
+
+$gsdeclare ident-component ident_component
+$gsdeclare cont-component cont_component
+$gsdeclare delimiter delimiter
+$gsdeclare concat gsconcat
+
+ident_chars = [gs:value|
+    parser.map2 (<>) ident-component (parser.map concat (max-many cont-component))
+|]
+
+gsconcat = [gs:value| foldr (<>) nil |]
+
+cont_component = [gs:value| parser.map2 (:) delimiter ident-component |]
+
+ident_component = [gs:value| parser.map2 (:) ident-start-char (max-many ident-cont-char) |]
+
+delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.≡ c r{.}) |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
@@ -117,6 +134,8 @@ opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
 lexeme = [gs:value| λ 'p. p <* whitespace |]
 
 $gsdeclare op-cont-char opContChar
+
+gsmax_many = [gs:value| λ 'p. many p <* not-followed-by p |]
 
 whitespace = [gs:value| many (
     <|> matching log{whitespace} is-space
