@@ -21,6 +21,7 @@ test_function_variable
 test_undefined_variable
 test_function_application
 test_function_literal
+test_variable_function_body
 
 echo '## gsi'
 
