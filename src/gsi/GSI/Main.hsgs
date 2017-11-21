@@ -76,6 +76,10 @@ gstype_checker_global_env = [gs:value|
             type.function type-checker.gsrun.type $
                 type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
     ) $
+    type.env.type.insert (gsvar qq{type-checker.unit}) (
+        type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.consts qq{α}) $ type.app (type.consts qq{type-checker.m}) (type.consts qq{α})
+    ) $
     type.env.type.insert (gsvar qq{undefined}) (
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
@@ -108,6 +112,7 @@ gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 
 gscompiler_global_env = [gs:value|
     ordered-map.insert gsvar.compare (gsvar qq{gsmain}) (gsinject gsmain) $
+    ordered-map.insert gsvar.compare (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
     ordered-map.insert gsvar.compare (gsvar qq{undefined}) (gsinject (value undefined)) $
     ordered-map.insert gsvar.compare (gsvar qq{λ}) (gsinject (value λ)) $
     ordered-map.empty
