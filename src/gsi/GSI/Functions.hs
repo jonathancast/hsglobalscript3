@@ -159,6 +159,7 @@ gsfmterrorvalue pos (GSThunk th) = do
     gsfmterrorvalue pos v
 gsfmterrorvalue pos v@GSImplementationFailure{} = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos v@GSError{} = gsfmterrorvalueAtom pos v
+gsfmterrorvalue pos (GSExternal e) | Just v <- fromExternal e = return $ ("<gsvar "++) . fmtVarAtom v . ('>':)
 gsfmterrorvalue pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos (GSConstr pos1 c as) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM (gsfmterrorvalueAtom pos) as
 gsfmterrorvalue pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
