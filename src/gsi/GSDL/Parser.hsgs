@@ -1,21 +1,33 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module GSDL.Parser (gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert, gsdl_parser_env_lambda_like_get, gsdl_parser_env_lambda_likes, gsdl_parser_env_lambda_like_insert, gsdl_parser_env_empty) where
+module GSDL.Parser (
+    gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
+    gsdl_parser_env_lambda_like_get, gsdl_parser_env_lambda_likes, gsdl_parser_env_lambda_like_insert,
+    gsdl_parser_env_missing_body_get,
+    gsdl_parser_env_empty
+  ) where
 
 $gsimports
 
 gsdl_parser_env_signature_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #signature) |]
 gsdl_parser_env_lambda_like_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #lambda-like) |]
+gsdl_parser_env_missing_body_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-body) |]
 
 gsdl_parser_env_lambda_likes = [gs:value| λ 'env. ordered-map.to-list (env #lambda-like) |]
 
 gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
     'signature ∝ ordered-map.insert gsvar.compare v s (env #signature);
     'lambda-like ∝ env #lambda-like;
+    'missing-body ∝ env #missing-body;
 〉 |]
 gsdl_parser_env_lambda_like_insert = [gs:value| λ 'v. λ 'l. λ 'env. 〈
     'signature ∝ env #signature;
     'lambda-like ∝ ordered-map.insert gsvar.compare v l (env #lambda-like);
+    'missing-body ∝ env #missing-body;
 〉 |]
 
-gsdl_parser_env_empty = [gs:value| 〈 'signature ∝ ordered-map.empty; 'lambda-like ∝ ordered-map.empty; 〉 |]
+gsdl_parser_env_empty = [gs:value| 〈
+    'signature ∝ ordered-map.empty;
+    'lambda-like ∝ ordered-map.empty;
+    'missing-body ∝ ordered-map.empty;
+〉 |]
