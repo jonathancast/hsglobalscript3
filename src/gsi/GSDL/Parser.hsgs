@@ -3,7 +3,7 @@
 module GSDL.Parser (
     gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
     gsdl_parser_env_lambda_like_get, gsdl_parser_env_lambda_likes, gsdl_parser_env_lambda_like_insert,
-    gsdl_parser_env_missing_body_get,
+    gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
     gsdl_parser_env_empty
   ) where
 
@@ -24,6 +24,11 @@ gsdl_parser_env_lambda_like_insert = [gs:value| λ 'v. λ 'l. λ 'env. 〈
     'signature ∝ env #signature;
     'lambda-like ∝ ordered-map.insert gsvar.compare v l (env #lambda-like);
     'missing-body ∝ env #missing-body;
+〉 |]
+gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
+    'signature ∝ env #signature;
+    'lambda-like ∝ env #lambda-like;
+    'missing-body ∝ ordered-map.insert gsvar.compare v m (env #missing-body);
 〉 |]
 
 gsdl_parser_env_empty = [gs:value| 〈
