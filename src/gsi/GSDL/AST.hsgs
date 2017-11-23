@@ -5,7 +5,7 @@ module GSDL.AST (
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
-    gsexpr_var, gsexpr_app, gsexpr_open_expr, gsexpr_pat, gsexpr_var_view, gsexpr_app_view, gsexpr_open_expr_view, gsexpr_pat_view,
+    gsexpr_var, gsexpr_app, gsexpr_open_expr, gsexpr_pat, gsexpr_missing_case, gsexpr_var_view, gsexpr_app_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_missing_case_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
     gspat_var, gspat_var_view,
@@ -77,11 +77,13 @@ gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
 gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcconstr (gsvar "open-expr") [ $gsav e ]
 gsexpr_pat = $gslambda_value $ \ p -> $gsbcconstr (gsvar "pat") [ $gsav p ]
+gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 
 gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
 gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e
 gsexpr_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "open-expr" ek sk e
 gsexpr_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "pat" ek sk e
+gsexpr_missing_case_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "missing-case" ek sk e
 
 gsimplicit_here = $gsconstr (gsvar "here") []
 
