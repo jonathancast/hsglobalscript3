@@ -50,6 +50,11 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             _ ← type-checker.unify pos (type.function τ0 (type.signature Γ1)) tye;
             'p1 ← type-check-pat pos p τ0 Γ1;
         . type-checker.unit (expr.pat p1)
+    case expr.missing-case. type-checker.for
+            'τ0 ← type-checker.new-unifiable-var;
+            'τ1 ← type-checker.new-unifiable-var;
+            _ ← type-checker.unify pos (type.function τ0 τ1) tye;
+        . type-checker.unit expr.missing-case
 |]
 
 gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
