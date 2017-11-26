@@ -3,4 +3,5 @@ module GSDL.Annotate (gsannotate_document) where
 $gsimports
 
 gsannotate_document = [gs:value| λ 'pos. λ 'mbe. λ 'env. analyze mbe.
+    case nothing. nothing
 |]
