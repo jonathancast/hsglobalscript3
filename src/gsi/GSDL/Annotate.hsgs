@@ -10,4 +10,5 @@ gsannotate_document = [gs:value| λ 'pos. λ 'mbe. λ 'env. analyze mbe.
 |]
 
 gsannotate_expr = [gs:value| λ 'pos. λ 'e. λ 'env. analyze e.
+    case expr.var 'v. expr.var v
 |]
