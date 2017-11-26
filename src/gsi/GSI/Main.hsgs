@@ -38,6 +38,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
         )
 |]
 
+$gsdeclare annotator.global-env gsannotator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
 
 $gsdeclare compiler.global-env gscompiler_global_env
@@ -54,6 +55,10 @@ gsparser_global_env = [gs:value|
     parser.env.lambda-like.insert (gsvar qq{λ}) 〈〉 $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.empty
+|]
+
+gsannotator_global_env = [gs:value|
+    undefined
 |]
 
 $gsdeclare type.consts gstype_consts
