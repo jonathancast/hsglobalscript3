@@ -9,7 +9,7 @@ $gsdeclare gsprocessargs gsprocessargs
 gsmain = [gs:value| λ 'gstyc. λ 'gsrun. impfor 'args ← env.get-args;. gsprocessargs args gstyc gsrun |]
 
 $gsdeclare parser.global-env gsparser_global_env
-$gsdeclare process-document gsprocessDocument
+$gsdeclare process-document gsprocess_document
 
 -- Loops over arguments to process them
 gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
@@ -42,7 +42,7 @@ $gsdeclare type-checker.global-env gstype_checker_global_env
 
 $gsdeclare compiler.global-env gscompiler_global_env
 
-gsprocessDocument = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
+gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either.for
         'mbe1 ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
     . right (compile-document pos compiler.global-env mbe1)
