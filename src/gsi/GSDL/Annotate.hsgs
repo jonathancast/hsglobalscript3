@@ -2,6 +2,11 @@ module GSDL.Annotate (gsannotate_document) where
 
 $gsimports
 
+$gsdeclare annotate-expr gsannotate_expr
+
 gsannotate_document = [gs:value| λ 'pos. λ 'mbe. λ 'env. analyze mbe.
     case nothing. nothing
+|]
+
+gsannotate_expr = [gs:value| λ 'pos. λ 'e. λ 'env. analyze e.
 |]
