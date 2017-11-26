@@ -31,3 +31,4 @@ src/gsi/GSDL/TypeCheck.hs$
 src/gsi/GSDL/Syntax.hs$
 src/gsi/GSDL/Parser.hs$
 src/gsi/GSI/Bool.hs$
+src/gsi/GSDL/Annotate.hs$

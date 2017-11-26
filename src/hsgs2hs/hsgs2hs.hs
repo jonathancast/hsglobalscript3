@@ -674,6 +674,7 @@ globalEnv = Env{
         ("analyze", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyze", HSVar "gsanalyze")),
         ("analyze-impM", (Set.singleton $ HSIVar "GSI.StdLib" "gsanalyzeImpM", HSVar "gsanalyzeImpM")),
         ("analyze-type-checker-M", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_analyze", HSVar "gstype_checker_analyze")),
+        ("annotate-document", (Set.singleton $ HSIVar "GSDL.Annotate" "gsannotate_document", HSVar "gsannotate_document")),
         ("arg.expr", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_expr", HSVar "gsarg_expr")),
         ("arg.here", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_here", HSVar "gsarg_here")),
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
