@@ -23,4 +23,5 @@ gsannotate_app = [gs:value| λ 'pos. λ 'f. λ 'as. λ 'env. analyze f.
 |]
 
 gsannotate_arg = [gs:value| λ 'pos. λ 'a. λ 'env. analyze a.
+    case arg.expr 'pos1 'e. arg.expr pos1 (annotate-expr pos1 e env)
 |]
