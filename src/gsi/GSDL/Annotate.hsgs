@@ -13,6 +13,7 @@ $gsdeclare annotate-app gsannotate_app
 
 gsannotate_expr = [gs:value| λ 'pos. λ 'e. λ 'env. analyze e.
     case expr.var 'v. expr.var v
+    case expr.app 'f 'x. annotate-app pos f (x:nil) env
 |]
 
 gsannotate_app = [gs:value| λ 'pos. λ 'f. λ 'as. λ 'env. analyze f.
