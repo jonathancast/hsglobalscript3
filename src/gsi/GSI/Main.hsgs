@@ -40,7 +40,6 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
 
 $gsdeclare annotator.global-env gsannotator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
-
 $gsdeclare compiler.global-env gscompiler_global_env
 
 gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
