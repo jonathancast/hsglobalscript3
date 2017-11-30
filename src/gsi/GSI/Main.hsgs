@@ -44,8 +44,9 @@ $gsdeclare compiler.global-env gscompiler_global_env
 
 gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either.for
-        'mbe1 ← type-checker.run (type-check.document pos gstyc mbe) type-checker.global-env;
-    . right (compile-document pos compiler.global-env mbe1)
+        'mbespec ← right (annotate-document pos mbe annotator.global-env);
+        'mbety ← type-checker.run (type-check.document pos gstyc mbespec) type-checker.global-env;
+    . right (compile-document pos compiler.global-env mbety)
 |]
 
 gsparser_global_env = [gs:value|
