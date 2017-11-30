@@ -194,6 +194,7 @@ pattern env = empty
         return $ PView posop op `PApp` px `PApp` py
   where
     patternAtom = empty
+        <|> parens (pattern env)
         <|> PView <$> getPos <*> ident
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
         <|> PDiscard <$> (getPos <* underscoreTerm)
