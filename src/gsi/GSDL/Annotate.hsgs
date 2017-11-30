@@ -9,13 +9,15 @@ gsannotate_document = [gs:value| λ 'pos. λ 'mbe. λ 'env. analyze mbe.
     case just 'e. just (annotate-expr pos e env)
 |]
 
+$gsdeclare pat.bound-vars gspat_bound_vars
+
 $gsdeclare annotate-pat gsannotate_pat
 
 $gsdeclare annotate-app gsannotate_app
 
 gsannotate_expr = [gs:value| λ 'pos. λ 'e. λ 'env. analyze e.
     case expr.var 'v. expr.var v
-    case expr.pat 'p. expr.pat (annotate-pat pos p env)
+    case expr.pat 'p _. expr.pat (annotate-pat pos p env) (just (pat.bound-vars p))
     case expr.open-expr 'e1. expr.open-expr (annotate-expr pos e1 env)
     case expr.app 'f 'x. annotate-app pos f (x:nil) env
     case expr.missing-case. expr.missing-case
@@ -34,4 +36,8 @@ gsannotate_arg = [gs:value| λ 'pos. λ 'a. λ 'env. analyze a.
 
 gsannotate_pat = [gs:value| λ 'pos. λ 'p. λ 'env. analyze p.
     case pat.var 'v. pat.var v
+|]
+
+gspat_bound_vars = [gs:value| λ 'p. analyze p.
+    case pat.var 'v. v : nil
 |]
