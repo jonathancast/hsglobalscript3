@@ -44,7 +44,7 @@ $gsdeclare compiler.global-env gscompiler_global_env
 
 gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either.for
-        'mbespec ← right (annotate-document pos mbe annotator.global-env);
+        'mbespec ← right (annotate-document annotator.global-env pos mbe);
         'mbety ← type-checker.run (type-check.document pos gstyc mbespec) type-checker.global-env;
     . right (compile-document pos compiler.global-env mbety)
 |]

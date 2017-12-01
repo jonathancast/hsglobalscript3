@@ -4,9 +4,9 @@ $gsimports
 
 $gsdeclare annotate-expr gsannotate_expr
 
-gsannotate_document = [gs:value| λ 'pos. λ 'mbe. λ 'env. analyze mbe.
+gsannotate_document = [gs:value| λ 'env. λ 'pos. λ 'mbe. analyze mbe.
     case nothing. nothing
-    case just 'e. just (annotate-expr pos e env)
+    case just 'e. just (annotate-expr env pos e)
 |]
 
 $gsdeclare pat.bound-vars gspat_bound_vars
@@ -15,26 +15,26 @@ $gsdeclare annotate-pat gsannotate_pat
 
 $gsdeclare annotate-app gsannotate_app
 
-gsannotate_expr = [gs:value| λ 'pos. λ 'e. λ 'env. analyze e.
+gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. expr.var v
-    case expr.pat 'p _. expr.pat (annotate-pat pos p env) (just (pat.bound-vars p))
-    case expr.open-expr 'e1. expr.open-expr (annotate-expr pos e1 env)
-    case expr.app 'f 'x. annotate-app pos f (x:nil) env
+    case expr.pat 'p _. expr.pat (annotate-pat env pos p) (just (pat.bound-vars p))
+    case expr.open-expr 'e1. expr.open-expr (annotate-expr env pos e1)
+    case expr.app 'f 'x. annotate-app env pos f (x:nil)
     case expr.missing-case. expr.missing-case
 |]
 
 $gsdeclare annotate-arg gsannotate_arg
 
-gsannotate_app = [gs:value| λ 'pos. λ 'f. λ 'as. λ 'env. analyze f.
-    case expr.var 'v. foldl expr.app (expr.var v) (map (λ 'a. annotate-arg pos a env) as)
-    case expr.app 'f1 'x. annotate-app pos f1 (x:as) env
+gsannotate_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
+    case expr.var 'v. foldl expr.app (expr.var v) (map (annotate-arg env pos) as)
+    case expr.app 'f1 'x. annotate-app env pos f1 (x:as)
 |]
 
-gsannotate_arg = [gs:value| λ 'pos. λ 'a. λ 'env. analyze a.
-    case arg.expr 'pos1 'e. arg.expr pos1 (annotate-expr pos1 e env)
+gsannotate_arg = [gs:value| λ 'env. λ 'pos. λ 'a. analyze a.
+    case arg.expr 'pos1 'e. arg.expr pos1 (annotate-expr env pos1 e)
 |]
 
-gsannotate_pat = [gs:value| λ 'pos. λ 'p. λ 'env. analyze p.
+gsannotate_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
     case pat.var 'v. pat.var v
 |]
 
