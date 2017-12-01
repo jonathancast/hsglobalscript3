@@ -58,7 +58,7 @@ gsparser_global_env = [gs:value|
 |]
 
 gsannotator_global_env = [gs:value|
-    undefined
+    annotator.env.empty
 |]
 
 $gsdeclare type.consts gstype_consts
