@@ -677,6 +677,7 @@ globalEnv = Env{
         ("annotate-document", (Set.singleton $ HSIVar "GSDL.Annotate" "gsannotate_document", HSVar "gsannotate_document")),
         ("annotator.env.empty", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_empty", HSVar "gsannotator_env_empty")),
         ("annotator.env.namespace.get", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_namespace_get", HSVar "gsannotator_env_namespace_get")),
+        ("annotator.env.namespace.insert", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_namespace_insert", HSVar "gsannotator_env_namespace_insert")),
         ("arg.expr", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_expr", HSVar "gsarg_expr")),
         ("arg.here", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_here", HSVar "gsarg_here")),
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
