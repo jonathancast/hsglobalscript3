@@ -827,6 +827,7 @@ globalEnv = Env{
         ("type.unifiable-var", (Set.singleton $ HSIVar "GSDL.AST" "gstype_unifiable_var", HSVar "gstype_unifiable_var")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("whitespace", (Set.singleton $ HSIVar "GSDL.Syntax" "whitespace", HSVar "whitespace")),
+        ("zip", (Set.singleton $ HSIVar "GSI.List" "gszip", HSVar "gszip")),
         ("||", (Set.singleton $ HSIVar "GSI.Bool" "gsshort_circuit_or", HSVar "gsshort_circuit_or")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
         ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))
