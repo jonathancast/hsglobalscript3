@@ -780,6 +780,7 @@ globalEnv = Env{
         ("print", (Set.singleton $ HSIVar "GSI.Env" "gsprint", HSVar "gsprint")),
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
         ("print-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_print_rune", HSVar "gsparser_print_rune")),
+        ("repeat", (Set.singleton $ HSIVar "GSI.List" "gsrepeat", HSVar "gsrepeat")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright")),
         ("rune.≠", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsrune_neq")),
         ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),

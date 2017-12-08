@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsfoldl, gsfoldr, gsmap, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsfoldl, gsfoldr, gsmap, gsrepeat, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -27,6 +27,8 @@ gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
     case 'x:'xn1. f x : map f xn1
     case nil. nil
 |]
+
+gsrepeat = [gs:value| λ 'x. undefined |]
 
 gscons :: GSValue
 gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
