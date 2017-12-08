@@ -43,7 +43,7 @@ gsevaluate_namespace = [gs:value| λ 'as. λ 'decl.
     let undefined $ λ 'opened-decl.
     let undefined $ λ 'decl-env.
     let undefined $ λ 'evaled-decl.
-    undefined -- > list.zip as (evaled-decl <> repeat nothing)
+    zip as (evaled-decl <> repeat nothing)
 |]
 
 gsannotate_arg = [gs:value| λ 'env. λ 'pos. λ 'a. λ 'ns. analyze a.
