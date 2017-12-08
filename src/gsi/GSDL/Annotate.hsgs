@@ -25,6 +25,8 @@ gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. analyze e.
     case expr.missing-case. expr.missing-case
 |]
 
+$gsdeclare let gslet
+
 $gsdeclare annotate-arg gsannotate_arg
 
 gsannotate_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
@@ -45,3 +47,5 @@ gsannotate_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
 gspat_bound_vars = [gs:value| λ 'p. analyze p.
     case pat.var 'v. v : nil
 |]
+
+gslet = [gs:value| λ 'e. λ 'k. k e |]
