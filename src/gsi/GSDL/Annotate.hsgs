@@ -27,6 +27,8 @@ gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. analyze e.
 
 $gsdeclare let gslet
 
+$gsdeclare evaluate-namespace gsevaluate_namespace
+
 $gsdeclare annotate-arg gsannotate_arg
 
 gsannotate_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
@@ -34,6 +36,13 @@ gsannotate_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
         case nothing. foldl expr.app (expr.var v) (map (λ 'a. annotate-arg env pos a nothing) as)
     )
     case expr.app 'f1 'x. annotate-app env pos f1 (x:as)
+|]
+
+gsevaluate_namespace = [gs:value| λ 'as. λ 'decl.
+    let undefined $ λ 'opened-decl.
+    let undefined $ λ 'decl-env.
+    let undefined $ λ 'evaled-decl.
+    undefined -- > list.zip as (evaled-decl <> repeat nothing)
 |]
 
 gsannotate_arg = [gs:value| λ 'env. λ 'pos. λ 'a. λ 'ns. analyze a.
