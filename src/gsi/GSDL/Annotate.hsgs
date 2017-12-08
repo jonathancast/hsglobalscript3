@@ -34,6 +34,7 @@ $gsdeclare annotate-arg gsannotate_arg
 gsannotate_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze annotator.env.namespace.get v env.
         case nothing. foldl expr.app (expr.var v) (map (λ 'a. annotate-arg env pos a nothing) as)
+        case just 'ns-decl. let (evaluate-namespace as ns-decl) $ λ 'eas. foldl expr.app (expr.var v) (map (λ 'p. annotate-arg env pos (p #0) (p #1)) eas)
     )
     case expr.app 'f1 'x. annotate-app env pos f1 (x:as)
 |]
