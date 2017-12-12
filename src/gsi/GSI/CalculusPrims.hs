@@ -71,6 +71,7 @@ gspriminsufficientcases pos (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th
     gspriminsufficientcases pos v
 gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
+gspriminsufficientcases pos v@GSRecord{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
 gspriminsufficientcases pos (GSExternal e) = GSError . GSErrInsufficientCases pos . ($ "") . (\ ds -> ('<':) . ds . ('>':)) <$> fmtExternal e
 gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
 
@@ -80,13 +81,24 @@ gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsuf
 -- §end
 fmtValue :: GSValue -> IO (String -> String)
 fmtValue v@GSError{} = fmtValueAtom v
+fmtValue v@GSRecord{} = fmtValueAtom v
 fmtValue (GSConstr pos c xn) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM fmtValueAtom xn
+fmtValue (GSThunk t) = do
+    ts <- readMVar t
+    case ts of
+        GSTSIndirection v -> fmtValue v
+        _ -> return ('_':)
 fmtValue v = return $ ('<':) . fmtPos $gshere . ("Unknown value: " ++) . (gsvCode v ++) . ('>':)
 
 fmtValueAtom :: GSValue -> IO (String -> String)
 fmtValueAtom GSError{} = return ('_':)
 fmtValueAtom (GSConstr pos c []) = return (fmtVarAtom c)
 fmtValueAtom v@GSConstr{} = fmtParens <$> fmtValue v
+fmtValueAtom (GSRecord pos fs) = do
+    dsfs <- mapM (\ (f, x) -> (\ dsx -> ('\'':) . fmtVarAtom f . (" ∝ "++) . dsx . ("; "++)) <$> fmtValue x) (Map.toList fs)
+    case dsfs of
+        [] -> return ("〈〉"++)
+        _ -> return $ ("〈 "++) . foldr (.) id dsfs . ('〉':)
 fmtValueAtom (GSThunk t) = do
     ts <- readMVar t
     case ts of
