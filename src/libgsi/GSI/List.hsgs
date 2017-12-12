@@ -30,7 +30,7 @@ gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
 
 gsrepeat = [gs:value| λ 'x. undefined |]
 
-gszip = [gs:value| λ 'xn. λ 'ys. undefined |]
+gszip = [gs:value| λ 'xn. λ 'ys. analyze 〈 '0 ∝ xn; '1 ∝ ys; 〉. |]
 
 gscons :: GSValue
 gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
