@@ -32,7 +32,9 @@ gsrepeat = [gs:value| λ 'x. undefined |]
 
 gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
     case 'x:'xn1. (analyze ys.
+        case 'y:'ys1. 〈 '0 ∝ x; '1 ∝ y; 〉 : zip xn1 ys1
     )
+    case _. nil
 |]
 
 gscons :: GSValue
