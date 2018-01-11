@@ -16,7 +16,10 @@ $gsdeclare annotate-app gsannotate_app
 gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. analyze e.
     case expr.var 'v. expr.var v
     case expr.pat 'p 'mb. (analyze mb.
-        case nothing. expr.pat (annotate-pat env pos p) (just (pat.bound-vars p))
+        case nothing. (analyze ns.
+            case nothing. expr.pat (annotate-pat env pos p) (just (pat.bound-vars p))
+            case just 'bvs. expr.pat (annotate-pat env pos p) (just bvs)
+        )
     )
     case expr.open-expr 'e1. expr.open-expr (annotate-expr env pos e1 ns)
     case expr.app 'f 'x. annotate-app env pos f (x:nil)
