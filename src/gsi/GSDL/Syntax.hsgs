@@ -71,7 +71,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
                 case just 'me. parser.unit me
             )
             <|> (analyze s1.
-                case order-of-being.open-expr : _. parser.for 'p ← expr env;. parser.unit (expr.open-expr (p #0))
+                case order-of-being.open-expr : _. parser.for 'p ← expr env;. parser.unit (expr.open-expr (p #0) nothing)
                 case nil. parser.for 'p ← expr env;. parser.unit (p #0)
             )
         ;

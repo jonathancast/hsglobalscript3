@@ -75,7 +75,7 @@ gskind_pointed = $gsconstr (gsvar "pointed") []
 
 gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
-gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcconstr (gsvar "open-expr") [ $gsav e ]
+gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "open-expr") [ $gsav e, $gsav mb ]
 gsexpr_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "pat") [ $gsav p, $gsav mb ]
 gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 

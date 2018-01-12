@@ -29,12 +29,12 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             'ef1 ← type-check-expr pos ef (type.function tyx tye);
             'ex1 ← type-check-arg pos ex tyx;
         . type-checker.unit (expr.app ef1 ex1)
-    case expr.open-expr 'e1. type-checker.for
+    case expr.open-expr 'e1 (just 'bvs). type-checker.for
             'tyenv ← type-checker.new-unifiable-var;
             'tye1 ← type-checker.new-unifiable-var;
             _ ← type-checker.unify pos (type.function tyenv tye1) tye;
             'e2 ← type-check-expr pos e1 tye1;
-        . type-checker.unit (expr.open-expr e2)
+        . type-checker.unit (expr.open-expr e2 (just bvs))
     case expr.pat 'p (just 'bvs). type-checker.for
             'Γ1 ← type-checker.foldM
                 (λ 'v. λ 'env1. type-checker.for 'tyv ← type-checker.new-unifiable-var;.
