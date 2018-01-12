@@ -59,7 +59,7 @@ gsparser_global_env = [gs:value|
 
 gsannotator_global_env = [gs:value|
     annotator.env.namespace.insert (gsvar qq{λ}) (λ 'as. analyze as.
-        case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1)):_). just (pat.bound-vars p0) : undefined : nil
+        case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
     ) $
     annotator.env.empty
 |]
