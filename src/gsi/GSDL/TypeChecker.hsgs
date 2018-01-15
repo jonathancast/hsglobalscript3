@@ -37,9 +37,21 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
         case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
         case type.signature 'env1. type-checker.for
                 -- Check that all variables in env0 are in env1 and have the right type
-                _ ← type-checker.mapM (λ 'v. undefined) (type.env.vars env0);
+                _ ← type-checker.mapM
+                    (λ 'v. analyze type.env.type.get v env1.
+                        case just 'ty11. (analyze type.env.type.get v env0.
+                            case just 'ty01. type-checker.unify pos ty01 ty11
+                        )
+                    )
+                    (type.env.vars env0)
+                ;
                 -- Check that all variables in env1 are in env0
-                _ ← type-checker.mapM (λ 'v. undefined) undefined;
+                _ ← type-checker.mapM
+                    (λ 'v. analyze type.env.type.get v env0.
+                        case just _. type-checker.unit 〈〉
+                    )
+                    (type.env.vars env1)
+                ;
             . type-checker.unit 〈〉
     )
     case type.app 'ty00 'ty01. (analyze ty1.
