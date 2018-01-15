@@ -153,6 +153,7 @@ gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
     )
     case type.signature 'env. type-checker.foldM
        (λ 'ty1. λ 'b. analyze-type-checker-M type-checker.is-free-in v ty1.
+           case false. type-checker.unit b
        )
        false
        (type.env.types env)
