@@ -30,6 +30,8 @@ gsordered_map_get = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
 |]
 
 gsordered_map_keys = [gs:value| λ 'm. analyze m.
+    case branch 'k _ 'l 'r. ordered-map.keys l <> k : ordered-map.values r
+    case empty. nil
 |]
 
 gsordered_map_values = [gs:value| λ 'm. analyze m.
