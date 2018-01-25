@@ -814,6 +814,7 @@ globalEnv = Env{
         ("type-checker.subst", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_subst", HSVar "gstype_checker_subst")),
         ("type-checker.unify", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_unify", HSVar "gstype_checker_unify")),
         ("type-checker.unit", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_unit", HSVar "gstype_checker_unit")),
+        ("type-checker.with-type-env", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_with_type_env", HSVar "gstype_checker_with_type_env")),
         ("type-checker.zip-withM", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_zipWithM", HSVar "gstype_checker_zipWithM")),
         ("type.app", (Set.singleton $ HSIVar "GSDL.AST" "gstype_app", HSVar "gstype_app")),
         ("type.const", (Set.singleton $ HSIVar "GSDL.AST" "gstype_const", HSVar "gstype_const")),
