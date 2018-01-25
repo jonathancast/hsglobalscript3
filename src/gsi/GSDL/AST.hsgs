@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.AST (
-    gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_empty,
+    gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_overlay, gstype_env_empty,
     gsfileDocument, gsfileDocument_view,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -36,6 +36,11 @@ gstype_env_implicits_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gs
 gstype_env_implicits_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
     'types ∝ env #types;
     'implicits ∝ ordered-map.insert gsvar.compare v is (env #implicits);
+〉 |]
+
+gstype_env_overlay = [gs:value| λ 'env0. λ 'env1. 〈
+    'types ∝ ordered-map.∪ gsvar.compare (env0 #types) (env1 #types);
+    'implicits ∝ ordered-map.∪ gsvar.compare (env0 #implicits) (env1 #implicits);
 〉 |]
 
 gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'implicits ∝ ordered-map.empty; 〉 |]
