@@ -29,7 +29,42 @@ gsordered_map_get = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
     )
 |]
 
+$gsdeclare split-lt gssplit_lt
+$gsdeclare split-gt gssplit_gt
+
 gsordered_map_union = [gs:value| λ 'cmp. λ 'm0. λ 'm1. analyze m0.
+    case branch 'k0 'v0 'l0 'r0. (analyze m1.
+        case branch 'k1 'v1 'l1 'r1. (analyze cmp k0 k1.
+            case lt. prim.branch k0 v0
+                (ordered-map.∪ cmp l0 (split-lt cmp k0 l1))
+                (prim.branch k1 v1
+                    (ordered-map.∪ cmp (split-lt cmp k1 r0) (split-gt cmp k0 l1))
+                    (ordered-map.∪ cmp (split-gt cmp k1 r0) r1)
+                )
+            case gt. prim.branch k0 v0
+                (prim.branch k1 v1
+                    (ordered-map.∪ cmp (split-lt cmp k1 l0) l1)
+                    undefined
+                )
+                (ordered-map.∪ cmp r0 (split-gt cmp k0 r1))
+        )
+    )
+    case empty. m1
+|]
+
+gssplit_lt = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
+    case empty. prim.empty
+    case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
+        case lt. split-lt cmp k l
+        case gt. prim.branch k1 v1 l (split-lt cmp k r)
+    )
+|]
+
+gssplit_gt = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
+    case empty. prim.empty
+    case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
+        case lt. prim.branch k1 v1 (split-gt cmp k l) r
+    )
 |]
 
 gsordered_map_keys = [gs:value| λ 'm. analyze m.
