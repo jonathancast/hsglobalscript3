@@ -2,4 +2,6 @@ module GSDL.Validate (gsvalidate_document) where
 
 $gsimports
 
-gsvalidate_document = [gs:value| undefined |]
+gsvalidate_document = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
+    case nothing. right 〈〉
+|]
