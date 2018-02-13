@@ -1,0 +1,5 @@
+module GSDL.Validate (gsvalidate_document) where
+
+$gsimports
+
+gsvalidate_document = [gs:value| undefined |]
