@@ -66,7 +66,12 @@ gsannotator_global_env = [gs:value|
 |]
 
 gsvalidator_global_env = [gs:value|
-    undefined
+    validator.env.in-scope.insert (gsvar qq{analyze}) $
+    validator.env.in-scope.insert (gsvar qq{gsmain}) $
+    validator.env.in-scope.insert (gsvar qq{type-checker.unit}) $
+    validator.env.in-scope.insert (gsvar qq{undefined}) $
+    validator.env.in-scope.insert (gsvar qq{λ}) $
+    validator.env.empty
 |]
 
 $gsdeclare type.consts gstype_consts
