@@ -39,6 +39,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
 |]
 
 $gsdeclare annotator.global-env gsannotator_global_env
+$gsdeclare validator.global-env gsvalidator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
 $gsdeclare compiler.global-env gscompiler_global_env
 
@@ -62,6 +63,10 @@ gsannotator_global_env = [gs:value|
         case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
     ) $
     annotator.env.empty
+|]
+
+gsvalidator_global_env = [gs:value|
+    undefined
 |]
 
 $gsdeclare type.consts gstype_consts
