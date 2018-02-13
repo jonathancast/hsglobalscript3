@@ -1,0 +1,6 @@
+module GSI.Set (gsordered_set_member) where
+
+$gsimports
+
+gsordered_set_member = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
+|]
