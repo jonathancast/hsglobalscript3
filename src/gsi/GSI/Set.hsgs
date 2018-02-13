@@ -12,6 +12,10 @@ $gsdeclare view prim.empty gsordered_set_empty_view
 $gsdeclare view prim.branch gsordered_set_branch_view
 
 gsordered_set_member = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
+    case prim.empty. false
+    case prim.branch 'x1 'l 'r. analyze cmp x x1.
+        case lt. ordered-set.∈ cmp x l
+        case gt. ordered-set.∈ cmp x r
 |]
 
 gsordered_set_insert = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
