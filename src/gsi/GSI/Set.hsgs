@@ -15,6 +15,7 @@ gsordered_set_member = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
     case prim.empty. false
     case prim.branch 'x1 'l 'r. analyze cmp x x1.
         case lt. ordered-set.∈ cmp x l
+        case eq. true
         case gt. ordered-set.∈ cmp x r
 |]
 
