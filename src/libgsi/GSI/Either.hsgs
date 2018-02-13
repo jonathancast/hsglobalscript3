@@ -22,10 +22,11 @@ gseithermap = [gs:value| λ 'f. λ 'e. analyze e.
 |]
 
 gseither_mapM = [gs:value| λ 'f. λ 'xn. analyze xn.
+    case nil. right nil
     case 'x:'xn1. either.for
             'y ← f x;
-            'ys1 ← undefined;
-        . undefined
+            'ys1 ← either.mapM f xn1;
+        . right (y:ys1)
 |]
 
 gsleft :: GSValue
