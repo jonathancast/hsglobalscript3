@@ -1,0 +1,6 @@
+module GSDL.Validator (gsvalidator_env_in_scope) where
+
+$gsimports
+
+gsvalidator_env_in_scope = [gs:value| λ 'v. λ 'env. analyze ordered-set.∈ gsvar.compare v (env #in-scope).
+|]
