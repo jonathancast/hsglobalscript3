@@ -839,6 +839,7 @@ globalEnv = Env{
         ("validate-document", (Set.singleton $ HSIVar "GSDL.Validate" "gsvalidate_document", HSVar "gsvalidate_document")),
         ("validator.env.empty", (Set.singleton $ HSIVar "GSDL.Validator" "gsvalidator_env_empty", HSVar "gsvalidator_env_empty")),
         ("validator.env.in-scope", (Set.singleton $ HSIVar "GSDL.Validator" "gsvalidator_env_in_scope", HSVar "gsvalidator_env_in_scope")),
+        ("validator.env.in-scope.insert", (Set.singleton $ HSIVar "GSDL.Validator" "gsvalidator_env_in_scope_insert", HSVar "gsvalidator_env_in_scope_insert")),
         ("whitespace", (Set.singleton $ HSIVar "GSDL.Syntax" "whitespace", HSVar "whitespace")),
         ("zip", (Set.singleton $ HSIVar "GSI.List" "gszip", HSVar "gszip")),
         ("||", (Set.singleton $ HSIVar "GSI.Bool" "gsshort_circuit_or", HSVar "gsshort_circuit_or")),
