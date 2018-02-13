@@ -1,13 +1,27 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Set (gsordered_set_member, gsordered_set_insert, gsordered_set_empty) where
 
-import GSI.Value (gsconstr)
+import GSI.Value (gslambda_value, gsconstr, gsav)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
+
+$gsdeclare prim.empty gsordered_set_empty
+$gsdeclare prim.branch gsordered_set_prim_branch
+
+$gsdeclare view prim.empty gsordered_set_empty_view
+$gsdeclare view prim.branch gsordered_set_branch_view
 
 gsordered_set_member = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
 |]
 
 gsordered_set_insert = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
+    case prim.empty. prim.branch x prim.empty prim.empty
+    case prim.branch 'x1 'l 'r. analyze cmp x x1.
+        case lt. prim.branch x1 (ordered-set.insert cmp x l) r
 |]
 
 gsordered_set_empty = $gsconstr (gsvar "empty") []
+gsordered_set_prim_branch = $gslambda_value $ \ x -> $gsbcarg $ \ l -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav x, $gsav l, $gsav r ]
+
+gsordered_set_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
+gsordered_set_branch_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "branch" ek sk e
