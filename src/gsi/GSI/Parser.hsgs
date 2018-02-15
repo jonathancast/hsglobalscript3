@@ -128,6 +128,7 @@ gsparser_notFollowedBy = [gs:value| λ 'p. λ 'k. difference-w (k 〈〉) (p pri
 $gsdeclare prim.unit-plus gsprim_unit_plus
 $gsdeclare prim.lookahead gsprim_lookahead
 
+$gsdeclare difference1-w gsparser_difference1_w
 $gsdeclare negate-w gsparser_negate_w
 
 gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
@@ -137,6 +138,7 @@ gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.lookahead 'pp0. prim.lookahead (difference-w pp0 p1)
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
         case prim.unit-plus _ _. prim.fail undefined undefined
+        case prim.lookahead 'pp1. prim.lookahead (difference1-w p0 pp1)
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (difference-w ek0 ek1) (λ 'r. analyze sk0 r.
             case right 'p01. (analyze sk1 r.
                 case left _. right p01
@@ -144,6 +146,14 @@ gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
             )
             case left 'err. left err
         )
+    )
+|]
+
+gsparser_difference1_w = [gs:value| λ 'p0. λ 'pp1. analyze pp1.
+    case prim.fail _ _. prim.unit-plus p0 (prim.fail nil nil)
+    case prim.unit-plus 'p11 'pp11. difference1-w (difference-w p0 p11) pp11
+    case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (difference1-w p0 ek1) (λ 'c. analyze sk1 c.
+        case right 'pp11. right (difference1-w p0 pp11)
     )
 |]
 
