@@ -45,7 +45,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     <|> (parser.for
             'pos ← get-pos;
             'p ← analyze s.
-                case order-of-being.pattern : 's1. parser.for 'p ← pat;. parser.unit 〈 '0 ∝ expr.pat p nothing; '1 ∝ s1; 〉
+                case order-of-being.pattern : 's1. parser.for 'p ← pat env;. parser.unit 〈 '0 ∝ expr.pat p nothing; '1 ∝ s1; 〉
                 case nil. parser.for 'p ← expr.atom env;. parser.unit 〈 '0 ∝ p #0; '1 ∝ nil; 〉
             ;
         . expr.function.w env (expr.app e (arg.expr pos (p #0))) (p #1)
@@ -59,7 +59,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         's ← parser.unit $ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
         'posh ← get-pos;
         'h ← analyze s.
-            case order-of-being.pattern : _. parser.map (λ 'p. expr.pat p nothing) pat
+            case order-of-being.pattern : _. parser.map (λ 'p. expr.pat p nothing) (pat env)
             case nil. parser.for 'p ← expr env;. parser.unit (p #0)
         ;
         's1 ← parser.unit $ analyze s. case nil. nil case _:'s1. s1;
@@ -91,7 +91,7 @@ gsexpr_atom = [gs:value| λ 'env.
 
 $gsdeclare pident pident
 
-gspat = [gs:value|
+gspat = [gs:value| λ 'env.
     <|> (parser.for 'v ← char r{'} *> pident;. parser.unit (pat.var v))
 |]
 
