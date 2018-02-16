@@ -92,6 +92,7 @@ gsexpr_atom = [gs:value| λ 'env.
 $gsdeclare pident pident
 
 gspat = [gs:value| λ 'env.
+    <|> (parser.for 'v ← ident env;. parser.unit (pat.view v))
     <|> (parser.for 'v ← char r{'} *> pident;. parser.unit (pat.var v))
 |]
 
