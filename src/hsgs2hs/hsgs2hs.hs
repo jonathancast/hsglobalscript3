@@ -737,6 +737,7 @@ globalEnv = Env{
         ("implicit.here", (Set.singleton $ HSIVar "GSDL.AST" "gsimplicit_here", HSVar "gsimplicit_here")),
         ("impunit", (Set.singleton $ HSIVar "GSI.StdLib" "gsimpunit", HSVar "gsimpunit")),
         ("instantiate", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_instantiate", HSVar "gstype_checker_instantiate")),
+        ("is-ascii-digit", (Set.singleton $ HSIVar "GSI.Rune" "gsisAsciiDigit", HSVar "gsisAsciiDigit")),
         ("is-lower", (Set.singleton $ HSIVar "GSI.Rune" "gsisLower", HSVar "gsisLower")),
         ("is-space", (Set.singleton $ HSIVar "GSI.Rune" "gsisSpace", HSVar "gsisSpace")),
         ("just", (Set.singleton $ HSIVar "GSI.Maybe" "gsjust", HSVar "gsjust")),

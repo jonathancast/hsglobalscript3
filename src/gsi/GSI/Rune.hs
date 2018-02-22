@@ -1,11 +1,15 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Rune (gsisLower, gsisSpace, gsrune_neq, gsruneEq) where
+module GSI.Rune (gsisAsciiDigit, gsisLower, gsisSpace, gsrune_neq, gsruneEq) where
 
-import Data.Char (isLower, isSpace)
+import Data.Char (isDigit, isLower, isSpace)
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcimplementationfailure)
+
+gsisAsciiDigit = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
+    GSRune r0v -> if isDigit r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
+    _ -> $gsbcimplementationfailure $ "gsisAsciiDigit " ++ gsvCode r0 ++ " next"
 
 gsisLower = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
     GSRune r0v -> if isLower r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
