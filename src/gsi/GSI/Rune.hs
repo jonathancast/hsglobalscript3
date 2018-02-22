@@ -7,17 +7,15 @@ import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcimplementationfailure)
 
-gsisAsciiDigit = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
-    GSRune r0v -> if isDigit r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
-    _ -> $gsbcimplementationfailure $ "gsisAsciiDigit " ++ gsvCode r0 ++ " next"
+gsisAsciiDigit = hspred2gspred isDigit
 
-gsisLower = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
-    GSRune r0v -> if isLower r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
-    _ -> $gsbcimplementationfailure $ "gsisLower " ++ gsvCode r0 ++ " next"
+gsisLower = hspred2gspred isLower
 
-gsisSpace = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
-    GSRune r0v -> if isSpace r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
-    _ -> $gsbcimplementationfailure $ "gsisSpace " ++ gsvCode r0 ++ " next"
+gsisSpace = hspred2gspred isSpace
+
+hspred2gspred p = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
+    GSRune r0v -> if p r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
+    _ -> $gsbcimplementationfailure $ "hspred2gspred " ++ gsvCode r0 ++ " next"
 
 gsrune_neq = $gslambda_value $ \ c0 -> $gsbcarg $ \ c1 -> $gsbcforce ($gsav c0) $ \ c0_0 -> $gsbcforce ($gsav c1) $ \ c1_0 -> case (c0_0, c1_0) of
     (GSRune c0hs, GSRune c1hs) ->
