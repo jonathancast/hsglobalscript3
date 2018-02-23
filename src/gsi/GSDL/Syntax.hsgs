@@ -80,9 +80,11 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
 |]
 
 $gsdeclare parens parens
+$gsdeclare natural natural
 
 gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
+    <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
     <|> (parser.for 'v ← ident env;. parser.unit 〈
         '0 ∝ expr.var v;
         '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
@@ -139,6 +141,8 @@ identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
 opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
+
+natural = [gs:value| lexeme $ parser.map undefined $ many1 $ matching log{digit} is-ascii-digit |]
 
 lexeme = [gs:value| λ 'p. p <* whitespace |]
 
