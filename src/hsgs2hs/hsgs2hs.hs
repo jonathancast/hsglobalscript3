@@ -695,6 +695,7 @@ globalEnv = Env{
         ("expr.app", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_app", HSVar "gsexpr_app")),
         ("expr.atom", (Set.singleton $ HSIVar "GSDL.Syntax" "gsexpr_atom", HSVar "gsexpr_atom")),
         ("expr.missing-case", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_missing_case", HSVar "gsexpr_missing_case")),
+        ("expr.natural", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_natural", HSVar "gsexpr_natural")),
         ("expr.open-expr", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_open_expr", HSVar "gsexpr_open_expr")),
         ("expr.pat", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_pat", HSVar "gsexpr_pat")),
         ("expr.var", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_var", HSVar "gsexpr_var")),
