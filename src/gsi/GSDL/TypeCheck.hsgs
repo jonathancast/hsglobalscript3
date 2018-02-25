@@ -16,6 +16,9 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe. type-checker.for
 $gsdeclare type-check-pat gstype_check_pat
 
 gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
+    case expr.natural 'n. type-checker.for
+            _ ← type-checker.unify pos (type.const (gsvar qq{natural.t})) tye;
+        . type-checker.unit (expr.natural n)
     case expr.var 'v. type-checker.for
             'tya ← type-checker.env.get-type pos v;
             'tyai ← instantiate tya;
