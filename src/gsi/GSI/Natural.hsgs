@@ -21,4 +21,4 @@ gsnatural_neq = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n
         if n0hs /= n1hs then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
     _ -> $gsbcimplementationfailure $ "gsnatural_neq " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
 
-gsnatural_read_decimal = [gs:value| λ 's. foldl (λ 'c. λ 'a. (undefined * undefined) + undefined) undefined s |]
+gsnatural_read_decimal = [gs:value| λ 's. foldl (λ 'a. λ 'c. (10 * a) + undefined) 0 s |]
