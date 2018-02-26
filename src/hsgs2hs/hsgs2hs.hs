@@ -752,6 +752,7 @@ globalEnv = Env{
         ("map", (Set.singleton $ HSIVar "GSI.List" "gsmap", HSVar "gsmap")),
         ("matching", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_matching", HSVar "gsparser_matching")),
         ("maybe", (Set.singleton $ HSIVar "GSI.Maybe" "gsmaybe", HSVar "gsmaybe")),
+        ("natural.read-decimal", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_read_decimal", HSVar "gsnatural_read_decimal")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil", HSVar "gsnil")),
         ("not-followed-by", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_notFollowedBy", HSVar "gsparser_notFollowedBy")),
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing", HSVar "gsnothing")),
