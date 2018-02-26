@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
-module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcvarpattern, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
+module GSI.GSI (gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae, gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcvarpattern, gsigsvar, gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData, gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsvalue_error_view, gsvalue_function_view, gsvalue_thunk_view) where
 
 import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -61,6 +61,9 @@ gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos -
 
 gsigsbcundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal $ gsbcundefined_w pos
+
+gsigsbcnatural = $gslambda_value $ \ nv -> $gsbcforce ($gsav nv) $ \ nv0 -> case nv0 of
+    _ -> $gsbcimplementationfailure $ "gsigsbcnatural " ++ gsvCode nv0 ++ " next"
 
 gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
