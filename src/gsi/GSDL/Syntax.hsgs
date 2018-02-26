@@ -142,7 +142,7 @@ identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
 opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
 
-natural = [gs:value| lexeme $ parser.map undefined $ many1 $ matching log{digit} is-ascii-digit |]
+natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
 
 lexeme = [gs:value| λ 'p. p <* whitespace |]
 
