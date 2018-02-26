@@ -423,6 +423,7 @@ globalEnv = Env{
         ("value", \ env -> (:) <$> (ArgExpr <$> getPos <*> (EVar <$> getPos <*> lexeme identName)) <*> return [])
     ],
     leftops = Map.fromList [
+        ("*", ()),
         ("*>", ()),
         ("+", ()),
         ("<*", ()),
