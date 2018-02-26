@@ -37,3 +37,4 @@ src/gsi/GSDL/Annotator.hs
 src/gsi/GSDL/Validate.hs
 src/gsi/GSI/Set.hs
 src/gsi/GSDL/Validator.hs
+src/gsi/GSI/Natural.hs
