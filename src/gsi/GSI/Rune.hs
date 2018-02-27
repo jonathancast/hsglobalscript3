@@ -1,11 +1,11 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Rune (gsisAsciiDigit, gsisLower, gsisSpace, gsrune_neq, gsruneEq) where
+module GSI.Rune (gsisAsciiDigit, gsisLower, gsisSpace, gsrune_code_point, gsrune_neq, gsruneEq) where
 
-import Data.Char (isDigit, isLower, isSpace)
+import Data.Char (isDigit, isLower, isSpace, ord)
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
-import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcnatural, gsbcimplementationfailure)
 
 gsisAsciiDigit = hspred2gspred isDigit
 
@@ -16,6 +16,10 @@ gsisSpace = hspred2gspred isSpace
 hspred2gspred p = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
     GSRune r0v -> if p r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
     _ -> $gsbcimplementationfailure $ "hspred2gspred " ++ gsvCode r0 ++ " next"
+
+gsrune_code_point = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
+    GSRune r0v -> $gsbcnatural $ toInteger $ ord r0v
+    _ -> $gsbcimplementationfailure $ "gsrune_code_point " ++ gsvCode r0 ++ " next"
 
 gsrune_neq = $gslambda_value $ \ c0 -> $gsbcarg $ \ c1 -> $gsbcforce ($gsav c0) $ \ c0_0 -> $gsbcforce ($gsav c1) $ \ c1_0 -> case (c0_0, c1_0) of
     (GSRune c0hs, GSRune c1hs) ->
