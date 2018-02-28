@@ -62,8 +62,9 @@ gsigsundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos -
 gsigsbcundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal $ gsbcundefined_w pos
 
-gsigsbcnatural = $gslambda_value $ \ nv -> $gsbcforce ($gsav nv) $ \ nv0 -> case nv0 of
-    _ -> $gsbcimplementationfailure $ "gsigsbcnatural " ++ gsvCode nv0 ++ " next"
+gsigsbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcforce ($gsav nv) $ \ nv0 -> case nv0 of
+        _ -> $gsbcimplementationfailure $ "gsigsbcnatural " ++ gsvCode nv0 ++ " next"
 
 gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
