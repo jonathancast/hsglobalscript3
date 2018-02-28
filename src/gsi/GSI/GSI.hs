@@ -16,7 +16,7 @@ import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcvarpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcvarpattern_w)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -64,6 +64,7 @@ gsigsbcundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos
 
 gsigsbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcforce ($gsav nv) $ \ nv0 -> case nv0 of
+        GSNatural n -> $gsbcexternal $ gsbcnatural_w pos n
         _ -> $gsbcimplementationfailure $ "gsigsbcnatural " ++ gsvCode nv0 ++ " next"
 
 gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
