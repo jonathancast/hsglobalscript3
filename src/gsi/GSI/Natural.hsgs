@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_subtract, gsnatural_multiply, gsnatural_neq, gsnatural_fmt_decimal, gsnatural_read_decimal) where
+module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_subtract, gsnatural_multiply, gsnatural_eq, gsnatural_neq, gsnatural_fmt_decimal, gsnatural_read_decimal) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
@@ -21,6 +21,11 @@ gsnatural_subtract = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($g
 gsnatural_multiply = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) -> $gsbcenter $ GSNatural $ n0hs * n1hs
     _ -> $gsbcimplementationfailure $ "gsnatural_multiply " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
+
+gsnatural_eq = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
+    (GSNatural n0hs, GSNatural n1hs) ->
+        if n0hs == n1hs then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
+    _ -> $gsbcimplementationfailure $ "gsnatural_eq " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
 
 gsnatural_neq = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) ->
