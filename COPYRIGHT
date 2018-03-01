@@ -6,6 +6,13 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
+In addition, we allow certain exceptions to the GNU GPL, listed in the EXCEPTIONS file.
+Basically, the GPL doesn't apply to things written in Global Script that aren't software
+(regardless of whether the GPL would normally apply to them),
+and you can buy a license to create proprietary software in Global Script
+(in cases where the GPL would normally prohibit it)
+by paying a small fee to GSDL.
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
