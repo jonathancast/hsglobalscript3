@@ -76,6 +76,16 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         ;
     . analyze parser.env.else.get v env.
         case nothing. parser.unit 〈 '0 ∝ foldl expr.app (expr.var v) (arg.expr posh h : arg.expr post t : nil); '1 ∝ drop 2 s; 〉
+        case just _. parser.for
+                _ ← lexeme (char r{,});
+                'pose ← get-pos;
+                'e ←
+                    <|> (analyze parser.env.missing-else.get v env.
+                    )
+                    <|> (analyze drop 2 s.
+                    )
+                ;
+            . parser.unit 〈 '0 ∝ foldl expr.app (expr.var v) (arg.expr posh h : arg.expr post t : arg.expr pose e : nil); '1 ∝ drop 3 s; 〉
 |]
 
 $gsdeclare parens parens
