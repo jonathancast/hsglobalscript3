@@ -18,7 +18,7 @@ src/gsi/gsi$
 bin/gsi$
 src/gsi/GSI/Parser.hs$
 src/gsi/gsi.hs$
-src/gsi/GSI/Maybe.hs$
+src/libgsi/GSI/Maybe.hs$
 src/gsi/GSI/Map.hs$
 src/libgsi/GSI/Either.hs$
 src/gsi/GSI/OrderTotal.hs$
@@ -36,5 +36,5 @@ src/gsi/GSDL/Annotator.hs$
 src/gsi/GSDL/Validate.hs$
 src/gsi/GSI/Set.hs$
 src/gsi/GSDL/Validator.hs$
-src/gsi/GSI/Natural.hs$
+src/libgsi/GSI/Natural.hs$
 src/gsi/GSI/Format.hs$

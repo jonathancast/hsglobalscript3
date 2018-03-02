@@ -30,12 +30,12 @@ src/gsi/GSDL/TypeChecker.hs
 src/gsi/GSDL/TypeCheck.hs
 src/gsi/GSDL/Syntax.hs
 src/gsi/GSDL/Parser.hs
-src/gsi/GSI/Maybe.hs
+src/libgsi/GSI/Maybe.hs
 src/gsi/GSI/Bool.hs
 src/gsi/GSDL/Annotate.hs
 src/gsi/GSDL/Annotator.hs
 src/gsi/GSDL/Validate.hs
 src/gsi/GSI/Set.hs
 src/gsi/GSDL/Validator.hs
-src/gsi/GSI/Natural.hs
+src/libgsi/GSI/Natural.hs
 src/gsi/GSI/Format.hs
