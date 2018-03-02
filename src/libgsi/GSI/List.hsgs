@@ -38,7 +38,9 @@ gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
 |]
 
 gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
+    case nothing. xn
     case just 'n1. (analyze xn.
+        case nil. nil
         case _ : 'xn1. drop n1 xn1
     )
 |]
