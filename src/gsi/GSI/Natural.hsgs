@@ -21,7 +21,7 @@ gsnatural_subtract = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($g
 gsnatural_subtract_maybe = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) -> let dhs = n0hs - n1hs in case dhs >= 0 of
         True -> $gsbcconstr (gsvar "just") [ $gsav $ GSNatural dhs ]
-        False -> $gsbcimplementationfailure $ "gsnatural_subtract_maybe: result is " ++ show dhs ++ " next"
+        False -> $gsbcconstr (gsvar "nothing") []
     _ -> $gsbcimplementationfailure $ "gsnatural_subtract_maybe " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
 
 gsnatural_multiply = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
