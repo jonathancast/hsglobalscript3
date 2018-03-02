@@ -1,8 +1,8 @@
-#! /usr/local/plan9/bin/rc -e
+#! /usr/local/plan9/bin/rc
 
-./build-tests
+./build-tests || exit $?
 
-./Test
+./Test || exit $?
 
 . $GS_SPEC/bin/test-fns
 . $GS_SPEC/bin/gs-spec
