@@ -37,7 +37,11 @@ gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
     case _. nil
 |]
 
-gsdrop = [gs:value| λ 'n. λ 'xn. undefined |]
+gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
+    case just 'n1. (analyze xn.
+        case _ : 'xn1. drop n1 xn1
+    )
+|]
 
 gscons :: GSValue
 gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
