@@ -37,3 +37,4 @@ src/gsi/GSDL/Validate.hs$
 src/gsi/GSI/Set.hs$
 src/gsi/GSDL/Validator.hs$
 src/gsi/GSI/Natural.hs$
+src/gsi/GSI/Format.hs$

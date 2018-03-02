@@ -1,0 +1,9 @@
+module GSI.Format (gsnatural_fmt_decimal, gsnatural_read_decimal) where
+
+$gsimports
+
+gsnatural_fmt_decimal = [gs:value| λ 'n. analyze natural.≡ n 0.
+    case true. qq{0}
+|]
+
+gsnatural_read_decimal = [gs:value| λ 's. foldl (λ 'a. λ 'c. (10 * a) + (rune.code-point c - rune.code-point r{0})) 0 s |]
