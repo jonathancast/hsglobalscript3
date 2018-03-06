@@ -64,6 +64,7 @@ gssplit_gt = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
     case empty. prim.empty
     case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
         case lt. prim.branch k1 v1 (split-gt cmp k l) r
+        case gt. split-gt cmp k r
     )
 |]
 
