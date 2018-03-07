@@ -35,7 +35,6 @@ gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. analyze e.
 
 $gsdeclare let gslet
 
-
 $gsdeclare annotate-arg gsannotate_arg
 
 gsannotate_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
