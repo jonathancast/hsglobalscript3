@@ -28,7 +28,7 @@ gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
     case nil. nil
 |]
 
-gsrepeat = [gs:value| λ 'x. undefined |]
+gsrepeat = [gs:value| λ 'x. x : repeat x |]
 
 gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
     case 'x:'xn1. (analyze ys.
