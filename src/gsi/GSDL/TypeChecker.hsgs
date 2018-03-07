@@ -33,6 +33,7 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
     )
     case type.empty-signature. (analyze ty1.
         case type.empty-signature. type-checker.unit 〈〉
+        case type.app _ _. type-checker.incorrect-type pos ty0 ty1
     )
     case type.signature 'env0. (analyze ty1.
         case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
