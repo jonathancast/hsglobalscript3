@@ -12,4 +12,5 @@ gsannotator_env_empty = [gs:value| 〈 'namespace ∝ ordered-map.empty; 〉 |]
 
 gspat_bound_vars = [gs:value| λ 'p. analyze p.
     case pat.var 'v. v : nil
+    case pat.view 'v. nil
 |]
