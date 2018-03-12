@@ -685,6 +685,7 @@ globalEnv = Env{
         ("arg.expr", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_expr", HSVar "gsarg_expr")),
         ("arg.here", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_here", HSVar "gsarg_here")),
         ("case", (Set.singleton $ HSIVar "GSI.StdLib" "gscase", HSVar "gscase")),
+        ("category.monoidal", (Set.singleton $ HSIVar "GSDL.AST" "gscategory_monoidal", HSVar "gscategory_monoidal")),
         ("char", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_char", HSVar "gsparser_char")),
         ("compile-document", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompileDocument", HSVar "gscompileDocument")),
         ("createThread", (Set.singleton $ HSIVar "GSI.GSI" "gsicreateThread", HSVar "gsicreateThread")),
