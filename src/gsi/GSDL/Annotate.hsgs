@@ -24,10 +24,10 @@ gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. λ 'c. analyze e.
     )
     case expr.open-expr 'e1 'mb. (analyze mb.
         case nothing. (analyze ns.
-            case nothing. expr.open-expr (annotate-expr env pos e1 ns nothing) (just nil)
-            case just 'bvs. expr.open-expr (annotate-expr env pos e1 ns nothing) (just bvs)
+            case nothing. expr.open-expr (annotate-expr env pos e1 nothing nothing) (just nil)
+            case just 'bvs. expr.open-expr (annotate-expr env pos e1 nothing nothing) (just bvs)
         )
-        case just 'bvs. expr.open-expr (annotate-expr env pos e1 ns nothing) (just bvs)
+        case just 'bvs. expr.open-expr (annotate-expr env pos e1 nothing nothing) (just bvs)
     )
     case expr.app 'f 'x. annotate-app env pos f (x:nil)
     case expr.missing-case. expr.missing-case
