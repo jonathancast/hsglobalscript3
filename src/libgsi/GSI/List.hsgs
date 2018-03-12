@@ -45,6 +45,12 @@ gsmap2 = [gs:value| λ 'f. λ 'xn. λ 'ys. analyze xn.
 |]
 
 gsmap3 = [gs:value| λ 'f. λ 'xn. λ 'ys. λ 'zs. analyze xn.
+    case 'x:'xn1. (analyze ys.
+        case 'y:'ys1. (analyze zs.
+            case 'z:'zs1. f x y z : map3 f xn1 ys1 zs1
+        )
+    )
+    case nil. nil
 |]
 
 gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
