@@ -679,6 +679,7 @@ globalEnv = Env{
         ("analyze-type-checker-M", (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_analyze", HSVar "gstype_checker_analyze")),
         ("annotate-document", (Set.singleton $ HSIVar "GSDL.Annotate" "gsannotate_document", HSVar "gsannotate_document")),
         ("annotator.env.category.get", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_category_get", HSVar "gsannotator_env_category_get")),
+        ("annotator.env.category.insert", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_category_insert", HSVar "gsannotator_env_category_insert")),
         ("annotator.env.empty", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_empty", HSVar "gsannotator_env_empty")),
         ("annotator.env.namespace.get", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_namespace_get", HSVar "gsannotator_env_namespace_get")),
         ("annotator.env.namespace.insert", (Set.singleton $ HSIVar "GSDL.Annotator" "gsannotator_env_namespace_insert", HSVar "gsannotator_env_namespace_insert")),
