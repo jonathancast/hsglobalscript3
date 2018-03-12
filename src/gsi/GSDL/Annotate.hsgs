@@ -16,38 +16,38 @@ $gsdeclare annotate-app gsannotate_app
 gsannotate_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
-    case expr.pat 'p 'mb. (analyze mb.
-        case nothing. expr.pat (annotate-pat env pos p) (just (pat.bound-vars p))
-    )
-    case expr.open-expr 'e1 'mb. (analyze mb.
-        case nothing. expr.open-expr (annotate-expr env pos e1) (just nil)
-        case just 'bvs. expr.open-expr (annotate-expr env pos e1) (just bvs)
-    )
-    case expr.app 'f 'x. annotate-app env pos f (x:nil)
-    case expr.missing-case. expr.missing-case
-|]
-
-gsannotate_expr_arg = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. λ 'c. analyze e.
-    case expr.var 'v. expr.var v
-    case expr.natural 'n. expr.natural n
-    case expr.pat 'p 'mb. (analyze mb.
-        case nothing. (analyze ns.
-            case nothing. expr.pat (annotate-pat env pos p) (just (pat.bound-vars p))
-            case just 'bvs. expr.pat (annotate-pat env pos p) (just bvs)
-        )
-    )
-    case expr.open-expr 'e1 'mb. (analyze mb.
-        case nothing. (analyze ns.
-            case nothing. expr.open-expr (annotate-expr env pos e1) (just nil)
-            case just 'bvs. expr.open-expr (annotate-expr env pos e1) (just bvs)
-        )
-        case just 'bvs. expr.open-expr (annotate-expr env pos e1) (just bvs)
-    )
+    case expr.pat 'p 'mb. expr.pat (annotate-pat env pos p) (just (analyze mb.
+        case nothing. pat.bound-vars p
+    ))
+    case expr.open-expr 'e1 'mb. expr.open-expr (annotate-expr env pos e1) (just (analyze mb.
+        case nothing. nil
+        case just 'bvs. bvs
+    ))
     case expr.app 'f 'x. annotate-app env pos f (x:nil)
     case expr.missing-case. expr.missing-case
 |]
 
 $gsdeclare let gslet
+
+gsannotate_expr_arg = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. λ 'c. analyze e.
+    case expr.var 'v. expr.var v
+    case expr.natural 'n. expr.natural n
+    case expr.pat 'p 'mb. expr.pat (annotate-pat env pos p) (just (analyze mb.
+        case nothing. (analyze ns.
+            case nothing. pat.bound-vars p
+            case just 'bvs. bvs
+        )
+    ))
+    case expr.open-expr 'e1 'mb. expr.open-expr (annotate-expr env pos e1) (just (analyze mb.
+        case nothing. (analyze ns.
+            case nothing. nil
+            case just 'bvs. bvs
+        )
+        case just 'bvs. bvs
+    ))
+    case expr.app 'f 'x. annotate-app env pos f (x:nil)
+    case expr.missing-case. expr.missing-case
+|]
 
 $gsdeclare annotate-arg gsannotate_arg
 
