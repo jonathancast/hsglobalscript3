@@ -35,6 +35,7 @@ gsannotate_expr_arg = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. λ 'c. analyze
     case expr.pat 'p 'mb.
         (analyze c.
             case nothing. expr.pat
+            case just category.monoidal. expr.monoidal-pat
         )
             (annotate-pat env pos p)
             (just (analyze mb.
