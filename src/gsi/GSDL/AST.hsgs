@@ -10,7 +10,7 @@ module GSDL.AST (
     gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
     gspat_var, gspat_view, gspat_var_view, gspat_view_view,
     gsorder_of_being_open_expr, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view,
-    gscategory_monoidal
+    gscategory_monoidal, gscategory_monoidal_view
   ) where
 
 import GSI.Syn (gsvar)
@@ -116,6 +116,7 @@ gsorder_of_being_open_expr = $gsconstr (gsvar "open-expr") []
 gsorder_of_being_pattern = $gsconstr (gsvar "pattern") []
 
 gscategory_monoidal = $gsconstr (gsvar "monoidal") []
+gscategory_monoidal_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "monoidal" ek sk im
 
 gsorder_of_being_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "open-expr" ek sk im
 gsorder_of_being_pattern_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "pattern" ek sk im

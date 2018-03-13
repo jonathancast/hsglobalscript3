@@ -883,6 +883,7 @@ globalEnv = Env{
         ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
         ("arg.expr", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_expr_view", HSVar "gsarg_expr_view")),
         ("arg.here", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_here_view", HSVar "gsarg_here_view")),
+        ("category.monoidal", (Set.singleton $ HSIVar "GSDL.AST" "gscategory_monoidal_view", HSVar "gscategory_monoidal_view")),
         ("eq", (Set.singleton $ HSIVar "GSI.OrderTotal" "gsord_eq_view", HSVar "gsord_eq_view")),
         ("expr.app", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_app_view", HSVar "gsexpr_app_view")),
         ("expr.missing-case", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_missing_case_view", HSVar "gsexpr_missing_case_view")),
