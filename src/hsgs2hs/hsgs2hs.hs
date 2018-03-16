@@ -887,6 +887,7 @@ globalEnv = Env{
         ("eq", (Set.singleton $ HSIVar "GSI.OrderTotal" "gsord_eq_view", HSVar "gsord_eq_view")),
         ("expr.app", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_app_view", HSVar "gsexpr_app_view")),
         ("expr.missing-case", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_missing_case_view", HSVar "gsexpr_missing_case_view")),
+        ("expr.monoidal-pat", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_monoidal_pat_view", HSVar "gsexpr_monoidal_pat_view")),
         ("expr.natural", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_natural_view", HSVar "gsexpr_natural_view")),
         ("expr.open-expr", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_open_expr_view", HSVar "gsexpr_open_expr_view")),
         ("expr.pat", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_pat_view", HSVar "gsexpr_pat_view")),
