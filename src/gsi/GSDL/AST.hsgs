@@ -53,17 +53,6 @@ gstype_env_overlay = [gs:value| λ 'env0. λ 'env1. 〈
 
 gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'view-types ∝ ordered-map.empty; 'implicits ∝ ordered-map.empty; 〉 |]
 
-gstype_env_empty_view = [gs:value| λ 'ek. λ 'sk. λ 'env. analyze env #types.
-    case ordered-map.empty. (analyze env #view-types.
-            case ordered-map.empty. (analyze env #implicits.
-            case ordered-map.empty. sk
-            case _. ek
-        )
-        case _. ek
-    )
-    case _. ek
-|]
-
 gsfileDocument = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
 gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e

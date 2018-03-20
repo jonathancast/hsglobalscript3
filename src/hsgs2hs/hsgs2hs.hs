@@ -918,7 +918,6 @@ globalEnv = Env{
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
         ("type.app", (Set.singleton $ HSIVar "GSDL.AST" "gstype_app_view", HSVar "gstype_app_view")),
         ("type.const", (Set.singleton $ HSIVar "GSDL.AST" "gstype_const_view", HSVar "gstype_const_view")),
-        ("type.env.empty", (Set.singleton $ HSIVar "GSDL.AST" "gstype_env_empty_view", HSVar "gstype_env_empty_view")),
         ("type.forall", (Set.singleton $ HSIVar "GSDL.AST" "gstype_forall_view", HSVar "gstype_forall_view")),
         ("type.function", (Set.singleton $ HSIVar "GSDL.AST" "gstype_function_view", HSVar "gstype_function_view")),
         ("type.signature", (Set.singleton $ HSIVar "GSDL.AST" "gstype_signature_view", HSVar "gstype_signature_view")),
