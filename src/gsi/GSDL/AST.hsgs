@@ -3,7 +3,7 @@ module GSDL.AST (
     gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_view_type_get, gstype_env_views, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_overlay, gstype_env_empty,
     gsfileDocument, gsfileDocument_view,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
-    gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_empty_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
+    gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
     gsexpr_natural, gsexpr_var, gsexpr_app, gsexpr_open_expr, gsexpr_pat, gsexpr_monoidal_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_monoidal_pat_view, gsexpr_missing_case_view,
     gsimplicit_here, gsimplicit_here_view,
@@ -76,11 +76,6 @@ gstype_signature = $gslambda_value $ \ env -> $gsbcconstr (gsvar "signature") [ 
 gstype_forall = $gslambda_value $ \ v -> $gsbcarg $ \ ki -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "forall") [ $gsav v, $gsav ki, $gsav ty1 ]
 gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
 gstype_function = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "function") [ $gsav ty0, $gsav ty1 ]
-
-gstype_empty_signature_view = [gs:value| λ 'ek. λ 'sk. λ 'ty. analyze ty.
-    case type.signature type.env.empty. sk
-    case _. ek
-|]
 
 gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
 gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
