@@ -1,7 +1,9 @@
-module GSDL.Compiler (gscompiler_env_get, gscompiler_env_insert) where
+module GSDL.Compiler (gscompiler_env_get, gscompiler_env_insert, gscompiler_env_empty) where
 
 $gsimports
 
 gscompiler_env_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v env |]
 
 gscompiler_env_insert = [gs:value| λ 'v. λ 'x. λ 'env. ordered-map.insert gsvar.compare v x env |]
+
+gscompiler_env_empty = [gs:value| ordered-map.empty |]

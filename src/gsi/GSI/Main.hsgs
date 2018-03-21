@@ -167,5 +167,5 @@ gscompiler_global_env = [gs:value|
     compiler.env.insert (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
     compiler.env.insert (gsvar qq{undefined}) (gsinject (value undefined)) $
     compiler.env.insert (gsvar qq{λ}) (gsinject (value λ)) $
-    ordered-map.empty
+    compiler.env.empty
 |]
