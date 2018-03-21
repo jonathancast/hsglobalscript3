@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Compiler (gscompileDocument) where
+module GSDL.Compile (gscompileDocument) where
 
 $gsimports
 
