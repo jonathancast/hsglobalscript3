@@ -39,3 +39,4 @@ src/gsi/GSI/Set.hs
 src/gsi/GSDL/Validator.hs
 src/libgsi/GSI/Natural.hs
 src/gsi/GSI/Format.hs
+src/gsi/GSDL/Compiler.hs
