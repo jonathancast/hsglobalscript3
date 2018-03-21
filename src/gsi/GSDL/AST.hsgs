@@ -26,7 +26,7 @@ gstype_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'implicits ∝ env #implicits;
 〉 |]
 
-gstype_env_types = [gs:value| λ 'env. ordered-map.values (env #types) |]
+gstype_env_types = [gs:value| λ 'env. ordered-map.values (env #types) <> ordered-map.values (env #view-types) |]
 
 gstype_env_vars = [gs:value| λ 'env. ordered-map.keys (env #types) |]
 
