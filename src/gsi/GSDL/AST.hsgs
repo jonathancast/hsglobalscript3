@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.AST (
-    gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_view_type_get, gstype_env_views, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_overlay, gstype_env_empty,
+    gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_view_type_get, gstype_env_view_type_insert, gstype_env_views, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_overlay, gstype_env_empty,
     gsfileDocument, gsfileDocument_view,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -31,6 +31,12 @@ gstype_env_types = [gs:value| λ 'env. ordered-map.values (env #types) |]
 gstype_env_vars = [gs:value| λ 'env. ordered-map.keys (env #types) |]
 
 gstype_env_view_type_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #view-types) |]
+
+gstype_env_view_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
+    'types ∝ env #types;
+    'view-types ∝ ordered-map.insert gsvar.compare v ty (env #view-types);
+    'implicits ∝ env #implicits;
+〉 |]
 
 gstype_env_views = [gs:value| λ 'env. ordered-map.keys (env #view-types) |]
 
