@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazystring, gslazystring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
 
 import Control.Exception (Exception(..), throwIO, try)
@@ -109,6 +110,7 @@ gsevalForApi ev = do
         Left (GSExcUndefined st) -> throwIO $ TEError $ GSErrUnimpl st
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
         Left (GSExcInsufficientCases pos1 err) -> throwIO $ TEError $ GSErrInsufficientCases pos1 err
+        Left (GSExcError pos1 err) -> throwIO $ TEError $ GSErrError pos1 err
         Left (e :: GSException) -> $apiImplementationFailure $ "gsevalForApi (eval threw unknown exception (" ++ show e ++ ")) next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
