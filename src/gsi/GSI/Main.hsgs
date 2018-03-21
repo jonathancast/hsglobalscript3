@@ -126,6 +126,7 @@ gstype_checker_global_env = [gs:value|
     ) $
     type.env.type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
     type.env.view-type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
+    type.env.view-type.insert (gsvar qq{false}) (type.consts qq{bool.t}) $
     type.env.type.insert (gsvar qq{undefined}) (
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
