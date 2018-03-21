@@ -690,6 +690,7 @@ globalEnv = Env{
         ("char", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_char", HSVar "gsparser_char")),
         ("compile-document", (Set.singleton $ HSIVar "GSDL.Compile" "gscompileDocument", HSVar "gscompileDocument")),
         ("compiler.env.get", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompiler_env_get", HSVar "gscompiler_env_get")),
+        ("compiler.env.insert", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompiler_env_insert", HSVar "gscompiler_env_insert")),
         ("concat", (Set.singleton $ HSIVar "GSI.List" "gsconcat", HSVar "gsconcat")),
         ("createThread", (Set.singleton $ HSIVar "GSI.GSI" "gsicreateThread", HSVar "gsicreateThread")),
         ("display-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_displayRune", HSVar "gsparser_displayRune")),
