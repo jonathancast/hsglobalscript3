@@ -44,7 +44,7 @@ gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
 
 gscompile_open_expr = [gs:value| λ 'pos. λ 'env. λ 'e. λ 'lvs. gsbcarg pos (λ 'env1.
     foldr
-        (λ 'v. λ 'k. λ 'env0. gsbclfield pos v env1 (λ 'x. k (ordered-map.insert gsvar.compare v x env0)))
+        (λ 'v. λ 'k. λ 'env0. gsbclfield pos v env1 (λ 'x. k (compiler.env.value.insert v x env0)))
         (λ 'env0. compile-expr pos env0 e)
         lvs
       env
