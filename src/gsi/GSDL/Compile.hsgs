@@ -17,7 +17,7 @@ $gsdeclare compile-pat gscompile_pat
 
 gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.natural 'n. gsbcnatural pos n
-    case expr.var 'v. (analyze compiler.env.get v env.
+    case expr.var 'v. (analyze compiler.env.value.get v env.
         case nothing. error undefined -- > (logstr (pos.fmt pos qq{§(gsvar.fmt-atom v) not in the compiler environment}))
         case just 'gsv. gsbcenter pos gsv
     )
@@ -35,7 +35,7 @@ gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
 |]
 
 gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
-    case expr.var 'v. (analyze compiler.env.get v env.
+    case expr.var 'v. (analyze compiler.env.value.get v env.
         case just 'gsv. gsbcapply pos gsv cas
         case nothing. error log{§(gsv pos): Function §(gsv v) not in scope}
     )
