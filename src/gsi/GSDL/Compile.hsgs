@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Compile (gscompileDocument) where
+module GSDL.Compile (gscompile_document) where
 
 $gsimports
 
-$gsdeclare compile-expr gscompileExpr
+$gsdeclare compile-expr gscompile_expr
 $gsdeclare compile-arg gscompile_arg
-$gsdeclare compile-function gscompileFunction
+$gsdeclare compile-function gscompile_function
 
-gscompileDocument = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
+gscompile_document = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
     case nothing. gsbcundefined pos
     case just 'e. compile-expr pos env e
 |]
@@ -16,7 +16,7 @@ $gsdeclare compile-open-expr gscompile_open_expr
 $gsdeclare compile-pat gscompile_pat
 $gsdeclare compile-monoidal-pat gscompile_monoidal_pat
 
-gscompileExpr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
+gscompile_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.natural 'n. gsbcnatural pos n
     case expr.var 'v. (analyze compiler.env.value.get v env.
         case nothing. error undefined -- > (logstr (pos.fmt pos qq{§(gsvar.fmt-atom v) not in the compiler environment}))
@@ -36,7 +36,7 @@ gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
     case arg.here. gsbcwithhere pos (λ 'here. k (gsav here : cas))
 |]
 
-gscompileFunction = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
+gscompile_function = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
     case expr.var 'v. (analyze compiler.env.value.get v env.
         case just 'gsv. gsbcapply pos gsv cas
         case nothing. error log{§(gsv pos): Function §(gsv v) not in scope}
