@@ -98,7 +98,6 @@ formatOutput [] = return []
 
 formatImport :: HSImport -> String
 formatImport (HSIType m t) = "import " ++ m ++ " (" ++ t ++ "(..))\n"
-formatImport (HSITypeName m t) = "import " ++ m ++ " (" ++ t ++ ")\n"
 formatImport (HSIVar m v) = "import " ++ m ++ " (" ++ v ++ ")\n"
 formatImport hs = $gsfatal $ "formatImport " ++ hsiCode hs ++ " next"
 
@@ -154,7 +153,6 @@ gatherImports m is (DCChar _:dcs) = gatherImports m is dcs
 gatherImports m is (DCPos _:dcs) = gatherImports m is dcs
 gatherImports m is (DCExpr is' _:dcs) = gatherImports m (is `Set.union` Set.filter p is') dcs where
     p (HSIType m' _) = m /= m'
-    p (HSITypeName m' _) = m /= m'
     p (HSIVar m' _) = m /= m'
 gatherImports m is (dc:dcs) = $gsfatal $ "gatherImports " ++ dcCode dc ++ " next"
 gatherImports m is [] = is
