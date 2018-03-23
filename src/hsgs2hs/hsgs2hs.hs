@@ -403,6 +403,19 @@ compileApp env (EVar pos "value") ((_, EVar pos1 f):as) = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos1 `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
       )
+compileApp env (EVar pos "view") ((_, EVar pos1 v):as) = do
+    (isv, ev) <- case Map.lookup v (gsviews env) of
+        Nothing -> lift $ Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
+        Just (isv, ev) -> return (isv, ev)
+    as' <- mapM (\ ((pos2, e), s) -> compileArg env pos2 e s) (zip as (repeat Nothing))
+    return (
+        Set.unions $
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
+            isv :
+            map (\ (is, _) -> is) as'
+        ,
+        HSVar "gsbcapply_w" `HSApp` hspos pos1 `HSApp` ev `HSApp` HSList (map (\ (_, a) -> a) as')
+      )
 compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
