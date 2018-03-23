@@ -8,7 +8,7 @@ module GSI.ByteCode (
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpattern, gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
+    gsbcviewpattern, gsbcviewpattern_w, gsbcviewpatternv_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
   ) where
 
 import Control.Monad (forM)
@@ -268,6 +268,21 @@ gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
 gsbcviewpattern = varE 'gsbcviewpattern_w `appE` gshere
+
+gsbcviewpatternv_w :: Pos -> GSValue -> [GSArg] -> GSExpr
+gsbcviewpatternv_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
+    $gsav (GSConstr $gshere (gsvar "0") []),
+    $gsae $ (foldr
+        (\ p k r -> gsbcarg_w $gshere $ \ x0 ->
+            k $ gsbclet_w $gshere r $ \ rv -> gsbclet_w $gshere (gsbcapparg_w $gshere p [ $gsav x0 ]) $ \ px0 ->
+                (gsbcprim_w $gshere gsparand rv px0)
+        )
+        (\ r -> r)
+        ps
+        (gsbcconstr_w $gshere (gsvar "1") [ $gsae $ gsbcrecord_w $gshere []])
+    ),
+    $gsav x
+  ]
 
 gsbcviewpattern_w :: (ToGSViewPattern res) => Pos -> GSValue -> res
 gsbcviewpattern_w pos v =
