@@ -8,7 +8,7 @@ module GSI.ByteCode (
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpattern_w, gsbcviewpatternv_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
+    gsbcviewpatternv_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
   ) where
 
 import Control.Monad (forM)
@@ -282,10 +282,6 @@ gsbcviewpatternv_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
     ),
     $gsav x
   ]
-
-gsbcviewpattern_w :: (ToGSViewPattern res) => Pos -> GSValue -> res
-gsbcviewpattern_w pos v =
-    gsbcviewpattern_ww pos (\ sk -> gsbcapply_w pos v [ GSArgVar (GSConstr pos (gsvar "0") []), GSArgExpr pos (gsbcapp_w $gshere sk [GSArgVar $ GSConstr pos (gsvar "1") [GSRecord pos Map.empty]]) ])
 
 class ToGSViewPattern res where
     gsbcviewpattern_ww :: Pos -> (GSExpr -> GSExpr) -> res
