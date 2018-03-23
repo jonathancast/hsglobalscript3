@@ -706,6 +706,7 @@ globalEnv = Env{
         ("compiler.env.value.get", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompiler_env_value_get", HSVar "gscompiler_env_value_get")),
         ("compiler.env.value.insert", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompiler_env_value_insert", HSVar "gscompiler_env_value_insert")),
         ("compiler.env.view.get", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompiler_env_view_get", HSVar "gscompiler_env_view_get")),
+        ("compiler.env.view.insert", (Set.singleton $ HSIVar "GSDL.Compiler" "gscompiler_env_view_insert", HSVar "gscompiler_env_view_insert")),
         ("concat", (Set.singleton $ HSIVar "GSI.List" "gsconcat", HSVar "gsconcat")),
         ("createThread", (Set.singleton $ HSIVar "GSI.GSI" "gsicreateThread", HSVar "gsicreateThread")),
         ("display-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_displayRune", HSVar "gsparser_displayRune")),
