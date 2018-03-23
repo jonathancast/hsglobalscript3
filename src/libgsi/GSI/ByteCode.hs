@@ -8,7 +8,7 @@ module GSI.ByteCode (
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpatternv_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
+    gsbcviewpattern_w, gsbcvarpattern, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
   ) where
 
 import Control.Monad (forM)
@@ -268,8 +268,8 @@ gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x
             | otherwise -> gsbcenter_w pos ek
         _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
-gsbcviewpatternv_w :: Pos -> GSValue -> [GSArg] -> GSExpr
-gsbcviewpatternv_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
+gsbcviewpattern_w :: Pos -> GSValue -> [GSArg] -> GSExpr
+gsbcviewpattern_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
     $gsav (GSConstr $gshere (gsvar "0") []),
     $gsae $ (foldr
         (\ p k r -> gsbcarg_w $gshere $ \ x0 ->

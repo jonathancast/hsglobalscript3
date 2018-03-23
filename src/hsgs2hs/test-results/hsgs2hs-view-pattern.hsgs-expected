@@ -2,11 +2,11 @@
 import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcvarpattern_w)
-import GSI.ByteCode (gsbcviewpatternv_w)
+import GSI.ByteCode (gsbcviewpattern_w)
 import GSI.Either (gsright_view)
 import GSI.Syn (gsvar)
 
 {-# LINE 2 "./test-fixtures/view-pattern.hsgs" #-}
-(gsbcviewpatternv_w (Pos "./test-fixtures/view-pattern.hsgs" 2 10) gsright_view [ GSArgExpr (Pos "./test-fixtures/view-pattern.hsgs" 2 10) (gsbcvarpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 16) (gsvar "st")) ])
+(gsbcviewpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 10) gsright_view [ GSArgExpr (Pos "./test-fixtures/view-pattern.hsgs" 2 10) (gsbcvarpattern_w (Pos "./test-fixtures/view-pattern.hsgs" 2 16) (gsvar "st")) ])
 {-# LINE 2 "./test-fixtures/view-pattern.hsgs" #-}
                      
