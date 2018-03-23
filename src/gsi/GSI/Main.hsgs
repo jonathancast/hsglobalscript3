@@ -167,6 +167,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
     compiler.env.value.insert (gsvar qq{undefined}) (gsinject (value undefined)) $
     compiler.env.value.insert (gsvar qq{λ}) (gsinject (value λ)) $
+    compiler.env.view.insert (gsvar qq{false}) (gsinject (view false)) $
     compiler.env.view.insert (gsvar qq{true}) (gsinject (view true)) $
     compiler.env.empty
 |]
