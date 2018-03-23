@@ -1,12 +1,12 @@
 {-# LINE 1 "./test-fixtures/operator-view.hsgs" #-}
 import GSI.Util (Pos(..))
-import GSI.Value (GSExpr)
+import GSI.Value (GSArg(..))
 import GSI.ByteCode (gsbcvarpattern_w)
-import GSI.ByteCode (gsbcviewpattern_w)
+import GSI.ByteCode (gsbcviewpatternv_w)
 import GSI.List (gscons_view)
 import GSI.Syn (gsvar)
 
 {-# LINE 2 "./test-fixtures/operator-view.hsgs" #-}
-(gsbcviewpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 13) gscons_view (gsbcvarpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 10) (gsvar "x")) (gsbcvarpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 15) (gsvar "xn")) :: GSExpr)
+(gsbcviewpatternv_w (Pos "./test-fixtures/operator-view.hsgs" 2 13) gscons_view [ GSArgExpr (Pos "./test-fixtures/operator-view.hsgs" 2 13) (gsbcvarpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 10) (gsvar "x")), GSArgExpr (Pos "./test-fixtures/operator-view.hsgs" 2 13) (gsbcvarpattern_w (Pos "./test-fixtures/operator-view.hsgs" 2 15) (gsvar "xn")) ])
 {-# LINE 2 "./test-fixtures/operator-view.hsgs" #-}
                     
