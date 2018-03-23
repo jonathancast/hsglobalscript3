@@ -283,17 +283,6 @@ gsbcviewpatternv_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
     $gsav x
   ]
 
-class ToGSViewPattern res where
-    gsbcviewpattern_ww :: Pos -> (GSExpr -> GSExpr) -> res
-
-instance (ToGSViewPattern res) => ToGSViewPattern (GSExpr -> res) where
-    gsbcviewpattern_ww pos k p = gsbcviewpattern_ww pos $ \ (sk :: GSExpr) -> k $ gsbcarg_w pos $ \ eta  -> gsbcarg_w pos $ \ x ->
-        gsbclet_w pos (gsbcapp_w pos p [ GSArgVar x ]) $ \ px ->
-            gsbcapp_w pos sk [ GSArgExpr pos (gsbcprim_w pos gsparand eta px) ]
-
-instance ToGSViewPattern GSExpr where
-    gsbcviewpattern_ww pos k = k (gsbcarg_w pos $ \ eta -> GSExpr $ \ cs sk -> aceEnter [StackTrace pos cs] eta sk)
-
 gsbcvarpattern = varE 'gsbcvarpattern_w `appE` gshere
 
 gsbcvarpattern_w :: Pos -> GSVar -> GSExpr
