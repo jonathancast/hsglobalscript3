@@ -471,8 +471,10 @@ compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
 compilePat env (PVar pos v) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ],
-    HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v)
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ],
+    HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` (
+        HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v)
+    )
   )
 compilePat env (PDiscard pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],

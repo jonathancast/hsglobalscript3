@@ -1,9 +1,10 @@
 {-# LINE 1 "./test-fixtures/variable-pattern.hsgs" #-}
 import GSI.Util (Pos(..))
+import GSI.ByteCode (gsbcnonmonoidalpattern_w)
 import GSI.ByteCode (gsbcvarpattern_w)
 import GSI.Syn (gsvar)
 
 {-# LINE 2 "./test-fixtures/variable-pattern.hsgs" #-}
-(gsbcvarpattern_w (Pos "./test-fixtures/variable-pattern.hsgs" 2 10) (gsvar "st"))
+(gsbcnonmonoidalpattern_w (Pos "./test-fixtures/variable-pattern.hsgs" 2 10) (gsbcvarpattern_w (Pos "./test-fixtures/variable-pattern.hsgs" 2 10) (gsvar "st")))
 {-# LINE 2 "./test-fixtures/variable-pattern.hsgs" #-}
                
