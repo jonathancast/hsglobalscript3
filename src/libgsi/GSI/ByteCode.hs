@@ -8,7 +8,7 @@ module GSI.ByteCode (
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpattern_w, gsbcnonmonoidalpattern_w, gsbcvarpattern_w, gsbcdiscardpattern, gsbcdiscardpattern_w
+    gsbcviewpattern_w, gsbcnonmonoidalpattern_w, gsbcvarpattern_w, gsbcdiscardpattern_w
   ) where
 
 import Control.Monad (forM)
@@ -290,8 +290,6 @@ gsbcnonmonoidalpattern_w pos p = gsbcarg_w pos $ \ x ->
 gsbcvarpattern_w :: Pos -> GSVar -> GSExpr
 gsbcvarpattern_w pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
     gsreturn sk (GSRecord pos $ Map.fromList [(v, x)])
-
-gsbcdiscardpattern = varE 'gsbcdiscardpattern_w `appE` gshere
 
 gsbcdiscardpattern_w :: Pos -> GSExpr
 gsbcdiscardpattern_w pos = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
