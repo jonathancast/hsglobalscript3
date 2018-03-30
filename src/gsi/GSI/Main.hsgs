@@ -67,6 +67,9 @@ gsannotator_global_env = [gs:value|
     annotator.env.namespace.insert (gsvar qq{λ}) (λ 'as. analyze as.
         case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
     ) $
+    annotator.env.category.insert (gsvar qq{λ}) (λ 'as. analyze as.
+        case (arg.expr _ (expr.pat 'p0 _)):_. just category.monoidal : nil
+    ) $
     annotator.env.category.insert (gsvar qq{case}) (λ 'as. analyze as.
         case (arg.expr _ (expr.pat 'p0 _)):_. just category.monoidal : nil
     ) $
@@ -111,7 +114,7 @@ gstype_checker_global_env = [gs:value|
     ) $
     type.env.type.insert (gsvar qq{λ}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{σ}) kind.pointed $
-            type.function (type.pattern (type.consts qq{α}) (type.consts qq{σ})) $
+            type.function (type.pattern.monoidal (type.consts qq{α}) (type.consts qq{σ})) $
                 type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
                     type.function (type.consts qq{α}) (type.consts qq{β})
     ) $
