@@ -127,6 +127,11 @@ gstype_checker_global_env = [gs:value|
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.consts qq{α}) $ type.app (type.consts qq{type-checker.m}) (type.consts qq{α})
     ) $
+    type.env.type.insert (gsvar qq{map}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
+                type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) (type.app (type.consts qq{list.t}) (type.consts qq{β}))
+    ) $
     type.env.type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
     type.env.view-type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
     type.env.view-type.insert (gsvar qq{false}) (type.consts qq{bool.t}) $
@@ -166,6 +171,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
+    compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
     compiler.env.value.insert (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
     compiler.env.value.insert (gsvar qq{undefined}) (gsinject (value undefined)) $
