@@ -477,8 +477,8 @@ compilePat env (PVar pos v) = return (
     )
   )
 compilePat env (PDiscard pos) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos)
   )
 compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
 compilePat env p@PView{} = compilePatApp env p []

@@ -293,4 +293,4 @@ gsbcvarpattern_w pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
 
 gsbcdiscardpattern_w :: Pos -> GSExpr
 gsbcdiscardpattern_w pos = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
-    gsreturn sk (GSConstr pos (gsvar "1") [GSRecord pos Map.empty])
+    gsreturn sk (GSRecord pos Map.empty)
