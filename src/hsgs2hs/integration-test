@@ -32,7 +32,7 @@ ok_diff_compiler '-- values (thunks) --' hsgs2hs application-value.hsgs applicat
 
 # Different kinds of declarations
 
-ok_diff_compiled '-- variable declarations --' hsgs2hs variable-decl.hsgs .hs runghc `{./test-ghcoptions}
+ok_diff_compiler '-- variable declarations --' hsgs2hs variable-decl.hsgs variable-decl.hs
 
 # Different kinds of expressions
 

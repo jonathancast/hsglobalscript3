@@ -1,10 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 import GSI.Value (gsundefined_value)
-import TestHSGS (printTestExpr)
 $gsimports
 
-$gsdeclare foo foo;
+$gsdeclare foo foo
 
-main = printTestExpr [gs:expr| foo |]
+[gs:expr| foo |]
 
 foo = $gsundefined_value
