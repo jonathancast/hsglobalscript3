@@ -22,7 +22,6 @@ ok_diff_compiler '-- argument variables --' hsgs2hs variable-argument.hsgs varia
 ok_diff_compiler '-- expression variables --' hsgs2hs variable-expression.hsgs variable-expression.hs
 ok_diff_compiler '-- open expression variables --' hsgs2hs variable-open-expression.hsgs variable-open-expression.hs
 ok_diff_compiler '-- open argument variables --' hsgs2hs variable-open-argument.hsgs variable-open-argument.hs
-ok_diff_compiler '-- pattern variables --' hsgs2hs variable-pattern.hsgs variable-pattern.hs
 ok_diff_compiler '-- variable bodies --' hsgs2hs variable-body.hsgs variable-body.hs
 ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
 ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
