@@ -39,6 +39,9 @@ ok_diff_compiler '-- variable declarations --' hsgs2hs variable-decl.hsgs variab
 test_number
 test_unbound_variable
 test_function_variable
+test_function_literal
+test_variable_function_body
+test_parameter_function_body
 ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
 test_value_function
 ok_diff_compiler '-- case expressions --' hsgs2hs case-expression.hsgs case-expression.hs
