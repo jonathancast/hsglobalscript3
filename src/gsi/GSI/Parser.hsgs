@@ -62,8 +62,7 @@ gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn.
 |]
 
 gsposFmt :: GSValue
-gsposFmt = $gslambda_value $ \ pos -> $gsbcarg $ \ msg ->
-    [gs:expr hsvs=pos,msg,| qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
+gsposFmt = [gs:value| λ 'pos. λ 'msg. qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
 
 gsfmtError = [gs:value| λ 'errs. λ 'exps. analyze errs.
     case 'err0:'errs1. qq{§(log.fmt err0); §(fmt-error errs1 exps)}
@@ -72,10 +71,9 @@ gsfmtError = [gs:value| λ 'errs. λ 'exps. analyze errs.
     )
 |]
 
-gsparserFor = $gslambda_value $ \ gens -> $gsbcarg $ \ e -> $gsbcapply gsparser_bind [ $gsav gens, $gsav e ]
+gsparserFor = [gs:value| λ 'gens. λ 'e. parser.>>= gens e |]
 
-gsparser_bind = $gslambda_value $ \ p -> $gsbcarg $ \ f -> $gsbcarg $ \ k -> $gsbcapply p [ $gsae $ $gsbcarg $ \ x ->
-    $gsbcapply f [ $gsav x, $gsav k ] ]
+gsparser_bind = [gs:value| λ 'p. λ 'f. λ 'k. p (λ 'x. f x k) |]
 
 gsparser_app = [gs:value| λ 'pf. λ 'px. λ 'k. pf $ λ 'f. px $ λ 'x. k $ f $ x |]
 
@@ -87,7 +85,7 @@ gsparser_after = [gs:value| λ 'p0. λ 'p1. λ 'k. p0 (λ 'x0. p1 (λ 'x1. k x0)
 
 gsparser_map = [gs:value| λ 'f. λ 'p. λ 'k. p (λ 'x. k (f x)) |]
 
-gsparser_unit = $gslambda_value $ \ x -> $gsbcarg $ \ k -> $gsbcapply k [ $gsav x ]
+gsparser_unit = [gs:expr| λ 'x. λ 'k. k x |]
 
 gsparser_fail = [gs:value| λ 'err. λ 'k. prim.fail (err:nil) nil |]
 
