@@ -212,7 +212,6 @@ data SourceComp
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
   | SCOpenArg Pos [Param] Expr
-  | SCPat [Param] Pattern
   | SCPatArg Pos [Param] Pattern
   | SCBody Pos [Param] Expr
   | SCBind Pos [Param] Expr
@@ -472,7 +471,6 @@ scCode SCArg{} = "SCArg"
 scCode SCExpr{} = "SCExpr"
 scCode SCOpenExpr{} = "SCOpenExpr"
 scCode SCOpenArg{} = "SCOpenArg"
-scCode SCPat{} = "SCPat"
 scCode SCPatArg{} = "SCPatArg"
 scCode SCBody{} = "SCBody"
 scCode SCBind{} = "SCBind"
