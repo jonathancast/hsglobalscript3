@@ -41,6 +41,7 @@ test_function_variable
 test_function_literal
 test_variable_function_body
 test_parameter_function_body
+test_discard_pattern_hsgs_syntax
 test_view_pattern_hsgs_syntax
 test_view_pattern_arg_hsgs_syntax
 ok_diff_compiler '-- expression applications --' hsgs2hs application-expression.hsgs application-expression.hs
