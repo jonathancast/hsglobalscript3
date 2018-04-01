@@ -85,19 +85,18 @@ gsparser_after = [gs:value| λ 'p0. λ 'p1. λ 'k. p0 (λ 'x0. p1 (λ 'x1. k x0)
 
 gsparser_map = [gs:value| λ 'f. λ 'p. λ 'k. p (λ 'x. k (f x)) |]
 
-gsparser_unit = [gs:expr| λ 'x. λ 'k. k x |]
+gsparser_unit = [gs:value| λ 'x. λ 'k. k x |]
 
 gsparser_fail = [gs:value| λ 'err. λ 'k. prim.fail (err:nil) nil |]
 
-gsparser_map2 = $gslambda_value $ \ f -> $gsbcarg $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
-    [gs:expr hsvs=f,p0,p1,k,| p0 (λ 'x0. p1 (λ 'x1. k (f x0 x1))) |]
+gsparser_map2 = [gs:value| λ 'f. λ 'p0. λ 'p1. λ 'k. p0 (λ 'x0. p1 (λ 'x1. k (f x0 x1))) |]
 
-gsparser_string = $gslambda_value $ \ s -> [gs:expr hsvs=s,| analyze s.
+gsparser_string = [gs:value| λ 's. analyze s.
     case 'c:'s1. char c *> string s1
     case nil. parser.unit 〈〉
 |]
 
-gsparser_char = $gslambda_value $ \ ch -> [gs:expr hsvs=ch,| matching (display-rune ch) (rune.≡ ch) |]
+gsparser_char = [gs:value| λ 'ch. matching (display-rune ch) (rune.≡ ch) |]
 
 $gsdeclare prim.symbol-or-eof gsprim_symbol
 
@@ -106,7 +105,7 @@ gsparser_matching = [gs:value| λ 'cat. λ 'p. λ 'k. prim.symbol-or-eof prim.em
     case true. right (k c)
 |]
 
-gsparser_displayRune = $gsundefined_value
+gsparser_displayRune = [gs:value| undefined |]
 
 gsparser_choice = [gs:value| foldr (<|>) empty |]
 
@@ -116,10 +115,9 @@ gsmany = [gs:value| λ 'p. parser.unit nil <|> parser.map2 (:) p (many p) |]
 
 gsmany1 = [gs:value| λ 'p. parser.map2 (:) p (many p) |]
 
-gsparser_unary_or = $gslambda_value $ \ p -> $gsbcenter p
+gsparser_unary_or = [gs:value| λ 'p. p |]
 
-gsparser_or = $gslambda_value $ \ p0 -> $gsbcarg $ \ p1 -> $gsbcarg $ \ k ->
-    $gsbcapply gsprimor [ $gsae $ $gsbcapply p0 [ $gsav k ], $gsae $ $gsbcapply p1 [ $gsav k ] ]
+gsparser_or = [gs:value| λ 'p0. λ 'p1. λ 'k. prim.<|> (p0 k) (p1 k) |]
 
 $gsdeclare difference-w gsparser_difference_w
 
@@ -167,7 +165,7 @@ gsparser_negate_w = [gs:value| λ 'p. λ 'x. analyze p.
 
 gsparser_getPos = $gslambda_value $ \ k -> $gsbcconstr (gsvar "get-pos") [ $gsav k ]
 
-gsempty = $gslambda_value $ \ k -> $gsbcenter gsprim_empty
+gsempty = [gs:value| λ 'k. prim.empty |]
 
 gsprimunit = $gslambda_value $ \ x -> $gsbcconstr (gsvar "unit-plus") [ $gsav x, $gsav gsprim_empty ]
 
@@ -238,7 +236,7 @@ gsprim_get_pos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ 
 gsprim_lookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lookahead" ek sk e
 gsprim_symbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
-gsparser_advanceRune = $gslambda_value $ \ c -> $gsbcarg $ \ pos -> [gs:expr hsvs=c,pos,| analyze rune.≡ c r{\n}.
+gsparser_advanceRune = [gs:value| λ 'c. λ 'pos. analyze rune.≡ c r{\n}.
     case true. 〈 'filename ∝ pos #filename; 'line ∝ pos #line + 1; 'col ∝ 1; 〉
     case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
 |]
