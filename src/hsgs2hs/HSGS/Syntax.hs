@@ -57,12 +57,6 @@ quote env pos = empty
         e <- expr env
         return $ SCOpenArg pos ps e
     <|> do
-        keyword "pat-arg"
-        ps <- many param
-        keywordOp "|"
-        p <- pattern env
-        return $ SCPatArg pos ps p
-    <|> do
         keyword "body"
         ps <- many param
         keywordOp "|"
