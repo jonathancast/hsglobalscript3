@@ -1,9 +1,0 @@
-{-# LINE 1 "./test-fixtures/discard-pattern.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.ByteCode (gsbcdiscardpattern_w)
-import GSI.ByteCode (gsbcnonmonoidalpattern_w)
-
-{-# LINE 2 "./test-fixtures/discard-pattern.hsgs" #-}
-(gsbcnonmonoidalpattern_w (Pos "./test-fixtures/discard-pattern.hsgs" 2 10) (gsbcdiscardpattern_w (Pos "./test-fixtures/discard-pattern.hsgs" 2 10)))
-{-# LINE 2 "./test-fixtures/discard-pattern.hsgs" #-}
-             
