@@ -803,6 +803,7 @@ globalEnv = Env{
         ("ordered-set.insert", (Set.singleton $ HSIVar "GSI.Set" "gsordered_set_insert", HSVar "gsordered_set_insert")),
         ("ordered-set.∈", (Set.singleton $ HSIVar "GSI.Set" "gsordered_set_member", HSVar "gsordered_set_member")),
         ("parse", (Set.singleton $ HSIVar "GSI.Parser" "gsparse", HSVar "gsparse")),
+        ("parser.>>=", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_bind", HSVar "gsparser_bind")),
         ("parser.choice", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_choice", HSVar "gsparser_choice")),
         ("parser.env.else.get", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_else_get", HSVar "gsdl_parser_env_else_get")),
         ("parser.env.else.insert", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_else_insert", HSVar "gsdl_parser_env_else_insert")),
