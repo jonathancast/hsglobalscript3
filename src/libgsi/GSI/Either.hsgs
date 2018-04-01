@@ -7,7 +7,7 @@ import GSI.ByteCode (gsbcarg, gsbcapply, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 gseitherFor :: GSValue
-gseitherFor = $gslambda_value $ \ gen -> $gsbcarg $ \ k -> $gsbcapply gseitherbind [ $gsav gen, $gsav k ]
+gseitherFor = [gs:value| λ 'gen. λ 'k. either.>>= gen k |]
 
 gseitherbind = [gs:value| λ 'e. λ 'k. analyze e.
     case left 'e. left e
