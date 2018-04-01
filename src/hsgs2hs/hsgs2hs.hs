@@ -140,7 +140,6 @@ compileSource env m (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) 
 compileSource env m (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps env) e) <*> compileSource env m scs
 compileSource env m (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps env) pos (processFVS ps) e) <*> compileSource env m scs
 compileSource env m (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps env) pos (processFVS ps) e) <*> compileSource env m scs
-compileSource env m (SCPat ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePat env p <*> compileSource env m scs
 compileSource env m (SCPatArg pos ps p:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> compilePatArg env pos p <*> compileSource env m scs
 compileSource env m (SCBody pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBody (processHSVS ps env) pos e) <*> compileSource env m scs
 compileSource env m (SCBind pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileBind (processHSVS ps env) pos e) <*> compileSource env m scs
