@@ -4,7 +4,6 @@ module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_subtract, gsn
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcenter, gsbcnatural, gsbcconstr, gsbcimplementationfailure)
-$gsimports
 
 gsnatural_unary_plus = $gslambda_value $ \ n -> $gsbcenter n
 
