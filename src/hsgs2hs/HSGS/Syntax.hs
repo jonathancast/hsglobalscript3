@@ -39,12 +39,6 @@ quote env pos = empty
         e <- expr env
         return $ SCExpr ps e
     <|> do
-        keyword "open-arg"
-        ps <- many param
-        keywordOp "|"
-        e <- expr env
-        return $ SCOpenArg pos ps e
-    <|> do
         keyword "body"
         ps <- many param
         keywordOp "|"
@@ -192,7 +186,6 @@ data SourceComp
   | SCDeclareView String String
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
-  | SCOpenArg Pos [Param] Expr
   | SCBody Pos [Param] Expr
   | SCBind Pos [Param] Expr
   | SCValue Pos [Param] Expr
@@ -449,7 +442,6 @@ scCode SCDeclareVar{} = "SCDeclareVar"
 scCode SCDeclareView{} = "SCDeclareView"
 scCode SCExpr{} = "SCExpr"
 scCode SCOpenExpr{} = "SCOpenExpr"
-scCode SCOpenArg{} = "SCOpenArg"
 scCode SCBody{} = "SCBody"
 scCode SCBind{} = "SCBind"
 scCode SCValue{} = "SCValue"
