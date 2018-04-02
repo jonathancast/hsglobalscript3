@@ -12,10 +12,7 @@ import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
-    $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ c -> case c of
-        GSConstr pos cv [r] | cv == gsvar "1" -> $gsbcapply b [$gsav r]
-        GSConstr pos cc args -> $gsbcimplementationfailure $ "gslambda (pattern returns " ++ fmtVarAtom cc ") next"
-        _ -> $gsbcimplementationfailure $ "gslambda (pattern returns " ++ gsvCode c ++ ") next"
+    $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
 
 gscompose :: GSValue
 gscompose = $gslambda_value $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]

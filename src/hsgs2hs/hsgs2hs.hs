@@ -1017,10 +1017,6 @@ globalEnv = Env{
         )
     ],
     gscategories = Map.fromList [
-        ("λ", \ as -> case as of
-            (_, EPat p) : (_, EOpen b) : _ -> return [ Just Monoidal, Nothing ]
-            _ -> return []
-        ),
         ("case", \ as -> case as of
             (_, EPat p) : (_, EOpen b) : _ -> return [ Just Monoidal, Nothing ]
             _ -> return []
