@@ -437,7 +437,10 @@ compileApp env (EVar pos f) as = do
     sig <- case Map.lookup f (gssignatures env) of
         Nothing -> return []
         Just sigM -> sigM as
-    as' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 as (sig ++ repeat Nothing) (repeat Nothing))
+    cats <- case Map.lookup f (gscategories env) of
+        Nothing -> return []
+        Just catsM -> catsM as
+    as' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 as (sig ++ repeat Nothing) (cats ++ repeat Nothing))
     return (
         Set.unions $
             isctxt :
@@ -992,12 +995,15 @@ globalEnv = Env{
               ]
             _ -> return []
         )
+    ],
+    gscategories = Map.fromList [
     ]
   }
 
 data Env = Env {
     gsimplicits :: Map String [Implicit],
     gssignatures :: Map String ([(Pos, Expr)] -> Compiler [Maybe Signature]),
+    gscategories :: Map String ([(Pos, Expr)] -> Compiler [Maybe Category]),
     gsunaries :: Map String (Set HSImport, HSExpr),
     gsvars :: Map String (Set HSImport, HSExpr),
     gsviews :: Map String (Set HSImport, HSExpr)
