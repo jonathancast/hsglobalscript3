@@ -197,6 +197,7 @@ compileArg env pos (ENumber _ n) s Nothing = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
   )
+compileArg env pos (EPat p) s Nothing = lift $ compilePatArg env pos p
 compileArg env pos (EPat p) s (Just Monoidal) = lift $ compileMonoidalPatArg env pos p
 compileArg env pos (EOpen e) s Nothing = compileOpenArg env pos fvs e where
     fvs = case s of
@@ -503,6 +504,25 @@ compileMonoidalPatApp env (PView pos v) as = do
       )
 compileMonoidalPatApp env (PApp pf px) as = compileMonoidalPatApp env pf (px:as)
 compileMonoidalPatApp env p as = $gsfatal $ "compileMonoidalPatApp " ++ patCode p ++ " next"
+
+compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
+compilePat env (PVar pos v) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ],
+    HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v)
+  )
+compilePat env (PDiscard pos) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos
+  )
+compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
+
+compilePatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
+compilePatArg env pos p = do
+    (is, e) <- compilePat env p
+    return (
+        Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+        HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e
+      )
 
 compileMonadGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGensArg env pos gs pos1 s = do
