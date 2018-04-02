@@ -470,19 +470,19 @@ compileApp env (EApp f a) as = $gsfatal $ "compileApp (EApp f " ++ argCode a ++ 
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compileMonoidalPat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
-compileMonoidalPat env (PVar pos v) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ],
-    HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` (
-        HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v)
-    )
-  )
-compileMonoidalPat env (PDiscard pos) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos)
-  )
+compileMonoidalPat env p@(PVar pos _) = compileNonMonoidalPat env pos p
+compileMonoidalPat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
 compileMonoidalPat env (PApp p0 p1) = compileMonoidalPatApp env p0 [p1]
 compileMonoidalPat env p@PView{} = compileMonoidalPatApp env p []
 compileMonoidalPat env p = $gsfatal $ "compileMonoidalPat " ++ patCode p ++ " next"
+
+compileNonMonoidalPat :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
+compileNonMonoidalPat env pos p = do
+    (isp, hsp) <- compilePat env p
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos" ] `Set.union` isp,
+        HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` hsp
+      )
 
 compileMonoidalPatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
 compileMonoidalPatArg env pos p = do
