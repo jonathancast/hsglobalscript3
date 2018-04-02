@@ -18,7 +18,6 @@ ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
 
 # Different kinds of interpolations
 
-ok_diff_compiler '-- argument variables --' hsgs2hs variable-argument.hsgs variable-argument.hs
 ok_diff_compiler '-- expression variables --' hsgs2hs variable-expression.hsgs variable-expression.hs
 ok_diff_compiler '-- open expression variables --' hsgs2hs variable-open-expression.hsgs variable-open-expression.hs
 ok_diff_compiler '-- open argument variables --' hsgs2hs variable-open-argument.hsgs variable-open-argument.hs
