@@ -1,2 +1,4 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:arg| undefined |]
+
+main = printTestExpr [gs:expr| (λ 'x. x) undefined |]
