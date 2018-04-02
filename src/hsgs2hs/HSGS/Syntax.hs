@@ -33,12 +33,6 @@ interpolation = empty
 quote :: Env -> Pos -> Parser Char SourceComp
 quote env pos = empty
     <|> do
-        keyword "arg"
-        ps <- many param
-        keywordOp "|"
-        e <- expr env
-        return $ SCArg pos ps e
-    <|> do
         keyword "expr"
         ps <- many param
         keywordOp "|"
@@ -202,7 +196,6 @@ data SourceComp
   | SCImports
   | SCDeclareVar String String
   | SCDeclareView String String
-  | SCArg Pos [Param] Expr
   | SCExpr [Param] Expr
   | SCOpenExpr Pos [Param] Expr
   | SCOpenArg Pos [Param] Expr
@@ -460,7 +453,6 @@ scCode SCPos{} = "SCPos"
 scCode SCImports{} = "SCImports"
 scCode SCDeclareVar{} = "SCDeclareVar"
 scCode SCDeclareView{} = "SCDeclareView"
-scCode SCArg{} = "SCArg"
 scCode SCExpr{} = "SCExpr"
 scCode SCOpenExpr{} = "SCOpenExpr"
 scCode SCOpenArg{} = "SCOpenArg"
