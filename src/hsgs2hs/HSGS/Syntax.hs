@@ -39,12 +39,6 @@ quote env pos = empty
         e <- expr env
         return $ SCExpr ps e
     <|> do
-        keyword "open-expr"
-        ps <- many param
-        keywordOp "|"
-        e <- expr env
-        return $ SCOpenExpr pos ps e
-    <|> do
         keyword "open-arg"
         ps <- many param
         keywordOp "|"
