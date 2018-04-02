@@ -200,7 +200,7 @@ compileArg env pos (ENumber _ n) s = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
   )
-compileArg env pos (EPat p) s = lift $ compilePatArg env pos p
+compileArg env pos (EPat p) s = lift $ compileMonoidalPatArg env pos p
 compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
     fvs = case s of
         Nothing -> Set.empty
@@ -467,41 +467,41 @@ compileApp env (EApp f (ArgExpr pos a)) as = compileApp env f ((pos, a):as)
 compileApp env (EApp f a) as = $gsfatal $ "compileApp (EApp f " ++ argCode a ++ ") next"
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
-compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
-compilePat env (PVar pos v) = return (
+compileMonoidalPat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
+compileMonoidalPat env (PVar pos v) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcvarpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ],
     HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` (
         HSVar "gsbcvarpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v)
     )
   )
-compilePat env (PDiscard pos) = return (
+compileMonoidalPat env (PDiscard pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnonmonoidalpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcnonmonoidalpattern_w" `HSApp` hspos pos `HSApp` (HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos)
   )
-compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
-compilePat env p@PView{} = compilePatApp env p []
-compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
+compileMonoidalPat env (PApp p0 p1) = compileMonoidalPatApp env p0 [p1]
+compileMonoidalPat env p@PView{} = compileMonoidalPatApp env p []
+compileMonoidalPat env p = $gsfatal $ "compileMonoidalPat " ++ patCode p ++ " next"
 
-compilePatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
-compilePatArg env pos p = do
-    (is, e) <- compilePat env p
+compileMonoidalPatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
+compileMonoidalPatArg env pos p = do
+    (is, e) <- compileMonoidalPat env p
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e
       )
 
-compilePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
-compilePatApp env (PView pos v) as = do
+compileMonoidalPatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
+compileMonoidalPatApp env (PView pos v) as = do
     (isv, ev) <- case Map.lookup v (gsviews env) of
         Nothing -> Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
         Just (isv, ev) -> return (isv, ev)
-    as' <- mapM (compilePat env) as
+    as' <- mapM (compileMonoidalPat env) as
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` isv `Set.union` Set.unions (map (\ (is, _) -> is) as'),
         HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` ev `HSApp` HSList (map (\ (_, e) -> HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e) as')
       )
-compilePatApp env (PApp pf px) as = compilePatApp env pf (px:as)
-compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
+compileMonoidalPatApp env (PApp pf px) as = compileMonoidalPatApp env pf (px:as)
+compileMonoidalPatApp env p as = $gsfatal $ "compileMonoidalPatApp " ++ patCode p ++ " next"
 
 compileMonadGensArg :: Env -> Pos -> [(Pos, Generator)] -> Pos -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGensArg env pos gs pos1 s = do
