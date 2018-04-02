@@ -136,7 +136,7 @@ compileSource env m (SCImports:scs) = do
     return $ DCImports (gatherImports m Set.empty dcs) : dcs
 compileSource env m (SCDeclareVar gsv hsv:scs) = compileSource env{gsvars = Map.insert gsv (Set.empty, HSVar hsv) (gsvars env)} m scs
 compileSource env m (SCDeclareView gsv hsv:scs) = compileSource env{gsviews = Map.insert gsv (Set.empty, HSVar hsv) (gsviews env)} m scs
-compileSource env m (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps env) pos e Nothing) <*> compileSource env m scs
+compileSource env m (SCArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileArg (processHSVS ps env) pos e Nothing Nothing) <*> compileSource env m scs
 compileSource env m (SCExpr ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileExpr (processHSVS ps env) e) <*> compileSource env m scs
 compileSource env m (SCOpenExpr pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenExpr (processHSVS ps env) pos (processFVS ps) e) <*> compileSource env m scs
 compileSource env m (SCOpenArg pos ps e:scs) = (\ (is, e) dcs -> DCExpr is e : dcs) <$> runCompiler (compileOpenArg (processHSVS ps env) pos (processFVS ps) e) <*> compileSource env m scs
@@ -183,10 +183,10 @@ compileThunk env pos e = do
         HSVar "unsafePerformIO" `HSApp` (HSVar "gsthunk_w" `HSApp` hspos pos `HSApp` hse)
       )
 
-compileArg :: Env -> Pos -> Expr -> Maybe Signature -> Compiler (Set HSImport, HSExpr)
-compileArg env pos e@EMissingCase{} s = compileExprToArg env pos e
-compileArg env pos e@EQLO{} s = compileExprToArg env pos e
-compileArg env pos (EVar pos1 v) s = case Map.lookup v (gsimplicits env) of
+compileArg :: Env -> Pos -> Expr -> Maybe Signature -> Maybe Category -> Compiler (Set HSImport, HSExpr)
+compileArg env pos e@EMissingCase{} s Nothing = compileExprToArg env pos e
+compileArg env pos e@EQLO{} s Nothing = compileExprToArg env pos e
+compileArg env pos (EVar pos1 v) s Nothing = case Map.lookup v (gsimplicits env) of
     Nothing -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
             Nothing -> lift $ Left $ fmtPos pos1 $ v ++ " not in scope"
@@ -196,23 +196,24 @@ compileArg env pos (EVar pos1 v) s = case Map.lookup v (gsimplicits env) of
             HSConstr "GSArgVar" `HSApp` ev
           )
     Just _ -> compileExprToArg env pos (EVar pos1 v)
-compileArg env pos (ENumber _ n) s = return (
+compileArg env pos (ENumber _ n) s Nothing = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
   )
-compileArg env pos (EPat p) s = lift $ compileMonoidalPatArg env pos p
-compileArg env pos (EOpen e) s = compileOpenArg env pos fvs e where
+compileArg env pos (EPat p) s Nothing = lift $ compileMonoidalPatArg env pos p
+compileArg env pos (EOpen e) s Nothing = compileOpenArg env pos fvs e where
     fvs = case s of
         Nothing -> Set.empty
         Just (SigOpen vs) -> vs
         Just sg -> $gsfatal $ "compileArg (EOpen e) " ++ sigCode sg ++ " next"
-compileArg env pos e@EGens{} s = compileExprToArg env pos e
-compileArg env pos (EImpGens gs pos1) s = compileImpGensArg env pos gs pos1
-compileArg env pos (EMonadGens gs pos1) (Just (SigMonad s)) = compileMonadGensArg env pos gs pos1 s
-compileArg env pos (EMonadGens gs pos1) (Just s) = compileError pos $ "monadic generators with invalid signature " ++ sigCode s ++ "!"
-compileArg env pos (EMonadGens gs pos1) Nothing = compileError pos "monadic generators with no signature!"
-compileArg env pos e@EApp{} s = compileExprToArg env pos e
-compileArg env pos e s = $gsfatal $ "compileArg " ++ eCode e ++ " next"
+compileArg env pos e@EGens{} s Nothing = compileExprToArg env pos e
+compileArg env pos (EImpGens gs pos1) s Nothing = compileImpGensArg env pos gs pos1
+compileArg env pos (EMonadGens gs pos1) (Just (SigMonad s)) Nothing = compileMonadGensArg env pos gs pos1 s
+compileArg env pos (EMonadGens gs pos1) (Just s) Nothing = compileError pos $ "monadic generators with invalid signature " ++ sigCode s ++ "!"
+compileArg env pos (EMonadGens gs pos1) Nothing Nothing = compileError pos "monadic generators with no signature!"
+compileArg env pos e@EApp{} s Nothing = compileExprToArg env pos e
+compileArg env pos e s Nothing = $gsfatal $ "compileArg " ++ eCode e ++ " next"
+compileArg env pos e s (Just c) = $gsfatal $ "compileArg " ++ eCode e ++ " (Just " ++ catCode c ++ ") next"
 
 compileExprToArg :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileExprToArg env pos e = do
@@ -252,7 +253,7 @@ compileExpr env (EQLO pos "qq" s) = do
     w (qi@(QChar pos1 _):qis) = w_ch pos1 id (qi:qis)
     w (qi@(QQChar pos1 _):qis) = w_ch pos1 id (qi:qis)
     w (QInterpExpr pos1 e:qis) = do
-        (ise, hse) <- compileArg env pos1 e Nothing
+        (ise, hse) <- compileArg env pos1 e Nothing Nothing
         (ist, hst) <- w qis
         return (ise `Set.union` ist, hse : hst)
     w (qi:qis) = $gsfatal $ "w " ++ qloiCode qi ++ " next"
@@ -280,7 +281,7 @@ compileExpr env (EQLO pos0 "log" s) = do
     w (QQChar pos1 ch:qis) | ch `elem` "\\" = w_ch pos1 (ch:) qis
     w (QQChar pos1 ch:qis) = $gsfatal $ "w (QQChar pos1 " ++ show ch ++ ":qis) next"
     w (QInterpExpr pos1 e:qis) = do
-        (ise, hse) <- compileArg env pos1 e Nothing
+        (ise, hse) <- compileArg env pos1 e Nothing Nothing
         (ist, hst) <- w qis
         return (ise `Set.union` ist, hse : hst)
     w (qi:qis) = $gsfatal $ "w " ++ qloiCode qi ++ " next"
@@ -318,7 +319,7 @@ compileExpr env (EQLO pos0 "r" (qi:qis)) = $gsfatal $ "compileExpr env (EQLO pos
 compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
 compileExpr env (EApp f (ArgExpr pos1 e)) = compileApp env f [(pos1, e)]
 compileExpr env (EApp f (ArgField pos1 m)) = do
-    (isf, hsef) <- compileArg env pos1 f Nothing
+    (isf, hsef) <- compileArg env pos1 f Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcfield_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` isf,
         HSVar "gsbcfield_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` (HSVar "gsvar" `HSApp` HSString m)
@@ -329,7 +330,7 @@ compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
 compileBody :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileBody env pos e = do
-    (is, hse) <- compileArg env pos e Nothing
+    (is, hse) <- compileArg env pos e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpbody_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSVar "gsbcimpbody_w" `HSApp` hspos pos `HSApp` hse
@@ -337,7 +338,7 @@ compileBody env pos e = do
 
 compileBind :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileBind env pos e = do
-    (is, hse) <- compileArg env pos e Nothing
+    (is, hse) <- compileArg env pos e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpbind_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSVar "gsbcimpbind_w" `HSApp` hspos pos `HSApp` hse
@@ -390,7 +391,7 @@ compileApp env (EVar pos "value") ((_, EVar pos1 f):as) = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    as' <- mapM (\ ((pos2, e), s) -> compileArg env pos2 e s) (zip as (repeat Nothing))
+    as' <- mapM (\ ((pos2, e), s, c) -> compileArg env pos2 e s c) (zip3 as (repeat Nothing) (repeat Nothing))
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -403,7 +404,7 @@ compileApp env (EVar pos "view") ((_, EVar pos1 v):as) = do
     (isv, ev) <- case Map.lookup v (gsviews env) of
         Nothing -> lift $ Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
         Just (isv, ev) -> return (isv, ev)
-    as' <- mapM (\ ((pos2, e), s) -> compileArg env pos2 e s) (zip as (repeat Nothing))
+    as' <- mapM (\ ((pos2, e), s, c) -> compileArg env pos2 e s c) (zip3 as (repeat Nothing) (repeat Nothing))
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -439,7 +440,7 @@ compileApp env (EVar pos f) as = do
     sig <- case Map.lookup f (gssignatures env) of
         Nothing -> return []
         Just sigM -> sigM as
-    as' <- mapM (\ ((pos1, e), s) -> compileArg env pos1 e s) (zip as (sig ++ repeat Nothing))
+    as' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 as (sig ++ repeat Nothing) (repeat Nothing))
     return (
         Set.unions $
             isctxt :
@@ -454,7 +455,7 @@ compileApp env (EUnary pos f) as = do
     (isf, ef) <- case Map.lookup f (gsunaries env) of
         Nothing -> lift $ Left $ fmtPos pos $ "unary " ++ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    as' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing) as
+    as' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing Nothing) as
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -556,14 +557,14 @@ compileMonadGenArg env pos g s = do
 compileMonadGen :: Env -> Pos -> Generator -> SigMonad -> Compiler (Set HSImport, HSExpr)
 compileMonadGen env pos (ExecGenerator pos1 e) s = do
     let (mapis, maphse) = gsmap s
-    (is, hse) <- compileArg env pos1 e Nothing
+    (is, hse) <- compileArg env pos1 e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcexecgen_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` mapis `Set.union` is,
         HSVar "gsbcexecgen_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgVar" `HSApp` maphse) `HSApp` hse
       )
 compileMonadGen env pos (BindGenerator x pos1 e) s = do
     let (mapis, maphse) = gsmap s
-    (is, hse) <- compileArg env pos1 e Nothing
+    (is, hse) <- compileArg env pos1 e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarbind_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIVar "GSI.Syn" "gsvar" ] `Set.union` mapis `Set.union` is,
         HSVar "gsbcvarbind_w" `HSApp` hspos pos `HSApp` (HSConstr "GSArgVar" `HSApp` maphse) `HSApp` (HSVar "gsvar" `HSApp` HSString x) `HSApp` hse
@@ -593,7 +594,7 @@ compileGenArg env pos g = do
 
 compileGen :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
 compileGen env pos (MatchGenerator v pos1 e) = do
-    (is, hse) <- compileArg env pos1 e Nothing
+    (is, hse) <- compileArg env pos1 e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcvarmatch_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg", HSIVar "GSI.Syn" "gsvar" ] `Set.union` is,
         HSVar "gsbcvarmatch_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString v) `HSApp` hse
@@ -633,13 +634,13 @@ compileImpGenArg env pos g = do
 
 compileImpGen :: Env -> Pos -> Generator -> Compiler (Set HSImport, HSExpr)
 compileImpGen env pos (ExecGenerator pos1 e) = do
-    (is, hse) <- compileArg env pos1 e Nothing
+    (is, hse) <- compileArg env pos1 e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpexecbind_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSVar "gsbcimpexecbind_w" `HSApp` hspos pos1 `HSApp` hse
       )
 compileImpGen env pos (BindGenerator x pos1 e) = do
-    (is, hse) <- compileArg env pos1 e Nothing
+    (is, hse) <- compileArg env pos1 e Nothing Nothing
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpvarbind_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` is,
         HSVar "gsbcimpvarbind_w" `HSApp` hspos pos `HSApp` (HSVar "gsvar" `HSApp` HSString x) `HSApp` hse
@@ -1037,5 +1038,10 @@ data SigMonad = SM{
     gsmap :: (Set HSImport, HSExpr)
   }
 
+data Category
+
 sigCode :: Signature -> String
 sigCode s = s `seq` $gsfatal "sigCode next"
+
+catCode :: Category -> String
+catCode c = c `seq` $gsfatal "catCode next"
