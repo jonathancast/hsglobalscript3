@@ -197,7 +197,7 @@ compileArg env pos (ENumber _ n) s Nothing = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
   )
-compileArg env pos (EPat p) s Nothing = lift $ compileMonoidalPatArg env pos p
+compileArg env pos (EPat p) s (Just Monoidal) = lift $ compileMonoidalPatArg env pos p
 compileArg env pos (EOpen e) s Nothing = compileOpenArg env pos fvs e where
     fvs = case s of
         Nothing -> Set.empty
@@ -997,6 +997,14 @@ globalEnv = Env{
         )
     ],
     gscategories = Map.fromList [
+        ("λ", \ as -> case as of
+            (_, EPat p) : (_, EOpen b) : _ -> return [ Just Monoidal, Nothing ]
+            _ -> return []
+        ),
+        ("case", \ as -> case as of
+            (_, EPat p) : (_, EOpen b) : _ -> return [ Just Monoidal, Nothing ]
+            _ -> return []
+        )
     ]
   }
 
@@ -1042,6 +1050,7 @@ data SigMonad = SM{
   }
 
 data Category
+  = Monoidal
 
 sigCode :: Signature -> String
 sigCode s = s `seq` $gsfatal "sigCode next"
