@@ -16,6 +16,7 @@ gsannotator_env_category_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.
 gsannotator_env_empty = [gs:value| 〈 'namespace ∝ ordered-map.empty; 'category ∝ ordered-map.empty; 〉 |]
 
 gspat_bound_vars = [gs:value| λ 'p. analyze p.
+    case pat.discard. nil
     case pat.var 'v. v : nil
     case pat.view 'v. nil
 |]

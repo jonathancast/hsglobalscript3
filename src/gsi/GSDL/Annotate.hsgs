@@ -79,6 +79,7 @@ gsannotate_arg = [gs:value| λ 'env. λ 'pos. λ 'a. λ 'ns. λ 'c. analyze a.
 |]
 
 gsannotate_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
+    case pat.discard. pat.discard
     case pat.var 'v. pat.var v
     case pat.view 'v. pat.view v
 |]

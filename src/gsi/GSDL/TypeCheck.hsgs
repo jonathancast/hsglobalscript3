@@ -73,6 +73,7 @@ gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
 |]
 
 gstype_check_pat = [gs:value| λ 'pos. λ 'p. λ 'typ. λ 'env. analyze p.
+    case pat.discard. type-checker.unit pat.discard
     case pat.var 'v. (analyze type.env.type.get v env.
         case just 'tya. type-checker.for _ ← type-checker.unify pos tya typ;. type-checker.unit (pat.var v)
     )
