@@ -761,6 +761,7 @@ globalEnv = Env{
         ("gsav", (Set.singleton $ HSIVar "GSI.GSI" "gsigsav", HSVar "gsigsav")),
         ("gsbcapply", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcapply", HSVar "gsigsbcapply")),
         ("gsbcarg", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcarg", HSVar "gsigsbcarg")),
+        ("gsbcdiscardpattern", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcdiscardpattern", HSVar "gsigsbcdiscardpattern")),
         ("gsbcenter", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcenter", HSVar "gsigsbcenter")),
         ("gsbcinsufficientcases", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcinsufficientcases", HSVar "gsigsbcinsufficientcases")),
         ("gsbclfield", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbclfield", HSVar "gsigsbclfield")),
