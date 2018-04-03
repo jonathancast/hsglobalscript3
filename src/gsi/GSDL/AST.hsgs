@@ -8,7 +8,7 @@ module GSDL.AST (
     gsexpr_natural, gsexpr_var, gsexpr_app, gsexpr_open_expr, gsexpr_pat, gsexpr_monoidal_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_monoidal_pat_view, gsexpr_missing_case_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
-    gspat_discard, gspat_var, gspat_view, gspat_var_view, gspat_view_view,
+    gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view,
     gsorder_of_being_open_expr, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view,
     gscategory_monoidal, gscategory_monoidal_view
   ) where
@@ -111,6 +111,7 @@ gspat_discard = $gsconstr (gsvar "discard") []
 gspat_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gspat_view = $gslambda_value $ \ v -> $gsbcconstr (gsvar "view") [ $gsav v ]
 
+gspat_discard_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "discard" ek sk p
 gspat_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "var" ek sk p
 gspat_view_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "view" ek sk p
 
