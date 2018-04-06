@@ -19,4 +19,5 @@ gspat_bound_vars = [gs:value| λ 'p. analyze p.
     case pat.discard. nil
     case pat.var 'v. v : nil
     case pat.view 'v. nil
+    case pat.app 'p0 _ 'p1. pat.bound-vars p0 <> pat.bound-vars p1
 |]
