@@ -79,7 +79,8 @@ gstype_check_pat = [gs:value| λ 'pos. λ 'p. λ 'typ. λ 'env. analyze p.
     )
     case pat.view 'v. type-checker.for
             'tya ← type-checker.env.get-view-type pos v;
-            _ ← type-checker.unify pos tya typ;
+            'tyai ← instantiate tya;
+            _ ← type-checker.unify pos tyai typ;
         . type-checker.unit (pat.view v)
     case pat.app 'p0 'pos1 'p1. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
