@@ -151,6 +151,9 @@ gstype_checker_global_env = [gs:value|
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
     ) $
     type.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
+    type.env.view-type.insert (gsvar qq{gsvalue.thunk}) (
+        type.function (type.consts qq{gsvalue.thunk.t}) $ type.consts qq{gsvalue.t}
+    ) $
     type.env.empty
 |]
 
