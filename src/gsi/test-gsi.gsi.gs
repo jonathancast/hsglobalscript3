@@ -1,3 +1,5 @@
 #! /usr/local/hsglobalscript/src/gsi/gsi
 
-gsmain (λ 'pos. λ 'ty. type-checker.unit undefined) (λ 'x. λ 'as. analyze x.)
+gsmain (λ 'pos. λ 'ty. type-checker.unit undefined) (λ 'x. λ 'as. analyze x.
+    case gsvalue.thunk 'th. undefined,
+)
