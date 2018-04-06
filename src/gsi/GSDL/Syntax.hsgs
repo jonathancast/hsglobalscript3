@@ -103,9 +103,25 @@ gsexpr_atom = [gs:value| λ 'env.
     〉)
 |]
 
-$gsdeclare pident pident
+$gsdeclare pat.function gspat_function
 
 gspat = [gs:value| λ 'env.
+    <|> pat.function env
+|]
+
+$gsdeclare pat.atom gspat_atom
+$gsdeclare pat.function-w gspat_function_w
+
+gspat_function = [gs:value| λ 'env. parser.for 'p ← pat.atom env;. pat.function-w env p |]
+
+gspat_function_w = [gs:value| λ 'env. λ 'p.
+    <|> parser.unit p
+    <|> parser.for 'pos ← get-pos; 'p1 ← pat.atom env;. pat.function-w env (pat.app p pos p1)
+|]
+
+$gsdeclare pident pident
+
+gspat_atom = [gs:value| λ 'env.
     <|> (parser.for _ ← lexeme (char r{_});. parser.unit pat.discard)
     <|> (parser.for 'v ← ident env;. parser.unit (pat.view v))
     <|> (parser.for 'v ← char r{'} *> pident;. parser.unit (pat.var v))
