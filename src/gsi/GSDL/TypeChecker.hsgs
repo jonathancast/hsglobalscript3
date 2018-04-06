@@ -100,8 +100,9 @@ gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
         case just 'ty1. instantiate ty1
         case nothing. type-checker.unit ty
     )
-    case type.const 'c. type-checker.unit ty
-    case type.function 'ty0 'ty1. type-checker.unit ty
+    case type.const _. type-checker.unit ty
+    case type.function _ _. type-checker.unit ty
+    case type.app _ _. type-checker.unit ty
     case type.forall 'v 'ki 'ty1. type-checker.for
             'v1 ← type-checker.new-unifiable-var;
             'ty2 ← type-checker.subst v v1 ty1;
