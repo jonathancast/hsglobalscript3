@@ -13,7 +13,7 @@ import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfa
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 
 gsparand :: Pos -> GSValue -> GSValue -> IO GSValue
-gsparand pos (GSConstr pos1 cx []) _ | cx == gsvar "0" = return $ $gsimplementationfailure $ "gsparand 0 _ next" -- > fail
+gsparand pos (GSConstr pos1 cx []) _ | cx == gsvar "0" = return $ GSConstr pos (gsvar "0") []
 gsparand pos _ (GSConstr pos1 cy []) | cy == gsvar "0" = return $ GSConstr pos (gsvar "0") []
 gsparand pos (GSThunk xs) (GSThunk ys) = do
     (xv, yv) <- gspareval pos xs ys
