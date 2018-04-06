@@ -64,6 +64,7 @@ gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
 |]
 
 gslist_member = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
+    case nil. false
 |]
 
 gscons :: GSValue
