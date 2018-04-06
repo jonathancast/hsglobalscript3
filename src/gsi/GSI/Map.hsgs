@@ -16,6 +16,7 @@ gsordered_map_insert = [gs:value| λ 'cmp. λ 'k. λ 'v. λ 'm. analyze m.
     case empty. prim.branch k v prim.empty prim.empty
     case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
         case lt. prim.branch k1 v1 (ordered-map.insert cmp k v l) r
+        case eq. prim.branch k v l r
         case gt. prim.branch k1 v1 l (ordered-map.insert cmp k v r)
     )
 |]
