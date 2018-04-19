@@ -47,7 +47,7 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
     either.for
         'mbespec ← right (annotate-document annotator.global-env pos mbe);
         _ ← validate-document pos validator.global-env mbespec;
-        'mbety ← type-checker.run (type-check.document pos gstyc mbespec) type-checker.global-env;
+        'mbety ← type-checker.run (type-check-document pos gstyc mbespec) type-checker.global-env;
     . right (compile-document pos compiler.global-env mbety)
 |]
 
