@@ -7,9 +7,11 @@ $gsdeclare compile-expr gscompile_expr
 $gsdeclare compile-arg gscompile_arg
 $gsdeclare compile-function gscompile_function
 
-gscompile_document = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
-    case nothing. gsbcundefined pos
-    case just 'e. compile-expr pos env e
+gscompile_document = [gs:value| λ 'pos. λ 'env. λ 'd. analyze d.
+    case document.in 'mbe. (analyze mbe.
+        case nothing. gsbcundefined pos
+        case just 'e. compile-expr pos env e
+    )
 |]
 
 $gsdeclare compile-open-expr gscompile_open_expr

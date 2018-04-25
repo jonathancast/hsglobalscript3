@@ -48,8 +48,7 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
             'dspec ← right (annotate-document annotator.global-env pos d);
             _ ← validate-document pos validator.global-env dspec;
             'dty ← type-checker.run (type-check-document pos gstyc dspec) type-checker.global-env;
-        . analyze dty.
-            case document.in 'mbety. right (compile-document pos compiler.global-env mbety)
+        . right (compile-document pos compiler.global-env dty)
 |]
 
 gsparser_global_env = [gs:value|
