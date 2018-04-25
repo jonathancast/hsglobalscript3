@@ -8,9 +8,14 @@ $gsdeclare compile-arg gscompile_arg
 $gsdeclare compile-function gscompile_function
 
 gscompile_document = [gs:value| λ 'pos. λ 'env. λ 'd. analyze d.
-    case document.in 'mbe. (analyze mbe.
+    case document.in 'mbe 'mbg. (analyze mbe.
         case nothing. gsbcundefined pos
-        case just 'e. compile-expr pos env e
+        case just 'e. compile-expr
+            pos
+            (analyze mbg.
+                case nothing. env
+            )
+            e
     )
 |]
 

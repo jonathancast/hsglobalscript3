@@ -4,14 +4,17 @@ module GSDL.TypeCheck (gstype_check_document, gstype_check_expr) where
 $gsimports
 
 gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd. analyze d.
-    case document.in 'mbe. type-checker.for
+    case document.in 'mbe 'mbg. type-checker.for
             'ty ← type-checker.new-unifiable-var;
+            'mbg1 ← analyze mbg.
+                case nothing. type-checker.unit nothing
+            ;
             'mbe1 ← analyze mbe.
                 case nothing. type-checker.unit nothing
                 case just 'e. type-checker.for 'e1 ← type-check-expr pos e ty;. type-checker.unit (just e1)
             ;
             _ ← gstyc pos ty;
-        . type-checker.unit (document.in mbe1)
+        . type-checker.unit (document.in mbe1 mbg1)
 |]
 
 $gsdeclare type-check-pat gstype_check_pat

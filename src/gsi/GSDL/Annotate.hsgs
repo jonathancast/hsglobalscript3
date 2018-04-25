@@ -5,10 +5,14 @@ $gsimports
 $gsdeclare annotate-expr gsannotate_expr
 
 gsannotate_document = [gs:value| λ 'env. λ 'pos. λ 'd. analyze d.
-    case document.in 'mbe. document.in (analyze mbe.
-        case nothing. nothing
-        case just 'e. just (annotate-expr env pos e)
-    )
+    case document.in 'mbe 'mbg. document.in
+        (analyze mbe.
+            case nothing. nothing
+            case just 'e. just (annotate-expr env pos e)
+        )
+        (analyze mbg.
+            case nothing. nothing
+        )
 |]
 
 $gsdeclare annotate-pat gsannotate_pat

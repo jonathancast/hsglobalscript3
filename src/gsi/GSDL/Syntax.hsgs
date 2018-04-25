@@ -8,7 +8,7 @@ file = [gs:value| λ 'env.
             _ ← pragmas;
             'pos ← get-pos;
             'mb ← whitespace *> optional (parser.for 'p ← expr env;. parser.unit (p #0));
-        . parser.unit (file.document pos (document.in mb))
+        . parser.unit (file.document pos (document.in mb nothing))
 |]
 
 pragmas = [gs:value| pragma.whitespace *> many empty |]

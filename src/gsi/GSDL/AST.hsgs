@@ -64,7 +64,7 @@ gsfile_document = $gslambda_value $ \ pos -> $gsbcarg $ \ d -> $gsbcconstr (gsva
 
 gsfile_document_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
-gsdocument_in = $gslambda_value $ \ mbe -> $gsbcconstr (gsvar "in") [ $gsav mbe ]
+gsdocument_in = $gslambda_value $ \ mbe -> $gsbcarg $ \ mbg -> $gsbcconstr (gsvar "in") [ $gsav mbe, $gsav mbg ]
 
 gsdocument_in_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "in" ek sk e
 
