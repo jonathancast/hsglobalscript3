@@ -27,7 +27,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document 'pos (document.in 'mb). (analyze process-document pos gstyc mb.
+                    case file.document 'pos 'd. (analyze process-document pos gstyc d.
                         case left 'err. impfor
                                 _ ← print-error qq{§(err)\n};
                             . error log{Errors next}
@@ -43,12 +43,13 @@ $gsdeclare validator.global-env gsvalidator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
 $gsdeclare compiler.global-env gscompiler_global_env
 
-gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'mbe.
-    either.for
-        'mbespec ← right (annotate-document annotator.global-env pos mbe);
-        _ ← validate-document pos validator.global-env mbespec;
-        'mbety ← type-checker.run (type-check-document pos gstyc mbespec) type-checker.global-env;
-    . right (compile-document pos compiler.global-env mbety)
+gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd. analyze d.
+    case document.in 'mbe.
+        either.for
+            'mbespec ← right (annotate-document annotator.global-env pos mbe);
+            _ ← validate-document pos validator.global-env mbespec;
+            'mbety ← type-checker.run (type-check-document pos gstyc mbespec) type-checker.global-env;
+        . right (compile-document pos compiler.global-env mbety)
 |]
 
 gsparser_global_env = [gs:value|
