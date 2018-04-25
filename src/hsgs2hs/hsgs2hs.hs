@@ -748,7 +748,7 @@ globalEnv = Env{
         ("expr.var", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_var", HSVar "gsexpr_var")),
         ("false", (Set.singleton $ HSIVar "GSI.Bool" "gsfalse", HSVar "gsfalse")),
         ("file", (Set.singleton $ HSIVar "GSDL.Syntax" "file", HSVar "file")),
-        ("file.document", (Set.singleton $ HSIVar "GSDL.AST" "gsfileDocument", HSVar "gsfileDocument")),
+        ("file.document", (Set.singleton $ HSIVar "GSDL.AST" "gsfile_document", HSVar "gsfile_document")),
         ("file.read", (Set.singleton $ HSIVar "GSI.Env" "gsfileRead", HSVar "gsfileRead")),
         ("file.stat", (Set.singleton $ HSIVar "GSI.Env" "gsfileStat", HSVar "gsfileStat")),
         ("fmtdecimal", (Set.singleton $ HSIVar "GSI.String" "gsfmtdecimal", HSVar "gsfmtdecimal")),
