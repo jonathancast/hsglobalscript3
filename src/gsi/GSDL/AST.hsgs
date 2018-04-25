@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.AST (
     gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_view_type_get, gstype_env_view_type_insert, gstype_env_views, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_overlay, gstype_env_empty,
-    gsfile_document, gsfileDocument_view,
+    gsfile_document, gsfile_document_view,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
@@ -61,7 +61,7 @@ gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'view-types ∝ 
 
 gsfile_document = $gslambda_value $ \ pos -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav mb ]
 
-gsfileDocument_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+gsfile_document_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
 
 gstype_empty_signature = [gs:value| type.signature type.env.empty |]
 
