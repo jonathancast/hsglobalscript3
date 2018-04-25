@@ -3,12 +3,14 @@ module GSDL.Syntax (file, pragmas, pragmawhitespace, ident, lexeme, whitespace) 
 
 $gsimports
 
+$gsdeclare document document
+
 file = [gs:value| λ 'env.
     <|> parser.for
             _ ← pragmas;
             'pos ← get-pos;
-            'mb ← whitespace *> optional (parser.for 'p ← expr env;. parser.unit (p #0));
-        . parser.unit (file.document pos (document.in mb nothing))
+            'd ← document env;
+        . parser.unit (file.document pos d)
 |]
 
 pragmas = [gs:value| pragma.whitespace *> many empty |]
@@ -25,6 +27,11 @@ pragmawhitespace = [gs:value| many (
         *> parser.unit 〈〉
     )
 ) |]
+
+document = [gs:value| λ 'env. parser.for
+        'mb ← whitespace *> optional (parser.for 'p ← expr env;. parser.unit (p #0));
+    . parser.unit (document.in mb nothing)
+|]
 
 $gsdeclare expr.function gsexpr_function
 $gsdeclare expr.lambda-like gsexpr_lambda_like
