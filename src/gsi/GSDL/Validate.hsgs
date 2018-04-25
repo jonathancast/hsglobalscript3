@@ -4,9 +4,11 @@ $gsimports
 
 $gsdeclare validate-expr gsvalidate_expr
 
-gsvalidate_document = [gs:value| λ 'pos. λ 'env. λ 'mbe. analyze mbe.
-    case nothing. right 〈〉
-    case just 'e. validate-expr pos env e
+gsvalidate_document = [gs:value| λ 'pos. λ 'env. λ 'd. analyze d.
+    case document.in 'mbe. (analyze mbe.
+        case nothing. right 〈〉
+        case just 'e. validate-expr pos env e
+    )
 |]
 
 $gsdeclare validate-arg gsvalidate_arg
