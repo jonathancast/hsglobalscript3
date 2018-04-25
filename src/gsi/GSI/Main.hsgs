@@ -27,7 +27,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
                     _ ← print-error qq{§(err)\n};
                   . error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
-                    case file.document 'pos 'mb. (analyze process-document pos gstyc mb.
+                    case file.document 'pos (document.in 'mb). (analyze process-document pos gstyc mb.
                         case left 'err. impfor
                                 _ ← print-error qq{§(err)\n};
                             . error log{Errors next}
