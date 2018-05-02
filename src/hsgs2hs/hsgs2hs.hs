@@ -752,6 +752,7 @@ globalEnv = Env{
         ("file.document", (Set.singleton $ HSIVar "GSDL.AST" "gsfile_document", HSVar "gsfile_document")),
         ("file.read", (Set.singleton $ HSIVar "GSI.Env" "gsfileRead", HSVar "gsfileRead")),
         ("file.stat", (Set.singleton $ HSIVar "GSI.Env" "gsfileStat", HSVar "gsfileStat")),
+        ("filter", (Set.singleton $ HSIVar "GSI.List" "gsfilter", HSVar "gsfilter")),
         ("fmtdecimal", (Set.singleton $ HSIVar "GSI.String" "gsfmtdecimal", HSVar "gsfmtdecimal")),
         ("foldl", (Set.singleton $ HSIVar "GSI.List" "gsfoldl", HSVar "gsfoldl")),
         ("foldr", (Set.singleton $ HSIVar "GSI.List" "gsfoldr", HSVar "gsfoldr")),
