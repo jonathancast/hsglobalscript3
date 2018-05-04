@@ -967,6 +967,7 @@ globalEnv = Env{
         ("pat.var", (Set.singleton $ HSIVar "GSDL.AST" "gspat_var_view", HSVar "gspat_var_view")),
         ("pat.view", (Set.singleton $ HSIVar "GSDL.AST" "gspat_view_view", HSVar "gspat_view_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
+        ("syntactic-category.lambda-like", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_lambda_like_view", HSVar "gssyntactic_category_lambda_like_view")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
         ("type.app", (Set.singleton $ HSIVar "GSDL.AST" "gstype_app_view", HSVar "gstype_app_view")),
         ("type.const", (Set.singleton $ HSIVar "GSDL.AST" "gstype_const_view", HSVar "gstype_const_view")),
