@@ -869,6 +869,7 @@ globalEnv = Env{
         ("st.set-var", (Set.singleton $ HSIVar "GSI.ST" "gsstsetvar", HSVar "gsstsetvar")),
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
         ("syntactic-category.lambda-like", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_lambda_like", HSVar "gssyntactic_category_lambda_like")),
+        ("syntactic-category.variable", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_variable", HSVar "gssyntactic_category_variable")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue", HSVar "gstrue")),
         ("type-check-arg", (Set.singleton $ HSIVar "GSDL.TypeCheck" "gstype_check_arg", HSVar "gstype_check_arg")),
         ("type-check-document", (Set.singleton $ HSIVar "GSDL.TypeCheck" "gstype_check_document", HSVar "gstype_check_document")),
