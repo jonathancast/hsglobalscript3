@@ -31,6 +31,8 @@ gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
 |]
 
 gsfilter = [gs:value| λ 'p. λ 'xn. analyze xn.
+    case 'x:'xn1. (analyze p x.
+    )
 |]
 
 gsrepeat = [gs:value| λ 'x. x : repeat x |]
