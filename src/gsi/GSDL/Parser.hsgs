@@ -12,52 +12,69 @@ module GSDL.Parser (
 $gsimports
 
 gsdl_parser_env_signature_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #signature) |]
-gsdl_parser_env_lambda_like_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #lambda-like) |]
+gsdl_parser_env_syntactic_category_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #syntactic-category).
+    case just 'c. c
+    case nothing. syntactic-category.variable
+|]
 gsdl_parser_env_missing_body_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-body) |]
 gsdl_parser_env_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #else) |]
 gsdl_parser_env_missing_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-else) |]
 
-gsdl_parser_env_lambda_likes = [gs:value| λ 'env. ordered-map.to-list (env #lambda-like) |]
+gsdl_parser_env_lambda_like_get = [gs:value| λ 'v. λ 'env. analyze parser.env.syntactic-category.get v env.
+    case syntactic-category.lambda-like. just 〈〉
+    case _. nothing
+|]
+
+gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
+
+gsdl_parser_env_lambda_likes = [gs:value| λ 'env. filter
+    (λ 'p. analyze p #1.
+        case syntactic-category.lambda-like. true
+    )
+    (parser.env.syntactic-categories env)
+|]
 
 gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
     'signature ∝ ordered-map.insert gsvar.compare v s (env #signature);
-    'lambda-like ∝ env #lambda-like;
+    'syntactic-category ∝ env #syntactic-category;
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
 〉 |]
-gsdl_parser_env_lambda_like_insert = [gs:value| λ 'v. λ 'l. λ 'env. 〈
+gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. 〈
     'signature ∝ env #signature;
-    'lambda-like ∝ ordered-map.insert gsvar.compare v l (env #lambda-like);
+    'syntactic-category ∝ ordered-map.insert gsvar.compare v c (env #syntactic-category);
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
     'signature ∝ env #signature;
-    'lambda-like ∝ env #lambda-like;
+    'syntactic-category ∝ env #syntactic-category;
     'missing-body ∝ ordered-map.insert gsvar.compare v m (env #missing-body);
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
-    'lambda-like ∝ env #lambda-like;
+    'syntactic-category ∝ env #syntactic-category;
     'missing-body ∝ env #missing-body;
     'else ∝ ordered-map.insert gsvar.compare v e (env #else);
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
-    'lambda-like ∝ env #lambda-like;
+    'syntactic-category ∝ env #syntactic-category;
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ ordered-map.insert gsvar.compare v e (env #missing-else);
 〉 |]
 
+gsdl_parser_env_lambda_like_insert = [gs:value| λ 'v. λ 'l. λ 'env. parser.env.syntactic-category.insert v syntactic-category.lambda-like env |]
+
 gsdl_parser_env_empty = [gs:value| 〈
     'signature ∝ ordered-map.empty;
-    'lambda-like ∝ ordered-map.empty;
+    'syntactic-category ∝ ordered-map.empty;
     'missing-body ∝ ordered-map.empty;
     'else ∝ ordered-map.empty;
     'missing-else ∝ ordered-map.empty;
