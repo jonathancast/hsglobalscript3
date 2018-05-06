@@ -3,7 +3,7 @@
 module GSDL.Parser (
     gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
     gsdl_parser_env_syntactic_category_get, gsdl_parser_env_syntactic_category_insert,
-    gsdl_parser_env_lambda_likes, gsdl_parser_env_lambda_like_insert,
+    gsdl_parser_env_lambda_likes,
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
     gsdl_parser_env_else_get, gsdl_parser_env_else_insert,
     gsdl_parser_env_missing_else_get, gsdl_parser_env_missing_else_insert,
@@ -65,8 +65,6 @@ gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'else ∝ env #else;
     'missing-else ∝ ordered-map.insert gsvar.compare v e (env #missing-else);
 〉 |]
-
-gsdl_parser_env_lambda_like_insert = [gs:value| λ 'v. λ 'l. λ 'env. parser.env.syntactic-category.insert v syntactic-category.lambda-like env |]
 
 gsdl_parser_env_empty = [gs:value| 〈
     'signature ∝ ordered-map.empty;
