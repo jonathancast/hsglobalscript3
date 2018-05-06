@@ -62,7 +62,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
 $gsdeclare keyword keyword
 
 gsexpr_lambda_like = [gs:value| λ 'env. parser.for
-        'v ← parser.choice $ map (λ 'p. keyword (gsvar.name (p #0)) *> parser.unit (p #0)) $ parser.env.lambda-likes env;
+        'v ← parser.choice $ map (λ 'v. keyword (gsvar.name v) *> parser.unit v) $ parser.env.lambda-likes env;
         's ← parser.unit $ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
         'posh ← get-pos;
         'h ← analyze s.

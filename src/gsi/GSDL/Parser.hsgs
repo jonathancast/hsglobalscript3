@@ -23,7 +23,7 @@ gsdl_parser_env_missing_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gs
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 
-gsdl_parser_env_lambda_likes = [gs:value| λ 'env. filter
+gsdl_parser_env_lambda_likes = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
     (λ 'p. analyze p #1.
         case syntactic-category.lambda-like. true
     )
