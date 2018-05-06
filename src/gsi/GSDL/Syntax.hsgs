@@ -9,7 +9,7 @@ file = [gs:value| λ 'env.
     <|> parser.for
             _ ← pragmas;
             'pos ← get-pos;
-            'd ← document env;
+            'd ← whitespace *> document env;
         . parser.unit (file.document pos d)
 |]
 
@@ -29,7 +29,7 @@ pragmawhitespace = [gs:value| many (
 ) |]
 
 document = [gs:value| λ 'env. parser.for
-        'mb ← whitespace *> optional (parser.for 'p ← expr env;. parser.unit (p #0));
+        'mb ← optional (parser.for 'p ← expr env;. parser.unit (p #0));
     . parser.unit (document.in mb nothing)
 |]
 
