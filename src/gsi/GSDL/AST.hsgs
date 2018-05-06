@@ -12,7 +12,7 @@ module GSDL.AST (
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_open_expr, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view,
     gscategory_monoidal, gscategory_monoidal_view,
-    gssyntactic_category_lambda_like, gssyntactic_category_variable, gssyntactic_category_lambda_like_view
+    gssyntactic_category_lambda_like, gssyntactic_category_variable, gssyntactic_category_lambda_like_view, gssyntactic_category_variable_view
   ) where
 
 import GSI.Syn (gsvar)
@@ -136,3 +136,4 @@ gssyntactic_category_lambda_like = $gsconstr (gsvar "lambda-like") []
 gssyntactic_category_variable = $gsconstr (gsvar "variable") []
 
 gssyntactic_category_lambda_like_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ c -> $gsbcconstr_view "lambda-like" ek sk c
+gssyntactic_category_variable_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ c -> $gsbcconstr_view "variable" ek sk c
