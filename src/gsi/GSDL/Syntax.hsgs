@@ -140,9 +140,9 @@ $gsdeclare ident-chars ident_chars
 
 ident = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
-        _ ← analyze parser.env.lambda-like.get v env.
-            case nothing. parser.unit 〈〉
-            case just _. parser.fail log{'§(undefined)' is lambda-like}
+        _ ← analyze parser.env.syntactic-category.get v env.
+            case syntactic-category.variable. parser.unit 〈〉
+            case syntactic-category.lambda-like. parser.fail log{'§(undefined)' is lambda-like}
         ;
     . parser.unit v
 |]
