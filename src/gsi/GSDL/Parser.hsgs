@@ -3,7 +3,7 @@
 module GSDL.Parser (
     gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
     gsdl_parser_env_syntactic_category_get, gsdl_parser_env_syntactic_category_insert,
-    gsdl_parser_env_lambda_like_get, gsdl_parser_env_lambda_likes, gsdl_parser_env_lambda_like_insert,
+    gsdl_parser_env_lambda_likes, gsdl_parser_env_lambda_like_insert,
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
     gsdl_parser_env_else_get, gsdl_parser_env_else_insert,
     gsdl_parser_env_missing_else_get, gsdl_parser_env_missing_else_insert,
@@ -20,11 +20,6 @@ gsdl_parser_env_syntactic_category_get = [gs:value| λ 'v. λ 'env. analyze orde
 gsdl_parser_env_missing_body_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-body) |]
 gsdl_parser_env_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #else) |]
 gsdl_parser_env_missing_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-else) |]
-
-gsdl_parser_env_lambda_like_get = [gs:value| λ 'v. λ 'env. analyze parser.env.syntactic-category.get v env.
-    case syntactic-category.lambda-like. just 〈〉
-    case _. nothing
-|]
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 
