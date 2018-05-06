@@ -52,13 +52,13 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
 |]
 
 gsparser_global_env = [gs:value|
-    parser.env.lambda-like.insert (gsvar qq{analyze}) 〈〉 $
+    parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
     parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
-    parser.env.lambda-like.insert (gsvar qq{case}) 〈〉 $
+    parser.env.syntactic-category.insert (gsvar qq{case}) syntactic-category.lambda-like $
     parser.env.else.insert (gsvar qq{case}) 〈〉 $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
-    parser.env.lambda-like.insert (gsvar qq{λ}) 〈〉 $
+    parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.empty
 |]
