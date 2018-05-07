@@ -27,6 +27,7 @@ gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (
 gsdl_parser_env_lambda_likes = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
     (λ 'p. analyze p #1.
         case syntactic-category.lambda-like. true
+        case _. false
     )
     (parser.env.syntactic-categories env)
 |]
