@@ -971,6 +971,7 @@ globalEnv = Env{
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
         ("syntactic-category.lambda-like", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_lambda_like_view", HSVar "gssyntactic_category_lambda_like_view")),
         ("syntactic-category.variable", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_variable_view", HSVar "gssyntactic_category_variable_view")),
+        ("syntactic-category.where", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_where_view", HSVar "gssyntactic_category_where_view")),
         ("true", (Set.singleton $ HSIVar "GSI.Bool" "gstrue_view", HSVar "gstrue_view")),
         ("type.app", (Set.singleton $ HSIVar "GSDL.AST" "gstype_app_view", HSVar "gstype_app_view")),
         ("type.const", (Set.singleton $ HSIVar "GSDL.AST" "gstype_const_view", HSVar "gstype_const_view")),
