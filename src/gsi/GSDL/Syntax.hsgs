@@ -30,6 +30,8 @@ pragmawhitespace = [gs:value| many (
 
 $gsdeclare keyword-op keyword_op
 
+$gsdeclare generator gsgenerator
+
 document = [gs:value| λ 'env. parser.for
         'mb ← optional (parser.for 'p ← expr env;. parser.unit (p #0));
     . parser.unit (document.in mb nothing)
@@ -110,6 +112,10 @@ gsexpr_atom = [gs:value| λ 'env.
         '0 ∝ expr.var v;
         '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
     〉)
+|]
+
+gsgenerator = [gs:value| λ 'env.
+    parser.fail log{generator next}
 |]
 
 $gsdeclare pat.function gspat_function
