@@ -33,6 +33,7 @@ gsmap = [gs:value| λ 'f. λ 'xn. analyze xn.
 gsfilter = [gs:value| λ 'p. λ 'xn. analyze xn.
     case 'x:'xn1. (analyze p x.
         case true. x : filter p xn1
+        case false. filter p xn1
     )
     case nil. nil
 |]
