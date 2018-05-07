@@ -28,6 +28,8 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare keyword-op keyword_op
+
 document = [gs:value| λ 'env. parser.for
         'mb ← optional (parser.for 'p ← expr env;. parser.unit (p #0));
     . parser.unit (document.in mb nothing)
@@ -154,6 +156,10 @@ $gsdeclare ident-cont-char identContChar
 
 keyword = [gs:value| λ 's. lexeme (string s <* not-followed-by ident-cont-char) |]
 
+$gsdeclare op-cont-char opContChar
+
+keyword_op = [gs:value| λ 's. lexeme (string s <* not-followed-by op-cont-char) |]
+
 $gsdeclare max-many gsmax_many
 
 $gsdeclare ident-component ident_component
@@ -181,8 +187,6 @@ opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
 
 lexeme = [gs:value| λ 'p. p <* whitespace |]
-
-$gsdeclare op-cont-char opContChar
 
 gsmax_many = [gs:value| λ 'p. many p <* not-followed-by p |]
 
