@@ -34,6 +34,7 @@ gsdl_parser_env_lambda_likes = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
 gsdl_parser_env_wheres = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
     (λ 'p. analyze p #1.
         case syntactic-category.where. true
+        case _. false
     )
     (parser.env.syntactic-categories env)
 |]
