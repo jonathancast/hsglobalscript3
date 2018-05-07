@@ -28,13 +28,20 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare keyword keyword
 $gsdeclare keyword-op keyword_op
 
 $gsdeclare generator gsgenerator
 
 document = [gs:value| λ 'env. parser.for
-        'mb ← optional (parser.for 'p ← expr env;. parser.unit (p #0));
-    . parser.unit (document.in mb nothing)
+        'mbe ← optional (parser.for 'p ← expr env;. parser.unit (p #0));
+        'mbw ← optional (
+            *> lexeme (char r{,})
+            *> (parser.choice $ map (λ 'v. keyword (gsvar.name v) *> parser.unit v) $ parser.env.wheres env)
+            *> keyword-op qq{:}
+            *> (generator env <* lexeme (char r{;}))
+        );
+    . parser.unit (document.in mbe mbw)
 |]
 
 $gsdeclare expr.function gsexpr_function
@@ -62,8 +69,6 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
         . expr.function.w env (expr.app e (arg.expr pos (p #0))) (p #1)
     )
 |]
-
-$gsdeclare keyword keyword
 
 gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         'v ← parser.choice $ map (λ 'v. keyword (gsvar.name v) *> parser.unit v) $ parser.env.lambda-likes env;
