@@ -128,7 +128,7 @@ gstype_checker_global_env = [gs:value|
         type.function (type.consts qq{type.t}) $ type.function (type.consts qq{type.t}) $ type.consts qq{type.t}
     ) $
     type.env.type.insert (gsvar qq{type.const}) (
-        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{type.t}
+        type.function (type.consts qq{gsvar.t}) $ type.consts qq{type.t}
     ) $
     type.env.type.insert (gsvar qq{type.empty-signature}) (type.consts qq{type.t}) $
     type.env.type.insert (gsvar qq{type-checker.unify}) (
