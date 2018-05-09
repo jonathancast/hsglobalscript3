@@ -1,5 +1,5 @@
 #! /usr/local/hsglobalscript/bin/gsi
 
 gsmain
-    (λ 'pos. λ 'ty. type-checker.unify pos ty (type.app (type.const undefined) type.empty-signature))
+    (λ 'pos. λ 'ty. type-checker.unify pos ty (type.app (type.const (gsvar undefined)) type.empty-signature))
     (λ 'prog. λ 'args. undefined)
