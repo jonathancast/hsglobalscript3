@@ -119,6 +119,9 @@ gstype_checker_global_env = [gs:value|
                 type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
                     type.function (type.consts qq{α}) (type.consts qq{β})
     ) $
+    type.env.type.insert (gsvar qq{gsvar}) (
+        type.function (type.app (type.consts qq{gsvar.t}) (type.consts qq{rune.t})) $ type.consts qq{gsvar.t}
+    ) $
     type.env.type.insert (gsvar qq{gsmain}) (
         type.function type-checker.gstyc.type $
             type.function type-checker.gsrun.type $
@@ -198,6 +201,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
+    compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
     compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
