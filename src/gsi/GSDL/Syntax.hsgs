@@ -48,7 +48,18 @@ $gsdeclare expr.function gsexpr_function
 $gsdeclare expr.lambda-like gsexpr_lambda_like
 
 expr = [gs:value| λ 'env.
-    <|> expr.function env
+    <|> (parser.for 'pos0 ← get-pos; 'p0 ← expr.function env;.
+        <|> parser.unit p0
+        <|> parser.for
+                'posop ← get-pos;
+                'op ← parser.choice $ map (λ 'v. keyword-op (gsvar.name v) *> parser.unit v) $ parser.env.ops env;
+                's2 ← parser.unit $ analyze parser.env.signature.get op env.
+                    case nothing. nil
+                ;
+                'pos1 ← get-pos;
+                'p1 ← expr.function env <|> expr.lambda-like env;
+            . parser.unit 〈 '0 ∝ expr.app (expr.app (expr.var op) (arg.expr pos0 (p0 #0))) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
+    )
     <|> expr.lambda-like env
 |]
 
