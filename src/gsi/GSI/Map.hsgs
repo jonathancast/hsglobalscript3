@@ -45,7 +45,7 @@ gsordered_map_union = [gs:value| λ 'cmp. λ 'm0. λ 'm1. analyze m0.
             case gt. prim.branch k0 v0
                 (prim.branch k1 v1
                     (ordered-map.∪ cmp (split-lt cmp k1 l0) l1)
-                    undefined
+                    (ordered-map.∪ cmp (split-gt cmp k1 l0) (split-lt cmp k0 r1))
                 )
                 (ordered-map.∪ cmp r0 (split-gt cmp k0 r1))
         )
