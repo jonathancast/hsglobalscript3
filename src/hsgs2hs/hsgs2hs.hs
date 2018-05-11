@@ -926,6 +926,7 @@ globalEnv = Env{
         ("zip", (Set.singleton $ HSIVar "GSI.List" "gszip", HSVar "gszip")),
         ("||", (Set.singleton $ HSIVar "GSI.Bool" "gsshort_circuit_or", HSVar "gsshort_circuit_or")),
         ("λ", (Set.singleton $ HSIVar "GSI.StdLib" "gslambda", HSVar "gslambda")),
+        ("∘", (Set.singleton $ HSIVar "GSI.StdLib" "gscompose", HSVar "gscompose")),
         ("≠", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_neq", HSVar "gsrune_neq"))
     ],
     gsimplicits = Map.fromList [

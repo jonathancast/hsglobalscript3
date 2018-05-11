@@ -61,6 +61,7 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
+    parser.env.op.insert (gsvar qq{∘}) 〈〉 $
     parser.env.empty
 |]
 
@@ -167,6 +168,12 @@ gstype_checker_global_env = [gs:value|
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
     ) $
     type.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
+    type.env.type.insert (gsvar qq{∘}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{γ}) kind.pointed $
+            type.function (type.function (type.consts qq{β}) (type.consts qq{γ})) $
+                type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
+                    type.function (type.consts qq{α}) (type.consts qq{γ})
+    ) $
     type.env.view-type.insert (gsvar qq{gsvalue.thunk}) (
         type.function (type.consts qq{gsvalue.thunk.t}) $ type.consts qq{gsvalue.t}
     ) $
@@ -212,6 +219,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{type.empty-signature}) (gsinject type.empty-signature) $
     compiler.env.value.insert (gsvar qq{undefined}) (gsinject (value undefined)) $
     compiler.env.value.insert (gsvar qq{λ}) (gsinject (value λ)) $
+    compiler.env.value.insert (gsvar qq{∘}) (gsinject (∘)) $
     compiler.env.view.insert (gsvar qq{false}) (gsinject (view false)) $
     compiler.env.view.insert (gsvar qq{gsvalue.thunk}) (gsinject (view gsvalue.thunk)) $
     compiler.env.view.insert (gsvar qq{just}) (gsinject (view just)) $
