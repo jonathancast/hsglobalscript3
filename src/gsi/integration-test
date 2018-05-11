@@ -21,6 +21,7 @@ test_unbound_variable
 test_function_variable
 test_undefined_variable
 test_function_application
+test_infix_operator
 test_function_literal
 test_variable_function_body
 test_parameter_function_body
