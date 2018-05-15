@@ -67,7 +67,7 @@ ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-paren
 
 # qq{} literals
 
-ok_diff_compiler '-- qq literals --' hsgs2hs qq-literal.hsgs qq-literal.hs
+ok_diff_compiled '-- qq literals --' hsgs2hs qq-literal.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiler '-- \n in qq literals --' hsgs2hs qq-newline.hsgs qq-newline.hs
 ok_diff_compiler '-- interpolations in qq literals --' hsgs2hs qq-interpolation.hsgs qq-interpolation.hs
 

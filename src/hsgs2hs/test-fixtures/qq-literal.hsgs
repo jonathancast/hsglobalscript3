@@ -1,2 +1,4 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:expr| qq{ next} |]
+
+main = printTestExpr [gs:expr| qq{ next} |]
