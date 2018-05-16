@@ -74,6 +74,7 @@ gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
 gslist_not_member = [gs:value| λ 'eq. λ 'x. λ 'xn. not (list.∈ eq x xn) |]
 
 gslist_member = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
+    case 'x1:'xn1. eq x x1 || list.∈ eq x xn1
     case nil. false
 |]
 
