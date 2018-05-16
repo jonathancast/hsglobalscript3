@@ -121,13 +121,28 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
 $gsdeclare parens parens
 $gsdeclare natural natural
 
+$gsdeclare ident-chars ident_chars
+
+$gsdeclare qloitem gsqloitem
+
 gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
+    <|> (parser.for
+            'v ← ident-chars;
+            _ ← char r{\{};
+            'qs ← many $ qloitem env r{\}};
+            _ ← lexeme $ char r{\}};
+        . parser.unit 〈 '0 ∝ expr.qlo qs; '1 ∝ nil; 〉
+    )
     <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
     <|> (parser.for 'v ← ident env;. parser.unit 〈
         '0 ∝ expr.var v;
         '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
     〉)
+|]
+
+gsqloitem = [gs:value| λ 'env. λ 'cl.
+    <|> matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl)
 |]
 
 gsgenerator = [gs:value| λ 'env.
@@ -159,8 +174,6 @@ gspat_atom = [gs:value| λ 'env.
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
-
-$gsdeclare ident-chars ident_chars
 
 ident = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
