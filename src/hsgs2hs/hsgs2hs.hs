@@ -750,6 +750,7 @@ globalEnv = Env{
         ("expr.natural", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_natural", HSVar "gsexpr_natural")),
         ("expr.open-expr", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_open_expr", HSVar "gsexpr_open_expr")),
         ("expr.pat", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_pat", HSVar "gsexpr_pat")),
+        ("expr.qlo", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_qlo", HSVar "gsexpr_qlo")),
         ("expr.var", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_var", HSVar "gsexpr_var")),
         ("false", (Set.singleton $ HSIVar "GSI.Bool" "gsfalse", HSVar "gsfalse")),
         ("file", (Set.singleton $ HSIVar "GSDL.Syntax" "file", HSVar "file")),
