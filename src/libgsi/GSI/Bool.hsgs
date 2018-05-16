@@ -16,6 +16,7 @@ gsshort_circuit_or = [gs:value| λ 'b0. λ 'b1. analyze b0.
 |]
 
 gsnot = [gs:value| λ 'b. analyze b.
+    case false. true
 |]
 
 gsfalse :: GSValue
