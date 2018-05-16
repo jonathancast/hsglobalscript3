@@ -810,6 +810,7 @@ globalEnv = Env{
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
         ("lexeme", (Set.singleton $ HSIVar "GSDL.Syntax" "lexeme", HSVar "lexeme")),
         ("list.∈", (Set.singleton $ HSIVar "GSI.List" "gslist_member", HSVar "gslist_member")),
+        ("list.∉", (Set.singleton $ HSIVar "GSI.List" "gslist_not_member", HSVar "gslist_not_member")),
         ("log.fmt", (Set.singleton $ HSIVar "GSI.Log" "gslog_fmt", HSVar "gslog_fmt")),
         ("many", (Set.singleton $ HSIVar "GSI.Parser" "gsmany", HSVar "gsmany")),
         ("many1", (Set.singleton $ HSIVar "GSI.Parser" "gsmany1", HSVar "gsmany1")),
