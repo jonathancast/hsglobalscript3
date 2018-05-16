@@ -822,6 +822,7 @@ globalEnv = Env{
         ("natural.read-decimal", (Set.singleton $ HSIVar "GSI.Format" "gsnatural_read_decimal", HSVar "gsnatural_read_decimal")),
         ("natural.≡", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_eq", HSVar "gsnatural_eq")),
         ("nil", (Set.singleton $ HSIVar "GSI.List" "gsnil", HSVar "gsnil")),
+        ("not", (Set.singleton $ HSIVar "GSI.Bool" "gsnot", HSVar "gsnot")),
         ("not-followed-by", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_notFollowedBy", HSVar "gsparser_notFollowedBy")),
         ("nothing", (Set.singleton $ HSIVar "GSI.Maybe" "gsnothing", HSVar "gsnothing")),
         ("optional", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_optional", HSVar "gsparser_optional")),

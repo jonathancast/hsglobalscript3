@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Bool (gsshort_circuit_or, gsshort_circuit_and, gsfalse, gstrue, gsfalse_view, gstrue_view) where
+module GSI.Bool (gsshort_circuit_or, gsshort_circuit_and, gsnot, gsfalse, gstrue, gsfalse_view, gstrue_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -13,6 +13,9 @@ gsshort_circuit_and = [gs:value| λ 'b0. λ 'b1. analyze b0.
 gsshort_circuit_or = [gs:value| λ 'b0. λ 'b1. analyze b0.
     case false. b1
     case true. true
+|]
+
+gsnot = [gs:value| λ 'b. analyze b.
 |]
 
 gsfalse :: GSValue
