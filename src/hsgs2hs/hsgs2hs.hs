@@ -699,6 +699,7 @@ globalEnv :: Env
 globalEnv = Env{
     gsvars = Map.fromList [
         ("$", (Set.singleton $ HSIVar "GSI.StdLib" "gsapply_fn", HSVar "gsapply_fn")),
+        ("&&", (Set.singleton $ HSIVar "GSI.Bool" "gsshort_circuit_and", HSVar "gsshort_circuit_and")),
         ("*", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_multiply", HSVar "gsnatural_multiply")),
         ("*>", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_then", HSVar "gsparser_then")),
         ("+", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_add", HSVar "gsnatural_add")),

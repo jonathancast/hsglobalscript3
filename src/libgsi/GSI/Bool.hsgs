@@ -1,11 +1,14 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Bool (gsshort_circuit_or, gsfalse, gstrue, gsfalse_view, gstrue_view) where
+module GSI.Bool (gsshort_circuit_or, gsshort_circuit_and, gsfalse, gstrue, gsfalse_view, gstrue_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 $gsimports
+
+gsshort_circuit_and = [gs:value| λ 'b0. λ 'b1. analyze b0.
+|]
 
 gsshort_circuit_or = [gs:value| λ 'b0. λ 'b1. analyze b0.
     case false. b1
