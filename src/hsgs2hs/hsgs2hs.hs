@@ -889,6 +889,7 @@ globalEnv = Env{
         ("st.run", (Set.singleton $ HSIVar "GSI.ST" "gsstrun", HSVar "gsstrun")),
         ("st.set-var", (Set.singleton $ HSIVar "GSI.ST" "gsstsetvar", HSVar "gsstsetvar")),
         ("string", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_string", HSVar "gsparser_string")),
+        ("symbol", (Set.singleton $ HSIVar "GSI.Parser" "gssymbol", HSVar "gssymbol")),
         ("syntactic-category.lambda-like", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_lambda_like", HSVar "gssyntactic_category_lambda_like")),
         ("syntactic-category.variable", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_variable", HSVar "gssyntactic_category_variable")),
         ("syntactic-category.where", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_where", HSVar "gssyntactic_category_where")),
