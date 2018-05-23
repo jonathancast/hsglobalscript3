@@ -123,6 +123,7 @@ $gsdeclare natural natural
 
 $gsdeclare ident-chars ident_chars
 
+$gsdeclare idmc gsidmc
 $gsdeclare qloitem gsqloitem
 
 gsexpr_atom = [gs:value| λ 'env.
@@ -133,15 +134,22 @@ gsexpr_atom = [gs:value| λ 'env.
                 case nothing. parser.fail log{§(gsv v) is not a qlo}
             ;
             _ ← char r{\{};
-            'qs ← many $ qloitem env r{\}};
+            'x ← idmc env (e #parser) r{\}};
             _ ← lexeme $ char r{\}};
-        . parser.unit 〈 '0 ∝ expr.qlo (gsvar v) e qs; '1 ∝ nil; 〉
+        . parser.unit 〈 '0 ∝ expr.qlo (gsvar v) e x; '1 ∝ nil; 〉
     )
     <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
     <|> (parser.for 'v ← ident env;. parser.unit 〈
         '0 ∝ expr.var v;
         '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
     〉)
+|]
+
+$gsdeclare idmc-w gsidmc_w
+
+gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run p) cl |]
+
+gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
 |]
 
 gsqloitem = [gs:value| λ 'env. λ 'cl.
