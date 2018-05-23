@@ -57,6 +57,9 @@ gsparser_global_env = [gs:value|
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.op.insert (gsvar qq{>>=}) 〈〉 $
     parser.env.op.insert (gsvar qq{∘}) 〈〉 $
+    parser.env.qlo.insert (gsvar qq{qq}) 〈
+        'parser ∝ λ 'env. undefined;
+    〉 $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
