@@ -861,6 +861,7 @@ globalEnv = Env{
         ("parser.env.syntactic-category.get", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_syntactic_category_get", HSVar "gsdl_parser_env_syntactic_category_get")),
         ("parser.env.syntactic-category.insert", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_syntactic_category_insert", HSVar "gsdl_parser_env_syntactic_category_insert")),
         ("parser.env.wheres", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_wheres", HSVar "gsdl_parser_env_wheres")),
+        ("parser.eof", (Set.singleton $ HSIVar "GSI.Parser" "gseof", HSVar "gseof")),
         ("parser.fail", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_fail", HSVar "gsparser_fail")),
         ("parser.for", (Set.singleton $ HSIVar "GSI.Parser" "gsparserFor", HSVar "gsparserFor")),
         ("parser.map", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_map", HSVar "gsparser_map")),
