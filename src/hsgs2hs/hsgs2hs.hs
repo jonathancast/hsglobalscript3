@@ -875,6 +875,7 @@ globalEnv = Env{
         ("print", (Set.singleton $ HSIVar "GSI.Env" "gsprint", HSVar "gsprint")),
         ("print-error", (Set.singleton $ HSIVar "GSI.Env" "gsprintError", HSVar "gsprintError")),
         ("print-rune", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_print_rune", HSVar "gsparser_print_rune")),
+        ("qloitem.char", (Set.singleton $ HSIVar "GSDL.AST" "gsqloitem_char", HSVar "gsqloitem_char")),
         ("repeat", (Set.singleton $ HSIVar "GSI.List" "gsrepeat", HSVar "gsrepeat")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright")),
         ("rune.code-point", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_code_point", HSVar "gsrune_code_point")),

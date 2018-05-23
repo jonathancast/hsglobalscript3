@@ -7,6 +7,7 @@ module GSDL.AST (
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
     gsexpr_natural, gsexpr_var, gsexpr_app, gsexpr_qlo, gsexpr_open_expr, gsexpr_pat, gsexpr_monoidal_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_monoidal_pat_view, gsexpr_missing_case_view,
+    gsqloitem_char,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
@@ -103,6 +104,8 @@ gsexpr_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ 
 gsexpr_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "pat" ek sk e
 gsexpr_monoidal_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "monoidal-pat" ek sk e
 gsexpr_missing_case_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "missing-case" ek sk e
+
+gsqloitem_char = $gslambda_value $ \ r -> $gsbcconstr (gsvar "char") [ $gsav r ]
 
 gsimplicit_here = $gsconstr (gsvar "here") []
 
