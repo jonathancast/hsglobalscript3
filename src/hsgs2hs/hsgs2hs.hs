@@ -987,6 +987,7 @@ globalEnv = Env{
         ("order-of-being.open-expr", (Set.singleton $ HSIVar "GSDL.AST" "gsorder_of_being_open_expr_view", HSVar "gsorder_of_being_open_expr_view")),
         ("order-of-being.pattern", (Set.singleton $ HSIVar "GSDL.AST" "gsorder_of_being_pattern_view", HSVar "gsorder_of_being_pattern_view")),
         ("ordered-map.empty", (Set.singleton $ HSIVar "GSI.Map" "gsordered_map_empty_view", HSVar "gsordered_map_empty_view")),
+        ("parser.prim.unit-plus", (Set.singleton $ HSIVar "GSI.Parser" "gsprim_unit_plus_view", HSVar "gsprim_unit_plus_view")),
         ("pat.app", (Set.singleton $ HSIVar "GSDL.AST" "gspat_app_view", HSVar "gspat_app_view")),
         ("pat.discard", (Set.singleton $ HSIVar "GSDL.AST" "gspat_discard_view", HSVar "gspat_discard_view")),
         ("pat.var", (Set.singleton $ HSIVar "GSDL.AST" "gspat_var_view", HSVar "gspat_var_view")),
