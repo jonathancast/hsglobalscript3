@@ -130,7 +130,7 @@ gsexpr_atom = [gs:value| λ 'env.
     <|> parens (expr env)
     <|> (parser.for
             'v ← ident-chars;
-            'e ← analyze parser.env.qlo.get v env.
+            'e ← analyze parser.env.qlo.get (gsvar v) env.
                 case nothing. parser.fail log{§(gsv v) is not a qlo}
             ;
             _ ← char r{\{};
