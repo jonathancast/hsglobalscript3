@@ -148,7 +148,7 @@ gsexpr_atom = [gs:value| λ 'env.
 
 $gsdeclare idmc-w gsidmc_w
 
-gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run p) cl |]
+gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run (p env)) cl |]
 
 gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
 |]
