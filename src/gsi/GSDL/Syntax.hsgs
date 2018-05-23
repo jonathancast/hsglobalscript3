@@ -132,6 +132,7 @@ gsexpr_atom = [gs:value| λ 'env.
             'v ← ident-chars;
             'e ← analyze parser.env.qlo.get (gsvar v) env.
                 case nothing. parser.fail log{§(gsv v) is not a qlo}
+                case just 'e. parser.unit e
             ;
             _ ← char r{\{};
             'x ← idmc env (e #parser) r{\}};
