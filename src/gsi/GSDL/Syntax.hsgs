@@ -145,7 +145,7 @@ gsexpr_atom = [gs:value| λ 'env.
 |]
 
 gsqloitem = [gs:value| λ 'env. λ 'cl.
-    <|> matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl)
+    <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl);. parser.unit (qloitem.char r))
 |]
 
 gsgenerator = [gs:value| λ 'env.
