@@ -151,6 +151,11 @@ $gsdeclare idmc-w gsidmc_w
 gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run (p env)) cl |]
 
 gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
+    case parser.prim.unit-plus 'x 'p1. parser.unit x <|> idmc-w env p1 cl
+    case parser.prim.symbol-or-eof 'ek 'sk.
+        <|> (parser.eof *> idmc-w env ek cl)
+        <|> (parser.for 'q ← qloitem env cl;. analyze sk q.
+        )
 |]
 
 gsqloitem = [gs:value| λ 'env. λ 'cl.
