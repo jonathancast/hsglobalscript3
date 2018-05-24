@@ -67,6 +67,7 @@ gsparser_global_env = [gs:value|
                 _ ← type-checker.unify pos (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) tye;
                 'qsa ← type-checker.mapM
                     (λ 'qi. analyze qi.
+                        case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
                     )
                     qs
                 ;
