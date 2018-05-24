@@ -73,6 +73,12 @@ gsparser_global_env = [gs:value|
                 ;
             . type-checker.unit qsa
         ;
+        'compile ∝ λ 'pos. λ 'env. λ 'qs. foldr
+            (λ 'qi. λ 's. analyze qi.
+            )
+            (gsbcenter pos (gsinject nil))
+            qs
+        ;
     〉 $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
