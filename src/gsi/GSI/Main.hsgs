@@ -60,6 +60,7 @@ gsparser_global_env = [gs:value|
     parser.env.qlo.insert (gsvar qq{qq}) 〈
         'parser ∝ λ 'env. many symbol;
         'annotate ∝ λ 'env. λ 'pos. λ 'qs. map (annotate-qloitem env pos) qs;
+        'validate ∝ λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉;
     〉 $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
