@@ -988,6 +988,7 @@ globalEnv = Env{
         ("expr.var", (Set.singleton $ HSIVar "GSDL.AST" "gsexpr_var_view", HSVar "gsexpr_var_view")),
         ("false", (Set.singleton $ HSIVar "GSI.Bool" "gsfalse_view", HSVar "gsfalse_view")),
         ("file.document", (Set.singleton $ HSIVar "GSDL.AST" "gsfile_document_view", HSVar "gsfile_document_view")),
+        ("gsvalue.constr", (Set.singleton $ HSIVar "GSI.GSI" "gsvalue_constr_view", HSVar "gsvalue_constr_view")),
         ("gsvalue.error", (Set.singleton $ HSIVar "GSI.GSI" "gsvalue_error_view", HSVar "gsvalue_error_view")),
         ("gsvalue.function", (Set.singleton $ HSIVar "GSI.GSI" "gsvalue_function_view", HSVar "gsvalue_function_view")),
         ("gsvalue.natural", (Set.singleton $ HSIVar "GSI.GSI" "gsvalue_natural_view", HSVar "gsvalue_natural_view")),
