@@ -1,4 +1,4 @@
-module GSDL.Annotate (gsannotate_document) where
+module GSDL.Annotate (gsannotate_document, gsannotate_qloitem, ) where
 
 $gsimports
 
@@ -82,6 +82,9 @@ $gsdeclare annotate-expr-arg gsannotate_expr_arg
 
 gsannotate_arg = [gs:value| λ 'env. λ 'pos. λ 'a. λ 'ns. λ 'c. analyze a.
     case arg.expr 'pos1 'e. arg.expr pos1 (annotate-expr-arg env pos1 e ns c)
+|]
+
+gsannotate_qloitem = [gs:value| λ 'env. λ 'pos. λ 'q. analyze q.
 |]
 
 gsannotate_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
