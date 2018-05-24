@@ -32,6 +32,8 @@ $gsdeclare gsrun gsrun
 gsrun = [gs:value| λ 'x. λ 'as. analyze x.
     case gsvalue.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
     case gsvalue.natural 'n. print qq{§(natural.fmt-decimal n)\n}
+    case gsvalue.constr 'pos 'v ('r : ('s : nil)). (analyze gsvar.≡ v (gsvar qq{:}).
+    )
     case gsvalue.function 'f. print qq{<function>\n}
     case gsvalue.thunk 'th. impfor 'x1 ← gseval-sync th;. gsrun x1 as
 |]
