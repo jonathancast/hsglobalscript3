@@ -23,7 +23,7 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
 import GSI.Error (GSError(..))
 import GSI.RTS (Event)
-import GSI.Syn (GSVar)
+import GSI.Syn (GSVar, fmtVarAtom)
 import GSI.ThreadType (Thread, ThreadData)
 
 -- BIG IMPORTANT NOTE:
@@ -192,6 +192,7 @@ instance GSExternal GSBCO
 
 instance GSExternal GSValue where
     fmtExternal_w (GSClosure _ bco) = return $ ("GSValue"++) . (' ':) . ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':)
+    fmtExternal_w (GSConstr _ c as) = return $ ("GSvalue"++) . (' ':) . ('(':) . ("GSConstr _ "++) . fmtVarAtom c . (" _ "++) . (')':)
     fmtExternal_w v = return $ ("GSValue"++) . (' ':) . (gsvCode v++)
 
 gsvCode :: GSValue -> String
