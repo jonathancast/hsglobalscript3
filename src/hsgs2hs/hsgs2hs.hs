@@ -1008,6 +1008,7 @@ globalEnv = Env{
         ("pat.discard", (Set.singleton $ HSIVar "GSDL.AST" "gspat_discard_view", HSVar "gspat_discard_view")),
         ("pat.var", (Set.singleton $ HSIVar "GSDL.AST" "gspat_var_view", HSVar "gspat_var_view")),
         ("pat.view", (Set.singleton $ HSIVar "GSDL.AST" "gspat_view_view", HSVar "gspat_view_view")),
+        ("qloitem.char", (Set.singleton $ HSIVar "GSDL.AST" "gsqloitem_char_view", HSVar "gsqloitem_char_view")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright_view", HSVar "gsright_view")),
         ("syntactic-category.lambda-like", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_lambda_like_view", HSVar "gssyntactic_category_lambda_like_view")),
         ("syntactic-category.variable", (Set.singleton $ HSIVar "GSDL.AST" "gssyntactic_category_variable_view", HSVar "gssyntactic_category_variable_view")),
