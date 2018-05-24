@@ -51,6 +51,8 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
         . right (compile-document pos compiler.global-env dty)
 |]
 
+$gsdeclare type.consts gstype_consts
+
 gsparser_global_env = [gs:value|
     parser.env.else.insert (gsvar qq{case}) 〈〉 $
     parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
@@ -61,6 +63,15 @@ gsparser_global_env = [gs:value|
         'parser ∝ λ 'env. many symbol;
         'annotate ∝ λ 'env. λ 'pos. λ 'qs. map (annotate-qloitem env pos) qs;
         'validate ∝ λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉;
+        'type-check ∝ λ 'pos. λ 'qs. λ 'tye. type-checker.for
+                _ ← type-checker.unify pos (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) tye;
+                'qsa ← type-checker.mapM
+                    (λ 'qi. analyze qi.
+                    )
+                    qs
+                ;
+            . type-checker.unit qsa
+        ;
     〉 $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
@@ -93,8 +104,6 @@ gsvalidator_global_env = [gs:value|
     validator.env.in-scope.insert (gsvar qq{λ}) $
     validator.env.empty
 |]
-
-$gsdeclare type.consts gstype_consts
 
 $gsdeclare type.pattern gstype_pattern
 $gsdeclare type.pattern.monoidal gstype_pattern_monoidal
