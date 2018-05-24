@@ -86,6 +86,7 @@ gsannotate_arg = [gs:value| λ 'env. λ 'pos. λ 'a. λ 'ns. λ 'c. analyze a.
 |]
 
 gsannotate_qloitem = [gs:value| λ 'env. λ 'pos. λ 'q. analyze q.
+    case qloitem.char 'ch. qloitem.char ch
 |]
 
 gsannotate_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
