@@ -32,6 +32,9 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             _ ← type-checker.unify pos tyai (foldr type.function tye imtys);
             'imas ← type-checker.zip-withM (type-check-implicit pos) ims imtys;
         . type-checker.unit (foldl expr.app (expr.var v) imas)
+    case expr.qlo 'v 'e 'x. type-checker.for
+            'x1 ← e #type-check pos x tye;
+        . type-checker.unit (expr.qlo v e x1)
     case expr.app 'ef 'ex. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
             'ef1 ← type-check-expr pos ef (type.function tyx tye);
