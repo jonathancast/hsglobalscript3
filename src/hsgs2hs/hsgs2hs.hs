@@ -950,6 +950,7 @@ globalEnv = Env{
         ("type.unifiable-var", (Set.singleton $ HSIVar "GSDL.AST" "gstype_unifiable_var", HSVar "gstype_unifiable_var")),
         ("undefined", (Set.singleton $ HSIVar "GSI.StdLib" "gsundefined", HSVar "gsundefined")),
         ("validate-document", (Set.singleton $ HSIVar "GSDL.Validate" "gsvalidate_document", HSVar "gsvalidate_document")),
+        ("validate-qloitem", (Set.singleton $ HSIVar "GSDL.Validate" "gsvalidate_qloitem", HSVar "gsvalidate_qloitem")),
         ("validator.env.empty", (Set.singleton $ HSIVar "GSDL.Validator" "gsvalidator_env_empty", HSVar "gsvalidator_env_empty")),
         ("validator.env.in-scope", (Set.singleton $ HSIVar "GSDL.Validator" "gsvalidator_env_in_scope", HSVar "gsvalidator_env_in_scope")),
         ("validator.env.in-scope.insert", (Set.singleton $ HSIVar "GSDL.Validator" "gsvalidator_env_in_scope_insert", HSVar "gsvalidator_env_in_scope_insert")),
