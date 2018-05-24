@@ -75,6 +75,7 @@ gsparser_global_env = [gs:value|
         ;
         'compile ∝ λ 'pos. λ 'env. λ 'qs. foldr
             (λ 'qi. λ 's. analyze qi.
+                case qloitem.char 'ch. gsbcapply pos (gsinject (:)) (gsav (gsinject ch) : gsae pos s : nil)
             )
             (gsbcenter pos (gsinject nil))
             qs
