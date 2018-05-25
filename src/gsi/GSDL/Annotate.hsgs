@@ -39,6 +39,7 @@ $gsdeclare let gslet
 gsannotate_expr_arg = [gs:value| λ 'env. λ 'pos. λ 'e. λ 'ns. λ 'c. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
+    case expr.qlo 'v 'e 'x. expr.qlo v e (e #annotate env pos x)
     case expr.pat 'p 'mb.
         (analyze c.
             case nothing. expr.pat
