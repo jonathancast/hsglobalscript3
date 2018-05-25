@@ -8,5 +8,6 @@ GLOBALSCRIPT=$HSGLOBALSCRIPT
 fn test_gsi_impl { ./gsio $* }
 
 test_non_existent_file
+ok_grep_errors '-- gsi program --' 'gsi-prog.gsio.gs:1:1: Incorrect type: .* is not gsio.m' ./gsio gsi-prog.gsio.gs
 
 true
