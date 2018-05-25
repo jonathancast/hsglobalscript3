@@ -73,6 +73,8 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
         case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
         case type.const 'c1. (analyze gsvar.compare c0 c1.
             case eq. type-checker.unit 〈〉
+            case gt. type-checker.incorrect-type pos ty0 ty1
+            case lt. type-checker.incorrect-type pos ty0 ty1
         )
         case type.function _ _. type-checker.incorrect-type pos ty0 ty1
     )
