@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsbcevalstring, gsbcevalstring_w, gsbcevalpos, gsbcevalpos_w, gsapiEvalPos) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsbcevalpos, gsbcevalpos_w, gsapiEvalPos) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -10,6 +10,7 @@ import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.BCFunctions (gsbcevalstring)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
@@ -42,21 +43,6 @@ gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
 
 gsimpunit = $gslambda_value $ \ x -> $gsbcimpfor $ do $gsbcimpunit $ $gsav x
 
--- This should be in GSI.String, but that would end up causing a circular dependency with this module so it goes here instead
-gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
-
-gsbcevalstring_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
-gsbcevalstring_w pos sa k = w id sa where
-    w :: (String -> String) -> GSArg -> GSExpr
-    w ds0 sa = $gsbcforce sa $ \ sv -> case sv of
-        GSConstr _ s_c [ c0, s1 ] | s_c == gsvar ":" ->
-            $gsbcforce ($gsav c0) $ \ c0v -> case c0v of
-                GSRune c0_hs -> w (ds0 . (c0_hs:)) ($gsav s1)
-                _ -> $gsbcimplementationfailure $ "gsbcevalstring_w (GSConstr (:) " ++ gsvCode c0v ++ ") next"
-        GSConstr _ s_c s_as | s_c == gsvar "nil" -> k (ds0 [])
-        GSConstr _ s_c s_as -> $gsbcimplementationfailure $ "gsbcevalstring_w (GSConstr " ++ fmtVarAtom s_c ") next"
-        _ -> $gsbcimplementationfailure $ "gsbcevalstring_w " ++ gsvCode sv ++ " next"
-
 gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
     gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
     $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
@@ -70,7 +56,7 @@ gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
 gsbcevalpos_w :: Pos -> GSArg -> (Pos -> GSExpr) -> GSExpr
 gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
     GSRecord{} ->
-        gsbcevalstring_w $gshere ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "filename")) $ \ pos_filename_s ->
+        $gsbcevalstring ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "filename")) $ \ pos_filename_s ->
         $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "line")) $ \ pos_line_n ->
         $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "col")) $ \ pos_col_n ->
         k $ Pos pos_filename_s pos_line_n pos_col_n
