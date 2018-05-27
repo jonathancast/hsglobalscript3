@@ -17,7 +17,7 @@ import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
-import GSI.BCFunctions (gsbcevallist)
+import GSI.BCFunctions (gsbcevallist, gsbcevalmap)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -94,11 +94,8 @@ gsigsbcvarpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
 
 gsigsbcviewpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ vv -> $gsbcarg $ \ asvv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
-        $gsbcevallist ($gsav asvv) $ \ asv -> foldr
-            (\ av k as -> $gsbcevalexternal ($gsav av) $ \ a -> k (a:as))
-            (\ as -> $gsbcexternal (gsbcviewpattern_w pos v as))
-            asv
-            []
+        $gsbcevallist ($gsav asvv) $ \ asv -> $gsbcevalmap $gsbcevalexternal (map $gsav asv) $ \ as ->
+            $gsbcexternal (gsbcviewpattern_w pos v as)
 
 gsigsav = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ v -> $gsbcexternal ($gsav v)
 

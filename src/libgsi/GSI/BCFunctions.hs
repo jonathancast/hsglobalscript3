@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.BCFunctions (gsbcevallist) where
+module GSI.BCFunctions (gsbcevallist, gsbcevalmap) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -7,6 +7,11 @@ import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, GSArg, gsav, gsvCode)
 import GSI.ByteCode (gsbcforce_w, gsbcimplementationfailure)
+
+gsbcevalmap = varE 'gsbcevalmap_w `appE` gshere
+
+gsbcevalmap_w :: Pos -> (GSArg -> (a -> GSExpr) -> GSExpr) -> [GSArg] -> ([a] -> GSExpr) -> GSExpr
+gsbcevalmap_w pos f xn k = foldr (\ aa k1 as -> f aa $ \ a -> k (a:as)) k xn []
 
 gsbcevallist = varE 'gsbcevallist_w `appE` gshere
 
