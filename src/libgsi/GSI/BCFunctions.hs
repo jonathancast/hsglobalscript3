@@ -11,7 +11,7 @@ import GSI.ByteCode (gsbcforce_w, gsbcimplementationfailure)
 gsbcevalmap = varE 'gsbcevalmap_w `appE` gshere
 
 gsbcevalmap_w :: Pos -> (GSArg -> (a -> GSExpr) -> GSExpr) -> [GSArg] -> ([a] -> GSExpr) -> GSExpr
-gsbcevalmap_w pos f xn k = foldr (\ aa k1 as -> f aa $ \ a -> k (a:as)) k xn []
+gsbcevalmap_w pos f xn = foldr (\ aa b k -> f aa $ \ a -> b $ \ as -> k (a : as)) ($ []) xn
 
 gsbcevallist = varE 'gsbcevallist_w `appE` gshere
 
