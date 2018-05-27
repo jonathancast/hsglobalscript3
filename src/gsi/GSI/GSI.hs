@@ -9,14 +9,15 @@ import Component.Monad (mvarContents)
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSArg, GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcforce_w, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.BCFunctions (gsbcevallist)
 import GSI.Env (GSEnvArgs(..))
 import GSI.StdLib (gsbcevalpos, gsapiEvalPos, gsbcevalstring)
 import GSI.String (gsbcstringlit)
@@ -73,17 +74,9 @@ gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
 
 gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ avsv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ f ->
-        gsbcevallist_w $gshere ($gsav avsv) $ \ avs ->
+        $gsbcevallist ($gsav avsv) $ \ avs ->
             foldr (\ av f as0 k -> $gsbcevalexternal ($gsav av) $ \ a -> f (as0 . (a:)) k) (\ d k -> k (d [])) avs id $ \ as ->
                 $gsbcexternal (gsbcapply_w pos f as)
-
-gsbcevallist_w :: Pos -> GSArg -> ([GSValue] -> GSExpr) -> GSExpr
-gsbcevallist_w pos a k = w a id where
-    w a d = gsbcforce_w pos a $ \ v -> case v of
-        GSConstr _ c [] | c == gsvar "nil" -> k (d [])
-        GSConstr _ c [ v0, v1 ] | c == gsvar ":" -> w ($gsav v1) (d . (v0:))
-        GSConstr _ c as -> $gsbcimplementationfailure $ "gsbcevallist " ++ fmtVarAtom c " next"
-        _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
 
 gsigsbcinsufficientcases = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal ($gsbcarg $ \ x -> gsbcprim_w pos gspriminsufficientcases x)
@@ -101,7 +94,7 @@ gsigsbcvarpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
 
 gsigsbcviewpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ vv -> $gsbcarg $ \ asvv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
-        gsbcevallist_w $gshere ($gsav asvv) $ \ asv -> foldr
+        $gsbcevallist ($gsav asvv) $ \ asv -> foldr
             (\ av k as -> $gsbcevalexternal ($gsav av) $ \ a -> k (a:as))
             (\ as -> $gsbcexternal (gsbcviewpattern_w pos v as))
             asv
