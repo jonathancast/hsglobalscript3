@@ -804,6 +804,7 @@ globalEnv = Env{
         ("gsthunk", (Set.singleton $ HSIVar "GSI.GSI" "gsigsthunk", HSVar "gsigsthunk")),
         ("gsundefined", (Set.singleton $ HSIVar "GSI.GSI" "gsigsundefined", HSVar "gsigsundefined")),
         ("gsv", (Set.singleton $ HSIVar "GSI.Log" "gsloggsv", HSVar "gsloggsv")),
+        ("gsvalue.constr", (Set.singleton $ HSIVar "GSI.GSI" "gsvalue_constr", HSVar "gsvalue_constr")),
         ("gsvar", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar", HSVar "gsigsvar")),
         ("gsvar.compare", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_compare", HSVar "gsigsvar_compare")),
         ("gsvar.fmt-atom", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_fmtAtom", HSVar "gsigsvar_fmtAtom")),
