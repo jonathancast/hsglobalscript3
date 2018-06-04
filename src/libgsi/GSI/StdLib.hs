@@ -1,9 +1,9 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsapiEvalPos) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos(..), StackTrace(..), gshere)
+import GSI.Util (Pos, StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsfield, gsav, gsae, gsvCode)
 import API (apiImplementationFailure)
@@ -50,17 +50,6 @@ gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
 
 gsundefined = $gslambda_value $ \ stv -> gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
     gsbcundefined st_hs
-
-gsapiEvalPos :: Pos -> GSValue -> IO Pos
-gsapiEvalPos pos (GSThunk th) = do
-    v' <- evalSync [StackTrace pos []] th
-    gsapiEvalPos pos v'
-gsapiEvalPos pos v@GSRecord{} = do
-    filename <- gsapiEvalString pos =<< $gsfield (gsvar "filename") v
-    line <- gsapiEvalNatural pos =<< $gsfield (gsvar "line") v
-    col <- gsapiEvalNatural pos =<< $gsfield (gsvar "col") v
-    return $ Pos filename line col
-gsapiEvalPos pos v = $apiImplementationFailure $ "gsapiEvalPos " ++ gsvCode v ++ " next"
 
 gsbcevalstacktrace = varE 'gsbcevalstacktrace_w `appE` gshere
 

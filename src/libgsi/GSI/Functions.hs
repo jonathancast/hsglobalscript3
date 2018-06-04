@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazystring, gslazystring_w, gsnatural, gsnatural_w, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazystring, gslazystring_w, gsnatural, gsnatural_w, gsapiEvalPos, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
 
 import Control.Exception (Exception(..), throwIO, try)
 
@@ -8,7 +8,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import qualified Data.Map as Map
 
-import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
+import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), throwGSError, fmtError)
 import GSI.ThreadType (ThreadException(..))
@@ -64,6 +64,17 @@ gsevalList pos v = gsevalList_w pos id v where
         gsevalList_w pos ds v
     gsevalList_w pos ds (GSError err) = throwGSError err
     gsevalList_w pos ds v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ gsvCode v ++ " next"
+
+gsapiEvalPos :: Pos -> GSValue -> IO Pos
+gsapiEvalPos pos (GSThunk th) = do
+    v' <- evalSync [StackTrace pos []] th
+    gsapiEvalPos pos v'
+gsapiEvalPos pos v@GSRecord{} = do
+    filename <- gsapiEvalString pos =<< $gsfield (gsvar "filename") v
+    line <- gsapiEvalNatural pos =<< $gsfield (gsvar "line") v
+    col <- gsapiEvalNatural pos =<< $gsfield (gsvar "col") v
+    return $ Pos filename line col
+gsapiEvalPos pos v = $apiImplementationFailure $ "gsapiEvalPos " ++ gsvCode v ++ " next"
 
 gsevalString :: Pos -> GSValue -> IO String
 gsevalString pos v = gsevalString_w pos id v where
