@@ -17,9 +17,9 @@ import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
-import GSI.BCFunctions (gsbcevallist, gsbcevalstring, gsbcevalmap)
+import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
 import GSI.Env (GSEnvArgs(..))
-import GSI.StdLib (gsbcevalpos, gsapiEvalPos)
+import GSI.StdLib (gsapiEvalPos)
 import GSI.String (gsbcstringlit)
 
 gsigsinject = $gslambda_value $ \ v -> $gsbcexternal v

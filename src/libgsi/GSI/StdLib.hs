@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsbcevalpos, gsbcevalpos_w, gsapiEvalPos) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsapiEvalPos) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -9,7 +9,7 @@ import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value,
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
-import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcfield, gsbcevalnatural, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 import GSI.BCFunctions (gsbcevalstring)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
@@ -50,20 +50,6 @@ gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
 
 gsundefined = $gslambda_value $ \ stv -> gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
     gsbcundefined st_hs
-
-gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
-
-gsbcevalpos_w :: Pos -> GSArg -> (Pos -> GSExpr) -> GSExpr
-gsbcevalpos_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
-    GSRecord{} ->
-        $gsbcevalstring ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "filename")) $ \ pos_filename_s ->
-        $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "line")) $ \ pos_line_n ->
-        $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "col")) $ \ pos_col_n ->
-        k $ Pos pos_filename_s pos_line_n pos_col_n
-    GSExternal e -> case fromExternal e of
-        Nothing -> $gsbcimplementationfailure $ "gsbcevalpos_w (GSExternal (not a Pos)) next"
-        Just pos -> k pos
-    _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"
 
 gsapiEvalPos :: Pos -> GSValue -> IO Pos
 gsapiEvalPos pos (GSThunk th) = do

@@ -1,12 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.BCFunctions (gsbcevallist, gsbcevalmap, gsbcevalstring, gsbcevalstring_w) where
+module GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalmap, gsbcevalstring, gsbcevalstring_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, gshere)
+import GSI.Util (Pos(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSExpr, GSArg, gsav, gsvCode)
-import GSI.ByteCode (gsbcforce_w, gsbcimplementationfailure)
+import GSI.Value (GSValue(..), GSExpr, GSArg, GSExternal(..), gsav, gsae, gsvCode)
+import GSI.ByteCode (gsbcforce_w, gsbcevalnatural, gsbcfield, gsbcimplementationfailure)
 
 gsbcevalmap = varE 'gsbcevalmap_w `appE` gshere
 
@@ -23,6 +23,20 @@ gsbcevallist_w pos a k = w a id where
         GSConstr _ c [ v0, v1 ] | c == gsvar ":" -> w ($gsav v1) (d . (v0:))
         GSConstr _ c as -> $gsbcimplementationfailure $ "gsbcevallist " ++ fmtVarAtom c " next"
         _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
+
+gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
+
+gsbcevalpos_w :: Pos -> GSArg -> (Pos -> GSExpr) -> GSExpr
+gsbcevalpos_w pos pos1a k = gsbcforce_w pos pos1a $ \ pos1v -> case pos1v of
+    GSRecord{} ->
+        gsbcevalstring_w $gshere ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "filename")) $ \ pos_filename_s ->
+        $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "line")) $ \ pos_line_n ->
+        $gsbcevalnatural ($gsae $ $gsbcfield ($gsav pos1v) (gsvar "col")) $ \ pos_col_n ->
+        k $ Pos pos_filename_s pos_line_n pos_col_n
+    GSExternal e -> case fromExternal e of
+        Nothing -> $gsbcimplementationfailure $ "gsbcevalpos_w (GSExternal (not a Pos)) next"
+        Just pos -> k pos
+    _ -> $gsbcimplementationfailure $ "gsbcevalpos_w " ++ gsvCode pos1v ++ " next"
 
 gsbcevalstring = varE 'gsbcevalstring_w `appE` gshere
 
