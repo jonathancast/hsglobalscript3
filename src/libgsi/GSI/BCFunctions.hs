@@ -1,12 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalmap, gsbcevalstring, gsbcevalstring_w) where
+module GSI.BCFunctions (gsbcevalstacktrace, gsbcevalpos, gsbcevallist, gsbcevalmap, gsbcevalstring, gsbcevalstring_w) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos(..), gshere)
+import GSI.Util (Pos(..), StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSExpr, GSArg, GSExternal(..), gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcforce_w, gsbcevalnatural, gsbcfield, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcforce, gsbcforce_w, gsbcevalnatural, gsbcfield, gsbcimplementationfailure)
 
 gsbcevalmap = varE 'gsbcevalmap_w `appE` gshere
 
@@ -23,6 +23,15 @@ gsbcevallist_w pos a k = w a id where
         GSConstr _ c [ v0, v1 ] | c == gsvar ":" -> w ($gsav v1) (d . (v0:))
         GSConstr _ c as -> $gsbcimplementationfailure $ "gsbcevallist " ++ fmtVarAtom c " next"
         _ -> $gsbcimplementationfailure $ "gsbcevallist " ++ gsvCode v ++ " next"
+
+gsbcevalstacktrace = varE 'gsbcevalstacktrace_w `appE` gshere
+
+gsbcevalstacktrace_w :: Pos -> GSArg -> (StackTrace -> GSExpr) -> GSExpr
+gsbcevalstacktrace_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
+    GSExternal e -> case fromExternal e of
+        Nothing -> $gsbcimplementationfailure $ "gsbcevalstacktrace_w (GSExternal (not a Pos)) next"
+        Just pos -> k pos
+    _ -> $gsbcimplementationfailure $ "gsbcevalstacktrace_w " ++ gsvCode pos1v ++ " next"
 
 gsbcevalpos = varE 'gsbcevalpos_w `appE` gshere
 

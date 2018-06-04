@@ -3,14 +3,13 @@ module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeImpM, gs
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsfield, gsav, gsae, gsvCode)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
-import GSI.BCFunctions (gsbcevalstring)
+import GSI.BCFunctions (gsbcevalstacktrace)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
@@ -44,18 +43,9 @@ gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
 gsimpunit = $gslambda_value $ \ x -> $gsbcimpfor $ do $gsbcimpunit $ $gsav x
 
 gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
-    gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
+    $gsbcevalstacktrace ($gsav stv) $ \ st_hs ->
     $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
     gsbcerror st_hs msg_s
 
-gsundefined = $gslambda_value $ \ stv -> gsbcevalstacktrace_w $gshere ($gsav stv) $ \ st_hs ->
+gsundefined = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ st_hs ->
     gsbcundefined st_hs
-
-gsbcevalstacktrace = varE 'gsbcevalstacktrace_w `appE` gshere
-
-gsbcevalstacktrace_w :: Pos -> GSArg -> (StackTrace -> GSExpr) -> GSExpr
-gsbcevalstacktrace_w pos pos1a k = $gsbcforce pos1a $ \ pos1v -> case pos1v of
-    GSExternal e -> case fromExternal e of
-        Nothing -> $gsbcimplementationfailure $ "gsbcevalstacktrace_w (GSExternal (not a Pos)) next"
-        Just pos -> k pos
-    _ -> $gsbcimplementationfailure $ "gsbcevalstacktrace_w " ++ gsvCode pos1v ++ " next"
