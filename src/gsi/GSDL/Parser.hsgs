@@ -5,7 +5,6 @@ module GSDL.Parser (
     gsdl_parser_env_syntactic_category_get, gsdl_parser_env_syntactic_category_insert,
     gsdl_parser_env_lambda_likes,
     gsdl_parser_env_wheres,
-    gsdl_parser_env_ops,
     gsdl_parser_env_op_insert,
     gsdl_parser_env_qlo_get, gsdl_parser_env_qlo_insert,
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
@@ -43,8 +42,6 @@ gsdl_parser_env_wheres = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
     )
     (parser.env.syntactic-categories env)
 |]
-
-gsdl_parser_env_ops = [gs:value| λ 'env. ordered-map.keys (env #ops) |]
 
 gsdl_parser_env_op_insert = [gs:value| λ 'v. λ 'o. λ 'env. 〈
     'ops ∝ ordered-map.insert gsvar.compare v o (env #ops);
