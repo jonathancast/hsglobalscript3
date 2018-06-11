@@ -57,8 +57,6 @@ gsparser_global_env = [gs:value|
     parser.env.else.insert (gsvar qq{case}) 〈〉 $
     parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
-    parser.env.op.insert (gsvar qq{>>=}) 〈〉 $
-    parser.env.op.insert (gsvar qq{∘}) 〈〉 $
     parser.env.qlo.insert (gsvar qq{qq}) 〈
         'parse ∝ λ 'env. many symbol;
         'annotate ∝ λ 'env. λ 'pos. λ 'qs. map (annotate-qloitem env pos) qs;
