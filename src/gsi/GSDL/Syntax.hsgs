@@ -44,6 +44,8 @@ document = [gs:value| λ 'env. parser.for
     . parser.unit (document.in mbe mbw)
 |]
 
+$gsdeclare operator operator
+
 $gsdeclare expr.function gsexpr_function
 $gsdeclare expr.lambda-like gsexpr_lambda_like
 
@@ -52,7 +54,7 @@ expr = [gs:value| λ 'env.
         <|> parser.unit p0
         <|> parser.for
                 'posop ← get-pos;
-                'op ← parser.choice $ map (λ 'v. keyword-op (gsvar.name v) *> parser.unit v) $ parser.env.ops env;
+                'op ← operator env;
                 's2 ← parser.unit $ analyze parser.env.signature.get op env.
                     case nothing. nil
                 ;
@@ -210,7 +212,22 @@ $gsdeclare ident-cont-char identContChar
 
 keyword = [gs:value| λ 's. lexeme (string s <* not-followed-by ident-cont-char) |]
 
+$gsdeclare op-chars op_chars
+
+operator = [gs:value| λ 'env. lexeme $ parser.for
+        'o ← parser.map gsvar op-chars;
+        _ ← analyze parser.env.syntactic-category.get o env.
+            case syntactic-category.variable. parser.unit 〈〉
+        ;
+    . parser.unit o
+|]
+
+$gsdeclare delimiter delimiter
+
+$gsdeclare op-component op_component
 $gsdeclare op-cont-char opContChar
+
+op_chars = [gs:value| op-component <* not-followed-by delimiter |]
 
 keyword_op = [gs:value| λ 's. lexeme (string s <* not-followed-by op-cont-char) |]
 
@@ -218,7 +235,6 @@ $gsdeclare max-many gsmax_many
 
 $gsdeclare ident-component ident_component
 $gsdeclare cont-component cont_component
-$gsdeclare delimiter delimiter
 $gsdeclare concat gsconcat
 
 ident_chars = [gs:value|
@@ -231,11 +247,16 @@ cont_component = [gs:value| parser.map2 (:) delimiter ident-component |]
 
 ident_component = [gs:value| parser.map2 (:) ident-start-char (max-many ident-cont-char) |]
 
+$gsdeclare op-start-char op_start_char
+
+op_component = [gs:value| parser.map2 (:) op-start-char (max-many op-cont-char) |]
+
 delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.≡ c r{.}) |]
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
+op_start_char = [gs:value| matching log{op start character} (λ 'c. rune.≡ c r{+} || rune.≡ c r{∘}) |]
 opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
 
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
