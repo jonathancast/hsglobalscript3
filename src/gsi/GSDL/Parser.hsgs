@@ -44,7 +44,6 @@ gsdl_parser_env_wheres = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
 |]
 
 gsdl_parser_env_op_insert = [gs:value| λ 'v. λ 'o. λ 'env. 〈
-    'ops ∝ ordered-map.insert gsvar.compare v o (env #ops);
     'signature ∝ env #signature;
     'syntactic-category ∝ env #syntactic-category;
     'qlo ∝ env #qlo;
@@ -53,7 +52,6 @@ gsdl_parser_env_op_insert = [gs:value| λ 'v. λ 'o. λ 'env. 〈
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
-    'ops ∝ env #ops;
     'signature ∝ ordered-map.insert gsvar.compare v s (env #signature);
     'syntactic-category ∝ env #syntactic-category;
     'qlo ∝ env #qlo;
@@ -62,7 +60,6 @@ gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. 〈
-    'ops ∝ env #ops;
     'signature ∝ env #signature;
     'syntactic-category ∝ ordered-map.insert gsvar.compare v c (env #syntactic-category);
     'qlo ∝ env #qlo;
@@ -71,7 +68,6 @@ gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. �
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
-    'ops ∝ env #ops;
     'signature ∝ env #signature;
     'syntactic-category ∝ env #syntactic-category;
     'qlo ∝ ordered-map.insert gsvar.compare v e (env #qlo);
@@ -80,7 +76,6 @@ gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
-    'ops ∝ env #ops;
     'signature ∝ env #signature;
     'syntactic-category ∝ env #syntactic-category;
     'missing-body ∝ ordered-map.insert gsvar.compare v m (env #missing-body);
@@ -89,7 +84,6 @@ gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
-    'ops ∝ env #ops;
     'signature ∝ env #signature;
     'syntactic-category ∝ env #syntactic-category;
     'qlo ∝ env #qlo;
@@ -98,7 +92,6 @@ gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'missing-else ∝ env #missing-else;
 〉 |]
 gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
-    'ops ∝ env #ops;
     'signature ∝ env #signature;
     'syntactic-category ∝ env #syntactic-category;
     'qlo ∝ env #qlo;
@@ -108,7 +101,6 @@ gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
 〉 |]
 
 gsdl_parser_env_empty = [gs:value| 〈
-    'ops ∝ ordered-map.empty;
     'signature ∝ ordered-map.empty;
     'syntactic-category ∝ ordered-map.empty;
     'qlo ∝ ordered-map.empty;
