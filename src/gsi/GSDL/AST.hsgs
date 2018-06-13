@@ -9,7 +9,7 @@ module GSDL.AST (
     gsexpr_natural, gsexpr_var, gsexpr_app, gsexpr_qlo, gsexpr_open_expr, gsexpr_pat, gsexpr_monoidal_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_monoidal_pat_view, gsexpr_missing_case_view,
     gsqloitem_char, gsqloitem_char_view,
     gsimplicit_here, gsimplicit_here_view,
-    gsarg_expr, gsarg_here, gsarg_expr_view, gsarg_here_view,
+    gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_open_expr, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view,
     gscategory_monoidal, gscategory_monoidal_view,
@@ -116,6 +116,7 @@ gsimplicit_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \
 
 gsarg_expr = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav pos, $gsav e ]
 gsarg_here = $gsconstr (gsvar "here") []
+gsarg_explicit = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "explicit") [ $gsav pos, $gsav e ]
 
 gsarg_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "expr" ek sk im
 gsarg_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
