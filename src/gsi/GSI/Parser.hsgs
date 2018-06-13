@@ -197,6 +197,7 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.lookahead 'p01. (analyze p1.
         case prim.fail 'err1 'exp1. prim.lookahead (prim.map (λ 'p02. prim.<|> p02 p1) p01)
         case prim.unit-plus 'x 'p11. prim.unit-plus x (prim.<|> p0 p11)
+        case prim.get-pos 'k1. get-pos (λ 'pos. prim.<|> p0 (k1 pos))
         case prim.lookahead 'p11. prim.lookahead (prim.<|> p01 p11)
         case prim.symbol-or-eof 'ek1 'sk1. prim.lookahead (prim.<|> p01 (prim.unit (p1)))
     )
