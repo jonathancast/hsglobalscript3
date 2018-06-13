@@ -41,6 +41,7 @@ gsvalidate_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
 
 gsvalidate_arg = [gs:value| λ 'pos. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos1 'e. validate-expr pos1 env e
+    case arg.explicit 'pos1 'e. validate-expr pos1 env e
 |]
 
 gsvalidate_qloitem = [gs:value| λ 'pos. λ 'env. λ 'q. analyze q.
