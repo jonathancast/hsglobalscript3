@@ -973,6 +973,7 @@ globalEnv = Env{
     gsviews = Map.fromList [
         (":", (Set.singleton $ HSIVar "GSI.List" "gscons_view", HSVar "gscons_view")),
         ("ENOENT", (Set.singleton $ HSIVar "GSI.Env" "gsENOENT_view", HSVar "gsENOENT_view")),
+        ("arg.explicit", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_explicit_view", HSVar "gsarg_explicit_view")),
         ("arg.expr", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_expr_view", HSVar "gsarg_expr_view")),
         ("arg.here", (Set.singleton $ HSIVar "GSDL.AST" "gsarg_here_view", HSVar "gsarg_here_view")),
         ("category.monoidal", (Set.singleton $ HSIVar "GSDL.AST" "gscategory_monoidal_view", HSVar "gscategory_monoidal_view")),
