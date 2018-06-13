@@ -55,12 +55,22 @@ expr = [gs:value| λ 'env.
         <|> parser.for
                 'posop ← get-pos;
                 'op ← operator env;
-                's2 ← parser.unit $ analyze parser.env.signature.get op env.
-                    case nothing. nil
+                's1 ← analyze parser.env.signature.get op env.
+                    case nothing. parser.unit nil
                 ;
+                'es ← many $ parser.for
+                        _ ← matching log{explicit application character} (rune.≡ r{_});
+                        'pose ← get-pos;
+                        'e ← parser.map expr.var (ident env);
+                    . parser.unit 〈 '0 ∝ pose; '1 ∝ e; 〉
+                ;
+                'opes ← parser.unit $ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
                 'pos1 ← get-pos;
                 'p1 ← expr.function env <|> expr.lambda-like env;
-            . parser.unit 〈 '0 ∝ expr.app (expr.app (expr.var op) (arg.expr pos0 (p0 #0))) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
+                's2 ← analyze s1.
+                    case nil. parser.unit nil
+                ;
+            . parser.unit 〈 '0 ∝ expr.app (expr.app opes (arg.expr pos0 (p0 #0))) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
     )
     <|> expr.lambda-like env
 |]
