@@ -14,6 +14,7 @@ import GSI.RTS (newEvent, wakeup, await)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
+aceEnter cs v@GSInvalidProgram{} sk = gsthrow sk v
 aceEnter cs v@GSError{} sk = gsthrow sk v
 aceEnter cs v@GSImplementationFailure{} sk = gsthrow sk v
 aceEnter cs (GSThunk mv) sk = join $ modifyMVar mv $ \ st -> case st of

@@ -37,6 +37,7 @@ evalSync cs mv = do
         GSStack b -> await b *> evalSync cs mv
         GSIndirection v -> case v of
             GSImplementationFailure{} -> return v
+            GSInvalidProgram{} -> return v
             GSError{} -> return v
             GSThunk th -> evalSync cs th
             GSConstr{} -> return v

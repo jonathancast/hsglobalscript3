@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcnatural, gsbcnatural_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcerror, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcnatural, gsbcnatural_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -19,7 +19,7 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Error (GSError(..))
+import GSI.Error (GSError(..), GSInvalidProgram(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, whichExternal, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
 import GSI.ThreadType (Thread)
@@ -70,6 +70,9 @@ gsbcchar_w pos ch = GSExpr $ \ cs sk -> gsreturn sk $ GSRune ch
 gsbcerror :: StackTrace -> String -> GSExpr
 gsbcerror (StackTrace pos _) msg = GSExpr $ \ _ sk -> gsthrow sk $ GSError (GSErrError pos msg)
 
+gsbcruntimetypeerror = varE 'gsbcruntimetypeerror_w `appE` gshere
+gsbcruntimetypeerror_w :: Pos -> String -> String -> String -> GSExpr
+gsbcruntimetypeerror_w pos ctxt act exp = GSExpr $ \ cs sk -> gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError (StackTrace pos cs) ctxt act exp
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
 gsbcimplementationfailure_w :: Pos -> String -> GSExpr
@@ -266,7 +269,7 @@ gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x
         GSConstr pos1 c' as
             | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
             | otherwise -> gsbcenter_w pos ek
-        _ -> gsbcimplementationfailure_w $gshere $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
+        _ -> gsbcimplementationfailure_w $gshere $ fmtPos pos $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
 
 gsbcviewpattern_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcviewpattern_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [

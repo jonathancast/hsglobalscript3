@@ -14,7 +14,7 @@ import Component.Monad (MonadComponentImpl, MonadComponentWrapper(..))
 
 import GSI.Util (Pos, gsfatal, fmtPos)
 import GSI.RTS (Event)
-import GSI.Error (GSError, fmtError)
+import GSI.Error (GSInvalidProgram, GSError, fmtInvalidProgram, fmtError)
 
 data Thread = Thread {
     state :: MVar ThreadState,
@@ -24,6 +24,7 @@ data Thread = Thread {
 
 data ThreadState
   = ThreadStateRunning
+  | ThreadStateInvalidProgram GSInvalidProgram
   | ThreadStateError GSError
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
@@ -66,15 +67,18 @@ simpleThreadData = ThreadData {
 
 data ThreadException
   = TEImplementationFailure Pos String
+  | TEInvalidProgram GSInvalidProgram
   | TEError GSError
   deriving Show
 
 instance Exception ThreadException where
     displayException (TEImplementationFailure pos err) = fmtPos pos err
+    displayException (TEInvalidProgram err) = fmtInvalidProgram err
     displayException (TEError err) = fmtError err
 
 threadStateCode :: ThreadState -> String
 threadStateCode ThreadStateRunning{} = "ThreadStateRunning"
+threadStateCode ThreadStateInvalidProgram{} = "ThreadStateInvalidProgram"
 threadStateCode ThreadStateError{} = "ThreadStateError"
 threadStateCode ThreadStateImplementationFailure{} = "ThreadStateImplementationFailure"
 threadStateCode ThreadStateUnimpl{} = "ThreadStateUnimpl"

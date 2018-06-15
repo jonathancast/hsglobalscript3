@@ -21,7 +21,7 @@ import Control.Concurrent (MVar, newMVar)
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
-import GSI.Error (GSError(..))
+import GSI.Error (GSError(..), GSInvalidProgram(..))
 import GSI.RTS (Event)
 import GSI.Syn (GSVar, fmtVarAtom)
 import GSI.ThreadType (Thread, ThreadData)
@@ -38,6 +38,7 @@ import GSI.ThreadType (Thread, ThreadData)
 
 data GSValue
   = GSImplementationFailure Pos String
+  | GSInvalidProgram GSInvalidProgram
   | GSError GSError
   | GSThunk GSThunk
   | GSClosure [StackTrace] GSBCO
@@ -197,6 +198,7 @@ instance GSExternal GSValue where
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
+gsvCode GSInvalidProgram{} = "GSInvalidProgram"
 gsvCode GSError{} = "GSError"
 gsvCode GSThunk{} = "GSThunk"
 gsvCode GSClosure{} = "GSClosure"

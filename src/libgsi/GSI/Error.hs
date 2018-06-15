@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Error (GSError(..), GSException(..), throwGSError, fmtError, fmtErrorShort) where
+module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSInvalidProgram, throwGSError, fmtInvalidProgram, fmtError, fmtErrorShort) where
 
 import Data.Typeable (Typeable)
 
@@ -16,10 +16,15 @@ data GSError
   | GSErrError Pos String
   deriving (Show)
 
+data GSInvalidProgram
+  = GSIPRuntimeTypeError StackTrace String String String
+  deriving (Show)
+
 data GSException
   = GSExcUndefined StackTrace
   | GSExcInsufficientCases Pos String
   | GSExcError Pos String
+  | GSExcRuntimeTypeError StackTrace String String String
   | GSExcImplementationFailure Pos String
   deriving (Typeable, Show)
 
@@ -27,12 +32,18 @@ instance Exception GSException where
     displayException (GSExcUndefined st) = fmtStackTrace st "Undefined"
     displayException (GSExcInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
     displayException (GSExcError pos err) = fmtPos pos $ "Error: " ++ err
+    displayException (GSExcRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
+
+throwGSInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = throw $ GSExcRuntimeTypeError st ctxt act exp
 
 throwGSError (GSErrUnimpl st) = throw $ GSExcUndefined st
 throwGSError (GSErrInsufficientCases pos err) = throw $ GSExcInsufficientCases pos err
 throwGSError (GSErrError pos err) = throw $ GSExcError pos err
 throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
+
+fmtInvalidProgram :: GSInvalidProgram -> String
+fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
 
 fmtError :: GSError -> String
 fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"

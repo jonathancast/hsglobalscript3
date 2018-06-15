@@ -13,6 +13,7 @@ import GSI.ThreadType (Thread, ThreadException(..))
 
 apiCall :: Pos -> GSValue -> Thread -> IO GSValue
 apiCall pos0 (GSImplementationFailure pos1 e) t = throwIO $ TEImplementationFailure pos1 e
+apiCall pos (GSInvalidProgram err) t = throwIO $ TEInvalidProgram err
 apiCall pos (GSError err) t = throwIO $ TEError err
 apiCall pos (GSThunk th) t = do
     v <- evalSync [StackTrace pos []] th
