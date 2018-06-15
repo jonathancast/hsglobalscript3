@@ -7,7 +7,7 @@ module GSI.Value (
     gsthunk, gsthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
     fmtExternal,
-    gsvCode, bcoCode, argCode, gstsCode, whichExternal
+    gsvFmt, gsvCode, bcoCode, argCode, gstsCode, whichExternal
   ) where
 
 import Data.Map (Map)
@@ -192,9 +192,12 @@ instance GSExternal GSExpr
 instance GSExternal GSBCO
 
 instance GSExternal GSValue where
-    fmtExternal_w (GSClosure _ bco) = return $ ("GSValue"++) . (' ':) . ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':)
-    fmtExternal_w (GSConstr _ c as) = return $ ("GSvalue"++) . (' ':) . ('(':) . ("GSConstr _ "++) . fmtVarAtom c . (" _ "++) . (')':)
-    fmtExternal_w v = return $ ("GSValue"++) . (' ':) . (gsvCode v++)
+    fmtExternal_w v = return $ ("GSValue"++) . (' ':) . gsvFmt v
+
+gsvFmt :: GSValue -> String -> String
+gsvFmt (GSClosure _ bco) = ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':)
+gsvFmt (GSConstr _ c as) = ('(':) . ("GSConstr _ "++) . fmtVarAtom c . (" _ "++) . (')':)
+gsvFmt v = (gsvCode v++)
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
