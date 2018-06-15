@@ -9,14 +9,14 @@ import Component.Monad (mvarContents)
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
 import GSI.Env (GSEnvArgs(..))
 import GSI.String (gsbcstringlit)
@@ -175,7 +175,8 @@ gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gs
             EQ -> $gsbcconstr (gsvar "eq") []
             GT -> $gsbcconstr (gsvar "gt") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
-    _ -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ gsvCode v0v ++ ' ' : gsvCode v1v ++ " next"
+    (GSExternal _, _) -> $gsbcruntimetypeerror "gsvar.compare _ •" (gsvFmt v1v "") "(GSExternal GSVar)"
+    (_, _) -> $gsbcruntimetypeerror "gsvar.compare • _" (gsvFmt v0v "") "(GSExternal GSVar)"
 
 gsigsvar_eq = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)
