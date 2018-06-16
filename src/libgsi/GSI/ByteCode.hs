@@ -73,6 +73,7 @@ gsbcerror (StackTrace pos _) msg = GSExpr $ \ _ sk -> gsthrow sk $ GSError (GSEr
 gsbcruntimetypeerror = varE 'gsbcruntimetypeerror_w `appE` gshere
 gsbcruntimetypeerror_w :: Pos -> String -> String -> String -> GSExpr
 gsbcruntimetypeerror_w pos ctxt act exp = GSExpr $ \ cs sk -> gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError (StackTrace pos cs) ctxt act exp
+
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
 gsbcimplementationfailure_w :: Pos -> String -> GSExpr
@@ -266,10 +267,10 @@ gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
 
 gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
 gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x0 of
-        GSConstr pos1 c' as
-            | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
-            | otherwise -> gsbcenter_w pos ek
-        _ -> gsbcimplementationfailure_w $gshere $ fmtPos pos $ "gsbcconstr_view_ww " ++ gsvCode x0 ++ " next"
+    GSConstr pos1 c' as
+        | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
+        | otherwise -> gsbcenter_w pos ek
+    _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom c " ek sk •") (gsvCode x0) "GSConstr"
 
 gsbcviewpattern_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcviewpattern_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
