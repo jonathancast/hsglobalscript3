@@ -77,6 +77,7 @@ gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
 
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
     case arg.expr 'pos1 'e. type-checker.map (arg.expr pos1) (type-check-expr pos1 e ty)
+    case arg.explicit 'pos1 'e. type-checker.map (arg.explicit pos1) (type-check-expr pos1 e ty)
 |]
 
 gstype_check_pat = [gs:value| λ 'pos. λ 'p. λ 'typ. λ 'env. analyze p.
