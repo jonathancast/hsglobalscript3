@@ -70,7 +70,7 @@ gssplit_gt = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
 |]
 
 gsordered_map_keys = [gs:value| λ 'm. analyze m.
-    case branch 'k _ 'l 'r. ordered-map.keys l <> k : ordered-map.values r
+    case branch 'k _ 'l 'r. ordered-map.keys l <> k : ordered-map.keys r
     case empty. nil
 |]
 
