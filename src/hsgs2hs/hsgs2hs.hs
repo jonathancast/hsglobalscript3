@@ -809,6 +809,7 @@ globalEnv = Env{
         ("gsvar", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar", HSVar "gsigsvar")),
         ("gsvar.compare", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_compare", HSVar "gsigsvar_compare")),
         ("gsvar.fmt-atom", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_fmtAtom", HSVar "gsigsvar_fmtAtom")),
+        ("gsvar.fmt-bind-atom", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_fmtBindAtom", HSVar "gsigsvar_fmtBindAtom")),
         ("gsvar.name", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_name", HSVar "gsigsvar_name")),
         ("gsvar.≡", (Set.singleton $ HSIVar "GSI.GSI" "gsigsvar_eq", HSVar "gsigsvar_eq")),
         ("ident", (Set.singleton $ HSIVar "GSDL.Syntax" "ident", HSVar "ident")),
