@@ -9,10 +9,10 @@ import Language.Haskell.TH.Lib (appE, varE)
 import qualified Data.Map as Map
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
-import GSI.Syn (gsvar, fmtVarAtom)
+import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSException(..), throwGSError, fmtError)
 import GSI.ThreadType (ThreadException(..))
-import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -173,15 +173,30 @@ gsfmterrorvalue pos (GSThunk th) = do
 gsfmterrorvalue pos v@GSImplementationFailure{} = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos v@GSError{} = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos (GSExternal e) | Just v <- fromExternal e = return $ ("<gsvar "++) . fmtVarAtom v . ('>':)
+gsfmterrorvalue pos v@GSRecord{} = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorvalueAtom pos v
 gsfmterrorvalue pos (GSConstr pos1 c as) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM (gsfmterrorvalueAtom pos) as
 gsfmterrorvalue pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
 
 gsfmterrorvalueAtom :: Pos -> GSValue -> IO (String -> String)
+gsfmterrorvalueAtom pos (GSThunk th) = do
+    v <- evalSync [StackTrace pos []] th
+    gsfmterrorvalueAtom pos v
 gsfmterrorvalueAtom pos0 (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
 gsfmterrorvalueAtom pos0 (GSError err) = return $ ('<':) . (fmtError err ++) . ('>':)
 gsfmterrorvalueAtom pos0 (GSRune ch) | not (ch `elem` "\\/§()[]{}") = return $ ("r/"++) . (ch:) . ("/"++)
 gsfmterrorvalueAtom pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorString pos ("qq{"++) v
+gsfmterrorvalueAtom pos v@(GSConstr pos1 c []) = return $ fmtVarAtom c
+gsfmterrorvalueAtom pos v@GSConstr{} = gsfmterrorvalue pos v >>= \ ds -> return $ ('(':) . ds . (')':)
+gsfmterrorvalueAtom pos (GSRecord pos1 m) = do
+    vdss <- mapM
+        (\ (x, v) -> do
+            vds <- gsfmterrorvalue pos1 v
+            return $ fmtVarBindAtom x . (" ∝ "++) . vds . ("; "++)
+        )
+        (Map.toList m)
+    return $ ('〈':) . (case vdss of [] -> id; _ -> (' ':)) . foldr (.) id vdss . ('〉':)
+gsfmterrorvalueAtom pos (GSExternal e) = fmtExternal e >>= \ ds -> return $ ("<GSExternal "++) . ds . ('>':)
 gsfmterrorvalueAtom pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalueAtom "++) . (gsvCode x++) . (" next"++) . ('>':)
 
 gsfmterrorString :: Pos -> (String -> String) -> GSValue -> IO (String -> String)
