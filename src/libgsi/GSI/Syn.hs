@@ -35,6 +35,8 @@ fmtVarAtom v = ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v+
 
 fmtVarBindAtom :: GSVar -> String -> String
 fmtVarBindAtom (GSVarAlphaNum s) = ('\'':) . (s++)
+fmtVarBindAtom (GSVarSym o) = ('(':) . ('\'':) . (o++) . (')':)
+fmtVarBindAtom (GSVarNum n) = ('\'':) . shows n
 fmtVarBindAtom v = ('\'':) . ('<':) . fmtPos $gshere . ("Unknown var type "++) . (gsvarCode v++) . ('>':)
 
 gsvarCode :: GSVar -> String
