@@ -37,6 +37,7 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
                 -- Check that all variables in env0 are in env1 and have the right type
                 _ ← type-checker.mapM
                     (λ 'v. analyze type.env.type.get v env1.
+                        case nothing. type-checker.incorrect-type pos ty0 ty1
                         case just 'ty11. (analyze type.env.type.get v env0.
                             case just 'ty01. type-checker.unify pos ty01 ty11
                         )
