@@ -196,7 +196,7 @@ gsfmterrorvalueAtom pos (GSRecord pos1 m) = do
         )
         (Map.toList m)
     return $ ('〈':) . (case vdss of [] -> id; _ -> (' ':)) . foldr (.) id vdss . ('〉':)
-gsfmterrorvalueAtom pos (GSExternal e) = fmtExternal e >>= \ ds -> return $ ("<GSExternal "++) . ds . ('>':)
+gsfmterrorvalueAtom pos (GSExternal e) = fmtExternal e >>= \ ds -> return $ ('<':) . ds . ('>':)
 gsfmterrorvalueAtom pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalueAtom "++) . (gsvCode x++) . (" next"++) . ('>':)
 
 gsfmterrorString :: Pos -> (String -> String) -> GSValue -> IO (String -> String)
