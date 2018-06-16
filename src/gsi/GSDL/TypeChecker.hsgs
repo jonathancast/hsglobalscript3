@@ -103,6 +103,7 @@ gstype_checker_instantiate = [gs:value| λ 'ty. analyze ty.
         case nothing. type-checker.unit ty
     )
     case type.const _. type-checker.unit ty
+    case type.signature _. type-checker.unit ty
     case type.function _ _. type-checker.unit ty
     case type.app _ _. type-checker.unit ty
     case type.forall 'v 'ki 'ty1. type-checker.for
