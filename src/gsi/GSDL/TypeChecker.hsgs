@@ -193,11 +193,10 @@ gstype_checker_fmt_type = [gs:value| λ 'ty. analyze ty.
         . type-checker.unit qq{§(s0) → §(s1)}
     case type.signature 'env. type-checker.for
             's0 ← type-checker.mapM
-                (λ 'v. analyze type.env.type.get v env.
-                    case just 'ty1. type-checker.for 'ty1s ← type-checker.fmt-type ty1;.
-                        type-checker.unit qq{§(gsvar.fmt-bind-atom v) :: §(ty1s); }
+                (λ 'p. type-checker.for 'ty1s ← type-checker.fmt-type (p #1);.
+                    type-checker.unit qq{§(gsvar.fmt-bind-atom (p #0)) :: §(ty1s); }
                 )
-                (type.env.vars env)
+                (type.env.var-types env)
             ;
             's1 ← type-checker.mapM (λ 'v. undefined) (type.env.views env);
             'sp ← type-checker.unit (analyze s0 <> s1.
