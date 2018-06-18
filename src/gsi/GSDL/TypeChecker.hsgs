@@ -122,6 +122,12 @@ gstype_checker_subst = [gs:value| λ 'v. λ 'ty0. λ 'ty1. analyze ty1.
     case type.unifiable-var 'v1. (analyze-type-checker-M type-checker.get-var v1.
         case nothing. type-checker.unit ty1
     )
+    case type.signature 'env. type-checker.for
+            'vtys11 ← type-checker.mapM
+                (λ 'p. type-checker.for 'ty11 ← type-checker.subst v ty0 (p #1);. type-checker.unit 〈 '0 ∝ p #0; '1 ∝ ty11; 〉)
+                (type.env.var-types env)
+            ;
+        . type-checker.unit $ type.signature $ foldr (λ 'p. type.env.type.insert (p #0) (p #1)) type.env.empty vtys11
     case type.function 'ty10 'ty11. type-checker.for
         'ty101 ← type-checker.subst v ty0 ty10;
         'ty111 ← type-checker.subst v ty0 ty11;
