@@ -265,10 +265,10 @@ special env = do
             Map.toList (specials env)
 
 field :: Parser Char String
-field = lexeme $ name
-
-name :: Parser Char String
-name = nameOf alphaNumComp <|> nameOf numComp
+field = empty
+    <|> lexeme (nameOf alphaNumComp)
+    <|> lexeme (nameOf numComp)
+    <|> parens (lexeme $ nameOf operatorComp)
 
 boundName :: Parser Char String
 boundName = lexeme (char '\'') *> lexeme (nameOf alphaNumComp <|> nameOf numComp)
