@@ -92,6 +92,12 @@ gsprimprint h pos t (GSConstr pos1 c []) | c == gsvar "nil" =
 gsprimprint h pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
     hPutChar h ch
     gsprimprint h pos t s
+gsprimprint h pos t (GSConstr pos1 c [ GSThunk th, s ]) | c == gsvar ":" = do
+    v <- evalSync [StackTrace $gshere [StackTrace pos []]] th
+    gsprimprint h pos t (GSConstr pos1 c [ v, s ])
+gsprimprint h pos t (GSConstr pos1 c [ GSImplementationFailure pos2 msg, s ]) | c == gsvar ":" = do
+    hPutStrLn h $ fmtPos pos2 $ msg
+    gsprimprint h pos t s
 gsprimprint h pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
     hPutStrLn h $ fmtPos $gshere $ "gsprimprint (" ++ gsvCode ch ++ " : _) next"
     gsprimprint h pos t s
