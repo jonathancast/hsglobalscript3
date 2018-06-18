@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gsloggsv, gslog_fmt) where
+module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gslog_str, gslog_dstr, gsloggsv, gslog_fmt) where
 
 import Language.Haskell.TH.Lib (varE, appE)
 
@@ -17,6 +17,10 @@ gsbclog_w :: Pos -> [GSArg] -> GSExpr
 gsbclog_w pos as = foldr (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ]) ($gsbcenter gslogempty) as
 
 gslogempty = [gs:value| λ 'k. k |]
+
+gslog_dstr = [gs:value| λ 'ds. log.str (ds nil) |]
+
+gslog_str = [gs:value| λ 's. foldr log.<> log.nil $ map log.char s |]
 
 $gsdeclare paragraph-constituent.char gsparagraph_constituent_char
 
