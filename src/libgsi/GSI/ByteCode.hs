@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcnatural, gsbcnatural_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcapply, gsbcapply_w, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -37,6 +37,11 @@ gsbcwithhere = varE 'gsbcwithhere_w `appE` gshere
 
 gsbcwithhere_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
 gsbcwithhere_w pos k = GSExpr $ \ cs sk -> runGSExpr (k $ gsexternal $ StackTrace pos cs) cs sk
+
+gsbcrune = varE 'gsbcrune_w `appE` gshere
+
+gsbcrune_w :: Pos -> Char -> GSExpr
+gsbcrune_w pos r = GSExpr $ \ cs sk -> gsreturn sk $ GSRune r
 
 gsbcnatural = varE 'gsbcnatural_w `appE` gshere
 
