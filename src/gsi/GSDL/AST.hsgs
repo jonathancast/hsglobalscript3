@@ -1,6 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.AST (
-    gstype_env_type_get, gstype_env_type_insert, gstype_env_types, gstype_env_vars, gstype_env_view_type_get, gstype_env_view_type_insert, gstype_env_views, gstype_env_implicits_get, gstype_env_implicits_insert, gstype_env_overlay, gstype_env_empty,
+    gstype_env_type_get, gstype_env_type_insert, gstype_env_vars,
+    gstype_env_view_type_get, gstype_env_view_type_insert, gstype_env_views,
+    gstype_env_types,
+    gstype_env_implicits_get, gstype_env_implicits_insert,
+    gstype_env_overlay, gstype_env_empty,
     gsfile_document, gsfile_document_view,
     gsdocument_in, gsdocument_in_view,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
