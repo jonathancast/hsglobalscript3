@@ -246,6 +246,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
     compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
+    compiler.env.value.insert (gsvar qq{natural.addition}) (gsinject natural.addition) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
     compiler.env.value.insert (gsvar qq{type-checker.unify}) (gsinject type-checker.unify) $
     compiler.env.value.insert (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
