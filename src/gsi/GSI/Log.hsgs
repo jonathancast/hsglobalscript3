@@ -9,30 +9,26 @@ import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda_value, gsundefined_value,
 import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbclfield)
 import GSI.StdLib (gscompose)
 import GSI.List (gscons)
+$gsimports
 
 gsbclog = varE 'gsbclog_w `appE` gshere
 
 gsbclog_w :: Pos -> [GSArg] -> GSExpr
 gsbclog_w pos as = foldr (\ a k -> gsbcapply_w pos gscompose [ a, $gsae k ]) ($gsbcenter gslogempty) as
 
-gslogempty :: GSValue
-gslogempty = $gslambda_value $ \ k -> $gsbcenter k
+gslogempty = [gs:value| λ 'k. k |]
 
-gslogchar :: GSValue
-gslogchar = $gslambda_value $ \ ch -> $gsbcarg $ \ k -> $gsbcrecord [
-    (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
-        $gsae $ $gsbcconstr (gsvar "char") [ $gsav ch ],
-        $gsae $ $gsbclfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
-    ])
-  ]
+$gsdeclare paragraph-constituent.char gsparagraph_constituent_char
 
-gsloggsv :: GSValue
-gsloggsv = $gslambda_value $ \ x -> $gsbcarg $ \k -> $gsbcrecord [
-    (gsvar "paragraph-constituents", $gsae $ $gsbcapply gscons [
-        $gsae $ $gsbcconstr (gsvar "gsv") [ $gsav x ],
-        $gsae $ $gsbclfield (gsvar "paragraph-constituents") k $ \ r -> $gsbcenter r
-    ])
-  ]
+gslogchar = [gs:value| λ 'ch. λ 'k.
+    〈 'paragraph-constituents ∝ paragraph-constituent.char ch : k #paragraph-constituents; 〉
+|]
+
+$gsdeclare paragraph-constituent.gsv gsparagraph_constituent_gsv
+
+gsloggsv = [gs:value| λ 'x. λ 'k.
+    〈 'paragraph-constituents ∝ paragraph-constituent.gsv x : k #paragraph-constituents; 〉
+|]
 
 gsbclogstring = varE 'gsbclogstring_w `appE` gshere
 
@@ -40,3 +36,6 @@ gsbclogstring_w :: Pos -> String -> GSExpr
 gsbclogstring_w pos s = foldr (\ ch k -> gsbcapply_w pos gscompose [ $gsae $ gsbcapply_w pos gslogchar [$gsav $ GSRune ch], $gsae k ]) ($gsbcenter gslogempty) s
 
 gslog_fmt = $gsundefined_value
+
+gsparagraph_constituent_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
+gsparagraph_constituent_gsv = $gslambda_value $ \ x -> $gsbcconstr (gsvar "gsv") [ $gsav x ]
