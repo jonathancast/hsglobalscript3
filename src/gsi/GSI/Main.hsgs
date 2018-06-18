@@ -117,6 +117,8 @@ $gsdeclare type.generator gstype_generator
 $gsdeclare type.generator.monoidal gstype_generator_monoidal
 $gsdeclare type.open-expr gstype_open_expr
 
+$gsdeclare type.addition gstype_addition
+
 $gsdeclare type-checker.gstyc.type gstype_checker_gstyc_type
 $gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
 $gsdeclare type-checker.args.type gstype_checker_args_type
@@ -171,6 +173,11 @@ gstype_checker_global_env = [gs:value|
                 type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) (type.app (type.consts qq{list.t}) (type.consts qq{β}))
     ) $
     type.env.type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
+    type.env.type.insert (gsvar qq{+}) (type.forall (gsvar qq{α}) kind.pointed $
+        type.function (type.addition (type.consts qq{α})) $
+            type.function (type.consts qq{α}) $ type.function (type.consts qq{α}) $ type.consts qq{α}
+    ) $
+    type.env.type.insert (gsvar qq{natural.addition}) (type.addition (type.consts qq{natural.t})) $
     type.env.view-type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
     type.env.view-type.insert (gsvar qq{false}) (type.consts qq{bool.t}) $
     type.env.type.insert (gsvar qq{just}) (
@@ -222,6 +229,12 @@ gstype_pattern_monoidal = [gs:value| λ 'α. λ 'σ. type.function α $ type.gen
 gstype_generator = [gs:value| λ 'σ. σ |]
 gstype_generator_monoidal = [gs:value| λ 'σ. type.app (type.consts qq{generator.monoidal.t}) σ |]
 gstype_open_expr = [gs:value| λ 'σ. λ 'α. type.function σ α |]
+
+gstype_addition = [gs:value| λ 'α. type.signature (
+    type.env.type.insert (gsvar qq{0}) α (
+    type.env.type.insert (gsvar qq{+}) (type.function α $ type.function α $ α) 
+    type.env.empty))
+|]
 
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 
