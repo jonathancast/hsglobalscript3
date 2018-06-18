@@ -903,6 +903,7 @@ globalEnv = Env{
         ("repeat", (Set.singleton $ HSIVar "GSI.List" "gsrepeat", HSVar "gsrepeat")),
         ("right", (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright")),
         ("rune.code-point", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_code_point", HSVar "gsrune_code_point")),
+        ("rune.from-code-point", (Set.singleton $ HSIVar "GSI.Rune" "gsrune_from_code_point", HSVar "gsrune_from_code_point")),
         ("rune.≠", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsrune_neq")),
         ("rune.≡", (Set.singleton $ HSIVar "GSI.Rune" "gsruneEq", HSVar "gsruneEq")),
         ("st.get-var", (Set.singleton $ HSIVar "GSI.ST" "gsstgetvar", HSVar "gsstgetvar")),
