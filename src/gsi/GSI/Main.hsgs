@@ -239,6 +239,7 @@ gstype_addition = [gs:value| λ 'α. type.signature (
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 
 gscompiler_global_env = [gs:value|
+    compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
