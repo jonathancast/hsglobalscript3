@@ -1,0 +1,5 @@
+module GSI.Addition (gsaddition_plus) where
+
+$gsimports
+
+gsaddition_plus = [gs:value| λ 'a. a #(+) |]
