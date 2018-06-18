@@ -2,8 +2,17 @@ module GSI.Format (gsnatural_fmt_decimal, gsnatural_read_decimal) where
 
 $gsimports
 
+$gsdeclare fmt-decimal-w gsnatural_fmt_decimal_w
+
 gsnatural_fmt_decimal = [gs:value| λ 'n. analyze natural.≡ n 0.
     case true. qq{0}
+    case false. fmt-decimal-w n nil
+|]
+
+gsnatural_fmt_decimal_w = [gs:value| λ 'n. λ 's. for 'p ∝ natural.div-mod n 10;.
+    for 's1 ∝ rune.from-code-point (rune.code-point r{0} + p #1) : s;.
+        analyze natural.≡ (p #0) 0.
+            case true. s1
 |]
 
 gsnatural_read_decimal = [gs:value| λ 's. foldl (λ 'a. λ 'c. (10 * a) + (rune.code-point c - rune.code-point r{0})) 0 s |]
