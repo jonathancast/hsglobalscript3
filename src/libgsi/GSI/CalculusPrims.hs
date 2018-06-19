@@ -26,6 +26,7 @@ gsparand pos x (GSThunk ys) = do
     gsparand pos x yv
 gsparand pos x@GSImplementationFailure{} _ = return x
 gsparand pos _ y@GSImplementationFailure{} = return y
+gsparand pos _ y@GSInvalidProgram{} = return y
 gsparand pos _ y@GSError{} = return y
 gsparand pos (GSConstr _ cx [ex]) (GSConstr _ cy [ey]) | cx == gsvar "1" && cy == gsvar "1" = do
     ez <- gsmergeenv pos ex ey
