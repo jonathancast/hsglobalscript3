@@ -167,11 +167,15 @@ gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
             case just 'ty1. type-checker.is-free-in v ty1
         )
     )
+    case type.forall 'v1 'ki 'ty1. (analyze v.
+        case type-var.unifiable-var 'v0. type-checker.is-free-in v ty1
+    )
     case type.app 'ty0 'ty1. (analyze-type-checker-M type-checker.is-free-in v ty0.
         case false. type-checker.is-free-in v ty1
     )
     case type.const 'c. (analyze v.
         case type-var.unifiable-var _. type-checker.unit false
+        case type-var.const 'c1. type-checker.unit (gsvar.≡ c c1)
     )
     case type.signature 'env. type-checker.foldM
        (λ 'ty1. λ 'b. analyze-type-checker-M type-checker.is-free-in v ty1.
