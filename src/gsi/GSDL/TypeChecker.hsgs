@@ -31,6 +31,11 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
         )
         case just 'ty01. type-checker.unify pos ty01 ty1
     )
+    case type.forall 'v0 'ki0 'ty00. (analyze ty1.
+        case type.forall 'v1 'ki1 'ty10.
+            type-checker.for 'ty101 ← type-checker.subst v1 (type.const v0) ty10;.
+                type-checker.unify pos ty00 ty101
+    )
     case type.signature 'env0. (analyze ty1.
         case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
         case type.signature 'env1. type-checker.for
