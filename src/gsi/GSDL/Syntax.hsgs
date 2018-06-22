@@ -266,8 +266,8 @@ delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.�
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
 
-op_start_char = [gs:value| matching log{op start character} (λ 'c. rune.≡ c r{+} || rune.≡ c r{∘}) |]
-opContChar = [gs:value| matching log{op cont character} (rune.≡ r{-}) |]
+op_start_char = [gs:value| matching log{op start character} (λ 'c. list.∈ rune.≡ c qq{+∘>}) |]
+opContChar = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.≡ c qq{->=}) |]
 
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
 
