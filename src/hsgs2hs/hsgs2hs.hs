@@ -841,6 +841,7 @@ globalEnv = Env{
         ("map3", (Set.singleton $ HSIVar "GSI.List" "gsmap3", HSVar "gsmap3")),
         ("matching", (Set.singleton $ HSIVar "GSI.Parser" "gsparser_matching", HSVar "gsparser_matching")),
         ("maybe", (Set.singleton $ HSIVar "GSI.Maybe" "gsmaybe", HSVar "gsmaybe")),
+        ("monad.>>=", (Set.singleton $ HSIVar "GSI.Monad" "gsmonad_bind", HSVar "gsmonad_bind")),
         ("natural.addition", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_addition", HSVar "gsnatural_addition")),
         ("natural.div-mod", (Set.singleton $ HSIVar "GSI.Natural" "gsnatural_div_mod", HSVar "gsnatural_div_mod")),
         ("natural.fmt-decimal", (Set.singleton $ HSIVar "GSI.Format" "gsnatural_fmt_decimal", HSVar "gsnatural_fmt_decimal")),
