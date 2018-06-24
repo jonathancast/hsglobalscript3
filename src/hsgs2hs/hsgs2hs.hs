@@ -800,6 +800,7 @@ globalEnv = Env{
         ("gsbcwithhere", (Set.singleton $ HSIVar "GSI.GSI" "gsigsbcwithhere", HSVar "gsigsbcwithhere")),
         ("gseval-sync", (Set.singleton $ HSIVar "GSI.GSI" "gsigsevalSync", HSVar "gsigsevalSync")),
         ("gsfmt-error", (Set.singleton $ HSIVar "GSI.GSI" "gsigsfmtError", HSVar "gsigsfmtError")),
+        ("gsi.monad", (Set.singleton $ HSIVar "GSI.GSI" "gsi_monad", HSVar "gsi_monad")),
         ("gsiThreadData", (Set.singleton $ HSIVar "GSI.GSI" "gsigsiThreadData", HSVar "gsigsiThreadData")),
         ("gsinject", (Set.singleton $ HSIVar "GSI.GSI" "gsigsinject", HSVar "gsigsinject")),
         ("gsmain", (Set.singleton $ HSIVar "GSI.Main" "gsmain", HSVar "gsmain")),

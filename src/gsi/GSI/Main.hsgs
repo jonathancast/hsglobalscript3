@@ -119,6 +119,8 @@ $gsdeclare type.open-expr gstype_open_expr
 
 $gsdeclare type.addition gstype_addition
 
+$gsdeclare type.monad gstype_monad
+
 $gsdeclare type-checker.gstyc.type gstype_checker_gstyc_type
 $gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
 $gsdeclare type-checker.args.type gstype_checker_args_type
@@ -205,6 +207,7 @@ gstype_checker_global_env = [gs:value|
     type.env.view-type.insert (gsvar qq{gsvalue.thunk}) (
         type.function (type.consts qq{gsvalue.thunk.t}) $ type.consts qq{gsvalue.t}
     ) $
+    type.env.type.insert (gsvar qq{gsi.monad}) (type.monad (type.consts qq{gsi.m})) $
     type.env.empty
 |]
 
@@ -236,12 +239,26 @@ gstype_addition = [gs:value| λ 'α. type.signature (
     type.env.empty))
 |]
 
+gstype_monad = [gs:value| λ 'm. type.signature $
+    type.env.type.insert (gsvar qq{unit}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.function (type.consts qq{α}) $ type.app m (type.consts qq{α})
+    ) $
+    type.env.type.insert (gsvar qq{>>=}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.app m (type.consts qq{α})) $
+                type.function (type.function (type.consts qq{α}) (type.app m (type.consts qq{β}))) $
+                    type.app m (type.consts qq{β})
+    ) $
+    type.env.empty
+|]
+
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 
 gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
+    compiler.env.value.insert (gsvar qq{gsi.monad}) (gsinject gsi.monad) $
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
     compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
