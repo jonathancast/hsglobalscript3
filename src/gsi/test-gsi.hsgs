@@ -28,17 +28,29 @@ main = do
 gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.unit 〈〉 |]
 
 $gsdeclare gsrun gsrun
+$gsdeclare gsprintstr gsprintstr
 
 gsrun = [gs:value| λ 'x. λ 'as. analyze x.
     case gsvalue.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
     case gsvalue.natural 'n. print qq{§(natural.fmt-decimal n)\n}
+    case gsvalue.function 'f. print qq{<function>\n}
     case gsvalue.constr 'pos 'v ('r : ('s : nil)). (analyze gsvar.≡ v (gsvar qq{:}).
+        case true. impfor _ ← print qq{qq\{}; _ ← gsprintstr x;. print qq{\}}
+    )
+    case gsvalue.thunk 'th. impfor 'x1 ← gseval-sync th;. gsrun x1 as
+|]
+
+gsprintstr = [gs:value| λ 's. analyze s.
+    case gsvalue.constr 'pos 'v ('r : ('s1 : nil)). (analyze gsvar.≡ v (gsvar qq{:}).
         case true. (analyze r.
-            case gsvalue.thunk 'th. impfor 'r1 ← gseval-sync th;. gsrun (gsvalue.constr pos v (r1 : s : nil)) as
+            case gsvalue.thunk 'th. impfor 'r1 ← gseval-sync th;. gsprintstr (gsvalue.constr pos v (r1 : s1 : nil))
+            case gsvalue.rune 'r0. impfor _ ← print (r0 : nil);. gsprintstr s1
         )
     )
-    case gsvalue.function 'f. print qq{<function>\n}
-    case gsvalue.thunk 'th. impfor 'x1 ← gseval-sync th;. gsrun x1 as
+    case gsvalue.constr 'pos 'v nil. (analyze gsvar.≡ v (gsvar qq{nil}).
+        case true. impunit 〈〉
+    )
+    case gsvalue.thunk 'th. impfor 's1 ← gseval-sync th;. gsprintstr s1
 |]
 
 data TestGSIThread = TestGSIThread{
