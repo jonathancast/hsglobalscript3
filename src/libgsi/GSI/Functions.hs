@@ -63,6 +63,9 @@ gsevalList pos v = gsevalList_w pos id v where
         v <- evalSync [StackTrace pos []] ts
         gsevalList_w pos ds v
     gsevalList_w pos ds (GSError err) = throwGSError err
+    gsevalList_w pos ds (GSConstr pos1 c [x, xn]) | c == gsvar ":" = gsevalList_w pos (ds . (x:)) xn
+    gsevalList_w pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return (ds [])
+    gsevalList_w pos ds (GSConstr pos1 c as) = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ fmtVarAtom c " next"
     gsevalList_w pos ds v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ gsvCode v ++ " next"
 
 gsapiEvalPos :: Pos -> GSValue -> IO Pos
