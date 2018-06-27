@@ -24,7 +24,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
 import GSI.Error (GSError(..), GSInvalidProgram(..))
 import GSI.RTS (Event)
 import GSI.Syn (GSVar, fmtVarAtom)
-import GSI.ThreadType (Thread, ThreadData)
+import GSI.ThreadType (Thread)
 
 -- BIG IMPORTANT NOTE:
 -- §begin§note
@@ -184,7 +184,6 @@ instance GSExternal GSVar
 instance GSExternal Pos
 instance GSExternal StackTrace
 instance GSExternal Thread
-instance GSExternal ThreadData
 
 -- ↓ Instances that are here because they go here
 instance GSExternal GSArg

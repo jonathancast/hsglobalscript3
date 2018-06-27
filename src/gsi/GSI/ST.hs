@@ -10,7 +10,7 @@ import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcevalexternal, gsbcapply, gsbcconstr, gsbcprim)
 import GSI.Eval (evalSync)
-import GSI.ThreadType (Thread, ThreadData(..), ThreadState(..), threadStateCode)
+import GSI.ThreadType (Thread, ThreadState(..), threadStateCode)
 import GSI.Thread (createThread, waitThread, createPromise, readPromise)
 import API (apiImplementationFailure)
 

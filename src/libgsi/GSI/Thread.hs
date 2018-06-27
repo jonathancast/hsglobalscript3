@@ -13,7 +13,7 @@ import GSI.RTS (newEvent, wakeup, await)
 import GSI.Error (GSError, GSException(..), throwGSInvalidProgram, throwGSError)
 import GSI.Value (GSValue(..))
 import GSI.Eval (GSResult(..), stCode)
-import GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadException(..), threadStateCode)
+import GSI.ThreadType (Thread(..), ThreadState(..), ThreadException(..), threadStateCode)
 import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
