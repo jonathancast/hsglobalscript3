@@ -4,23 +4,20 @@ module GSI.GSI (
     gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
     gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcnonmonoidalpattern, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
     gsigsvar,
-    gsigsevalSync, gsicreateThread, gsiexecMainThread, GSIThread(..), gsigsfmtError, gsiThreadData, gsigsiThreadData,
+    gsigsevalSync, gsicreateThread, gsiexecMainThread, gsigsfmtError,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gsvalue_constr, gsvalue_error_view, gsvalue_natural_view, gsvalue_rune_view, gsvalue_constr_view, gsvalue_function_view, gsvalue_thunk_view
   ) where
 
-import Control.Concurrent.MVar (MVar, newMVar)
 import Control.Exception (SomeException, try, throwIO, fromException)
 
 import qualified Data.Map as Map
-
-import Component.Monad (mvarContents)
 
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
 import GSI.Value (GSValue(..), GSExpr, GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsapply_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
-import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
+import GSI.ThreadType (Thread, ThreadData(..), ThreadException(..))
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
@@ -28,7 +25,6 @@ import GSI.Functions (gslist, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
-import GSI.Env (GSEnvArgs(..))
 import GSI.String (gsbcstringlit)
 
 gsi_monad = GSRecord $gshere $ Map.fromList [
@@ -152,32 +148,6 @@ gsiprimexecMainThread pos tself tprogv = do
             _ -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e' ++ " next"
         Left e -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e ++ " next"
         Right () -> $apiImplementationFailure $ "gsiexecMainThread next"
-
-gsigsiThreadData :: GSValue
-gsigsiThreadData = $gsimpprim gsiprimgsiThreadData
-
-gsiprimgsiThreadData :: Pos -> Thread -> GSValue -> IO GSValue
-gsiprimgsiThreadData pos t args = do
-    as <- newMVar $ GSEnvArgs $ args
-    gsiprimthreadData pos t (gsiThreadData GSIThread{ envArgs = as })
-
-gsiprimthreadData :: Pos -> Thread -> ThreadData -> IO GSValue
-gsiprimthreadData pos t td = do
-    return $ GSExternal $ toExternal td
-
-data GSIThread = GSIThread{
-    envArgs :: MVar GSEnvArgs
-  }
-
-gsiThreadData :: GSIThread -> ThreadData
-gsiThreadData d = ThreadData{
-    component = fetchThreadDataComponent gsiThreadComponents d,
-    threadTypeName = fmtPos $gshere "GSIThread"
-  }
-
-gsiThreadComponents =
-    insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
-    emptyThreadDataComponents
 
 gsigsfmtError = $gslambda_value $ \ e -> $gsbcforce ($gsav e) $ \ ev -> case ev of
     GSExternal ee
