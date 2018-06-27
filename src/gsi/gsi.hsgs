@@ -31,5 +31,5 @@ gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.for
 gsrun = [gs:value| λ 'prog. λ 'args. impfor
         'p ← gsapply prog (gsinject args : nil);
         't ← create-thread p;
-    . execMainThread t
+    . exec-main-thread t
 |]
