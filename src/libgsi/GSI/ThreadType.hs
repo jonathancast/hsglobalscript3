@@ -10,7 +10,7 @@ import Data.Typeable (Typeable, TypeRep)
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
 
-import Component.Monad (MonadComponentImpl, MonadComponentWrapper(..))
+import Component.Monad (MonadComponentImpl)
 
 import GSI.Util (Pos, gsfatal, fmtPos)
 import GSI.RTS (Event)
@@ -28,8 +28,6 @@ data ThreadState
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
   | ThreadStateSuccess
-
-data ThreadDataComponentWrapper = forall a. ThreadDataComponent a => ThreadDataComponentWrapper (MonadComponentWrapper IO a)
 
 class Typeable a => ThreadDataComponent a where
 
