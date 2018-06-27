@@ -28,7 +28,8 @@ gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.for
     )
 |]
 
-gsrun = $gslambda_value $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
-    p <- [gs:bind hsvs=prog,args,| gsapply prog (gsinject args : nil) |]
-    t <- [gs:bind hsvs=p,| createThread p |]
-    [gs:body hsvs=t,| execMainThread t |]
+gsrun = [gs:value| λ 'prog. λ 'args. impfor
+        'p ← gsapply prog (gsinject args : nil);
+        't ← createThread p;
+    . execMainThread t
+|]
