@@ -19,9 +19,10 @@ import GSI.Main (gsmain)
 $gsimports
 
 main = do
-    as <- newMVar . GSEnvArgs . $gslist . map $gsstring =<< getArgs
-    prog <- $gsapply gsmain [gstyc, gsrun]
-    t <- createThread $gshere (testGSIThreadData TestGSIThread{ envArgs = as }) prog Nothing
+    as <- $gslist . map $gsstring <$> getArgs
+    asmv <- newMVar $ GSEnvArgs $ as
+    prog <- $gsapply gsmain [gstyc, gsrun, as]
+    t <- createThread $gshere (testGSIThreadData TestGSIThread{ envArgs = asmv }) prog Nothing
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 

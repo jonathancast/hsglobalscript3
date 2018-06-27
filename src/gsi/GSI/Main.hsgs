@@ -6,7 +6,7 @@ $gsimports
 $gsdeclare gsprocessargs gsprocessargs
 
 -- Main function (call this to start your interpreter)
-gsmain = [gs:value| λ 'gstyc. λ 'gsrun. impfor 'args ← env.get-args;. gsprocessargs args gstyc gsrun |]
+gsmain = [gs:value| λ 'gstyc. λ 'gsrun. λ 'args. gsprocessargs args gstyc gsrun |]
 
 $gsdeclare parser.global-env gsparser_global_env
 $gsdeclare process-document gsprocess_document
@@ -151,7 +151,8 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{gsmain}) (
         type.function type-checker.gstyc.type $
             type.function type-checker.gsrun.type $
-                type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
+                type.function (type.app (type.consts qq{list.t}) $ type.app (type.consts qq{list.t}) $ type.consts qq{rune.t}) $
+                    type.app (type.consts qq{gsi.m}) type.empty-signature
     ) $
     type.env.type.insert (gsvar qq{type.app}) (
         type.function (type.consts qq{type.t}) $ type.function (type.consts qq{type.t}) $ type.consts qq{type.t}

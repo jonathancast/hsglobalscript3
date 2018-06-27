@@ -40,7 +40,7 @@ fn test_gsi_impl { ./gsi $* }
 test_non_existent_file
 test_empty_file
 ok_grep_errors '-- #! lines --' 'empty-shebang-line.gs:2:1: Undefined' ./gsi empty-shebang-line.gs
-ok_grep_errors '-- gsmain with no arguments --' 'bare-gsmain.gsi.gs:1:1: Incorrect type: .* → .* is not gsi.m' ./gsi bare-gsmain.gsi.gs
+ok_grep_errors '-- gsmain with no arguments --' 'bare-gsmain.gsi.gs:1:1: Incorrect type' ./gsi bare-gsmain.gsi.gs
 
 echo '## test-gsi'
 
