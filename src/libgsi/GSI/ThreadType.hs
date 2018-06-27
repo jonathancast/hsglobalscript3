@@ -10,8 +10,6 @@ import Data.Typeable (Typeable, TypeRep)
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
 
-import Component.Monad (MonadComponentImpl)
-
 import GSI.Util (Pos, gsfatal, fmtPos)
 import GSI.RTS (Event)
 import GSI.Error (GSInvalidProgram, GSError, fmtInvalidProgram, fmtError)
