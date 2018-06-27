@@ -131,11 +131,10 @@ gsigsevalSync = $gsimpprim $ \ pos t vv -> do
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
 
-gsiprimcreateThread :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
-gsiprimcreateThread pos t tdv vv = do
-    td <- gsapiEvalExternal pos tdv
+gsiprimcreateThread :: Pos -> Thread -> GSValue -> IO GSValue
+gsiprimcreateThread pos t vv = do
     v <- gsapiEvalExternal pos vv
-    t <- createThread pos td v Nothing
+    t <- createThread pos v Nothing
     return $ GSExternal $ toExternal t
 
 gsiexecMainThread :: GSValue

@@ -1,6 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import Control.Concurrent.MVar (newMVar)
 import Control.Exception (SomeException, catch, displayException)
 
 import System.Environment (getArgs)
@@ -12,16 +11,13 @@ import GSI.Value (gslambda_value, gsapply, gsundefined_value, gsav, gsae)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcimpfor, gsbcimpbind, gsbcimpbody)
-import GSI.Env (GSEnvArgs(..))
-import GSI.GSI (GSIThread(..), gsiThreadData)
 import GSI.Main (gsmain)
 $gsimports
 
 main = do
     as <- $gslist . map $gsstring <$> getArgs
-    asmv <- newMVar $ GSEnvArgs $ as
     prog <- $gsapply gsmain [gstyc, gsrun, as]
-    t <- createThread $gshere (gsiThreadData GSIThread{ envArgs = asmv }) prog Nothing
+    t <- createThread $gshere prog Nothing
     execMainThread t
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
@@ -33,7 +29,6 @@ gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.for
 |]
 
 gsrun = $gslambda_value $ \ prog -> $gsbcarg $ \ args -> $gsbcimpfor $ do
-    td <- [gs:bind hsvs=args,| gsiThreadData args |]
     p <- [gs:bind hsvs=prog,args,| gsapply prog (gsinject args : nil) |]
-    t <- [gs:bind hsvs=td,p,| createThread td p |]
+    t <- [gs:bind hsvs=p,| createThread p |]
     [gs:body hsvs=t,| execMainThread t |]

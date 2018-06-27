@@ -19,7 +19,7 @@ gsstrun = $gslambda_value $ \ a -> $gsbcprim gsprim_st_run a
 gsprim_st_run :: Pos -> GSValue -> IO GSValue
 gsprim_st_run pos a = do
     pr <- createPromise
-    t <- createThread pos stThreadData a (Just pr)
+    t <- createThread pos a (Just pr)
     st <- waitThread t
     case st of
         ThreadStateUnimpl pos err -> return $ GSImplementationFailure pos err
