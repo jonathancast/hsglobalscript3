@@ -1,20 +1,15 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import Control.Concurrent.MVar (MVar)
 import Control.Exception (SomeException, catch, displayException)
 
 import System.Environment (getArgs)
 import System.Exit (ExitCode(..), exitWith)
 import System.IO (hPutStrLn, stderr)
 
-import Component.Monad (mvarContents)
-
 import GSI.Util (fmtPos, gshere)
 import GSI.Value (GSValue, gsapply, gsundefined_value)
-import GSI.ThreadType (ThreadData(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Functions (gslist, gsstring)
-import GSI.Env (GSEnvArgs(..))
 import GSI.Main (gsmain)
 $gsimports
 
@@ -52,17 +47,3 @@ gsprintstr = [gs:value| λ 's. analyze s.
     )
     case gsvalue.thunk 'th. impfor 's1 ← gseval-sync th;. gsprintstr s1
 |]
-
-data TestGSIThread = TestGSIThread{
-    envArgs :: MVar GSEnvArgs
-  }
-
-testGSIThreadData :: TestGSIThread -> ThreadData
-testGSIThreadData d = ThreadData{
-    component = fetchThreadDataComponent testGSIThreadComponents d,
-    threadTypeName = fmtPos $gshere "TestGSIThread"
-  }
-
-testGSIThreadComponents =
-    insertThreadDataComponent (\d -> mvarContents (envArgs d)) $
-    emptyThreadDataComponents
