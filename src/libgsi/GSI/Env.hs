@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (GSEnvArgs(..), gsenvGetArgs, gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (GSEnvArgs(..), gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
@@ -12,8 +12,6 @@ import System.IO (Handle, hPutStrLn, hPutChar, stdout, stderr)
 import System.IO.Encoding (readFile)
 import System.IO.Error (isDoesNotExistError)
 
-import Component.Monad (getM)
-
 import System.Posix.Files (getFileStatus, isDirectory)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
@@ -21,22 +19,10 @@ import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (fmtError)
 import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsundefined_value, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
-import GSI.ThreadType (Thread, ThreadDataComponent(..), component, threadTypeName)
-import GSI.Thread (withThreadData)
+import GSI.ThreadType (Thread, ThreadDataComponent(..))
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 import GSI.Functions (gslazystring, gsapiEvalString)
-
-gsenvGetArgs = $gsimpprim gsprimenvGetArgs :: GSValue
-
-gsprimenvGetArgs :: Pos -> Thread -> IO GSValue
-gsprimenvGetArgs pos t = withThreadData t (\ d -> do
-    case component d of
-        Nothing -> $apiImplementationFailure $ "gsprimenvGetArgs: This thread (" ++ threadTypeName d ++ ") lacks env.args!"
-        Just l -> do
-            GSEnvArgs args <- getM l -- \<GSEnvArgs\> is the constructor of the \<GSEnvArgs\> newtype; it exists to mark the §gs{env.args} component of the state for \<component\>
-            return args
-    )
 
 newtype GSEnvArgs = GSEnvArgs GSValue
 

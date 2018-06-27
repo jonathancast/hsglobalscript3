@@ -759,7 +759,6 @@ globalEnv = Env{
         ("either.for", (Set.singleton $ HSIVar "GSI.Either" "gseitherFor", HSVar "gseitherFor")),
         ("either.mapM", (Set.singleton $ HSIVar "GSI.Either" "gseither_mapM", HSVar "gseither_mapM")),
         ("empty", (Set.singleton $ HSIVar "GSI.Parser" "gsempty", HSVar "gsempty")),
-        ("env.get-args", (Set.singleton $ HSIVar "GSI.Env" "gsenvGetArgs", HSVar "gsenvGetArgs")),
         ("error", (Set.singleton $ HSIVar "GSI.StdLib" "gserror", HSVar "gserror")),
         ("execMainThread", (Set.singleton $ HSIVar "GSI.GSI" "gsiexecMainThread", HSVar "gsiexecMainThread")),
         ("expr", (Set.singleton $ HSIVar "GSDL.Syntax" "expr", HSVar "expr")),
