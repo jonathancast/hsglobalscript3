@@ -29,8 +29,6 @@ data ThreadState
   | ThreadStateUnimpl Pos String
   | ThreadStateSuccess
 
-newtype ThreadDataComponents d = ThreadDataComponents (Map TypeRep (d -> ThreadDataComponentWrapper))
-
 data ThreadDataComponentWrapper = forall a. ThreadDataComponent a => ThreadDataComponentWrapper (MonadComponentWrapper IO a)
 
 class Typeable a => ThreadDataComponent a where
