@@ -53,11 +53,6 @@ gsstrefeq = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->
         True -> $gsbcconstr (gsvar "true") []
         False -> $gsbcconstr (gsvar "false") []
 
-stThreadData = ThreadData{
-    component = Nothing,
-    threadTypeName = "stThreadData"
-  }
-
 newtype GSSTRef = GSSTRef (IORef GSValue)
     deriving Eq
 
