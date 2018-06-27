@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, emptyThreadDataComponents, simpleThreadData, threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, simpleThreadData, threadStateCode) where
 
 import qualified Data.Map as Map
 
@@ -48,9 +48,6 @@ insertThreadDataComponent cf (ThreadDataComponents m) = ThreadDataComponents $
         (typeRep (Proxy :: Proxy a))
         (\ d -> ThreadDataComponentWrapper (MonadComponentWrapper (cf d)))
         m
-
-emptyThreadDataComponents :: ThreadDataComponents d
-emptyThreadDataComponents = ThreadDataComponents Map.empty
 
 class Typeable a => ThreadDataComponent a where
 
