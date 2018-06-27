@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (GSEnvArgs(..), gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
@@ -19,14 +19,10 @@ import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (fmtError)
 import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsundefined_value, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
-import GSI.ThreadType (Thread, ThreadDataComponent(..))
+import GSI.ThreadType (Thread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 import GSI.Functions (gslazystring, gsapiEvalString)
-
-newtype GSEnvArgs = GSEnvArgs GSValue
-
-instance ThreadDataComponent GSEnvArgs where
 
 gsfileStat :: GSValue
 gsfileStat = $gsimpprim gsprimfileStat
