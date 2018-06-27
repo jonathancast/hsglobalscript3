@@ -25,7 +25,6 @@ createThread pos d v mbp = do
         sv <- newMVar ThreadStateRunning
         let t = Thread{
             state = sv,
-            threadData = d,
             wait = w
           }
         tid <- forkIO $ do

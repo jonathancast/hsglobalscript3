@@ -18,7 +18,6 @@ import GSI.Error (GSInvalidProgram, GSError, fmtInvalidProgram, fmtError)
 
 data Thread = Thread {
     state :: MVar ThreadState,
-    threadData :: ThreadData,
     wait :: Event
   }
 
