@@ -1,11 +1,11 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), fetchThreadDataComponent, insertThreadDataComponent, simpleThreadData, threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), insertThreadDataComponent, simpleThreadData, threadStateCode) where
 
 import qualified Data.Map as Map
 
 import Data.Map (Map)
-import Data.Typeable (Typeable, TypeRep, Proxy(..), gcast, typeRep)
+import Data.Typeable (Typeable, TypeRep, Proxy(..), typeRep)
 
 import Control.Concurrent.MVar (MVar)
 import Control.Exception (Exception(..))
@@ -32,15 +32,6 @@ data ThreadState
 newtype ThreadDataComponents d = ThreadDataComponents (Map TypeRep (d -> ThreadDataComponentWrapper))
 
 data ThreadDataComponentWrapper = forall a. ThreadDataComponent a => ThreadDataComponentWrapper (MonadComponentWrapper IO a)
-
-fetchThreadDataComponent :: forall d a b. ThreadDataComponent a => ThreadDataComponents d -> d -> Maybe (MonadComponentImpl IO b a)
-fetchThreadDataComponent (ThreadDataComponents m) d = do
-    w <- Map.lookup (typeRep (Proxy :: Proxy a)) m
-    case w d of
-        ThreadDataComponentWrapper cw -> do
-            cw' <- gcast cw
-            case cw' of
-                MonadComponentWrapper c -> return c
 
 insertThreadDataComponent :: forall d a. ThreadDataComponent a => (forall b. d -> MonadComponentImpl IO b a) -> ThreadDataComponents d -> ThreadDataComponents d
 insertThreadDataComponent cf (ThreadDataComponents m) = ThreadDataComponents $
