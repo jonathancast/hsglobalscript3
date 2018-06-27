@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), simpleThreadData, threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), ThreadData(..), ThreadDataComponent(..), ThreadException(..), threadStateCode) where
 
 import qualified Data.Map as Map
 
@@ -34,11 +34,6 @@ class Typeable a => ThreadDataComponent a where
 data ThreadData = ThreadData {
     component :: forall a b. ThreadDataComponent a => Maybe (MonadComponentImpl IO b a),
     threadTypeName :: String
-  }
-
-simpleThreadData = ThreadData {
-    component = Nothing,
-    threadTypeName = "()"
   }
 
 data ThreadException

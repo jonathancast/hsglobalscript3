@@ -10,7 +10,6 @@ import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcundefined, gsbcimpbody_w)
-import GSI.ThreadType (simpleThreadData)
 import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of
