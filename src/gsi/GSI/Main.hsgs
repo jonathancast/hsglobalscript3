@@ -171,6 +171,9 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{type.const}) (
         type.function (type.consts qq{gsvar.t}) $ type.consts qq{type.t}
     ) $
+    type.env.type.insert (gsvar qq{type.consts}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{type.t}
+    ) $
     type.env.type.insert (gsvar qq{type.empty-signature}) (type.consts qq{type.t}) $
     type.env.type.insert (gsvar qq{type-checker.unify}) (
         type.function (type.consts qq{pos.t}) $
@@ -307,6 +310,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{type-checker.unify}) (gsinject type-checker.unify) $
     compiler.env.value.insert (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
     compiler.env.value.insert (gsvar qq{type.app}) (gsinject type.app) $
+    compiler.env.value.insert (gsvar qq{type.consts}) (gsinject type.consts) $
     compiler.env.value.insert (gsvar qq{type.const}) (gsinject type.const) $
     compiler.env.value.insert (gsvar qq{type.empty-signature}) (gsinject type.empty-signature) $
     compiler.env.value.insert (gsvar qq{type.function}) (gsinject type.function) $
