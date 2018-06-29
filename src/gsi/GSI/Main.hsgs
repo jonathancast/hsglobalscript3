@@ -189,6 +189,10 @@ gstype_checker_global_env = [gs:value|
             type.function (type.consts qq{α}) $ type.function (type.consts qq{α}) $ type.consts qq{α}
     ) $
     type.env.type.insert (gsvar qq{natural.addition}) (type.addition (type.consts qq{natural.t})) $
+    type.env.type.insert (gsvar qq{@}) (type.forall (gsvar qq{α}) kind.pointed $
+        type.function (type.consts qq{α}) $ type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) $
+            type.app (type.consts qq{list.t}) (type.consts qq{α})
+    ) $
     type.env.view-type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
     type.env.view-type.insert (gsvar qq{false}) (type.consts qq{bool.t}) $
     type.env.type.insert (gsvar qq{just}) (
@@ -273,6 +277,7 @@ gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{>>=}) (gsinject monad.>>=) $
+    compiler.env.value.insert (gsvar qq{@}) (gsinject (:)) $
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{gsapply}) (gsinject gsapply) $
