@@ -2,4 +2,4 @@
 
 gsmain
     (λ 'pos. λ 'ty. type-checker.unify pos ty (type.app (type.const (gsvar qq{gsio.m})) type.empty-signature))
-    (λ 'prog. λ 'args. (gsapply prog (gsinject args @ nil) >>=_gsi.monad create-thread) >>=_gsi.monad undefined)
+    (λ 'prog. λ 'args. (gsapply prog (gsinject args @ nil) >>=_gsi.monad create-thread) >>=_gsi.monad exec-main-thread)
