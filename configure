@@ -30,6 +30,7 @@ SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/gshtml/integration-test"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/doc/integration-test"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/gsdoc/integration-test"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/setup-stage1"
+SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/build-stage1"
 
 u sed -i "s,/usr/local/plan9/,$PLAN9/,g" $SCRIPTS
 u sed -i "s,/usr/local/globalscript/,$GLOBALSCRIPT/,g" $SCRIPTS
