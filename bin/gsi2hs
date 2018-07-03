@@ -1,0 +1,3 @@
+#! /usr/local/plan9/bin/rc
+
+exec $HSGLOBALSCRIPT/src/gsio/gsio $HSGLOBALSCRIPT/src/gs2hs/gsi2hs $*
