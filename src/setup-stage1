@@ -1,0 +1,10 @@
+#! /usr/local/plan9/bin/rc
+
+fn stage_cp {
+    for (i) mkdir -p stage1/`{dirname $i} && cp $i stage1/$i || exit $status 
+}
+
+mkdir -p stage1 || exit $status
+stage_cp `{find libgsi/ gsi/ -name '*.hs'}
+stage_cp gsi/integration-test gsi/build-stage gsi/ghcoptions
+stage_cp gsi/test-gsi.gsi.gs

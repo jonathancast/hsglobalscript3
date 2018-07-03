@@ -42,3 +42,4 @@ src/gsi/GSDL/Compiler.hs
 src/gsi/GSI/Log.hs
 src/gsi/GSI/Addition.hs
 src/gsi/GSI/Monad.hs
+src/stage1
