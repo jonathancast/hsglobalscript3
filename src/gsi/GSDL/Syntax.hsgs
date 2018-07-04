@@ -232,6 +232,7 @@ gslambda_like_keyword = [gs:value| λ 'env. lexeme $ parser.for
 
 where_keyword = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
+        _ ← not-followed-by (char r{\{} <|> char r{<} <|> char r{/});
         _ ← analyze parser.env.syntactic-category.get v env.
         ;
     . parser.unit v
