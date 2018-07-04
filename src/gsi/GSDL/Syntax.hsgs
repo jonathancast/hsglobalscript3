@@ -29,6 +29,7 @@ pragmawhitespace = [gs:value| many (
 ) |]
 
 $gsdeclare where-keyword where_keyword
+$gsdeclare colon-paren colon_paren
 
 $gsdeclare keyword keyword
 $gsdeclare keyword-op keyword_op
@@ -40,7 +41,7 @@ document = [gs:value| λ 'env. parser.for
         'mbw ← optional (
             *> lexeme (char r{,})
             *> where-keyword env
-            *> keyword-op qq{:}
+            *> colon-paren
             *> (generator env <* lexeme (char r{;}))
         );
     . parser.unit (document.in mbe mbw)
@@ -221,6 +222,13 @@ where_keyword = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
         _ ← analyze parser.env.syntactic-category.get v env.
         ;
+    . parser.unit v
+|]
+
+colon_paren = [gs:value| λ 'env. lexeme $ parser.for
+        'v ← parser.map gsvar (string qq{:});
+        -- No need for negative look-ahead since there is a mandatory following space
+        _ ← matching log{whitespace} is-space;
     . parser.unit v
 |]
 
