@@ -1,0 +1,24 @@
+import Control.Exception (SomeException)
+import Control.Exception (catch)
+import Control.Exception (displayException)
+import GSI.ByteCode (gsbcapp_w)
+import GSI.ByteCode (gsbcundefined_w)
+import GSI.Functions (gslist_w)
+import GSI.Functions (gsstring_w)
+import GSI.Thread (createThread)
+import GSI.Thread (execMainThread)
+import GSI.Util (Pos(..))
+import GSI.Value (GSArg(..))
+import GSI.Value (gsthunk_w)
+import System.Environment (getArgs)
+import System.Exit (ExitCode(..))
+import System.Exit (exitWith)
+import System.IO (hPutStrLn)
+import System.IO (stderr)
+
+main = do
+    as <- gslist_w (Pos "./test-fixtures/empty-file.gsi.gs" 1 1) . map (gsstring_w (Pos "./test-fixtures/empty-file.gsi.gs" 1 1) <$> getArgs
+    prog <- gsthunk_w (Pos "./test-fixtures/empty-file.gsi.gs" 1 1) (gsbcapp_w (Pos "./test-fixtures/empty-file.gsi.gs" 1 1) (gsbcundefined_w (Pos "./test-fixtures/empty-file.gsi.gs" 1 1)) [GSArgValue as])
+    t <- createThread (Pos "./test-fixtures/empty-file.gsi.gs" 1 1) prog Nothing
+    execMainThread t
+  `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
