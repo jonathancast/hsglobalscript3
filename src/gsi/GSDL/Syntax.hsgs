@@ -28,6 +28,8 @@ pragmawhitespace = [gs:value| many (
     )
 ) |]
 
+$gsdeclare where-keyword where_keyword
+
 $gsdeclare keyword keyword
 $gsdeclare keyword-op keyword_op
 
@@ -37,7 +39,7 @@ document = [gs:value| λ 'env. parser.for
         'mbe ← optional (parser.for 'p ← expr env;. parser.unit (p #0));
         'mbw ← optional (
             *> lexeme (char r{,})
-            *> (parser.choice $ map (λ 'v. keyword (gsvar.name v) *> parser.unit v) $ parser.env.wheres env)
+            *> where-keyword env
             *> keyword-op qq{:}
             *> (generator env <* lexeme (char r{;}))
         );
@@ -211,6 +213,13 @@ ident = [gs:value| λ 'env. lexeme $ parser.for
         _ ← analyze parser.env.syntactic-category.get v env.
             case syntactic-category.variable. parser.unit 〈〉
             case syntactic-category.lambda-like. parser.fail log{'§(undefined)' is lambda-like}
+        ;
+    . parser.unit v
+|]
+
+where_keyword = [gs:value| λ 'env. lexeme $ parser.for
+        'v ← parser.map gsvar ident-chars;
+        _ ← analyze parser.env.syntactic-category.get v env.
         ;
     . parser.unit v
 |]
