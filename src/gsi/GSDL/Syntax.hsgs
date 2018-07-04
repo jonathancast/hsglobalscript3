@@ -31,8 +31,6 @@ pragmawhitespace = [gs:value| many (
 $gsdeclare where-keyword where_keyword
 $gsdeclare colon-paren colon_paren
 
-$gsdeclare keyword-op keyword_op
-
 $gsdeclare generator gsgenerator
 
 document = [gs:value| λ 'env. parser.for
@@ -265,8 +263,6 @@ $gsdeclare op-component op_component
 $gsdeclare op-cont-char opContChar
 
 op_chars = [gs:value| op-component <* not-followed-by delimiter |]
-
-keyword_op = [gs:value| λ 's. lexeme (string s <* not-followed-by op-cont-char) |]
 
 $gsdeclare max-many gsmax_many
 
