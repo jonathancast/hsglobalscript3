@@ -869,7 +869,6 @@ globalEnv = Env{
         ("parser.env.else.get", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_else_get", HSVar "gsdl_parser_env_else_get")),
         ("parser.env.else.insert", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_else_insert", HSVar "gsdl_parser_env_else_insert")),
         ("parser.env.empty", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_empty", HSVar "gsdl_parser_env_empty")),
-        ("parser.env.lambda-likes", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_lambda_likes", HSVar "gsdl_parser_env_lambda_likes")),
         ("parser.env.missing-body.get", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_missing_body_get", HSVar "gsdl_parser_env_missing_body_get")),
         ("parser.env.missing-body.insert", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_missing_body_insert", HSVar "gsdl_parser_env_missing_body_insert")),
         ("parser.env.missing-else.get", (Set.singleton $ HSIVar "GSDL.Parser" "gsdl_parser_env_missing_else_get", HSVar "gsdl_parser_env_missing_else_get")),
