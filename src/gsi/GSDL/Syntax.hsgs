@@ -31,7 +31,6 @@ pragmawhitespace = [gs:value| many (
 $gsdeclare where-keyword where_keyword
 $gsdeclare colon-paren colon_paren
 
-$gsdeclare keyword keyword
 $gsdeclare keyword-op keyword_op
 
 $gsdeclare generator gsgenerator
@@ -249,8 +248,6 @@ pident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
 
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
-
-keyword = [gs:value| λ 's. lexeme (string s <* not-followed-by ident-cont-char) |]
 
 $gsdeclare op-chars op_chars
 
