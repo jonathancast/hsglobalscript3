@@ -4,7 +4,6 @@ module GSDL.Parser (
     gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
     gsdl_parser_env_syntactic_category_get, gsdl_parser_env_syntactic_category_insert,
     gsdl_parser_env_lambda_likes,
-    gsdl_parser_env_wheres,
     gsdl_parser_env_qlo_get, gsdl_parser_env_qlo_insert,
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
     gsdl_parser_env_else_get, gsdl_parser_env_else_insert,
@@ -29,14 +28,6 @@ gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (
 gsdl_parser_env_lambda_likes = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
     (λ 'p. analyze p #1.
         case syntactic-category.lambda-like. true
-        case _. false
-    )
-    (parser.env.syntactic-categories env)
-|]
-
-gsdl_parser_env_wheres = [gs:value| λ 'env. map (λ 'p. p #0) $ filter
-    (λ 'p. analyze p #1.
-        case syntactic-category.where. true
         case _. false
     )
     (parser.env.syntactic-categories env)
