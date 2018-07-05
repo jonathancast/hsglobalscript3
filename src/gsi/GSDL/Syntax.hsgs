@@ -278,7 +278,24 @@ gsconcat = [gs:value| foldr (<>) nil |]
 
 cont_component = [gs:value| parser.map2 (:) delimiter ident-component |]
 
-ident_component = [gs:value| parser.map2 (:) ident-start-char (max-many ident-cont-char) |]
+$gsdeclare ident-comp-cont ident_comp_cont
+
+ident_component = [gs:value| parser.map2 (:) ident-start-char ident-comp-cont |]
+
+$gsdeclare ident-comp-up-cont ident_comp_up_cont
+
+$gsdeclare ident-up-cont-char ident_up_cont_char
+
+ident_comp_cont = [gs:value|
+    <|> (not-followed-by (ident-cont-char <|> ident-up-cont-char) *> parser.unit nil)
+    <|> parser.map2 (:) ident-cont-char ident-comp-cont
+    <|> parser.map2 (:) ident-up-cont-char ident-comp-up-cont
+|]
+
+ident_comp_up_cont = [gs:value|
+    <|> (not-followed-by (ident-cont-char <|> ident-up-cont-char) *> parser.unit nil)
+    <|> parser.map2 (:) ident-up-cont-char ident-comp-up-cont
+|]
 
 $gsdeclare op-start-char op_start_char
 
@@ -288,6 +305,7 @@ delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.�
 
 identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
+ident_up_cont_char = [gs:value| matching log{ident cont character} is-upper |]
 
 op_start_char = [gs:value| matching log{op start character} (λ 'c. list.∈ rune.≡ c qq{@+∘>}) |]
 opContChar = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.≡ c qq{->=}) |]
