@@ -46,6 +46,8 @@ document = [gs:value| λ 'env. parser.for
 
 $gsdeclare operator operator
 
+$gsdeclare explicit-arg gsexplicit_arg
+
 $gsdeclare expr.function gsexpr_function
 $gsdeclare expr.lambda-like gsexpr_lambda_like
 
@@ -58,12 +60,7 @@ expr = [gs:value| λ 'env.
                 's1 ← analyze parser.env.signature.get op env.
                     case nothing. parser.unit nil
                 ;
-                'es ← many $ parser.for
-                        _ ← matching log{explicit application character} (rune.≡ r{_});
-                        'pose ← get-pos;
-                        'e ← parser.map expr.var (ident env);
-                    . parser.unit 〈 '0 ∝ pose; '1 ∝ e; 〉
-                ;
+                'es ← many $ explicit-arg env;
                 'opes ← parser.unit $ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
                 'pos1 ← get-pos;
                 'p1 ← expr.function env <|> expr.lambda-like env;
@@ -158,6 +155,13 @@ gsexpr_atom = [gs:value| λ 'env.
         '0 ∝ expr.var v;
         '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
     〉)
+|]
+
+gsexplicit_arg = [gs:value| λ 'env. parser.for
+        _ ← matching log{explicit application character} (rune.≡ r{_});
+        'pose ← get-pos;
+        'e ← parser.map expr.var (ident env);
+    . parser.unit 〈 '0 ∝ pose; '1 ∝ e; 〉
 |]
 
 $gsdeclare idmc-w gsidmc_w
