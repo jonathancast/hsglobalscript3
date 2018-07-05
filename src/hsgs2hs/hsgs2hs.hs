@@ -820,6 +820,7 @@ globalEnv = Env{
         ("is-ascii-digit", (Set.singleton $ HSIVar "GSI.Rune" "gsisAsciiDigit", HSVar "gsisAsciiDigit")),
         ("is-lower", (Set.singleton $ HSIVar "GSI.Rune" "gsisLower", HSVar "gsisLower")),
         ("is-space", (Set.singleton $ HSIVar "GSI.Rune" "gsisSpace", HSVar "gsisSpace")),
+        ("is-upper", (Set.singleton $ HSIVar "GSI.Rune" "gsis_upper", HSVar "gsis_upper")),
         ("just", (Set.singleton $ HSIVar "GSI.Maybe" "gsjust", HSVar "gsjust")),
         ("kind.pointed", (Set.singleton $ HSIVar "GSDL.AST" "gskind_pointed", HSVar "gskind_pointed")),
         ("left", (Set.singleton $ HSIVar "GSI.Either" "gsleft", HSVar "gsleft")),
