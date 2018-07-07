@@ -74,7 +74,7 @@ expr = [gs:value| λ 'env.
 
 $gsdeclare expr.function.w gsexpr_function_w
 
-gsexpr_function = [gs:value| λ 'env. parser.for 'p ← expr.atom env;. expr.function.w env (p #0) (p #1) |]
+gsexpr_function = [gs:value| λ 'env. parser.for 'p ← expr.atom true env;. expr.function.w env (p #0) (p #1) |]
 
 $gsdeclare pat gspat
 
@@ -84,7 +84,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
             'pos ← get-pos;
             'p ← analyze s.
                 case order-of-being.pattern : 's1. parser.for 'p ← pat env;. parser.unit 〈 '0 ∝ expr.pat p nothing; '1 ∝ s1; 〉
-                case nil. parser.for 'p ← expr.atom env;. parser.unit 〈 '0 ∝ p #0; '1 ∝ nil; 〉
+                case nil. parser.for 'p ← expr.atom false env;. parser.unit 〈 '0 ∝ p #0; '1 ∝ nil; 〉
             ;
         . expr.function.w env (expr.app e (arg.expr pos (p #0))) (p #1)
     )
@@ -137,7 +137,7 @@ $gsdeclare ident-chars ident_chars
 $gsdeclare idmc gsidmc
 $gsdeclare qloitem gsqloitem
 
-gsexpr_atom = [gs:value| λ 'env.
+gsexpr_atom = [gs:value| λ 'a. λ 'env.
     <|> parens (expr env)
     <|> (parser.for
             'v ← ident-chars;
