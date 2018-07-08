@@ -151,10 +151,18 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
         . parser.unit 〈 '0 ∝ expr.qlo (gsvar v) e x; '1 ∝ nil; 〉
     )
     <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
-    <|> (parser.for 'v ← ident env;. parser.unit 〈
-        '0 ∝ expr.var v;
-        '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
-    〉)
+    <|> (parser.for
+            'v ← ident env;
+            'es ← analyze a.
+                case true. many $ explicit-arg env
+                case false. parser.unit nil
+            ;
+            'ves ← parser.unit $ foldl expr.app (expr.var v) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
+        . parser.unit 〈
+            '0 ∝ ves;
+            '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
+        〉
+    )
 |]
 
 gsexplicit_arg = [gs:value| λ 'env. parser.for
