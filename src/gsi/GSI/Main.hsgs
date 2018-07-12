@@ -243,6 +243,7 @@ gstype_checker_global_env = [gs:value|
                         type.app (type.consts qq{m}) (type.consts qq{β})
     ) $
     type.env.type.insert (gsvar qq{gsi.monad}) (type.monad (type.consts qq{gsi.m})) $
+    type.env.type.insert (gsvar qq{gsio.monad}) (type.monad (type.consts qq{gsio.m})) $
     type.env.empty
 |]
 
@@ -300,6 +301,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{gsapply}) (gsinject gsapply) $
     compiler.env.value.insert (gsvar qq{gsi.monad}) (gsinject gsi.monad) $
     compiler.env.value.insert (gsvar qq{gsinject}) (gsinject gsinject) $
+    compiler.env.value.insert (gsvar qq{gsio.monad}) (gsinject gsio.monad) $
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
     compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
