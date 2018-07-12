@@ -242,6 +242,13 @@ gstype_checker_global_env = [gs:value|
                     type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
                         type.app (type.consts qq{m}) (type.consts qq{β})
     ) $
+    type.env.type.insert (gsvar qq{mapM0}) (
+        type.forall (gsvar qq{m}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.monad (type.consts qq{m})) $
+                type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
+                    type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) $
+                        type.app (type.consts qq{m}) type.empty-signature
+    ) $
     type.env.type.insert (gsvar qq{gsi.monad}) (type.monad (type.consts qq{gsi.m})) $
     type.env.type.insert (gsvar qq{gsio.monad}) (type.monad (type.consts qq{gsio.m})) $
     type.env.empty
@@ -305,6 +312,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
     compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
+    compiler.env.value.insert (gsvar qq{mapM0}) (gsinject mapM0) $
     compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
     compiler.env.value.insert (gsvar qq{natural.addition}) (gsinject natural.addition) $
     compiler.env.value.insert (gsvar qq{nil}) (gsinject nil) $

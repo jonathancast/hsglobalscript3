@@ -1,5 +1,8 @@
-module GSI.Monad (gsmonad_bind) where
+module GSI.Monad (gsmonad_mapM0, gsmonad_bind) where
 
 $gsimports
 
 gsmonad_bind = [gs:value| λ 'm. m #(>>=) |]
+
+gsmonad_mapM0 = [gs:value| λ 'm. λ 'f. λ 'xn. analyze xn.
+|]
