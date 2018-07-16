@@ -95,6 +95,8 @@ $gsdeclare lambda-like-keyword gslambda_like_keyword
 gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         'v ← lambda-like-keyword env;
         's ← parser.unit $ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
+        'es ← many $ explicit-arg env;
+        'ves ← parser.unit $ foldl expr.app (expr.var v) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
         'posh ← get-pos;
         'h ← analyze s.
             case order-of-being.pattern : _. parser.map (λ 'p. expr.pat p nothing) (pat env)
@@ -113,7 +115,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
             )
         ;
     . analyze parser.env.else.get v env.
-        case nothing. parser.unit 〈 '0 ∝ foldl expr.app (expr.var v) (arg.expr posh h : arg.expr post t : nil); '1 ∝ drop 2 s; 〉
+        case nothing. parser.unit 〈 '0 ∝ foldl expr.app ves (arg.expr posh h : arg.expr post t : nil); '1 ∝ drop 2 s; 〉
         case just _. parser.for
                 _ ← lexeme (char r{,});
                 'pose ← get-pos;
@@ -126,7 +128,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
                         case nil. parser.for 'p ← expr env;. parser.unit (p #0)
                     )
                 ;
-            . parser.unit 〈 '0 ∝ foldl expr.app (expr.var v) (arg.expr posh h : arg.expr post t : arg.expr pose e : nil); '1 ∝ drop 3 s; 〉
+            . parser.unit 〈 '0 ∝ foldl expr.app ves (arg.expr posh h : arg.expr post t : arg.expr pose e : nil); '1 ∝ drop 3 s; 〉
 |]
 
 $gsdeclare parens parens
