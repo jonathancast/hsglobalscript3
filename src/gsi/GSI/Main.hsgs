@@ -55,6 +55,7 @@ $gsdeclare type.consts gstype_consts
 
 gsparser_global_env = [gs:value|
     parser.env.else.insert (gsvar qq{case}) 〈〉 $
+    parser.env.missing-body.insert (gsvar qq{analyzeM}) expr.missing-case $
     parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.qlo.insert (gsvar qq{qq}) 〈
@@ -81,6 +82,7 @@ gsparser_global_env = [gs:value|
     〉 $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
+    parser.env.syntactic-category.insert (gsvar qq{analyzeM}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{case}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
@@ -249,6 +251,13 @@ gstype_checker_global_env = [gs:value|
                     type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) $
                         type.app (type.consts qq{m}) type.empty-signature
     ) $
+    type.env.type.insert (gsvar qq{analyzeM}) (
+        type.forall (gsvar qq{m}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.monad (type.consts qq{m})) $
+                type.function (type.app (type.consts qq{m}) (type.consts qq{α})) $
+                    type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
+                        type.app (type.consts qq{m}) (type.consts qq{β})
+    ) $
     type.env.type.insert (gsvar qq{gsi.monad}) (type.monad (type.consts qq{gsi.m})) $
     type.env.type.insert (gsvar qq{gsio.monad}) (type.monad (type.consts qq{gsio.m})) $
     type.env.type.insert (gsvar qq{gsio.file.read}) (
@@ -307,6 +316,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{>>=}) (gsinject monad.>>=) $
     compiler.env.value.insert (gsvar qq{@}) (gsinject (:)) $
+    compiler.env.value.insert (gsvar qq{analyzeM}) (gsinject (value analyzeM)) $
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{create-thread}) (gsinject create-thread) $
