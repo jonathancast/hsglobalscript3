@@ -801,6 +801,7 @@ globalEnv = Env{
         ("gsfmt-error", (Set.singleton $ HSIVar "GSI.GSI" "gsigsfmtError", HSVar "gsigsfmtError")),
         ("gsi.monad", (Set.singleton $ HSIVar "GSI.GSI" "gsi_monad", HSVar "gsi_monad")),
         ("gsinject", (Set.singleton $ HSIVar "GSI.GSI" "gsigsinject", HSVar "gsigsinject")),
+        ("gsio.file.read", (Set.singleton $ HSIVar "GSI.GSIO" "gsio_file_read", HSVar "gsio_file_read")),
         ("gsio.monad", (Set.singleton $ HSIVar "GSI.GSIO" "gsio_monad", HSVar "gsio_monad")),
         ("gsmain", (Set.singleton $ HSIVar "GSI.Main" "gsmain", HSVar "gsmain")),
         ("gsthunk", (Set.singleton $ HSIVar "GSI.GSI" "gsigsthunk", HSVar "gsigsthunk")),
