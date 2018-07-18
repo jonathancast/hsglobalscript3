@@ -224,7 +224,7 @@ gsprimor = [gs:value| λ 'p0. λ 'p1. analyze p0.
         case prim.lookahead 'pp1. prim.lookahead (prim.unit-plus p0 pp1)
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (prim.<|> ek0 ek1) (λ 'c. analyze sk0 c.
             case left 'e0. (analyze sk1 c.
-                case left 'e1. left 〈 '0 ∝ e0 #0 <> e1 #0; '1 ∝ undefined; 〉
+                case left 'e1. left 〈 '0 ∝ e0 #0 <> e1 #0; '1 ∝ e0 #1 <> e1 #1; 〉
                 case right 'p3. right p3
             )
             case right 'p2. (analyze sk1 c.
