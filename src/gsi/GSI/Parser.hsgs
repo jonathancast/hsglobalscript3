@@ -106,7 +106,7 @@ gsparser_string = [gs:value| λ 's. analyze s.
     case nil. parser.unit 〈〉
 |]
 
-gsparser_char = [gs:value| λ 'ch. matching (display-rune ch) (rune.≡ ch) |]
+gsparser_char = [gs:value| λ 'ch. matching (log.str (print-rune ch)) (rune.≡ ch) |]
 
 $gsdeclare prim.symbol-or-eof gsprim_symbol
 
