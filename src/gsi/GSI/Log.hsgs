@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gslog_str, gslog_dstr, gsloggsv, gslog_fmt) where
+module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gslog_str, gslog_dstr, gslogchar, gsloggsv, gslog_fmt) where
 
 import Language.Haskell.TH.Lib (varE, appE)
 
