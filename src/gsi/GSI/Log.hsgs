@@ -46,6 +46,8 @@ gslog_fmt = [gs:value| λ 'l. log-fmt-w (l 〈 'paragraph-constituents ∝ nil; 
 $gsdeclare view paragraph-constituent.char gsparagraph_constituent_char_view
 
 gslog_fmt_w = [gs:value| λ 'pcs. analyze pcs.
+    case (paragraph-constituent.char 'ch):'pcs1. ch : log-fmt-w pcs1
+    case nil. nil
 |]
 
 gsparagraph_constituent_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
