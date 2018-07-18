@@ -39,7 +39,12 @@ gsbclogstring = varE 'gsbclogstring_w `appE` gshere
 gsbclogstring_w :: Pos -> String -> GSExpr
 gsbclogstring_w pos s = foldr (\ ch k -> gsbcapply_w pos gscompose [ $gsae $ gsbcapply_w pos gslogchar [$gsav $ GSRune ch], $gsae k ]) ($gsbcenter gslogempty) s
 
-gslog_fmt = $gsundefined_value
+$gsdeclare log-fmt-w gslog_fmt_w
+
+gslog_fmt = [gs:value| λ 'l. log-fmt-w (l 〈 'paragraph-constituents ∝ nil; 〉 #paragraph-constituents) |]
+
+gslog_fmt_w = [gs:value| λ 'pcs. analyze pcs.
+|]
 
 gsparagraph_constituent_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gsparagraph_constituent_gsv = $gslambda_value $ \ x -> $gsbcconstr (gsvar "gsv") [ $gsav x ]
