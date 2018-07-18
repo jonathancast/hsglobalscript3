@@ -51,7 +51,7 @@ ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-e
 ok_diff_compiler '-- prefix operators --' hsgs2hs prefix-expression.hsgs prefix-expression.hs
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
 ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
-ok_diff '-- empty structure literals --' test_gsi_impl empty-structure-literal.gs
+test_empty_structure_literal
 ok_diff_compiled '-- additions --' hsgs2hs natural-addition.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- lists --' hsgs2hs list-addition.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- non-associative operators --' hsgs2hs inequality.hsgs .hs runghc `{./test-ghcoptions}
