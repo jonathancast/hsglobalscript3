@@ -260,4 +260,7 @@ gsparser_advanceRune = [gs:value| λ 'c. λ 'pos. analyze rune.≡ c r{\n}.
     case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
 |]
 
-gsparser_print_rune = [gs:value| λ 'c. qq{'§(c:nil)'} |]
+gsparser_print_rune = [gs:value| λ 'c. analyze rune.≡ c r{\n}.
+    case true. qq{'\\n'}
+    case false. qq{'§(c:nil)'}
+|]
