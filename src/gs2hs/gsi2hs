@@ -1,1 +1,2 @@
-mapM0_gsio.monad (λ 'a. undefined)
+mapM0_gsio.monad (λ 'a. analyzeM_gsio.monad gsio.file.read a.
+)
