@@ -78,6 +78,7 @@ gsfmtError = [gs:value| λ 'errs. λ 'exps. analyze errs.
 |]
 
 gsfmt_expected_w = [gs:value| λ 'exps. analyze exps.
+    case 'exp0:nil. qq{or §(log.fmt exp0)}
     case 'exp0:'exps1. qq{§(log.fmt exp0), §(fmt-expected-w exps1)}
 |]
 
