@@ -7,7 +7,7 @@ import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSArg, GSExpr, gslambda_value, gsae, gsav, gsvCode)
 import GSI.Functions (gsstring)
-import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcenter, gsbcforce, gsbcevalnatural, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcenter, gsbcenterarg, gsbcforce, gsbcevalnatural, gsbcimplementationfailure)
 import GSI.List (gsappend, gscons, gsnil)
 
 gsbcstring = varE 'gsbcstring_w `appE` gshere
@@ -15,6 +15,7 @@ gsbcstring = varE 'gsbcstring_w `appE` gshere
 gsbcstring_w :: Pos -> [GSArg] -> GSExpr
 gsbcstring_w pos cs = gsbcstring_ww id cs where
     gsbcstring_ww :: (GSExpr -> GSExpr) -> [GSArg] -> GSExpr
+    gsbcstring_ww ds [c] = ds $ $gsbcenterarg c
     gsbcstring_ww ds (c:cs) = gsbcstring_ww (ds . \ s1 -> $gsbcapply gsappend [ c, $gsae s1 ]) cs
     gsbcstring_ww ds [] = ds $ $gsbcconstr (gsvar "nil") []
 
