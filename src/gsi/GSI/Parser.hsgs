@@ -119,7 +119,7 @@ gsparser_matching = [gs:value| λ 'cat. λ 'p. λ 'k. prim.symbol-or-eof prim.em
     case true. right (k c)
 |]
 
-gsparser_displayRune = [gs:value| undefined |]
+gsparser_displayRune = [gs:value| λ 'ch. log{'§(log.char ch)'} |]
 
 gsparser_choice = [gs:value| foldr (<|>) empty |]
 
