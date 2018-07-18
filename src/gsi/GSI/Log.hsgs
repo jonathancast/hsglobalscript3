@@ -6,7 +6,7 @@ import Language.Haskell.TH.Lib (varE, appE)
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda_value, gsundefined_value, gsae, gsav)
-import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcrecord, gsbclfield)
+import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcconstr_view, gsbcrecord, gsbclfield)
 import GSI.StdLib (gscompose)
 import GSI.List (gscons)
 $gsimports
@@ -43,8 +43,12 @@ $gsdeclare log-fmt-w gslog_fmt_w
 
 gslog_fmt = [gs:value| λ 'l. log-fmt-w (l 〈 'paragraph-constituents ∝ nil; 〉 #paragraph-constituents) |]
 
+$gsdeclare view paragraph-constituent.char gsparagraph_constituent_char_view
+
 gslog_fmt_w = [gs:value| λ 'pcs. analyze pcs.
 |]
 
 gsparagraph_constituent_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gsparagraph_constituent_gsv = $gslambda_value $ \ x -> $gsbcconstr (gsvar "gsv") [ $gsav x ]
+
+gsparagraph_constituent_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ pc -> $gsbcconstr_view "char" ek sk pc
