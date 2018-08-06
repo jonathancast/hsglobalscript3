@@ -897,6 +897,7 @@ globalEnv = Env{
         ("pat.var", (Set.singleton $ HSIVar "GSDL.AST" "gspat_var", HSVar "gspat_var")),
         ("pat.view", (Set.singleton $ HSIVar "GSDL.AST" "gspat_view", HSVar "gspat_view")),
         ("pos.fmt", (Set.singleton $ HSIVar "GSI.Parser" "gsposFmt", HSVar "gsposFmt")),
+        ("pos.init", (Set.singleton $ HSIVar "GSI.Parser" "gspos_init", HSVar "gspos_init")),
         ("pragma.whitespace", (Set.singleton $ HSIVar "GSDL.Syntax" "pragmawhitespace", HSVar "pragmawhitespace")),
         ("pragmas", (Set.singleton $ HSIVar "GSDL.Syntax" "pragmas", HSVar "pragmas")),
         ("print", (Set.singleton $ HSIVar "GSI.Env" "gsprint", HSVar "gsprint")),

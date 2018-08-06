@@ -22,7 +22,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
         )
         case right 'st. (analyze st #is.dir.
             case true. gsprocessargs as gstyc gsrun -- Ignore all arguments until we start failing tests for it
-            case false. impfor 's ← file.read a;. analyze parse advance-rune print-rune (file parser.global-env) 〈 'filename ∝ a; 'line ∝ 1; 'col ∝ 1; 〉 s.
+            case false. impfor 's ← file.read a;. analyze parse advance-rune print-rune (file parser.global-env) (pos.init a) s.
                 case left 'err. impfor _ ← print-error qq{§(err)\n};. error log{§(gsv a): process §(gsv err) next}
                 case right 'd. (analyze d.
                     case file.document 'pos 'd. (analyze process-document pos gstyc d.

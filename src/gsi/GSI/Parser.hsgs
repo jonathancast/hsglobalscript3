@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsparser_run, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advanceRune, gsparser_print_rune) where
+module GSI.Parser (gsparse, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advanceRune, gsparser_print_rune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
@@ -62,6 +62,8 @@ gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn.
     case 'x:'xn1. process-lookahead (prim.<|> p (x #0)) xn1 err
     case nil. prim.<|> p (prim.fail (err #0) (err #1))
 |]
+
+gspos_init = [gs:value| λ 'fn. 〈 'filename ∝ fn; 'line ∝ 1; 'col ∝ 1; 〉 |]
 
 gsposFmt :: GSValue
 gsposFmt = [gs:value| λ 'pos. λ 'msg. qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
