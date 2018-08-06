@@ -10,7 +10,7 @@ module GSDL.AST (
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
-    gsexpr_natural, gsexpr_var, gsexpr_app, gsexpr_qlo, gsexpr_open_expr, gsexpr_pat, gsexpr_monoidal_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_monoidal_pat_view, gsexpr_missing_case_view,
+    gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_open_expr, gsexpr_pat, gsexpr_monoidal_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_monoidal_pat_view, gsexpr_missing_case_view,
     gsqloitem_char, gsqloitem_char_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
@@ -96,6 +96,7 @@ gskind_pointed = $gsconstr (gsvar "pointed") []
 
 gsexpr_natural = $gslambda_value $ \ n -> $gsbcconstr (gsvar "natural") [ $gsav n ]
 gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
+gsexpr_structure_literal = $gslambda_value $ \ gs -> $gsbcconstr (gsvar "structure-literal") [ $gsav gs ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
 gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
 gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "open-expr") [ $gsav e, $gsav mb ]
