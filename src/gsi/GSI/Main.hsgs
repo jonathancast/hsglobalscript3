@@ -286,6 +286,10 @@ gstype_checker_global_env = [gs:value|
         type.function (type.consts qq{rune.t}) $ type.app (type.consts qq{list.t}) (type.consts qq{rune.t})
     ) $
     type.env.type.insert (gsvar qq{parser.global-env}) (type.consts qq{gsdl.parser.env.t}) $
+    type.env.type.insert (gsvar qq{file}) (
+        type.function (type.consts qq{gsdl.parser.env.t}) $
+            type.apply (type.consts qq{parser.t}) (type.consts qq{rune.t} : type.consts qq{gsdl.file.t} : nil)
+    ) $
     type.env.empty
 |]
 
@@ -342,6 +346,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{create-thread}) (gsinject create-thread) $
     compiler.env.value.insert (gsvar qq{exec-main-thread}) (gsinject exec-main-thread) $
+    compiler.env.value.insert (gsvar qq{file}) (gsinject file) $
     compiler.env.value.insert (gsvar qq{gsapply}) (gsinject gsapply) $
     compiler.env.value.insert (gsvar qq{gsi.monad}) (gsinject gsi.monad) $
     compiler.env.value.insert (gsvar qq{gsinject}) (gsinject gsinject) $
