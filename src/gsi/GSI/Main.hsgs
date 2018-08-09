@@ -276,6 +276,9 @@ gstype_checker_global_env = [gs:value|
                             type.function (type.app (type.consts qq{list.t}) (type.consts qq{s})) $
                                 type.apply (type.consts qq{either.t}) (type.consts qq{parser.error.t} : type.consts qq{α} : nil)
     ) $
+    type.env.type.insert (gsvar qq{pos.init}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{pos.t}
+    ) $
     type.env.empty
 |]
 
@@ -343,6 +346,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
     compiler.env.value.insert (gsvar qq{natural.addition}) (gsinject natural.addition) $
     compiler.env.value.insert (gsvar qq{nil}) (gsinject nil) $
+    compiler.env.value.insert (gsvar qq{pos.init}) (gsinject pos.init) $
     compiler.env.value.insert (gsvar qq{parse}) (gsinject parse) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
     compiler.env.value.insert (gsvar qq{type-checker.unify}) (gsinject type-checker.unify) $
