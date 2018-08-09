@@ -214,6 +214,11 @@ gstype_checker_global_env = [gs:value|
     type.env.view-type.insert (gsvar qq{nothing}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.app (type.consts qq{maybe.t}) (type.consts qq{α})
     ) $
+    type.env.view-type.insert (gsvar qq{right}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.consts qq{β}) $
+                type.apply (type.consts qq{either.t}) (type.consts qq{α} : type.consts qq{β} : nil)
+    ) $
     type.env.type.insert (gsvar qq{undefined}) (
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
@@ -345,6 +350,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.view.insert (gsvar qq{gsvalue.thunk}) (gsinject (view gsvalue.thunk)) $
     compiler.env.view.insert (gsvar qq{just}) (gsinject (view just)) $
     compiler.env.view.insert (gsvar qq{nothing}) (gsinject (view nothing)) $
+    compiler.env.view.insert (gsvar qq{right}) (gsinject (view right)) $
     compiler.env.view.insert (gsvar qq{true}) (gsinject (view true)) $
     compiler.env.empty
 |]
