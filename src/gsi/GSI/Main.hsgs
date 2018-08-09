@@ -285,6 +285,7 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{print-rune}) (
         type.function (type.consts qq{rune.t}) $ type.app (type.consts qq{list.t}) (type.consts qq{rune.t})
     ) $
+    type.env.type.insert (gsvar qq{parser.global-env}) (type.consts qq{gsdl.parser.env.t}) $
     type.env.empty
 |]
 
@@ -353,6 +354,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
     compiler.env.value.insert (gsvar qq{natural.addition}) (gsinject natural.addition) $
     compiler.env.value.insert (gsvar qq{nil}) (gsinject nil) $
+    compiler.env.value.insert (gsvar qq{parser.global-env}) (gsinject parser.global-env) $
     compiler.env.value.insert (gsvar qq{pos.init}) (gsinject pos.init) $
     compiler.env.value.insert (gsvar qq{parse}) (gsinject parse) $
     compiler.env.value.insert (gsvar qq{print-rune}) (gsinject print-rune) $
