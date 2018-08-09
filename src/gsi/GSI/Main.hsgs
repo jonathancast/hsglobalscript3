@@ -279,6 +279,9 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{pos.init}) (
         type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{pos.t}
     ) $
+    type.env.type.insert (gsvar qq{advance-rune}) (
+        type.function (type.consts qq{rune.t}) $ type.function (type.consts qq{pos.t}) $ type.consts qq{pos.t}
+    ) $
     type.env.empty
 |]
 
@@ -329,6 +332,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{>>=}) (gsinject monad.>>=) $
     compiler.env.value.insert (gsvar qq{@}) (gsinject (:)) $
+    compiler.env.value.insert (gsvar qq{advance-rune}) (gsinject advance-rune) $
     compiler.env.value.insert (gsvar qq{analyzeM}) (gsinject (value analyzeM)) $
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
