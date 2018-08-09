@@ -84,6 +84,7 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
             case lt. type-checker.incorrect-type pos ty0 ty1
         )
         case type.function _ _. type-checker.incorrect-type pos ty0 ty1
+        case type.app _ _. type-checker.incorrect-type pos ty0 ty1
     )
 |]
 
