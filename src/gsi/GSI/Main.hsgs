@@ -167,6 +167,7 @@ gstype_checker_global_env = [gs:value|
                 type.function (type.consts qq{gsdl.document.t}) $
                     type.consts qq{gsdl.document.t}
     ) $
+    type.env.type.insert (gsvar qq{annotator.global-env}) (type.consts qq{gsdl.annotator.env.t}) $
     type.env.type.insert (gsvar qq{type.function}) (
         type.function (type.consts qq{type.t}) $ type.function (type.consts qq{type.t}) $ type.consts qq{type.t}
     ) $
@@ -350,6 +351,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{analyzeM}) (gsinject (value analyzeM)) $
     compiler.env.value.insert (gsvar qq{analyze}) (gsinject (value analyze)) $
     compiler.env.value.insert (gsvar qq{annotate-document}) (gsinject annotate-document) $
+    compiler.env.value.insert (gsvar qq{annotator.global-env}) (gsinject annotator.global-env) $
     compiler.env.value.insert (gsvar qq{case}) (gsinject (value case)) $
     compiler.env.value.insert (gsvar qq{create-thread}) (gsinject create-thread) $
     compiler.env.value.insert (gsvar qq{exec-main-thread}) (gsinject exec-main-thread) $
