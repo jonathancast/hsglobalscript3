@@ -57,16 +57,6 @@ gsvalidate_pat = [gs:value| λ 'pos. λ 'env. λ 'p. analyze p.
             _ ← validate-pat pos env p1;
             'bvs0 ← right (pat.bound-vars p0);
             'bvs1 ← right (pat.bound-vars p1);
-            _ ← either.mapM
-                (λ 'v. analyze list.∈ gsvar.≡ v bvs1.
-                )
-                bvs0
-            ;
-            _ ← either.mapM
-                (λ 'v. analyze list.∈ gsvar.≡ v bvs0.
-                    case false. right 〈〉
-                )
-                bvs1
-            ;
+            _ ← either.mapM (λ 'v. analyze list.∈ gsvar.≡ v bvs1. case false. right 〈〉) bvs0;
         . right 〈〉
 |]
