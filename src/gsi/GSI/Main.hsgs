@@ -168,6 +168,12 @@ gstype_checker_global_env = [gs:value|
                     type.consts qq{gsdl.document.t}
     ) $
     type.env.type.insert (gsvar qq{annotator.global-env}) (type.consts qq{gsdl.annotator.env.t}) $
+    type.env.type.insert (gsvar qq{validate-document}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.consts qq{gsdl.validator.env.t}) $
+                type.function (type.consts qq{gsdl.document.t}) $
+                    type.apply (type.consts qq{either.t}) (type.consts qq{log.t} : type.empty-signature : nil)
+    ) $
     type.env.view-type.insert (gsvar qq{file.document}) (
         type.function (type.consts qq{pos.t}) $
             type.function (type.consts qq{gsdl.document.t}) (type.consts qq{gsdl.file.t})
@@ -385,6 +391,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{type.empty-signature}) (gsinject type.empty-signature) $
     compiler.env.value.insert (gsvar qq{type.function}) (gsinject type.function) $
     compiler.env.value.insert (gsvar qq{undefined}) (gsinject (value undefined)) $
+    compiler.env.value.insert (gsvar qq{validate-document}) (gsinject validate-document) $
     compiler.env.value.insert (gsvar qq{λ}) (gsinject (value λ)) $
     compiler.env.value.insert (gsvar qq{∘}) (gsinject (∘)) $
     compiler.env.view.insert (gsvar qq{false}) (gsinject (view false)) $
