@@ -10,6 +10,7 @@ gsmain = [gs:value| λ 'gstyc. λ 'gsrun. λ 'args. gsprocessargs args gstyc gsr
 
 $gsdeclare parser.global-env gsparser_global_env
 $gsdeclare process-document gsprocess_document
+$gsdeclare compiler.global-env gscompiler_global_env
 
 -- Loops over arguments to process them
 gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
@@ -29,7 +30,8 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
                         case left 'err. impfor
                                 _ ← print-error qq{§(err)\n};
                             . error log{Errors next}
-                        case right 'prog. impfor 'progv ← gsthunk pos prog;. gsrun progv as
+                        case right 'dty. impfor 'prog ← gsthunk pos (compile-document pos compiler.global-env dty);.
+                            gsrun prog as
                     )
                 )
         )
@@ -38,14 +40,13 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
 $gsdeclare annotator.global-env gsannotator_global_env
 $gsdeclare validator.global-env gsvalidator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
-$gsdeclare compiler.global-env gscompiler_global_env
 
 gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
     either.for
             'dspec ← right (annotate-document annotator.global-env pos d);
             _ ← validate-document pos validator.global-env dspec;
             'dty ← type-checker.run (type-check-document pos gstyc dspec) type-checker.global-env;
-        . right (compile-document pos compiler.global-env dty)
+        . right dty
 |]
 
 $gsdeclare type.consts gstype_consts
