@@ -181,6 +181,7 @@ gstype_checker_global_env = [gs:value|
                 type.function (type.consts qq{gsdl.document.t}) $
                     type.app (type.consts qq{type-checker.m}) (type.consts qq{gsdl.document.t})
     ) $
+    type.env.type.insert (gsvar qq{type-checker.global-env}) (type.consts qq{type-checker.env.t}) $
     type.env.view-type.insert (gsvar qq{file.document}) (
         type.function (type.consts qq{pos.t}) $
             type.function (type.consts qq{gsdl.document.t}) (type.consts qq{gsdl.file.t})
@@ -391,6 +392,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{print-rune}) (gsinject print-rune) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
     compiler.env.value.insert (gsvar qq{type-check-document}) (gsinject type-check-document) $
+    compiler.env.value.insert (gsvar qq{type-checker.global-env}) (gsinject type-checker.global-env) $
     compiler.env.value.insert (gsvar qq{type-checker.unify}) (gsinject type-checker.unify) $
     compiler.env.value.insert (gsvar qq{type-checker.unit}) (gsinject type-checker.unit) $
     compiler.env.value.insert (gsvar qq{type.app}) (gsinject type.app) $
