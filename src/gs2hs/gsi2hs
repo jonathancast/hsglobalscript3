@@ -3,6 +3,8 @@ mapM0_gsio.monad (λ 'a. analyzeM_gsio.monad gsio.file.read a.
         case right 'f. (analyze f.
             case file.document 'pos 'd. (analyze annotate-document annotator.global-env pos d.
                 case 'da. (analyze validate-document pos validator.global-env da.
+                    case right _. (analyze type-checker.run (type-check-document pos (λ 'ty. undefined) da) type-checker.global-env.
+                    ),
                 ),
             ),
         ),
