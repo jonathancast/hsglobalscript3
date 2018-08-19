@@ -28,6 +28,7 @@ test_function_literal
 test_variable_function_body
 test_parameter_function_body
 test_parameter_shadows_global_variable
+test_parameter_shadows_parameter
 test_analyze_undefined
 test_discard_pattern
 test_view_pattern

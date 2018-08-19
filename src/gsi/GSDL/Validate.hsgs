@@ -34,7 +34,8 @@ gsvalidate_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
                 )
                 bvs
             ;
-        . validate-expr pos env e1
+            'env1 ← right $ foldr (λ 'v. λ 'env0. validator.env.in-scope.insert v env0) env bvs;
+        . validate-expr pos env1 e1
     case expr.missing-case. right 〈〉
 |]
 
