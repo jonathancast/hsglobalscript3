@@ -403,6 +403,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{parse}) (gsinject parse) $
     compiler.env.value.insert (gsvar qq{pos.init}) (gsinject pos.init) $
     compiler.env.value.insert (gsvar qq{print-rune}) (gsinject print-rune) $
+    compiler.env.value.insert (gsvar qq{process-document}) (gsinject process-document) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
     compiler.env.value.insert (gsvar qq{type-check-document}) (gsinject type-check-document) $
     compiler.env.value.insert (gsvar qq{type-checker.global-env}) (gsinject type-checker.global-env) $
