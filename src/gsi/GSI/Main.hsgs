@@ -186,7 +186,9 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{validator.global-env}) (type.consts qq{gsdl.validator.env.t}) $
     type.env.type.insert (gsvar qq{type-check-document}) (
         type.function (type.consts qq{pos.t}) $
-            type.function (type.function (type.consts qq{type.t}) $ type.app (type.consts qq{type-checker.m}) type.empty-signature) $
+            type.function (type.function (type.consts qq{pos.t}) $ type.function (type.consts qq{type.t}) $
+                type.app (type.consts qq{type-checker.m}) type.empty-signature
+            ) $
                 type.function (type.consts qq{gsdl.document.t}) $
                     type.app (type.consts qq{type-checker.m}) (type.consts qq{gsdl.document.t})
     ) $
