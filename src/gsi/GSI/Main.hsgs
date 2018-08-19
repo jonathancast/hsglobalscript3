@@ -162,6 +162,14 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{gsinject}) (type.forall (gsvar qq{α}) kind.pointed $
         type.function (type.consts qq{α}) (type.consts qq{gsvalue.t})
     ) $
+    type.env.type.insert (gsvar qq{process-document}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.function (type.consts qq{pos.t}) $ type.function (type.consts qq{type.t}) $
+                type.app (type.consts qq{type-checker.m}) type.empty-signature
+            ) $
+                type.function (type.consts qq{gsdl.document.t}) $
+                    type.apply (type.consts qq{either.t}) (type.consts qq{log.t} : type.consts qq{gsdl.document.t} : nil)
+    ) $
     type.env.type.insert (gsvar qq{annotate-document}) (
         type.function (type.consts qq{gsdl.annotator.env.t}) $
             type.function (type.consts qq{pos.t}) $
