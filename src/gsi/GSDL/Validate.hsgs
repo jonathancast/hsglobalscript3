@@ -26,14 +26,13 @@ gsvalidate_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.app 'f 'a. either.for _ ← validate-expr pos env f; _ ← validate-arg pos env a;. right 〈〉
     case expr.monoidal-pat 'p _. validate-pat pos env p
     case expr.pat 'p _. validate-pat pos env p
-    case expr.open-expr 'e1 'mbbvs. either.for
-            _ ← analyze mbbvs.
-                case just 'bvs. either.mapM
-                    (λ 'v. analyze validator.env.in-scope v env.
-                        case false. right 〈〉
-                        case true. left (pos.fmt pos qq{§(gsvar.fmt-atom v) is already in scope})
-                    )
-                    bvs
+    case expr.open-expr 'e1 (just 'bvs). either.for
+            _ ← either.mapM
+                (λ 'v. analyze validator.env.in-scope v env.
+                    case false. right 〈〉
+                    case true. left (pos.fmt pos qq{§(gsvar.fmt-atom v) is already in scope})
+                )
+                bvs
             ;
         . validate-expr pos env e1
     case expr.missing-case. right 〈〉
