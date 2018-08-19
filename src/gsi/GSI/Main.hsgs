@@ -400,8 +400,8 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{natural.addition}) (gsinject natural.addition) $
     compiler.env.value.insert (gsvar qq{nil}) (gsinject nil) $
     compiler.env.value.insert (gsvar qq{parser.global-env}) (gsinject parser.global-env) $
-    compiler.env.value.insert (gsvar qq{pos.init}) (gsinject pos.init) $
     compiler.env.value.insert (gsvar qq{parse}) (gsinject parse) $
+    compiler.env.value.insert (gsvar qq{pos.init}) (gsinject pos.init) $
     compiler.env.value.insert (gsvar qq{print-rune}) (gsinject print-rune) $
     compiler.env.value.insert (gsvar qq{true}) (gsinject true) $
     compiler.env.value.insert (gsvar qq{type-check-document}) (gsinject type-check-document) $
