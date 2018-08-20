@@ -21,13 +21,10 @@ $gsdeclare type-checker.unify-var gstype_checker_unify_var
 gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
     case type.unifiable-var 'v0. (analyze-type-checker-M type-checker.get-var v0.
         case nothing. (analyze ty1.
-            case type.const _. type-checker.unify-var v0 ty1
-            case type.signature _. type-checker.unify-var v0 ty1
-            case type.app _ _. type-checker.unify-var v0 ty1
             case type.unifiable-var 'v1. (analyze st.ref.≡ v0 v1.
                 case false. type-checker.unify-var v0 ty1
             )
-            case type.function _ _. type-checker.unify-var v0 ty1
+            case _. type-checker.unify-var v0 ty1
         )
         case just 'ty01. type-checker.unify pos ty01 ty1
     )
@@ -37,7 +34,6 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
                 type-checker.unify pos ty00 ty101
     )
     case type.signature 'env0. (analyze ty1.
-        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
         case type.signature 'env1. type-checker.for
                 -- Check that all variables in env0 are in env1 and have the right type
                 _ ← type-checker.mapM
@@ -57,34 +53,32 @@ gstype_checker_unify = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. analyze ty0.
                     (type.env.vars env1)
                 ;
             . type-checker.unit 〈〉
-        case type.app _ _. type-checker.incorrect-type pos ty0 ty1
+        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
+        case _. type-checker.incorrect-type pos ty0 ty1
     )
     case type.app 'ty00 'ty01. (analyze ty1.
-        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
         case type.app 'ty10 'ty11. type-checker.for
                 _ ← type-checker.unify pos ty00 ty10;
                 _ ← type-checker.unify pos ty01 ty11;
             . type-checker.unit 〈〉
-        case type.function _ _. type-checker.incorrect-type pos ty0 ty1
-        case type.signature _. type-checker.incorrect-type pos ty0 ty1
+        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
+        case _. type-checker.incorrect-type pos ty0 ty1
     )
     case type.function 'ty00 'ty01. (analyze ty1.
-        case type.app _ _. type-checker.incorrect-type pos ty0 ty1
         case type.function 'ty10 'ty11. type-checker.for
                 _ ← type-checker.unify pos ty00 ty10;
                 _ ← type-checker.unify pos ty01 ty11;
             . type-checker.unit 〈〉
         case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
+        case _. type-checker.incorrect-type pos ty0 ty1
     )
     case type.const 'c0. (analyze ty1.
-        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
         case type.const 'c1. (analyze gsvar.compare c0 c1.
             case eq. type-checker.unit 〈〉
-            case gt. type-checker.incorrect-type pos ty0 ty1
-            case lt. type-checker.incorrect-type pos ty0 ty1
+            case _. type-checker.incorrect-type pos ty0 ty1
         )
-        case type.function _ _. type-checker.incorrect-type pos ty0 ty1
-        case type.app _ _. type-checker.incorrect-type pos ty0 ty1
+        case type.unifiable-var 'v1. type-checker.unify-do-var pos ty0 v1
+        case _. type-checker.incorrect-type pos ty0 ty1
     )
 |]
 
