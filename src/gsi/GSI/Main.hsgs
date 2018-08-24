@@ -37,6 +37,15 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
         )
 |]
 
+gsload_document = [gs:value| λ 'fn. λ 'gstyc. λ 'k. analyze-impM gsio.file.read fn.
+    case right 's. (analyze parse advance-rune print-rune (file parser.global-env) (pos.init fn) s.
+        case right 'f. (analyze f.
+            case file.document 'pos 'd. (analyze process-document pos gstyc d.
+            )
+        )
+    )
+|]
+
 $gsdeclare annotator.global-env gsannotator_global_env
 $gsdeclare validator.global-env gsvalidator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
@@ -157,6 +166,20 @@ gstype_checker_global_env = [gs:value|
     ) $
     type.env.type.insert (gsvar qq{gsinject}) (type.forall (gsvar qq{α}) kind.pointed $
         type.function (type.consts qq{α}) (type.consts qq{gsvalue.t})
+    ) $
+    type.env.type.insert (gsvar qq{load-document}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $
+            type.function (
+                type.function (type.consts qq{pos.t}) $
+                    type.function (type.consts qq{gsdl.type.t}) $
+                        type.app (type.consts qq{type-checker.m}) type.empty-signature
+            ) $
+                type.function (
+                    type.function (type.consts qq{pos.t}) $
+                        type.function (type.consts qq{gsdl.document.t}) $
+                            type.app (type.consts qq{gsio.m}) type.empty-signature
+                ) $
+                    type.app (type.consts qq{gsio.m}) type.empty-signature
     ) $
     type.env.type.insert (gsvar qq{process-document}) (
         type.function (type.consts qq{pos.t}) $
@@ -374,6 +397,8 @@ gstype_monad = [gs:value| λ 'm. type.signature $
 
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 
+$gsdeclare load-document gsload_document
+
 gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{>>=}) (gsinject monad.>>=) $
@@ -395,6 +420,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
     compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
+    compiler.env.value.insert (gsvar qq{load-document}) (gsinject load-document) $
     compiler.env.value.insert (gsvar qq{mapM0}) (gsinject mapM0) $
     compiler.env.value.insert (gsvar qq{map}) (gsinject map) $
     compiler.env.value.insert (gsvar qq{natural.addition}) (gsinject natural.addition) $
