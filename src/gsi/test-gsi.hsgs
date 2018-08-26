@@ -27,6 +27,7 @@ $gsdeclare gsprintstr gsprintstr
 
 gsrun = [gs:value| λ 'x. λ 'as. analyze x.
     case gsvalue.error 'e. impfor _ ← print-error qq{§(gsfmt-error e)\n};. error log{Errors next}
+    case gsvalue.implementation-failure 'pos 'e. impfor _ ← print-error (pos.fmt pos qq{§(e)\n});. error log{Errors next}
     case gsvalue.natural 'n. print qq{§(natural.fmt-decimal n)\n}
     case gsvalue.function 'f. print qq{<function>\n}
     case gsvalue.constr 'pos 'v ('r : ('s : nil)). (analyze gsvar.≡ v (gsvar qq{:}).
