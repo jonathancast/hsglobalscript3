@@ -16,7 +16,7 @@ import System.Posix.Files (getFileStatus, isDirectory)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Error (fmtError)
+import GSI.Error (fmtInvalidProgram, fmtError)
 import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsundefined_value, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (Thread)
@@ -63,6 +63,9 @@ gsprimprint :: Handle -> Pos -> Thread -> GSValue -> IO GSValue
 gsprimprint h pos t (GSThunk th) = do
     v <- evalSync [StackTrace $gshere [StackTrace pos []]] th
     gsprimprint h pos t v
+gsprimprint h pos t (GSInvalidProgram err) = do
+    hPutStrLn h $ fmtInvalidProgram err
+    return $ $gsundefined_value
 gsprimprint h pos t (GSImplementationFailure pos1 msg) = do
     hPutStrLn h $ fmtPos pos1 $ msg
     return $ $gsundefined_value
