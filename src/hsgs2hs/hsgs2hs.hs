@@ -534,7 +534,13 @@ compilePat env (PDiscard pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcdiscardpattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos
   )
+compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
 compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
+
+compilePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
+compilePatApp env (PVar pos v) _ = Left $ fmtPos pos $ "Cannot apply pattern variable '" ++ v ++ " to arguments"
+compilePatApp env (PApp p0 p1) as = compilePatApp env p0 (p1 : as)
+compilePatApp env p as = $gsfatal $ "compilePatApp " ++ patCode p ++ " next"
 
 compilePatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
 compilePatArg env pos p = do
