@@ -8,10 +8,10 @@ import Control.Monad (join)
 
 import Control.Concurrent (MVar, modifyMVar)
 
-import GSI.Util (Pos, StackTrace(..), fmtPos)
-import GSI.Syn (GSVar, fmtVarAtom)
+import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
+import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.RTS (newEvent, wakeup, await)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
 aceEnter cs v@GSInvalidProgram{} sk = gsthrow sk v
@@ -86,6 +86,11 @@ aceField c1 f sk = GSExprCont{
         GSRecord pos1 fs -> case Map.lookup f fs of
             Just v -> aceEnter [c1] v sk
             Nothing -> gsthrow sk $ $gsimplementationfailure $ (fmtPos pos1 . ("missing field "++) . fmtVarAtom f) $ ""
+        GSExternal e | Just (Pos fn l c) <- fromExternal e -> case f of
+            _ | f == gsvar "filename" -> gsreturn sk $ foldr (\ ch sv -> GSConstr $gshere (gsvar ":") [ GSRune ch, sv ]) (GSConstr $gshere (gsvar "nil") []) fn
+            _ | f == gsvar "line" -> gsreturn sk $ GSNatural l
+            _ | f == gsvar "col" -> gsreturn sk $ GSNatural c
+            _ -> gsthrow sk $ $gsimplementationfailure $ "aceField pos " ++ fmtVarAtom f " next"
         _ -> gsthrow sk $ $gsimplementationfailure $ "aceField " ++ gsvCode r ++ " next"
       ,
     gsthrow = gsthrow sk
