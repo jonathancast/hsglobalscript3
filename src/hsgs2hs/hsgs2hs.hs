@@ -1014,6 +1014,7 @@ globalEnv = Env{
         ("gsvalue.constr", "GSI.GSI", "gsvalue_constr_view"),
         ("gsvalue.error", "GSI.GSI", "gsvalue_error_view"),
         ("gsvalue.function", "GSI.GSI", "gsvalue_function_view"),
+        ("gsvalue.implementation-failure", "GSI.GSI", "gsvalue_implementation_failure_view"),
         ("gsvalue.natural", "GSI.GSI", "gsvalue_natural_view"),
         ("gsvalue.rune", "GSI.GSI", "gsvalue_rune_view"),
         ("gsvalue.thunk", "GSI.GSI", "gsvalue_thunk_view"),
