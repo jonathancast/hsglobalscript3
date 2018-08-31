@@ -58,6 +58,9 @@ gsigsintbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalnatural ($gsav nv) $ \ n ->
         $gsbcexternal $ GSIntGEnter pos (GSNatural n)
 
+gsigsintbcundefined = $gslambda_value $ \ posv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcexternal $ GSIntUndefined pos
+
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 
