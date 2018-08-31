@@ -30,12 +30,13 @@ fmtPos :: Pos -> String -> String
 fmtPos p s = filename p ++ ':' : show (line p) ++ ':' : show (col p) ++ ": " ++ s
 
 fmtStackTrace :: StackTrace -> String -> String
-fmtStackTrace (StackTrace pos cs) msg = fmtPos pos $ msg ++ fmtCallers 0 cs "" where
-    fmtCallers n [] s = s
-    fmtCallers n [c] s = '\n' : replicate (n * 4) ' ' ++ fmtStackTrace' n c s
-    fmtCallers n (c0:cs) s = '\n' : replicate ((n+1) * 4) ' ' ++ "(called from " ++ fmtStackTrace' (n + 1) c0 (')' : fmtCallers n cs s)
+fmtStackTrace (StackTrace pos cs) msg = fmtPos pos $ msg ++ fmtCallers 10 0 cs "" where
+    fmtCallers 0 _ _ s = "\n..." ++ s
+    fmtCallers d n [] s = s
+    fmtCallers d n [c] s = '\n' : replicate (n * 4) ' ' ++ fmtStackTrace' d n c s
+    fmtCallers d n (c0:cs) s = '\n' : replicate ((n+1) * 4) ' ' ++ "(called from " ++ fmtStackTrace' (d-1) (n + 1) c0 (')' : fmtCallers (d -1) n cs s)
 
-    fmtStackTrace' n (StackTrace pos cs) s = fmtPos' pos (fmtCallers n cs s)
+    fmtStackTrace' d n (StackTrace pos cs) s = fmtPos' pos (fmtCallers (d-1) n cs s)
 
 fmtPos' :: Pos -> String -> String
 fmtPos' p s = filename p ++ ':' : show (line p) ++ ':' : show (col p) ++ s
