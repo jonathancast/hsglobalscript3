@@ -2,7 +2,7 @@
 module GSI.GSI (
     gsi_monad,
     gsigsinject, gsigsintthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
-    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
+    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcnonmonoidalpattern, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
     gsigsvar,
     gsigsevalSync, gsicreateThread, gsiexecMainThread, gsigsfmtError,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
@@ -48,6 +48,11 @@ gsigsintthunk = $gsimpprim $ \ pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
     e <- gsapiEvalExternal pos0 ev :: IO GSIntExpr
     r <- gsintthunk_w pos1 e
     return $ gsexternal r
+
+gsigsintbcgapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ asv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ f ->
+        $gsbcevallist ($gsav asv) $ \ avs -> $gsbcevalmap $gsbcevalexternal (map $gsav avs) $ \ as ->
+            $gsbcexternal $ GSIntGApply pos f as
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
