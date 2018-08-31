@@ -98,6 +98,7 @@ aceField c1 f sk = GSExprCont{
             _ | f == gsvar "line" -> gsreturn sk $ GSNatural l
             _ | f == gsvar "col" -> gsreturn sk $ GSNatural c
             _ -> gsthrow sk $ $gsimplementationfailure $ "aceField pos " ++ fmtVarAtom f " next"
+        GSExternal e -> gsthrow sk $ $gsimplementationfailure $ "aceField " ++ whichExternal e ++ " next"
         _ -> gsthrow sk $ $gsimplementationfailure $ "aceField " ++ gsvCode r ++ " next"
       ,
     gsthrow = gsthrow sk
