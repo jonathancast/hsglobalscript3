@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
+    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
-    gsthunk, gsthunk_w,
+    gsthunk, gsthunk_w, gsintthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
     fmtExternal,
-    gsvFmt, gsvCode, bcoCode, argCode, gstsCode, whichExternal
+    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, whichExternal
   ) where
 
 import Data.Map (Map)
@@ -50,8 +50,22 @@ data GSValue
 
 data GSBCO
   = GSRawExpr GSExpr
+  | GSIntExpr GSIntExpr
   | GSImp (Thread -> IO GSValue)
   | GSLambda (GSValue -> GSBCO)
+
+data GSIntArg
+  = GSIArgExpr Pos GSIntExpr
+  | GSIArgLVar GSVar
+  | GSIArgGVar GSValue
+
+data GSIntExpr
+  = GSIntOpenExpr Pos GSIntExpr
+  | GSIntLField Pos Int GSVar GSIntExpr
+  | GSIntPrim (IO GSValue)
+  | GSIntGApply Pos GSValue [GSIntArg]
+  | GSIntUndefined Pos
+  | GSIntGEnter Pos GSValue
 
 data GSArg
   = GSArgExpr Pos GSExpr
@@ -68,6 +82,7 @@ type GSThunk = MVar GSThunkState
 
 data GSThunkState
   = GSTSExpr (forall a. [StackTrace] -> GSExprCont a -> IO a)
+  | GSTSIntExpr GSIntExpr
   | GSApply Pos GSValue [GSValue]
   | GSTSField Pos GSVar GSValue
   | GSTSStack Event
@@ -133,6 +148,9 @@ gsthunk = varE 'gsthunk_w `appE` gshere
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
 gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ cs sk -> e cs sk
 
+gsintthunk_w :: Pos -> GSIntExpr -> IO GSValue
+gsintthunk_w pos i = fmap GSThunk $ newMVar $ GSTSIntExpr i
+
 gsprepare = varE 'gsprepare_w `appE` gshere
 
 gsprepare_w :: Pos -> GSArg -> IO GSValue
@@ -188,6 +206,8 @@ instance GSExternal Thread
 -- ↓ Instances that are here because they go here
 instance GSExternal GSArg
 instance GSExternal GSExpr
+instance GSExternal GSIntArg
+instance GSExternal GSIntExpr
 instance GSExternal GSBCO
 
 instance GSExternal GSValue where
@@ -212,8 +232,22 @@ gsvCode GSExternal{} = "GSExternal"
 
 bcoCode :: GSBCO -> String
 bcoCode GSRawExpr{} = "GSRawExpr"
+bcoCode GSIntExpr{} = "GSIntExpr"
 bcoCode GSImp{} = "GSImp"
 bcoCode GSLambda{} = "GSLambda"
+
+iargCode :: GSIntArg -> String
+iargCode GSIArgExpr{} = "GSIArgExpr"
+iargCode GSIArgLVar{} = "GSIArgLVar"
+iargCode GSIArgGVar{} = "GSIArgGVar"
+
+iexprCode :: GSIntExpr -> String
+iexprCode GSIntOpenExpr{} = "GSIntOpenExpr"
+iexprCode GSIntLField{} = "GSIntLField"
+iexprCode GSIntPrim{} = "GSIntPrim"
+iexprCode GSIntGApply{} = "GSIntGApply"
+iexprCode GSIntUndefined{} = "GSIntUndefined"
+iexprCode GSIntGEnter{} = "GSIntGEnter"
 
 argCode :: GSArg -> String
 argCode GSArgExpr{} = "GSArgExpr"
@@ -221,6 +255,7 @@ argCode GSArgVar{} = "GSArgVar"
 
 gstsCode :: GSThunkState -> String
 gstsCode GSTSExpr{} = "GSTSExpr"
+gstsCode GSTSIntExpr{} = "GSTSIntExpr"
 gstsCode GSApply{} = "GSApply"
 gstsCode GSTSField{} = "GSTSField"
 gstsCode GSTSStack{} = "GSTSStack"
