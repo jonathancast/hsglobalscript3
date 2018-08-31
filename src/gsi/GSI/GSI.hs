@@ -57,6 +57,10 @@ gsigsiagv = $gslambda_value $ \ gv ->
     $gsbcevalexternal ($gsav gv) $ \ g ->
         $gsbcexternal $ GSIArgGVar g
 
+gsigsintbcgenter = $gslambda_value $ \ posv -> $gsbcarg $ \ xv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav xv) $ \ x ->
+        $gsbcexternal $ GSIntGEnter pos x
+
 gsigsintbcgapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ asv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ f ->
         $gsbcevallist ($gsav asv) $ \ avs -> $gsbcevalmap $gsbcevalexternal (map $gsav avs) $ \ as ->
