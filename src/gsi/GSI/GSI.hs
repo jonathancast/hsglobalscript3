@@ -54,6 +54,10 @@ gsigsintbcgapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ a
         $gsbcevallist ($gsav asv) $ \ avs -> $gsbcevalmap $gsbcevalexternal (map $gsav avs) $ \ as ->
             $gsbcexternal $ GSIntGApply pos f as
 
+gsigsintbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalnatural ($gsav nv) $ \ n ->
+        $gsbcexternal $ GSIntGEnter pos (GSNatural n)
+
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 

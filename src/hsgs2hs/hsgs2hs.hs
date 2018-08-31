@@ -808,6 +808,7 @@ globalEnv = Env{
         ("gsi.monad", "GSI.GSI", "gsi_monad"),
         ("gsinject", "GSI.GSI", "gsigsinject"),
         ("gsintbcgapply", "GSI.GSI", "gsigsintbcgapply"),
+        ("gsintbcnatural", "GSI.GSI", "gsigsintbcnatural"),
         ("gsintthunk", "GSI.GSI", "gsigsintthunk"),
         ("gsio.file.read", "GSI.GSIO", "gsio_file_read"),
         ("gsio.monad", "GSI.GSIO", "gsio_monad"),
