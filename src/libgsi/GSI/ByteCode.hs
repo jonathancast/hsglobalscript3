@@ -21,7 +21,7 @@ import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, c
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, whichExternal, gsae, gsav, gsvCode, argCode)
-import GSI.Functions (gsstring, gsnatural, gsfmterrormsg)
+import GSI.Functions (gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
 import ACE (aceEnter, aceForce, aceArg, aceField)
