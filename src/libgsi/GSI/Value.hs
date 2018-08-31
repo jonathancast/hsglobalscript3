@@ -61,6 +61,7 @@ data GSIntArg
 
 data GSIntExpr
   = GSIntOpenExpr Pos GSIntExpr
+  | GSIntWithHere Pos GSIntExpr
   | GSIntLField Pos Int GSVar GSIntExpr
   | GSIntPrim (IO GSValue)
   | GSIntGApply Pos GSValue [GSIntArg]
@@ -248,6 +249,7 @@ iargCode GSIArgGVar{} = "GSIArgGVar"
 
 iexprCode :: GSIntExpr -> String
 iexprCode GSIntOpenExpr{} = "GSIntOpenExpr"
+iexprCode GSIntWithHere{} = "GSIntWithHere"
 iexprCode GSIntLField{} = "GSIntLField"
 iexprCode GSIntPrim{} = "GSIntPrim"
 iexprCode GSIntGApply{} = "GSIntGApply"

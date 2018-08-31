@@ -57,6 +57,10 @@ gsigsiagv = $gslambda_value $ \ gv ->
     $gsbcevalexternal ($gsav gv) $ \ g ->
         $gsbcexternal $ GSIArgGVar g
 
+gsigsintbcwithhere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav kv) $ \ k ->
+        $gsbcexternal $ GSIntWithHere pos k
+
 gsigsintbcgenter = $gslambda_value $ \ posv -> $gsbcarg $ \ xv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav xv) $ \ x ->
         $gsbcexternal $ GSIntGEnter pos x

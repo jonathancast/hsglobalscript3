@@ -813,6 +813,7 @@ globalEnv = Env{
         ("gsintbcgenter", "GSI.GSI", "gsigsintbcgenter"),
         ("gsintbcnatural", "GSI.GSI", "gsigsintbcnatural"),
         ("gsintbcundefined", "GSI.GSI", "gsigsintbcundefined"),
+        ("gsintbcwithhere", "GSI.GSI", "gsigsintbcwithhere"),
         ("gsintthunk", "GSI.GSI", "gsigsintthunk"),
         ("gsio.file.read", "GSI.GSIO", "gsio_file_read"),
         ("gsio.monad", "GSI.GSIO", "gsio_monad"),
