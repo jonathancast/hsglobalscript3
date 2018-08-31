@@ -65,6 +65,7 @@ data GSIntExpr
   | GSIntLField Pos Int GSVar GSIntExpr
   | GSIntPrim (IO GSValue)
   | GSIntGApply Pos GSValue [GSIntArg]
+  | GSIntEApply Pos GSIntExpr [GSIntArg]
   | GSIntUndefined Pos
   | GSIntGEnter Pos GSValue
 
@@ -253,6 +254,7 @@ iexprCode GSIntWithHere{} = "GSIntWithHere"
 iexprCode GSIntLField{} = "GSIntLField"
 iexprCode GSIntPrim{} = "GSIntPrim"
 iexprCode GSIntGApply{} = "GSIntGApply"
+iexprCode GSIntEApply{} = "GSIntEApply"
 iexprCode GSIntUndefined{} = "GSIntUndefined"
 iexprCode GSIntGEnter{} = "GSIntGEnter"
 

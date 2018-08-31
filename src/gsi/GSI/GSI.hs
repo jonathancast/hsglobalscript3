@@ -70,6 +70,11 @@ gsigsintbcgapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ a
         $gsbcevallist ($gsav asv) $ \ avs -> $gsbcevalmap $gsbcevalexternal (map $gsav avs) $ \ as ->
             $gsbcexternal $ GSIntGApply pos f as
 
+gsigsintbceapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ asv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ f ->
+        $gsbcevallist ($gsav asv) $ \ avs -> $gsbcevalmap $gsbcevalexternal (map $gsav avs) $ \ as ->
+            $gsbcexternal $ GSIntEApply pos f as
+
 gsigsintbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalnatural ($gsav nv) $ \ n ->
         $gsbcexternal $ GSIntGEnter pos (GSNatural n)
