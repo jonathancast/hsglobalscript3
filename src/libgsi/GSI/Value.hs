@@ -3,7 +3,7 @@
 module GSI.Value (
     GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
-    gsprepare, gsprepare_w, gsav, gsargvar_w, gsae, gsargexpr_w,
+    gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
     fmtExternal,
@@ -157,6 +157,9 @@ gsprepare_w :: Pos -> GSArg -> IO GSValue
 gsprepare_w pos0 (GSArgExpr pos1 e) = gsthunk_w pos1 e
 gsprepare_w pos0 (GSArgVar v) = return v
 gsprepare_w pos a = return $ GSImplementationFailure $gshere $ "gsprepare_w " ++ argCode a ++ " next"
+
+gsintprepare :: GSIntArg -> IO GSValue
+gsintprepare a = return $ GSImplementationFailure $gshere $ "gsintprepare " ++ iargCode a ++ " next"
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
