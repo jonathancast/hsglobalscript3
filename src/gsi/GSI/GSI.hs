@@ -49,6 +49,10 @@ gsigsintthunk = $gsimpprim $ \ pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
     r <- gsintthunk_w pos1 e
     return $ gsexternal r
 
+gsigsiae = $gslambda_value $ \ posv -> $gsbcarg $ \ ev ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav ev) $ \ e ->
+        $gsbcexternal $ GSIArgExpr pos e
+
 gsigsintbcgapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ asv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav fv) $ \ f ->
         $gsbcevallist ($gsav asv) $ \ avs -> $gsbcevalmap $gsbcevalexternal (map $gsav avs) $ \ as ->
