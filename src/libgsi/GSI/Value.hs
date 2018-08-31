@@ -159,6 +159,8 @@ gsprepare_w pos0 (GSArgVar v) = return v
 gsprepare_w pos a = return $ GSImplementationFailure $gshere $ "gsprepare_w " ++ argCode a ++ " next"
 
 gsintprepare :: GSIntArg -> IO GSValue
+gsintprepare (GSIArgExpr pos e) = gsintthunk_w pos e
+gsintprepare (GSIArgGVar v) = return v
 gsintprepare a = return $ GSImplementationFailure $gshere $ "gsintprepare " ++ iargCode a ++ " next"
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
