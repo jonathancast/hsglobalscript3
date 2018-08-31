@@ -10,8 +10,9 @@ import Control.Concurrent (MVar, modifyMVar)
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
+import GSI.Error (GSError(..))
 import GSI.RTS (newEvent, wakeup, await)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
 aceEnter cs v@GSInvalidProgram{} sk = gsthrow sk v
@@ -42,11 +43,17 @@ aceEnter cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = " +
 
 aceEnterThunkState :: [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
 aceEnterThunkState cs (GSTSExpr expr) sk = expr cs sk
+aceEnterThunkState cs (GSTSIntExpr e) sk = aceEnterIntExpr cs e sk
 aceEnterThunkState cs (GSApply pos fn args) sk =
     aceEnter (StackTrace pos [] : cs) fn (foldr (aceArg (StackTrace pos [])) sk args)
 aceEnterThunkState cs (GSTSField pos f r) sk =
     aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f sk)
 aceEnterThunkState cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
+
+aceEnterIntExpr :: [StackTrace] -> GSIntExpr -> GSExprCont a -> IO a
+aceEnterIntExpr cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
+aceEnterIntExpr cs (GSIntGEnter pos v) sk = aceEnter [StackTrace pos cs] v sk
+aceEnterIntExpr cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterIntExpr " ++ iexprCode e ++ " next"
 
 aceUpdate :: MVar (GSThunkState) -> GSExprCont a -> GSExprCont a
 aceUpdate mv sk = GSExprCont{
