@@ -19,6 +19,7 @@ data GSResult
 eval :: [StackTrace] -> MVar (GSThunkState) -> IO GSResult
 eval cs mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr{} -> startEval st
+    GSTSIntExpr{} -> startEval st
     GSApply{} -> startEval st
     GSTSField{} -> startEval st
     GSTSIndirection v -> return (GSTSIndirection v, GSIndirection v)
