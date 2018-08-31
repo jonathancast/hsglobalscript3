@@ -807,6 +807,7 @@ globalEnv = Env{
         ("gsfmt-error", "GSI.GSI", "gsigsfmtError"),
         ("gsi.monad", "GSI.GSI", "gsi_monad"),
         ("gsiae", "GSI.GSI", "gsigsiae"),
+        ("gsiagv", "GSI.GSI", "gsigsiagv"),
         ("gsinject", "GSI.GSI", "gsigsinject"),
         ("gsintbcgapply", "GSI.GSI", "gsigsintbcgapply"),
         ("gsintbcnatural", "GSI.GSI", "gsigsintbcnatural"),
