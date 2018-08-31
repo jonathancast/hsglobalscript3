@@ -55,6 +55,9 @@ aceEnterIntExpr cs (GSIntWithHere pos k) sk =
     aceEnterIntExpr [StackTrace pos cs] k $ aceArg (StackTrace pos cs) (gsexternal $ StackTrace pos cs) $ sk
 aceEnterIntExpr cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
 aceEnterIntExpr cs (GSIntGEnter pos v) sk = aceEnter [StackTrace pos cs] v sk
+aceEnterIntExpr cs (GSIntEApply pos f as) sk = do
+    avs <- mapM gsintprepare as
+    aceEnterIntExpr [StackTrace pos cs] f (foldr (aceArg (StackTrace pos cs)) sk avs)
 aceEnterIntExpr cs (GSIntGApply pos f as) sk = do
     avs <- mapM gsintprepare as
     aceEnter [StackTrace pos cs] f (foldr (aceArg (StackTrace pos cs)) sk avs)
