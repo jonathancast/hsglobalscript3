@@ -98,6 +98,10 @@ gsigsintbcnonmonoidalpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ pv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav pv) $ \ p ->
         $gsbcexternal $ GSIntBEnter pos $ gsbcnonmonoidalpattern_w pos $ gsbcenterint_w pos p
 
+gsigsintbcvarpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ xv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav xv) $ \ x ->
+        $gsbcexternal $ GSIntBEnter pos $ gsbcvarpattern_w pos x
+
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 

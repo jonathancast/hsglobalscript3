@@ -818,6 +818,7 @@ globalEnv = Env{
         ("gsintbcnonmonoidalpattern", "GSI.GSI", "gsigsintbcnonmonoidalpattern"),
         ("gsintbcopenexpr", "GSI.GSI", "gsigsintbcopenexpr"),
         ("gsintbcundefined", "GSI.GSI", "gsigsintbcundefined"),
+        ("gsintbcvarpattern", "GSI.GSI", "gsigsintbcvarpattern"),
         ("gsintbcwithhere", "GSI.GSI", "gsigsintbcwithhere"),
         ("gsintthunk", "GSI.GSI", "gsigsintthunk"),
         ("gsio.file.read", "GSI.GSIO", "gsio_file_read"),
