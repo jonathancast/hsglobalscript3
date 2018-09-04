@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceEnter, aceEnterThunkState, aceUpdate, aceForce, aceArg, aceField, aceEmptyStack) where
+module ACE (aceEnter, aceEnterThunkState, aceEnterIntExpr, aceUpdate, aceForce, aceArg, aceField, aceEmptyStack) where
 
 import qualified Data.Map as Map
 
@@ -20,6 +20,7 @@ aceEnter cs v@GSError{} sk = gsthrow sk v
 aceEnter cs v@GSImplementationFailure{} sk = gsthrow sk v
 aceEnter cs (GSThunk mv) sk = join $ modifyMVar mv $ \ st -> case st of
     GSTSExpr{} -> doEval st
+    GSTSIntExpr{} -> doEval st
     GSApply{} -> doEval st
     GSTSField{} -> doEval st
     GSTSIndirection v -> return (GSTSIndirection v, aceEnter cs v sk)
@@ -55,6 +56,7 @@ aceEnterIntExpr cs (GSIntWithHere pos k) sk =
     aceEnterIntExpr [StackTrace pos cs] k $ aceArg (StackTrace pos cs) (gsexternal $ StackTrace pos cs) $ sk
 aceEnterIntExpr cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
 aceEnterIntExpr cs (GSIntGEnter pos v) sk = aceEnter [StackTrace pos cs] v sk
+aceEnterIntExpr cs (GSIntBEnter pos e) sk = runGSExpr e [StackTrace pos cs] sk
 aceEnterIntExpr cs (GSIntEApply pos f as) sk = do
     avs <- mapM gsintprepare as
     aceEnterIntExpr [StackTrace pos cs] f (foldr (aceArg (StackTrace pos cs)) sk avs)
