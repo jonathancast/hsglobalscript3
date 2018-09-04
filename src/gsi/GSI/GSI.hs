@@ -61,6 +61,10 @@ gsigsintbcwithhere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav kv) $ \ k ->
         $gsbcexternal $ GSIntWithHere pos k
 
+gsigsintbcopenexpr = $gslambda_value $ \ posv -> $gsbcarg $ \ ev ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav ev) $ \ e ->
+        $gsbcexternal $ GSIntOpenExpr pos e
+
 gsigsintbcgenter = $gslambda_value $ \ posv -> $gsbcarg $ \ xv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav xv) $ \ x ->
         $gsbcexternal $ GSIntGEnter pos x
