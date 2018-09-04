@@ -68,6 +68,7 @@ data GSIntExpr
   | GSIntEApply Pos GSIntExpr [GSIntArg]
   | GSIntUndefined Pos
   | GSIntGEnter Pos GSValue
+  | GSIntBEnter Pos GSExpr
   | GSIntFEnter Pos GSVar
 
 data GSArg
@@ -258,6 +259,7 @@ iexprCode GSIntGApply{} = "GSIntGApply"
 iexprCode GSIntEApply{} = "GSIntEApply"
 iexprCode GSIntUndefined{} = "GSIntUndefined"
 iexprCode GSIntGEnter{} = "GSIntGEnter"
+iexprCode GSIntBEnter{} = "GSIntBEnter"
 
 argCode :: GSArg -> String
 argCode GSArgExpr{} = "GSArgExpr"
