@@ -813,6 +813,7 @@ globalEnv = Env{
         ("gsintbcfenter", "GSI.GSI", "gsigsintbcfenter"),
         ("gsintbcgapply", "GSI.GSI", "gsigsintbcgapply"),
         ("gsintbcgenter", "GSI.GSI", "gsigsintbcgenter"),
+        ("gsintbcinsufficientcases", "GSI.GSI", "gsigsintbcinsufficientcases"),
         ("gsintbcnatural", "GSI.GSI", "gsigsintbcnatural"),
         ("gsintbcopenexpr", "GSI.GSI", "gsigsintbcopenexpr"),
         ("gsintbcundefined", "GSI.GSI", "gsigsintbcundefined"),

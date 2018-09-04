@@ -90,6 +90,10 @@ gsigsintbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
 gsigsintbcundefined = $gslambda_value $ \ posv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcexternal $ GSIntUndefined pos
 
+gsigsintbcinsufficientcases = $gslambda_value $ \ posv ->
+    $gsbcevalpos ($gsav posv) $ \ pos ->
+        $gsbcexternal $ GSIntBEnter pos $ $gsbcarg $ \ x -> gsbcprim_w pos gspriminsufficientcases x
+
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 
