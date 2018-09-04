@@ -94,6 +94,10 @@ gsigsintbcinsufficientcases = $gslambda_value $ \ posv ->
     $gsbcevalpos ($gsav posv) $ \ pos ->
         $gsbcexternal $ GSIntBEnter pos $ $gsbcarg $ \ x -> gsbcprim_w pos gspriminsufficientcases x
 
+gsigsintbcnonmonoidalpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ pv ->
+    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav pv) $ \ p ->
+        $gsbcexternal $ GSIntBEnter pos $ gsbcnonmonoidalpattern_w pos $ gsbcenterint_w pos p
+
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 
