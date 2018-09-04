@@ -68,6 +68,7 @@ data GSIntExpr
   | GSIntEApply Pos GSIntExpr [GSIntArg]
   | GSIntUndefined Pos
   | GSIntGEnter Pos GSValue
+  | GSIntFEnter Pos GSVar
 
 data GSArg
   = GSArgExpr Pos GSExpr
