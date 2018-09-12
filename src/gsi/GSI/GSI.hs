@@ -2,7 +2,10 @@
 module GSI.GSI (
     gsi_monad,
     gsigsinject, gsigsintthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
-    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcnonmonoidalpattern, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
+    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
+    gsigsintbcwithhere, gsigsintbcopenexpr, gsigsintbcgenter, gsigsintbcfenter, gsigsintbcgapply, gsigsintbceapply, gsigsintbcnatural, gsigsintbcundefined, gsigsintbcinsufficientcases,
+    gsigsintbcvarpattern, gsigsintbcdiscardpattern,
+    gsigsiae, gsigsiagv,
     gsigsvar,
     gsigsevalSync, gsicreateThread, gsiexecMainThread, gsigsfmtError,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
@@ -23,7 +26,7 @@ import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcevalnatural, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcenter_w, gsbcexternal, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
 import GSI.String (gsbcstringlit)
 
@@ -93,10 +96,6 @@ gsigsintbcundefined = $gslambda_value $ \ posv ->
 gsigsintbcinsufficientcases = $gslambda_value $ \ posv ->
     $gsbcevalpos ($gsav posv) $ \ pos ->
         $gsbcexternal $ GSIntBEnter pos $ $gsbcarg $ \ x -> gsbcprim_w pos gspriminsufficientcases x
-
-gsigsintbcnonmonoidalpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ pv ->
-    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav pv) $ \ p ->
-        $gsbcexternal $ GSIntBEnter pos $ gsbcnonmonoidalpattern_w pos $ gsbcenterint_w pos p
 
 gsigsintbcvarpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ xv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav xv) $ \ x ->
