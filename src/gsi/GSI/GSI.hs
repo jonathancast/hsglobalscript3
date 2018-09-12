@@ -2,7 +2,7 @@
 module GSI.GSI (
     gsi_monad,
     gsigsinject, gsigsthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
-    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcnonmonoidalpattern, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
+    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
     gsigsvar,
     gsigsevalSync, gsicreateThread, gsiexecMainThread, gsigsfmtError,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
@@ -23,7 +23,7 @@ import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcnonmonoidalpattern_w, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcexternal, gsbcenter_w, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
 import GSI.String (gsbcstringlit)
 
@@ -93,10 +93,6 @@ gsigsbcapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ avsv 
 
 gsigsbcinsufficientcases = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal ($gsbcarg $ \ x -> gsbcprim_w pos gspriminsufficientcases x)
-
-gsigsbcnonmonoidalpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ pv ->
-    $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav pv) $ \ p ->
-        $gsbcexternal (gsbcnonmonoidalpattern_w pos p)
 
 gsigsbcdiscardpattern = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos ->
     $gsbcexternal (gsbcdiscardpattern_w pos)

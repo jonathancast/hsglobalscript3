@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsnonmonoidalpattern) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -8,7 +8,7 @@ import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value,
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
-import GSI.ByteCode (gsbcarg, gsbcapply, gsbcapp, gsbcforce, gsbcfield, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcarg, gsbcapply, gsbcapp, gsbcforce, gsbcfield, gsbcconstr, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 import GSI.BCFunctions (gsbcevalstacktrace)
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
@@ -52,3 +52,6 @@ gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
 
 gsundefined = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ st_hs ->
     gsbcundefined st_hs
+
+gsnonmonoidalpattern = $gslambda_value $ \ p -> $gsbcarg $ \ x ->
+    $gsbcforce ($gsae ($gsbcapply p [ $gsav x ])) $ \ r -> $gsbcconstr (gsvar "1") [$gsav r]

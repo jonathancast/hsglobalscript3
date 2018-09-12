@@ -8,7 +8,7 @@ module GSI.ByteCode (
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpattern_w, gsbcnonmonoidalpattern_w, gsbcvarpattern_w, gsbcdiscardpattern_w
+    gsbcviewpattern_w, gsbcvarpattern_w, gsbcdiscardpattern_w
   ) where
 
 import Control.Monad (forM)
@@ -299,10 +299,6 @@ gsbcviewpattern_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
     ),
     $gsav x
   ]
-
-gsbcnonmonoidalpattern_w :: Pos -> GSExpr -> GSExpr
-gsbcnonmonoidalpattern_w pos p = gsbcarg_w pos $ \ x ->
-    gsbcforce_w pos ($gsae (gsbcapp_w pos p [ $gsav x ])) $ \ r -> gsbcconstr_w pos (gsvar "1") [$gsav r]
 
 gsbcvarpattern_w :: Pos -> GSVar -> GSExpr
 gsbcvarpattern_w pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
