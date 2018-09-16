@@ -262,6 +262,7 @@ iexprCode GSIntEApply{} = "GSIntEApply"
 iexprCode GSIntUndefined{} = "GSIntUndefined"
 iexprCode GSIntGEnter{} = "GSIntGEnter"
 iexprCode GSIntBEnter{} = "GSIntBEnter"
+iexprCode GSIntFEnter{} = "GSIntFEnter"
 
 argCode :: GSArg -> String
 argCode GSArgExpr{} = "GSArgExpr"
