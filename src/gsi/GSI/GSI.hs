@@ -24,7 +24,7 @@ import GSI.ThreadType (Thread, ThreadException(..))
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
-import GSI.Functions (gslist, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
+import GSI.Functions (gslist, gsapiEval, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
 import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcevalnatural, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcenter_w, gsbcexternal, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
@@ -100,6 +100,10 @@ gsigsintbcinsufficientcases = $gslambda_value $ \ posv ->
 gsigsintbcvarpattern = $gslambda_value $ \ posv -> $gsbcarg $ \ xv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav xv) $ \ x ->
         $gsbcexternal $ GSIntBEnter pos $ gsbcvarpattern_w pos x
+
+gsigsintbcdiscardpattern = $gslambda_value $ \ posv ->
+    $gsbcevalpos ($gsav posv) $ \ pos ->
+        $gsbcexternal $ GSIntBEnter pos $ gsbcdiscardpattern_w pos
 
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
