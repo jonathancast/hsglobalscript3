@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
+    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
@@ -36,6 +36,8 @@ import GSI.ThreadType (Thread)
 --         §item Arguments!  These are things that can be RHSs of lets or applications!  Basically values or bodies!
 -- §end
 
+type GSValueEnv = Map GSVar GSValue
+
 data GSValue
   = GSImplementationFailure Pos String
   | GSInvalidProgram GSInvalidProgram
@@ -43,7 +45,7 @@ data GSValue
   | GSThunk GSThunk
   | GSClosure [StackTrace] GSBCO
   | GSConstr Pos GSVar [GSValue]
-  | GSRecord Pos (Map GSVar GSValue)
+  | GSRecord Pos GSValueEnv
   | GSNatural Integer
   | GSRune Char
   | GSExternal SomeGSExternal
