@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, ScopedTypeVariables #-}
 module GSI.GSI (
     gsi_monad,
-    gsigsinject, gsigsintthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
+    gsigsinject, gsigsthunk, gsigsintthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
     gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
     gsigsintbcwithhere, gsigsintbcopenexpr, gsigsintbcgenter, gsigsintbcfenter, gsigsintbcgapply, gsigsintbceapply, gsigsintbcnatural, gsigsintbcundefined, gsigsintbcinsufficientcases,
     gsigsintbcvarpattern, gsigsintbcdiscardpattern,
