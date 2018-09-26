@@ -10,7 +10,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSError, throwGSInvalidProgram, fmtError)
+import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSError, fmtError)
 import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
@@ -104,7 +104,7 @@ gsevalExternal pos (GSThunk ts) = do
     v <- evalSync [StackTrace pos []] ts
     gsevalExternal pos v
 gsevalExternal pos (GSError err) = throwGSError err
-gsevalExternal pos (GSInvalidProgram err) = throwGSInvalidProgram err
+gsevalExternal pos (GSInvalidProgram ip) = throwIO $ GSExcInvalidProgram ip
 gsevalExternal pos (GSExternal e) = case fromExternal e of
     Nothing -> throwIO $ GSExcImplementationFailure $gshere $ "Got the wrong type of external"
     Just x -> return x

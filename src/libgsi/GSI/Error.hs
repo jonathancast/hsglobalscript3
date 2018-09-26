@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSInvalidProgram, throwGSError, fmtInvalidProgram, fmtError, fmtErrorShort) where
+module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSError, fmtInvalidProgram, fmtError, fmtErrorShort) where
 
 import Data.Typeable (Typeable)
 
@@ -30,8 +30,6 @@ data GSError
 data GSInvalidProgram
   = GSIPRuntimeTypeError StackTrace String String String
   deriving (Show)
-
-throwGSInvalidProgram ip = throw $ GSExcInvalidProgram ip
 
 throwGSError e = throw $ GSExcError e
 throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
