@@ -11,6 +11,8 @@ module GSI.ByteCode (
     gsbcviewpattern_w, gsbcvarpattern_w, gsbcdiscardpattern_w
   ) where
 
+import Data.Proxy (Proxy(..))
+
 import Control.Monad (forM)
 
 import qualified Data.Map as Map
@@ -184,11 +186,11 @@ gsbcfield_w pos a f = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in runGSArg
 
 gsbcevalexternal = varE 'gsbcevalexternal_w `appE` gshere
 
-gsbcevalexternal_w :: GSExternal e => Pos -> GSArg -> (e -> GSExpr) -> GSExpr
+gsbcevalexternal_w :: forall e. GSExternal e => Pos -> GSArg -> (e -> GSExpr) -> GSExpr
 gsbcevalexternal_w pos ea k = gsbcforce_w pos ea $ \ ev -> case ev of
     GSExternal e -> case fromExternal e of
         Just x -> k x
-        Nothing -> gsbcimplementationfailure_w $gshere $ "gsbcevalexternal_w " ++ whichExternal e ++ " next"
+        Nothing -> gsbcruntimetypeerror_w pos (externalType (Proxy :: Proxy e)) (whichExternal e) "gsbcevalexternal"
     _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalexternal_w " ++ gsvCode ev ++ " next"
 
 gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
