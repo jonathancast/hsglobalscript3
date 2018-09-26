@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ExistentialQuantification, Rank2Types, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.ThreadType (Thread(..), ThreadState(..), ThreadException(..), threadStateCode) where
+module GSI.ThreadType (Thread(..), ThreadState(..), threadStateCode) where
 
 import qualified Data.Map as Map
 
@@ -26,17 +26,6 @@ data ThreadState
   | ThreadStateImplementationFailure Pos String
   | ThreadStateUnimpl Pos String
   | ThreadStateSuccess
-
-data ThreadException
-  = TEImplementationFailure Pos String
-  | TEInvalidProgram GSInvalidProgram
-  | TEError GSError
-  deriving Show
-
-instance Exception ThreadException where
-    displayException (TEImplementationFailure pos err) = fmtPos pos err
-    displayException (TEInvalidProgram err) = fmtInvalidProgram err
-    displayException (TEError err) = fmtError err
 
 threadStateCode :: ThreadState -> String
 threadStateCode ThreadStateRunning{} = "ThreadStateRunning"

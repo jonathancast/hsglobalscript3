@@ -13,7 +13,7 @@ import GSI.RTS (newEvent, wakeup, await)
 import GSI.Error (GSError, GSException(..), throwGSInvalidProgram, throwGSError)
 import GSI.Value (GSValue(..))
 import GSI.Eval (GSResult(..), stCode)
-import GSI.ThreadType (Thread(..), ThreadState(..), ThreadException(..), threadStateCode)
+import GSI.ThreadType (Thread(..), ThreadState(..), threadStateCode)
 import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
@@ -31,9 +31,9 @@ createThread pos v mbp = do
             mb <- try $ apiCall pos v t
             state t `modifyMVar_` \ _ -> case mb of
                 Left (e :: SomeException) -> case fromException e of
-                    Just (TEError err) -> return $ ThreadStateError err
-                    Just (TEInvalidProgram err) -> return $ ThreadStateInvalidProgram err
-                    Just (TEImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
+                    Just (GSExcError err) -> return $ ThreadStateError err
+                    Just (GSExcInvalidProgram err) -> return $ ThreadStateInvalidProgram err
+                    Just (GSExcImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
                     _ -> return $ ThreadStateUnimpl $gshere $ "Thread execution threw unknown exception " ++ displayException e
                 Right v -> do
                     maybe (return ()) (`updatePromise` v) mbp

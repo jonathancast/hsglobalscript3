@@ -20,7 +20,7 @@ import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
 import GSI.Value (GSValue(..), GSExpr, GSIntArg(..), GSIntExpr(..), GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsintthunk_w, gsapply_w, gsfield_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
-import GSI.ThreadType (Thread, ThreadException(..))
+import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
@@ -200,8 +200,8 @@ gsiprimexecMainThread pos tself tprogv = do
     mb <- try $ execMainThread tprog :: IO (Either SomeException ())
     case mb of
         Left e | Just e' <- fromException e -> case e' :: GSException of
-            GSExcError e -> throwIO $ TEError e
-            GSExcImplementationFailure pos s -> throwIO $ TEImplementationFailure pos s
+            GSExcError e -> throwIO $ GSExcError e
+            GSExcImplementationFailure pos s -> throwIO $ GSExcImplementationFailure pos s
             _ -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e' ++ " next"
         Left e -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e ++ " next"
         Right () -> $apiImplementationFailure $ "gsiexecMainThread next"

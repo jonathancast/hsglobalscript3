@@ -11,7 +11,6 @@ import qualified Data.Map as Map
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSError, throwGSInvalidProgram, fmtError)
-import GSI.ThreadType (ThreadException(..))
 import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
@@ -125,14 +124,7 @@ gsapiEvalExternal :: GSExternal a => Pos -> GSValue -> IO a
 gsapiEvalExternal pos v = gsevalForApi $ gsevalExternal pos v
 
 gsevalForApi :: IO a -> IO a
-gsevalForApi ev = do
-    mbx <- try ev
-    case mbx of
-        Right x -> return x
-        Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
-        Left (GSExcError e) -> throwIO $ TEError e
-        Left (GSExcInvalidProgram ip) -> throwIO $ TEInvalidProgram ip
-        Left (e :: GSException) -> $apiImplementationFailure $ "gsevalForApi (eval threw unknown exception (" ++ show e ++ ")) next"
+gsevalForApi ev = ev
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
