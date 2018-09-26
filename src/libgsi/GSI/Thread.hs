@@ -34,7 +34,7 @@ createThread pos v mbp = do
                     Just (GSExcError err) -> return $ ThreadStateError err
                     Just (GSExcInvalidProgram err) -> return $ ThreadStateInvalidProgram err
                     Just (GSExcImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
-                    _ -> return $ ThreadStateUnimpl $gshere $ "Thread execution threw unknown exception " ++ displayException e
+                    _ -> return $ ThreadStateImplementationFailure $gshere $ "Thread execution threw unknown exception " ++ displayException e
                 Right v -> do
                     maybe (return ()) (`updatePromise` v) mbp
                     return ThreadStateSuccess
@@ -45,7 +45,6 @@ execMainThread :: Thread -> IO ()
 execMainThread t = do
     st <- waitThread t
     case st of
-        ThreadStateUnimpl pos err -> throwIO $ GSExcImplementationFailure pos err
         ThreadStateInvalidProgram ip -> throwIO $ GSExcInvalidProgram ip
         ThreadStateError err -> throwIO $ GSExcError err
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err

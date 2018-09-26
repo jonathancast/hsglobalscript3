@@ -24,7 +24,6 @@ data ThreadState
   | ThreadStateInvalidProgram GSInvalidProgram
   | ThreadStateError GSError
   | ThreadStateImplementationFailure Pos String
-  | ThreadStateUnimpl Pos String
   | ThreadStateSuccess
 
 threadStateCode :: ThreadState -> String
@@ -32,5 +31,4 @@ threadStateCode ThreadStateRunning{} = "ThreadStateRunning"
 threadStateCode ThreadStateInvalidProgram{} = "ThreadStateInvalidProgram"
 threadStateCode ThreadStateError{} = "ThreadStateError"
 threadStateCode ThreadStateImplementationFailure{} = "ThreadStateImplementationFailure"
-threadStateCode ThreadStateUnimpl{} = "ThreadStateUnimpl"
 threadStateCode ThreadStateSuccess{} = "ThreadStateSuccess"

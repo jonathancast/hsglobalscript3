@@ -22,7 +22,6 @@ gsprim_st_run pos a = do
     t <- createThread pos a (Just pr)
     st <- waitThread t
     case st of
-        ThreadStateUnimpl pos err -> return $ GSImplementationFailure pos err
         ThreadStateInvalidProgram err -> return $ GSInvalidProgram err
         ThreadStateError err -> return $ GSError err
         ThreadStateImplementationFailure pos err -> return $ GSImplementationFailure pos err
