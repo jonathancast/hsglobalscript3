@@ -10,7 +10,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (GSError(..), GSException(..), throwGSError, fmtError)
+import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSError, throwGSInvalidProgram, fmtError)
 import GSI.ThreadType (ThreadException(..))
 import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, gsvCode)
 import GSI.Eval (evalSync)
@@ -72,6 +72,7 @@ gsapiEval :: Pos -> GSValue -> IO GSValue
 gsapiEval pos (GSThunk th) = do
     v' <- evalSync [StackTrace pos []] th
     gsapiEval pos v'
+gsapiEval pos v@GSRecord{} = return v
 gsapiEval pos v = $apiImplementationFailure $ "gsapiEval " ++ gsvCode v ++ " next"
 
 gsapiEvalPos :: Pos -> GSValue -> IO Pos
@@ -104,6 +105,7 @@ gsevalExternal pos (GSThunk ts) = do
     v <- evalSync [StackTrace pos []] ts
     gsevalExternal pos v
 gsevalExternal pos (GSError err) = throwGSError err
+gsevalExternal pos (GSInvalidProgram err) = throwGSInvalidProgram err
 gsevalExternal pos (GSExternal e) = case fromExternal e of
     Nothing -> throwIO $ GSExcImplementationFailure $gshere $ "Got the wrong type of external"
     Just x -> return x
@@ -131,6 +133,7 @@ gsevalForApi ev = do
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
         Left (GSExcInsufficientCases pos1 err) -> throwIO $ TEError $ GSErrInsufficientCases pos1 err
         Left (GSExcError pos1 err) -> throwIO $ TEError $ GSErrError pos1 err
+        Left (GSExcRuntimeTypeError st ctxt act exp) -> throwIO $ TEInvalidProgram $ GSIPRuntimeTypeError st ctxt act exp
         Left (e :: GSException) -> $apiImplementationFailure $ "gsevalForApi (eval threw unknown exception (" ++ show e ++ ")) next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
