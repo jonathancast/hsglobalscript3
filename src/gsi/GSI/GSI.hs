@@ -200,9 +200,7 @@ gsiprimexecMainThread pos tself tprogv = do
     mb <- try $ execMainThread tprog :: IO (Either SomeException ())
     case mb of
         Left e | Just e' <- fromException e -> case e' :: GSException of
-            GSExcUndefined st -> throwIO $ TEError $ GSErrUnimpl st
-            GSExcInsufficientCases pos s -> throwIO $ TEError $ GSErrInsufficientCases pos s
-            GSExcError pos s -> throwIO $ TEError $ GSErrError pos s
+            GSExcError e -> throwIO $ TEError e
             GSExcImplementationFailure pos s -> throwIO $ TEImplementationFailure pos s
             _ -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e' ++ " next"
         Left e -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e ++ " next"

@@ -129,11 +129,9 @@ gsevalForApi ev = do
     mbx <- try ev
     case mbx of
         Right x -> return x
-        Left (GSExcUndefined st) -> throwIO $ TEError $ GSErrUnimpl st
         Left (GSExcImplementationFailure pos1 err) -> throwIO $ TEImplementationFailure pos1 err
-        Left (GSExcInsufficientCases pos1 err) -> throwIO $ TEError $ GSErrInsufficientCases pos1 err
-        Left (GSExcError pos1 err) -> throwIO $ TEError $ GSErrError pos1 err
-        Left (GSExcRuntimeTypeError st ctxt act exp) -> throwIO $ TEInvalidProgram $ GSIPRuntimeTypeError st ctxt act exp
+        Left (GSExcError e) -> throwIO $ TEError e
+        Left (GSExcInvalidProgram ip) -> throwIO $ TEInvalidProgram ip
         Left (e :: GSException) -> $apiImplementationFailure $ "gsevalForApi (eval threw unknown exception (" ++ show e ++ ")) next"
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere

@@ -9,6 +9,17 @@ import Control.Exception (Exception(..), throw)
 import GSI.Util (Pos, StackTrace(..), fmtPos, fmtStackTrace, gshere)
 import GSI.Syn (GSVar, fmtVarAtom)
 
+data GSException
+  = GSExcError GSError
+  | GSExcInvalidProgram GSInvalidProgram
+  | GSExcImplementationFailure Pos String
+  deriving (Typeable, Show)
+
+instance Exception GSException where
+    displayException (GSExcError e) = fmtError e
+    displayException (GSExcInvalidProgram ip) = fmtInvalidProgram ip
+    displayException (GSExcImplementationFailure pos err) = fmtPos pos err
+
 data GSError
   = GSErrUnimpl StackTrace
   | GSErrUnimplField Pos GSVar
@@ -20,26 +31,9 @@ data GSInvalidProgram
   = GSIPRuntimeTypeError StackTrace String String String
   deriving (Show)
 
-data GSException
-  = GSExcUndefined StackTrace
-  | GSExcInsufficientCases Pos String
-  | GSExcError Pos String
-  | GSExcRuntimeTypeError StackTrace String String String
-  | GSExcImplementationFailure Pos String
-  deriving (Typeable, Show)
+throwGSInvalidProgram ip = throw $ GSExcInvalidProgram ip
 
-instance Exception GSException where
-    displayException (GSExcUndefined st) = fmtStackTrace st "Undefined"
-    displayException (GSExcInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
-    displayException (GSExcError pos err) = fmtPos pos $ "Error: " ++ err
-    displayException (GSExcRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
-    displayException (GSExcImplementationFailure pos err) = fmtPos pos err
-
-throwGSInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = throw $ GSExcRuntimeTypeError st ctxt act exp
-
-throwGSError (GSErrUnimpl st) = throw $ GSExcUndefined st
-throwGSError (GSErrInsufficientCases pos err) = throw $ GSExcInsufficientCases pos err
-throwGSError (GSErrError pos err) = throw $ GSExcError pos err
+throwGSError e = throw $ GSExcError e
 throwGSError err = throw $ GSExcImplementationFailure $gshere $ "throwGSerror (" ++ show err ++ ") next"
 
 fmtInvalidProgram :: GSInvalidProgram -> String

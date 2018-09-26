@@ -106,6 +106,6 @@ main = runTestTT $ TestList $ [
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"
             Left e -> case fromException e of
-                Just (GSExcUndefined (StackTrace pos _)) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line 1)
+                Just (GSExcError (GSErrUnimpl (StackTrace pos _))) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line 1)
                 _ -> assertFailure $ "execMainThread should throw a GSExcUndefined error, but instead threw " ++ displayException e
   ]
