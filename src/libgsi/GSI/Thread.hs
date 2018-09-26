@@ -10,7 +10,7 @@ import Control.Exception (SomeException, Exception(..), throwIO, throw, try)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.RTS (newEvent, wakeup, await)
-import GSI.Error (GSError, GSException(..), throwGSError)
+import GSI.Error (GSError, GSException(..))
 import GSI.Value (GSValue(..))
 import GSI.Eval (GSResult(..), stCode)
 import GSI.ThreadType (Thread(..), ThreadState(..), threadStateCode)
@@ -47,7 +47,7 @@ execMainThread t = do
     case st of
         ThreadStateUnimpl pos err -> throwIO $ GSExcImplementationFailure pos err
         ThreadStateInvalidProgram ip -> throwIO $ GSExcInvalidProgram ip
-        ThreadStateError err -> throwGSError err
+        ThreadStateError err -> throwIO $ GSExcError err
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
         ThreadStateSuccess -> return ()
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"

@@ -10,7 +10,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), throwGSError, fmtError)
+import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtError)
 import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
@@ -61,7 +61,7 @@ gsevalList pos v = gsevalList_w pos id v where
     gsevalList_w pos ds (GSThunk ts) = do
         v <- evalSync [StackTrace pos []] ts
         gsevalList_w pos ds v
-    gsevalList_w pos ds (GSError err) = throwGSError err
+    gsevalList_w pos ds (GSError err) = throwIO $ GSExcError err
     gsevalList_w pos ds (GSConstr pos1 c [x, xn]) | c == gsvar ":" = gsevalList_w pos (ds . (x:)) xn
     gsevalList_w pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return (ds [])
     gsevalList_w pos ds (GSConstr pos1 c as) = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ fmtVarAtom c " next"
@@ -103,7 +103,7 @@ gsevalExternal :: GSExternal a => Pos -> GSValue -> IO a
 gsevalExternal pos (GSThunk ts) = do
     v <- evalSync [StackTrace pos []] ts
     gsevalExternal pos v
-gsevalExternal pos (GSError err) = throwGSError err
+gsevalExternal pos (GSError err) = throwIO $ GSExcError err
 gsevalExternal pos (GSInvalidProgram ip) = throwIO $ GSExcInvalidProgram ip
 gsevalExternal pos (GSExternal e) = case fromExternal e of
     Nothing -> throwIO $ GSExcImplementationFailure $gshere $ "Got the wrong type of external"
