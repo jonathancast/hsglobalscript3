@@ -25,7 +25,7 @@ import System.IO (hPutStrLn, stderr)
 import System.IO.Encoding (readFile, writeFile)
 import System.IO.Error (isDoesNotExistError)
 
-import GSI.Util (Pos(..), gsfatal, fmtPos)
+import GSI.Util (Pos(..), compilationTime, gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, string, Advanceable(..), advanceStr)
 import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, argCode, patCode, genCode)
@@ -63,7 +63,7 @@ needToRecompile a = catchJust (\ e -> if isDoesNotExistError e then Just () else
     (do
         t0 <- getModificationTime a
         t1 <- getModificationTime (mkHSFile a)
-        return $ t0 > t1
+        return $ t0 > t1 || $compilationTime > t1
     )
     (\ _ -> return True)
 
