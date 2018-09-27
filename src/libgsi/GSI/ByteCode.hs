@@ -155,7 +155,7 @@ gsbcimpprim_w pos f = gsbcimpprim_ww pos (f pos)
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbcforce_w pos e k = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in runGSArg c1 e (aceForce c1 k sk)
+gsbcforce_w pos e k = GSExpr $ \ cs sk -> let c1 = StackTrace pos cs in runGSArg c1 e (aceForce cs k sk)
 
 runGSArg :: StackTrace -> GSArg ->  GSExprCont a -> IO a
 runGSArg c1 (GSArgExpr pos' e') sk = runGSExpr e' [c1] sk

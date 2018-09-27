@@ -77,9 +77,9 @@ aceUpdate mv sk = GSExprCont{
             _ -> return (GSTSIndirection v, Nothing)
         maybe (return ()) wakeup mbb
 
-aceForce :: StackTrace -> (GSValue -> GSExpr) -> GSExprCont a -> GSExprCont a
-aceForce c k sk = GSExprCont {
-    gsreturn = \ v -> runGSExpr (k v) [c] sk,
+aceForce :: [StackTrace] -> (GSValue -> GSExpr) -> GSExprCont a -> GSExprCont a
+aceForce cs k sk = GSExprCont {
+    gsreturn = \ v -> runGSExpr (k v) cs sk,
     gsthrow = gsthrow sk
   }
 
