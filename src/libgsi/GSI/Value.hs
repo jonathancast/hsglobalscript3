@@ -152,7 +152,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ cs sk -> e cs sk
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ cs sk -> e (StackTrace pos [] : cs) sk
 
 gsintthunk_w :: Pos -> GSIntExpr -> IO GSValue
 gsintthunk_w pos i = fmap GSThunk $ newMVar $ GSTSIntExpr i
