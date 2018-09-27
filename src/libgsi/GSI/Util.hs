@@ -1,8 +1,11 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos, fmtStackTrace, filename, line, col) where
+module GSI.Util (Pos(Pos), StackTrace(..), compilationTime, gshere, gsfatal, fmtPos, fmtStackTrace, filename, line, col) where
 
-import Language.Haskell.TH.Syntax (Lit(IntegerL), Loc, location, loc_filename, loc_start)
+import Language.Haskell.TH.Syntax (Lit(IntegerL), Loc, lift, runIO, location, loc_filename, loc_start)
 import Language.Haskell.TH.Lib (ExpQ, appE, conE, litE, stringE, varE)
+
+import Data.Time.Calendar (Day(..))
+import Data.Time.Clock (UTCTime(..), getCurrentTime)
 
 data Pos = Pos {
     filename :: String,
@@ -13,6 +16,11 @@ data Pos = Pos {
 
 data StackTrace = StackTrace Pos [StackTrace]
   deriving (Show)
+
+compilationTime :: ExpQ
+compilationTime = do
+    UTCTime d t <- runIO getCurrentTime
+    conE 'UTCTime `appE` (conE 'ModifiedJulianDay `appE` (lift $ toModifiedJulianDay d)) `appE` (varE 'fromRational `appE` (lift $ toRational t))
 
 gshere :: ExpQ
 gshere = do
