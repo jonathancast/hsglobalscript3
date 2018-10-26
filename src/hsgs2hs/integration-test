@@ -14,7 +14,7 @@ test_hsgs_empty_file
 test_hsgs_non_existent_directory
 test_hsgs_empty_directory
 test_hsgs_no_interpolations
-ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
+test_hsgs_haskell_interpolation
 ok_diff_compiler '-- normal square brackets --' hsgs2hs normal-bracket.hsgs normal-bracket.hs
 ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
 
