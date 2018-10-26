@@ -56,8 +56,10 @@ processArg m a = do
                     writeFile (mkHSFile a) s'
         else do
             return ()
+      else if irf then return ()
       else do
-        return ()
+        hPutStrLn stderr $ a ++ ": Could not load: not a file or directory"
+        exitWith $ ExitFailure 1
 
 needToRecompile a = catchJust (\ e -> if isDoesNotExistError e then Just () else Nothing)
     (do
