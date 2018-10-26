@@ -6,10 +6,11 @@
 
 . $GS_SPEC/bin/test-fns
 . $GS_SPEC/bin/gs-spec
+. $GS_SPEC/bin/hsgs-spec
 
 fn test_gsi_impl { ./test_gsi_impl.rc $* }
 
-ok_diff_compiler '-- empty file --' hsgs2hs empty-file.hsgs empty-file.hs
+test_hsgs_empty_file
 ok_script '-- empty directory --' hsgs2hs-empty ./hsgs2hs ./test-fixtures/empty-dir
 ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs single-line.hs
 ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
