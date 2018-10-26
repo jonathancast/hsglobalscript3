@@ -11,7 +11,7 @@
 fn test_gsi_impl { ./test_gsi_impl.rc $* }
 
 test_hsgs_empty_file
-ok_grep_script_errors '-- non-existent directory --' 'no-such-dir' 'no-such-dir: Could not load' ./hsgs2hs ./test-fixtures/no-such-dir
+test_hsgs_non_existent_directory
 ok_script '-- empty directory --' hsgs2hs-empty ./hsgs2hs ./test-fixtures/empty-dir
 ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs single-line.hs
 ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
