@@ -13,7 +13,7 @@ fn test_gsi_impl { ./test_gsi_impl.rc $* }
 test_hsgs_empty_file
 test_hsgs_non_existent_directory
 test_hsgs_empty_directory
-ok_diff_compiler '-- single line, no interpolations --' hsgs2hs single-line.hsgs single-line.hs
+test_hsgs_no_interpolations
 ok_diff_compiler '-- regular Haskell interpolation --' hsgs2hs haskell-interp.hsgs haskell-interp.hs
 ok_diff_compiler '-- normal square brackets --' hsgs2hs normal-bracket.hsgs normal-bracket.hs
 ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
