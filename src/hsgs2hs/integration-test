@@ -16,7 +16,7 @@ test_hsgs_empty_directory
 test_hsgs_no_interpolations
 test_hsgs_haskell_interpolation
 test_hsgs_normal_bracket
-ok_diff_compiler '-- comments --' hsgs2hs comment.hsgs comment.hs
+test_hsgs_comments
 
 # Different kinds of interpolations
 

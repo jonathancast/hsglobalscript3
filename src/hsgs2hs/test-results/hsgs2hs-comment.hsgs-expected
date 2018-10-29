@@ -1,8 +1,0 @@
-{-# LINE 1 "./test-fixtures/comment.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.ByteCode (gsbcenter_w)
-
-{-# LINE 2 "./test-fixtures/comment.hsgs" #-}
-(gsbcenter_w (Pos "./test-fixtures/comment.hsgs" 3 5) as)
-{-# LINE 4 "./test-fixtures/comment.hsgs" #-}
-  
