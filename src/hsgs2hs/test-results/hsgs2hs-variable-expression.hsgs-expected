@@ -1,8 +1,0 @@
-{-# LINE 1 "./test-fixtures/variable-expression.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.ByteCode (gsbcenter_w)
-
-{-# LINE 2 "./test-fixtures/variable-expression.hsgs" #-}
-(gsbcenter_w (Pos "./test-fixtures/variable-expression.hsgs" 2 20) as)
-{-# LINE 2 "./test-fixtures/variable-expression.hsgs" #-}
-                        

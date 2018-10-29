@@ -20,7 +20,7 @@ test_hsgs_comments
 
 # Different kinds of interpolations
 
-ok_diff_compiler '-- expression variables --' hsgs2hs variable-expression.hsgs variable-expression.hs
+test_hsgs_variable_expressions
 ok_diff_compiler '-- variable bodies --' hsgs2hs variable-body.hsgs variable-body.hs
 ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
 ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
