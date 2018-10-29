@@ -27,7 +27,7 @@ test_hsgs_application_values
 
 # Different kinds of declarations
 
-ok_diff_compiler '-- variable declarations --' hsgs2hs variable-decl.hsgs variable-decl.hs
+test_hsgs_variable_declarations
 
 # Different kinds of expressions
 

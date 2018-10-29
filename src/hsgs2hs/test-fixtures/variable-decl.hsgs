@@ -1,9 +1,0 @@
-{-# LANGUAGE TemplateHaskell #-}
-import GSI.Value (gsundefined_value)
-$gsimports
-
-$gsdeclare foo foo
-
-[gs:expr| foo |]
-
-foo = $gsundefined_value
