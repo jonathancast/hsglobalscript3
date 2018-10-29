@@ -22,7 +22,7 @@ test_hsgs_comments
 
 test_hsgs_variable_expressions
 test_hsgs_variable_bodies
-ok_diff_compiler '-- variable bind RHSs --' hsgs2hs variable-bind.hsgs variable-bind.hs
+test_hsgs_variable_binds
 ok_diff_compiler '-- exec binds --' hsgs2hs exec-bind-impfor.hsgs exec-bind-impfor.hs
 ok_diff_compiler '-- values (thunks) --' hsgs2hs application-value.hsgs application-value.hs
 
