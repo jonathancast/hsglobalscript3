@@ -23,7 +23,7 @@ test_hsgs_comments
 test_hsgs_variable_expressions
 test_hsgs_variable_bodies
 test_hsgs_variable_binds
-ok_diff_compiler '-- values (thunks) --' hsgs2hs application-value.hsgs application-value.hs
+test_hsgs_application_values
 
 # Different kinds of declarations
 
