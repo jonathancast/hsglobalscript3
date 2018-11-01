@@ -1,2 +1,0 @@
-$gsimports
-[gs:expr hsvs=gsprocessargs,as,| gsprocessargs as |]

@@ -42,3 +42,4 @@ src/gsi/GSI/Log.hs$
 src/libgsi/GSI/Addition.hs$
 src/gsi/GSI/Monad.hs$
 src/stage1$
+src/hsgs2hs/test-fixtures/temp.hsgs$
