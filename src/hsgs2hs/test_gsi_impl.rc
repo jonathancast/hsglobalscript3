@@ -4,6 +4,11 @@ if (~ $#TEST_DIR 0) TEST_DIR=.
 
 while ([ -d $1 ]) shift
 
+if (! [ -f $1 ]) {
+    echo $1^': no such file or directory' >[1=2]
+    exit 1
+}
+
 > $TEST_DIR/test-fixtures/temp.hsgs
 echo '{-# LANGUAGE TemplateHaskell #-}' >> $TEST_DIR/test-fixtures/temp.hsgs
 echo 'import TestHSGS (printTestExpr)' >> $TEST_DIR/test-fixtures/temp.hsgs
