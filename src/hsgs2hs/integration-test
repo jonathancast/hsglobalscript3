@@ -45,7 +45,7 @@ test_view_pattern_operator_hsgs_syntax
 test_expression_application_syntax
 test_value_function
 test_case_hsgs_syntax
-ok_diff_compiled '-- for expressions --' hsgs2hs variable-for.hsgs .hs runghc `{./test-ghcoptions}
+ok_diff '-- for expressions --' test_gsi_impl variable-for.gs
 ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
 ok_diff_compiler '-- case expressions where the pattern-bound variables are used --' hsgs2hs lexical-variable.hsgs lexical-variable.hs
 ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-extraction.hs
