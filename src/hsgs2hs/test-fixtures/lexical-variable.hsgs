@@ -1,2 +1,4 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:expr| case 'x. x |]
+
+main = printTestExpr [gs:expr| analyze 1. case 'x. x |]

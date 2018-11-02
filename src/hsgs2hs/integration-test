@@ -46,7 +46,7 @@ test_expression_application_syntax
 test_value_function
 test_case_hsgs_syntax
 test_for_variable
-ok_diff_compiler '-- case expressions where the pattern-bound variables are used --' hsgs2hs lexical-variable.hsgs lexical-variable.hs
+ok_diff_compiled '-- case expressions where the pattern-bound variables are used --' hsgs2hs lexical-variable.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiler '-- field extractions --' hsgs2hs field-extraction.hsgs field-extraction.hs
 ok_diff_compiler '-- prefix operators --' hsgs2hs prefix-expression.hsgs prefix-expression.hs
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
