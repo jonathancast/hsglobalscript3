@@ -50,7 +50,7 @@ test_lexical_variable_hsgs_syntax
 test_empty_structure_literal
 test_record_literal_field
 test_field_extraction
-ok_diff_compiled '-- prefix operators --' hsgs2hs prefix-expression.hsgs .hs runghc `{./test-ghcoptions}
+test_prefix_operators
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
 ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
 ok_diff_compiled '-- additions --' hsgs2hs natural-addition.hsgs .hs runghc `{./test-ghcoptions}
