@@ -1,2 +1,4 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:expr hsvs=st,| st #is.dir |]
+
+main = printTestExpr [gs:expr| 〈 'x ∝ 1; 〉 #x |]
