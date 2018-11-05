@@ -1,2 +1,2 @@
 $gsimports
-[gs:expr| <|> empty |]
+[gs:expr| + 0 |]

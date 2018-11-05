@@ -1,11 +1,11 @@
 {-# LINE 1 "./test-fixtures/prefix-expression.hsgs" #-}
 import GSI.Util (Pos(..))
 import GSI.Value (GSArg(..))
+import GSI.Value (GSValue(..))
 import GSI.ByteCode (gsbcapply_w)
-import GSI.Parser (gsempty)
-import GSI.Parser (gsparser_unary_or)
+import GSI.Natural (gsnatural_unary_plus)
 
 {-# LINE 2 "./test-fixtures/prefix-expression.hsgs" #-}
-(gsbcapply_w (Pos "./test-fixtures/prefix-expression.hsgs" 2 11) gsparser_unary_or [ GSArgVar gsempty ])
+(gsbcapply_w (Pos "./test-fixtures/prefix-expression.hsgs" 2 11) gsnatural_unary_plus [ GSArgVar (GSNatural 0) ])
 {-# LINE 2 "./test-fixtures/prefix-expression.hsgs" #-}
-                      
+                
