@@ -49,7 +49,7 @@ test_for_variable
 test_lexical_variable_hsgs_syntax
 test_empty_structure_literal
 test_record_literal_field
-ok_diff '-- field extractions --' test_gsi_impl field-extraction.gs
+test_field_extraction
 ok_diff_compiler '-- prefix operators --' hsgs2hs prefix-expression.hsgs prefix-expression.hs
 ok_diff_compiler '-- monadic generators --' hsgs2hs either-for-generator.hsgs either-for-generator.hs
 ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
