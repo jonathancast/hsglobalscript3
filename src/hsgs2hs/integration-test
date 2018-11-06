@@ -56,7 +56,7 @@ test_monadic_bind_generators
 test_natural_number_addition
 test_list_addition
 test_non_associative_operators
-ok_diff_compiled '-- right-associative operators --' hsgs2hs cons.hsgs .hs runghc `{./test-ghcoptions}
+ok_diff '-- right-associative operators --' test_gsi_impl cons.gs
 ok_diff_compiled '-- operator names --' hsgs2hs operator-name.hsgs .hs runghc `{./test-ghcoptions}
 
 # log{} literals
