@@ -51,7 +51,7 @@ test_empty_structure_literal
 test_record_literal_field
 test_field_extraction
 test_prefix_operators
-ok_diff_compiled '-- monadic generators --' hsgs2hs either-for-generator.hsgs .hs runghc `{./test-ghcoptions}
+test_monadic_generators
 ok_diff_compiler '-- monadic bind generators --' hsgs2hs either-for-bind-generator.hsgs either-for-bind-generator.hs
 ok_diff_compiled '-- additions --' hsgs2hs natural-addition.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- lists --' hsgs2hs list-addition.hsgs .hs runghc `{./test-ghcoptions}
