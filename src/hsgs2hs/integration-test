@@ -53,7 +53,7 @@ test_field_extraction
 test_prefix_operators
 test_monadic_generators
 test_monadic_bind_generators
-ok_diff '-- additions --' test_gsi_impl natural-addition.gs
+test_natural_number_addition
 ok_diff_compiled '-- lists --' hsgs2hs list-addition.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- non-associative operators --' hsgs2hs inequality.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- right-associative operators --' hsgs2hs cons.hsgs .hs runghc `{./test-ghcoptions}
