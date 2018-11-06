@@ -1,4 +1,0 @@
-import TestHSGS (printTestExpr)
-$gsimports
-
-main = printTestExpr [gs:expr| r{1} ≠ r{2} |]
