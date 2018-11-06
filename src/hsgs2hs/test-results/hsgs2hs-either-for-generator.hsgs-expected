@@ -1,18 +1,1 @@
-{-# LINE 1 "./test-fixtures/either-for-generator.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.Value (GSArg(..))
-import GSI.Value (GSValue(..))
-import GSI.ByteCode (gsbcapply_w)
-import GSI.ByteCode (gsbcarg_w)
-import GSI.ByteCode (gsbccomposemonadgen_w)
-import GSI.ByteCode (gsbcemptymonadgen_w)
-import GSI.ByteCode (gsbcexecgen_w)
-import GSI.Either (gseitherFor)
-import GSI.Either (gseitherbind)
-import GSI.Either (gseithermap)
-import GSI.Either (gsright)
-
-{-# LINE 2 "./test-fixtures/either-for-generator.hsgs" #-}
-(gsbcapply_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 11) gseitherFor [ GSArgExpr (Pos "./test-fixtures/either-for-generator.hsgs" 2 22) (gsbccomposemonadgen_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 22) (GSArgVar gseitherbind) (GSArgVar gsright) (GSArgExpr (Pos "./test-fixtures/either-for-generator.hsgs" 2 22) (gsbcexecgen_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 22) (GSArgVar gseithermap) (GSArgExpr (Pos "./test-fixtures/either-for-generator.hsgs" 2 22) (gsbcapply_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 26) gsright [ GSArgVar (GSNatural 1) ])))) (\ env -> gsbcemptymonadgen_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 34) (GSArgVar gsright))), GSArgExpr (Pos "./test-fixtures/either-for-generator.hsgs" 2 36) (gsbcarg_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 36) (\ env -> gsbcapply_w (Pos "./test-fixtures/either-for-generator.hsgs" 2 36) gsright [ GSArgVar (GSNatural 0) ])) ])
-{-# LINE 2 "./test-fixtures/either-for-generator.hsgs" #-}
-                                             
+right 0
