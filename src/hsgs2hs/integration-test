@@ -57,7 +57,7 @@ test_natural_number_addition
 test_list_addition
 test_non_associative_operators
 test_right_associative_operators
-ok_diff '-- operator names --' test_gsi_impl operator-name.gs
+test_parenthesized_operators
 
 # log{} literals
 
