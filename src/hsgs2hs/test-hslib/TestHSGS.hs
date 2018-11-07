@@ -38,6 +38,7 @@ formatTestValueAtom (GSThunk ts) k = do
 formatTestValueAtom (GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" =
     formatChar (GSRune ch) $ \ chds -> formatString s $ \ sds -> k (("qq{"++) . chds . sds . ('}':))
 formatTestValueAtom (GSConstr pos c []) k = k $ fmtVarAtom c
+formatTestValueAtom v@GSConstr{} k = formatTestValue v $ \ ds -> k $ ('(':) . ds . (')':)
 formatTestValueAtom (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
     False -> formatFields (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
