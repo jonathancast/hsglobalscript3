@@ -1,9 +1,1 @@
-{-# LINE 1 "./test-fixtures/qq-interpolation.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.Value (GSArg(..))
-import GSI.String (gsbcstring_w)
-
-{-# LINE 2 "./test-fixtures/qq-interpolation.hsgs" #-}
-(gsbcstring_w (Pos "./test-fixtures/qq-interpolation.hsgs" 2 19) [ GSArgVar x ])
-{-# LINE 2 "./test-fixtures/qq-interpolation.hsgs" #-}
-                             
+qq{x}

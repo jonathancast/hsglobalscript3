@@ -1,2 +1,3 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:expr hsvs=x,| qq{§(x)} |]
+main = printTestExpr [gs:expr| qq{§(r{x} : nil)} |]

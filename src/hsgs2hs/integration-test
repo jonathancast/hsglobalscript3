@@ -63,7 +63,7 @@ test_parenthesized_operators
 
 test_qq_literal
 test_qq_newline
-ok_diff_compiler '-- interpolations in qq literals --' hsgs2hs qq-interpolation.hsgs qq-interpolation.hs
+ok_diff_compiled '-- interpolations in qq literals --' hsgs2hs qq-interpolation.hsgs .hs runghc `{./test-ghcoptions}
 
 # Different functions
 
