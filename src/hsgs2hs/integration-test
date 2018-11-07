@@ -96,3 +96,7 @@ ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
 ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
 ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
 ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
+
+# ok_diff_compiled:  runghc `{./test-ghcoptions}
+# import TestHSGS (printTestExpr)
+# main = printTestExpr 
