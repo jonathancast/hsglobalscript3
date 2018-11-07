@@ -58,6 +58,7 @@ formatFields ((v, x):fs) k = formatTestValue x $ \ xds -> formatFields fs $ \ fs
 formatFields [] k = k id
 
 formatChar :: GSValue -> ((String -> String) -> IO a) -> IO a
+formatChar (GSRune '\n') k = k $ ("\\n"++)
 formatChar (GSRune ch) k = k $ (ch:)
 formatChar v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatChar "++) . (gsvCode v++) . (" next>"++)
 
