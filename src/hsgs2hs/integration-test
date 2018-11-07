@@ -59,13 +59,6 @@ test_non_associative_operators
 test_right_associative_operators
 test_parenthesized_operators
 
-# log{} literals
-
-ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
-ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
-ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
-ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
-
 # qq{} literals
 
 test_qq_literal
@@ -96,3 +89,10 @@ ok_diff_compiler '-- either-for --' hsgs2hs either-for.hsgs either-for.hs
 # Imperative programs
 
 ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
+
+# log{} literals
+
+ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
+ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
+ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
+ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
