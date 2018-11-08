@@ -63,7 +63,7 @@ test_parenthesized_operators
 
 test_qq_literal
 test_qq_newline
-ok_diff '-- interpolations in qq literals --' test_gsi_impl qq-interpolation.gs
+test_qq_interpolation
 
 # Different functions
 
