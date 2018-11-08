@@ -1,3 +1,0 @@
-import TestHSGS (printTestExpr)
-$gsimports
-main = printTestExpr [gs:expr| qq{§(r{x} : nil)} |]
