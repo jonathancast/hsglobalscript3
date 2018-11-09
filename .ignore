@@ -39,7 +39,7 @@ src/gsi/GSI/Set.hs
 src/gsi/GSDL/Validator.hs
 src/gsi/GSI/Format.hs
 src/gsi/GSDL/Compiler.hs
-src/gsi/GSI/Log.hs
+src/libgsi/GSI/Log.hs
 src/libgsi/GSI/Addition.hs
 src/gsi/GSI/Monad.hs
 src/stage1
