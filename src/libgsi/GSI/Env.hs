@@ -1,11 +1,11 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (gsabend, gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
 import qualified Data.Map as Map
 
-import Control.Exception (SomeException, try, fromException)
+import Control.Exception (SomeException, try, throwIO, fromException)
 
 import Data.Encoding.UTF8 (UTF8(..))
 import System.IO (Handle, hPutStrLn, hPutChar, stdout, stderr)
@@ -16,13 +16,17 @@ import System.Posix.Files (getFileStatus, isDirectory)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Error (fmtInvalidProgram, fmtError)
+import GSI.Error (GSException(..), fmtInvalidProgram, fmtError)
 import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsundefined_value, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (Thread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 import GSI.Functions (gslazystring, gsapiEvalString)
+
+gsabend = $gsimpprim $ \ pos t  sv -> do
+    s <- gsapiEvalString $gshere sv
+    throwIO (GSExcAbend pos s) :: IO GSValue
 
 gsfileStat :: GSValue
 gsfileStat = $gsimpprim gsprimfileStat

@@ -734,6 +734,7 @@ globalEnv = Env{
         ("<*>", "GSI.Parser", "gsparser_app"),
         ("<>", "GSI.List", "gsappend"),
         ("<|>", "GSI.Parser", "gsparser_or"),
+        ("abend", "GSI.Env", "gsabend"),
         ("addition.+", "GSI.Addition", "gsaddition_plus"),
         ("advance-rune", "GSI.Parser", "gsparser_advanceRune"),
         ("analyze", "GSI.StdLib", "gsanalyze"),

@@ -13,12 +13,14 @@ data GSException
   = GSExcError GSError
   | GSExcInvalidProgram GSInvalidProgram
   | GSExcImplementationFailure Pos String
+  | GSExcAbend Pos String
   deriving (Typeable, Show)
 
 instance Exception GSException where
     displayException (GSExcError e) = fmtError e
     displayException (GSExcInvalidProgram ip) = fmtInvalidProgram ip
     displayException (GSExcImplementationFailure pos err) = fmtPos pos err
+    displayException (GSExcAbend pos err) = fmtPos pos err
 
 data GSError
   = GSErrUnimpl StackTrace
