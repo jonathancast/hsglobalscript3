@@ -17,19 +17,15 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
     case 'a : 'as. analyze-impM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
-                impfor
-                    _ ← print-error qq{§(a): Could not load: no such file or directory\n};
-                  . error log{Process §(gsv a) (§(gsv e)) next}
+                impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{no-such-file}
         )
         case right 'st. (analyze st #is.dir.
             case true. gsprocessargs as gstyc gsrun -- Ignore all arguments until we start failing tests for it
             case false. impfor 's ← file.read a;. analyze parse advance-rune print-rune (file parser.global-env) (pos.init a) s.
-                case left 'err. impfor _ ← print-error qq{§(err)\n};. error log{§(gsv a): process §(gsv err) next}
+                case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{parse-error}
                 case right 'd. (analyze d.
                     case file.document 'pos 'd. (analyze process-document pos gstyc d.
-                        case left 'err. impfor
-                                _ ← print-error qq{§(err)\n};
-                            . error log{Errors next}
+                        case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{compilation-error}
                         case right 'dty. impfor 'prog ← gsthunk pos (compile-document pos compiler.global-env dty);.
                             gsrun prog as
                     )
