@@ -1,3 +1,4 @@
 #! /usr/local/plan9/bin/rc
 
+$HSGLOBALSCRIPT/ghcoptions
 9 echo -i$HSGLOBALSCRIPT/src/libgsi -i./test-hslib
