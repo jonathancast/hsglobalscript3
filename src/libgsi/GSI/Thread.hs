@@ -34,6 +34,7 @@ createThread pos v mbp = do
                     Just (GSExcError err) -> return $ ThreadStateError err
                     Just (GSExcInvalidProgram err) -> return $ ThreadStateInvalidProgram err
                     Just (GSExcImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
+                    Just (GSExcAbend pos err) -> return $ ThreadStateAbend pos err
                     _ -> return $ ThreadStateImplementationFailure $gshere $ "Thread execution threw unknown exception " ++ displayException e
                 Right v -> do
                     maybe (return ()) (`updatePromise` v) mbp
