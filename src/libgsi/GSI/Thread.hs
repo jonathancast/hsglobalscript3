@@ -49,6 +49,7 @@ execMainThread t = do
         ThreadStateInvalidProgram ip -> throwIO $ GSExcInvalidProgram ip
         ThreadStateError err -> throwIO $ GSExcError err
         ThreadStateImplementationFailure pos err -> throwIO $ GSExcImplementationFailure pos err
+        ThreadStateAbend pos err -> throwIO $ GSExcAbend pos err
         ThreadStateSuccess -> return ()
         _ -> $gsfatal $ "execMainThread (state is " ++ threadStateCode st ++ ") next"
 
