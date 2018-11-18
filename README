@@ -1,0 +1,36 @@
+This is pretty self-explanatory to me, but if it isn't to you:
+
+You will need Plan 9 from User Space, here: https://9fans.github.io/plan9port/ .
+
+You also will need the language spec, here: https://hub.darcs.net/jcast/globalscript-spec (Darcs Hub) or here: https://hub.darcs.net/jcast/globalscript-spec (GitHub).
+The language spec should go in a parallel directory to this checkout.
+
+Set
+
+    HSGLOBALSCRIPT=`pwd`
+    GS_SPEC=whereever you put the globalscript-spec checkout
+
+Then run
+
+    sh install-prereqs.sh
+    sh configure
+    ./test-all
+
+to test and build this checkout.
+
+To run a Global Script program, wrap it in
+
+import GSI.Env (runGSProgram)
+$gsimports
+ 
+main = runGSProgram $ [gs:value|
+    -- Global Script code goes here
+|]
+
+, save that to a .hsgs file, then run
+
+    $HSGLOBALSCRIPT/bin/hsgs2hs $foo.hsgs
+    ghc `$HSGLOBALSCRIPT/ghcoptions` -i$HSGLOBALSCRIPT/src/libgsi --make foo.hs -o foo
+    ./foo
+
+to compile and run it.
