@@ -1,28 +1,39 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (gsabend, gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
 import qualified Data.Map as Map
 
-import Control.Exception (SomeException, try, throwIO, fromException)
+import Control.Exception (SomeException, try, catch, throwIO, fromException, displayException)
 
 import Data.Encoding.UTF8 (UTF8(..))
 import System.IO (Handle, hPutStrLn, hPutChar, stdout, stderr)
 import System.IO.Encoding (readFile)
 import System.IO.Error (isDoesNotExistError)
+import System.Environment (getArgs)
+import System.Exit (ExitCode(..), exitWith)
 
 import System.Posix.Files (getFileStatus, isDirectory)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtInvalidProgram, fmtError)
-import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsundefined_value, gsvCode)
+import GSI.Value (GSValue(..), gslambda_value, gsapply, gsimpprim, gsundefined_value, gsvCode)
+import GSI.Functions (gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (Thread)
+import GSI.Thread (createThread, execMainThread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 import GSI.Functions (gslazystring, gsapiEvalString)
+
+runGSProgram a = do
+    as <- $gslist . map $gsstring <$> getArgs
+    prog <- $gsapply a [as]
+    t <- createThread $gshere prog Nothing
+    execMainThread t
+  `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
 gsabend = $gsimpprim $ \ pos t  sv -> do
     s <- gsapiEvalString $gshere sv

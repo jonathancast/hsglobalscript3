@@ -1,24 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-import Control.Exception (SomeException, catch, displayException)
-
-import System.Environment (getArgs)
-import System.Exit (ExitCode(..), exitWith)
-import System.IO (hPutStrLn, stderr)
-
-import GSI.Util (fmtPos, gshere)
-import GSI.Value (GSValue, gsapply, gsundefined_value)
-import GSI.Thread (createThread, execMainThread)
-import GSI.Functions (gslist, gsstring)
-import GSI.Main (gsmain)
+import GSI.Env (runGSProgram)
 $gsimports
 
-main = do
-    as <- $gslist . map $gsstring <$> getArgs
-    prog <- $gsapply gsmain [gstyc, gsrun, as]
-    t <- createThread $gshere prog Nothing
-    execMainThread t
-  `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
+$gsdeclare gstyc gstyc
+$gsdeclare gsrun gsrun
+
+main = runGSProgram $ [gs:value| gsmain gstyc gsrun |]
 
 gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.unit 〈〉 |]
 
