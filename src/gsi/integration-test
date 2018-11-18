@@ -13,7 +13,7 @@ echo '## test-gsi'
 
 fn test_gsi_impl { ./test-gsi $* }
 
-start=`{date -n}
+start=`{9 date -n}
 test_non_existent_file
 test_gscalc_empty_file
 test_gscalc_comment
@@ -34,23 +34,23 @@ test_gscalc_analyze_undefined
 test_discard_pattern
 test_view_pattern
 test_view_pattern_arg
-echo `{echo `{date -n} '-' $start | hoc}^s
+echo `{echo `{9 date -n} '-' $start | hoc}^s
 
 echo '## gsi'
 
 fn test_gsi_impl { ./gsi $* }
 
-start=`{date -n}
+start=`{9 date -n}
 test_non_existent_file
 test_empty_file
 ok_grep_errors '-- #! lines --' 'empty-shebang-line.gs:2:1: Undefined' ./gsi empty-shebang-line.gs
 ok_grep_errors '-- gsmain with no arguments --' 'bare-gsmain.gsi.gs:1:1: Incorrect type' ./gsi bare-gsmain.gsi.gs
-echo `{echo `{date -n} '-' $start | hoc}^s
+echo `{echo `{9 date -n} '-' $start | hoc}^s
 
 echo '## test-gsi'
 
 fn test_gsi_impl { ./test-gsi.gsi.gs $* }
 
-start=`{date -n}
+start=`{9 date -n}
 test_non_existent_file
-echo `{echo `{date -n} '-' $start | hoc}^s
+echo `{echo `{9 date -n} '-' $start | hoc}^s
