@@ -43,3 +43,5 @@ src/libgsi/GSI/Log.hs
 src/libgsi/GSI/Addition.hs
 src/gsi/GSI/Monad.hs
 src/stage1
+src/gs2hs/hsgs2hs
+src/gs2hs/hsgs2hs.hs

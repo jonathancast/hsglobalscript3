@@ -1,0 +1,5 @@
+import GSI.Env (runGSProgram)
+$gsimports
+
+main = runGSProgram $ [gs:value| λ 'as. undefined
+|]
