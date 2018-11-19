@@ -1,5 +1,7 @@
 #! /usr/local/plan9/bin/rc -e
 
+./build-tests || exit $?
+
 . $GS_SPEC/bin/test-fns
 
 GLOBALSCRIPT=$HSGLOBALSCRIPT
