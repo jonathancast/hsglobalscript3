@@ -3,7 +3,7 @@
 ./build-tests || exit $?
 
 . $GS_SPEC/bin/test-fns
-
-GLOBALSCRIPT=$HSGLOBALSCRIPT
+. $GS_SPEC/bin/gs-spec
+. $GS_SPEC/bin/hsgs-spec
 
 true
