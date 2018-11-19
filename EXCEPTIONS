@@ -26,50 +26,19 @@ Section III.
 
 Notwithstanding any provision of the GNU General Public License,
 you may use this implementation to write, execute, convey, and license under any terms you choose,
-new Global Script programs, provided
- * you pay the Global Script project, under the care of Global Script Development Labs,
-   * 10USD/month for each developer who works on those programs, and
-   * 0.30USD/month for every 100 users of each program, or 1.5% of revenue (whichever is higher);
-in addition to any other money you may pay to Global Script Development Labs as a donation or for any other goods or services.
+new Global Script programs, or modifications of programs you can otherwise legally modify and re-distribute,
+provided you contribute 3% of your revenue from such programs to:
+
+ * Global Script program calculus or Global Script language implementations, publicly released under the terms of the GNU General Public License, version 3 or later;
+ * Development of Global Script libraries, publicly released under the terms of the GNU General Public License, version 3 or later;
+ * Material promoting the use of the Global Script program calculus, Global Script languages, or Global Script libraries, published or made available to the general public, and licensed under the CC BY-ND license version 4.0 or later;
+ * Sales or fundraising efforts to finance the above activities; or
+ * Donations to an appropriate group or foundation which will use the money for the above activities.
+
+Your revenue from a Global Script program under this section shall consist of all revenue from sales of the program
+and revenue from any activity based on or using that program which, but for this section, would not be legally permitted.
 
 Section IV.
-
-Notwithstanding any provision of the GNU General Public License, you may:
-
- * Use a qualifying modified version of this implementation to create and process static documents,
-   on the same terms as this implemenation.
-
- * Use a qualifying modified version of this implementation to execute Global Script programs which you did not write or modify.
-
- * Use a qualifying modified version of this implementation to write, execute, convey, and license under any terms you choose, new Global Script programs, provided
-   * you pay the qualifying project which developed it
-     * 10USD/month for each developer who works on those programs, and
-     * 0.30USD/month for every 100 users of each program, or 1.5% of revenue (whichever is higher);
-     in addition to any other money you may pay to that project as a donation or for any other goods or services.
-
-Section V. Definitions
-
- * "This implementation" means
-   * an unmodified copy of this implementation as distributed by Global Script Development Labs, or
-   * a copy of this implementation compiled by you or by a third party, with only minimal porting changes made to it.
-
- * A "qualifying modified version of this implementation" means
-   * a modified version of this implementation developed and distributed by a qualifying project, or
-   * a copy of such a version compiled by you or by a third party, with only minimal porting changes made to it.
-   A reference to "the qualifying project", after a reference to a qualifying modified version, means the project that ddeveloped and distributed the modified version.
-
- * A "qualifying project" means an open-source project which
-   * develops a modified version of this implementation, or software incorporating such a modified version,
-   * distributes it to the general public, and
-   * ensures that the individual developer of all software incorporated into its public release is paid
-     * at least 30USD / hour spent developing the modification, or
-     * at least 1200USD for each week during which the developer worked on the modification.
-   Payment need not be tendered by the qualifying project as long as the project ensures that payment is tendered by someone.
-
- * An "individual developer" means the person who actually made the modification to the software,
-   regardless of any work-for-hire laws that may be in place.
-
-Section VI.
 
 Nothing in this list of exceptions shall be construed to be prejudicial to the rights, under copyright or similar law,
 of the developers or contributors to any modified version of this implementation distributed independently of Global Script Development Labs.
