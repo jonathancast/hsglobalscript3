@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsnonmonoidalpattern) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
 
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), gslambda_value, gsav, gsae, gsvCode)
@@ -48,5 +48,5 @@ gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
 gsundefined = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ st_hs ->
     gsbcundefined st_hs
 
-gsnonmonoidalpattern = $gslambda_value $ \ p -> $gsbcarg $ \ x ->
+gsinfalliblepattern = $gslambda_value $ \ p -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae ($gsbcapply p [ $gsav x ])) $ \ r -> $gsbcconstr (gsvar "1") [$gsav r]

@@ -502,8 +502,8 @@ compileNonMonoidalPat :: Env -> Pos -> Pattern -> Either String (Set HSImport, H
 compileNonMonoidalPat env pos p = do
     (isp, hsp) <- compilePat env p
     return (
-        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIVar "GSI.StdLib" "gsnonmonoidalpattern", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` isp,
-        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar "gsnonmonoidalpattern" `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hsp ]
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIVar "GSI.StdLib" "gsinfalliblepattern", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` isp,
+        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar "gsinfalliblepattern" `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hsp ]
       )
 
 compileMonoidalPatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
@@ -828,7 +828,7 @@ globalEnv = Env{
         ("gsio.file.read", "GSI.GSIO", "gsio_file_read"),
         ("gsio.monad", "GSI.GSIO", "gsio_monad"),
         ("gsmain", "GSI.Main", "gsmain"),
-        ("gsnonmonoidalpattern", "GSI.StdLib", "gsnonmonoidalpattern"),
+        ("gsinfalliblepattern", "GSI.StdLib", "gsinfalliblepattern"),
         ("gsthunk", "GSI.GSI", "gsigsthunk"),
         ("gsundefined", "GSI.GSI", "gsigsundefined"),
         ("gsv", "GSI.Log", "gsloggsv"),
