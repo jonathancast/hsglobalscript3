@@ -45,3 +45,4 @@ src/stage1$
 src/hsgs2hs/test-fixtures/temp.hsgs$
 src/gs2hs/hsgs2hs$
 src/gs2hs/hsgs2hs.hs$
+src/libgsi/GSI/StdLib.hs$

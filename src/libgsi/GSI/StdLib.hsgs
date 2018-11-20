@@ -1,28 +1,23 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsnonmonoidalpattern) where
 
-import Language.Haskell.TH.Lib (appE, varE)
-
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSArg, GSExpr, GSExternal(..), gsundefined_value, gslambda_value, gsfield, gsav, gsae, gsvCode)
-import API (apiImplementationFailure)
-import GSI.Eval (evalSync)
-import GSI.Functions (gsapiEvalString, gsapiEvalNatural)
-import GSI.ByteCode (gsbcarg, gsbcapply, gsbcapp, gsbcforce, gsbcfield, gsbcconstr, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.Value (GSValue(..), gslambda_value, gsav, gsae, gsvCode)
+import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcconstr, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 import GSI.BCFunctions (gsbcevalstacktrace)
+$gsimports
 
 gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
 
 gscompose :: GSValue
-gscompose = $gslambda_value $ \ f -> $gsbcarg $ \ g -> $gsbcarg $ \ x -> $gsbcapply f [$gsae $ $gsbcapply g [$gsav x]]
+gscompose = [gs:value| λ 'f. λ 'g. λ 'x. f (g x) |]
 
-gsapply_fn = $gslambda_value $ \ f -> $gsbcarg $ \ x -> $gsbcapply f [ $gsav x ]
+gsapply_fn = [gs:value| λ 'f. λ 'x. f x |]
 
-gsanalyze = $gslambda_value $ \ e -> $gsbcarg $ \ cs -> $gsbcapply cs [ $gsav e ]
+gsanalyze = [gs:value| λ 'e. λ 'cs. cs e |]
 
-gsanalyzeM = $gslambda_value $ \ m -> $gsbcarg $ \ e -> $gsbcarg $ \ cs ->
-    $gsbcapp ($gsbcfield ($gsav m) (gsvar ">>=")) [ $gsav e, $gsav cs ]
+gsanalyzeM = [gs:value| λ 'm. λ 'e. λ 'cs. m #(>>=) e cs |]
 
 gsanalyzeImpM = $gslambda_value $ \ a -> $gsbcarg $ \cs -> $gsbcimpfor $ do
     x <- $gsbcimpbind $ $gsav a
