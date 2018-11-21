@@ -842,6 +842,7 @@ globalEnv = Env{
         ("ident", "GSDL.Syntax", "ident"),
         ("impfor", "GSI.StdLib", "gsimpfor"),
         ("implicit.here", "GSDL.AST", "gsimplicit_here"),
+        ("impmapM", "GS.Util", "gsimpmapM"),
         ("impunit", "GSI.StdLib", "gsimpunit"),
         ("instantiate", "GSDL.TypeChecker", "gstype_checker_instantiate"),
         ("is-ascii-digit", "GSI.Rune", "gsisAsciiDigit"),
