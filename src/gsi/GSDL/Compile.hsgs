@@ -67,7 +67,7 @@ gscompile_pat = [gs:value| λ 'pos. λ 'env. λ 'p. analyze p.
 |]
 
 $gsdeclare compile-non-monoidal-pat gscompile_non_monoidal_pat
-$gsdeclare compile-fallible-pat-function gscompile_monoidal_pat_function
+$gsdeclare compile-fallible-pat-function gscompile_fallible_pat_function
 
 gscompile_monoidal_pat = [gs:value| λ 'pos. λ 'env. λ 'p. analyze p.
     case pat.discard. compile-non-monoidal-pat pos env p
@@ -83,7 +83,7 @@ gscompile_non_monoidal_pat = [gs:value| λ 'pos. λ 'env. λ 'p.
     gsbcapply pos (gsinject gsinfalliblepattern) (gsae pos (compile-pat pos env p) : nil)
 |]
 
-gscompile_monoidal_pat_function = [gs:value| λ 'pos. λ 'env. λ 'p. λ 'pas. analyze p.
+gscompile_fallible_pat_function = [gs:value| λ 'pos. λ 'env. λ 'p. λ 'pas. analyze p.
     case pat.app 'p0 'pos1 'p1. compile-fallible-pat-function pos env p0 (〈 '0 ∝ pos1; '1 ∝ p1; 〉 : pas)
     case pat.view 'v. (analyze compiler.env.view.get v env.
         case just 'gsv. gsbcviewpattern pos gsv (map (λ 'pp. gsae (pp #0) (compile-fallible-pat (pp #0) env (pp #1))) pas)
