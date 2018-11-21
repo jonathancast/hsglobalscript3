@@ -113,7 +113,7 @@ gsvalidator_global_env = [gs:value|
 |]
 
 $gsdeclare type.pattern gstype_pattern
-$gsdeclare type.pattern.monoidal gstype_pattern_fallible
+$gsdeclare type.pattern.fallible gstype_pattern_fallible
 $gsdeclare type.generator gstype_generator
 $gsdeclare type.generator.fallible gstype_generator_fallible
 $gsdeclare type.open-expr gstype_open_expr
@@ -135,7 +135,7 @@ gstype_checker_global_env = [gs:value|
     ) $
     type.env.type.insert (gsvar qq{case}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{σ}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
-            type.function (type.pattern.monoidal (type.consts qq{α}) (type.consts qq{σ})) $
+            type.function (type.pattern.fallible (type.consts qq{α}) (type.consts qq{σ})) $
                 type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
                     type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
                         type.function (type.consts qq{α}) (type.consts qq{β})
