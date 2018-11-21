@@ -1,5 +1,8 @@
 import GSI.Env (runGSProgram)
 $gsimports
 
-main = runGSProgram $ [gs:value| λ 'as. undefined
-|]
+$gsdeclare process-arg gsprocess_arg
+
+main = runGSProgram $ [gs:value| λ 'as. impmapM process-arg as |]
+
+gsprocess_arg = [gs:value| λ 'a. undefined |]
