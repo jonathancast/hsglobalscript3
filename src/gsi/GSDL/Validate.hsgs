@@ -24,7 +24,7 @@ gsvalidate_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.natural 'n. right 〈〉
     case expr.qlo 'v 'e 'x. e #validate pos env x
     case expr.app 'f 'a. either.for _ ← validate-expr pos env f; _ ← validate-arg pos env a;. right 〈〉
-    case expr.monoidal-pat 'p _. validate-pat pos env p
+    case expr.fallible-pat 'p _. validate-pat pos env p
     case expr.pat 'p _. validate-pat pos env p
     case expr.open-expr 'e1 (just 'bvs). either.for
             _ ← either.mapM
