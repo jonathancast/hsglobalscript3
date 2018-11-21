@@ -115,7 +115,7 @@ gsvalidator_global_env = [gs:value|
 $gsdeclare type.pattern gstype_pattern
 $gsdeclare type.pattern.monoidal gstype_pattern_monoidal
 $gsdeclare type.generator gstype_generator
-$gsdeclare type.generator.monoidal gstype_generator_monoidal
+$gsdeclare type.generator.monoidal gstype_generator_fallible
 $gsdeclare type.open-expr gstype_open_expr
 
 $gsdeclare type.addition gstype_addition
@@ -369,7 +369,7 @@ gstype_checker_args_type = [gs:value|
 gstype_pattern = [gs:value| λ 'α. λ 'σ. type.function α $ type.generator σ |]
 gstype_pattern_monoidal = [gs:value| λ 'α. λ 'σ. type.function α $ type.generator.monoidal σ |]
 gstype_generator = [gs:value| λ 'σ. σ |]
-gstype_generator_monoidal = [gs:value| λ 'σ. type.app (type.consts qq{generator.fallible.t}) σ |]
+gstype_generator_fallible = [gs:value| λ 'σ. type.app (type.consts qq{generator.fallible.t}) σ |]
 gstype_open_expr = [gs:value| λ 'σ. λ 'α. type.function σ α |]
 
 gstype_addition = [gs:value| λ 'α. type.signature (
