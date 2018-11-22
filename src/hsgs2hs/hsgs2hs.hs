@@ -1022,7 +1022,7 @@ globalEnv = Env{
         ("eq", "GSI.OrderTotal", "gsord_eq_view"),
         ("expr.app", "GSDL.AST", "gsexpr_app_view"),
         ("expr.missing-case", "GSDL.AST", "gsexpr_missing_case_view"),
-        ("expr.fallible-pat", "GSDL.AST", "gsexpr_monoidal_pat_view"),
+        ("expr.fallible-pat", "GSDL.AST", "gsexpr_fallible_pat_view"),
         ("expr.natural", "GSDL.AST", "gsexpr_natural_view"),
         ("expr.open-expr", "GSDL.AST", "gsexpr_open_expr_view"),
         ("expr.pat", "GSDL.AST", "gsexpr_pat_view"),
