@@ -17,7 +17,7 @@ module GSDL.AST (
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_open_expr, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view,
-    gscategory_monoidal, gscategory_fallible_view,
+    gscategory_fallible, gscategory_fallible_view,
     gssyntactic_category_lambda_like, gssyntactic_category_variable, gssyntactic_category_where, gssyntactic_category_lambda_like_view, gssyntactic_category_variable_view, gssyntactic_category_where_view
   ) where
 
@@ -144,7 +144,7 @@ gspat_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> 
 gsorder_of_being_open_expr = $gsconstr (gsvar "open-expr") []
 gsorder_of_being_pattern = $gsconstr (gsvar "pattern") []
 
-gscategory_monoidal = $gsconstr (gsvar "fallible") []
+gscategory_fallible = $gsconstr (gsvar "fallible") []
 gscategory_fallible_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "fallible" ek sk im
 
 gsorder_of_being_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "open-expr" ek sk im

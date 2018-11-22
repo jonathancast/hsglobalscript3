@@ -752,7 +752,7 @@ globalEnv = Env{
         ("arg.expr", "GSDL.AST", "gsarg_expr"),
         ("arg.here", "GSDL.AST", "gsarg_here"),
         ("case", "GSI.StdLib", "gscase"),
-        ("category.fallible", "GSDL.AST", "gscategory_monoidal"),
+        ("category.fallible", "GSDL.AST", "gscategory_fallible"),
         ("char", "GSI.Parser", "gsparser_char"),
         ("compile-document", "GSDL.Compile", "gscompile_document"),
         ("compiler.env.empty", "GSDL.Compiler", "gscompiler_env_empty"),
