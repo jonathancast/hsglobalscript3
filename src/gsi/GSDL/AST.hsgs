@@ -103,7 +103,7 @@ gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "ap
 gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
 gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "open-expr") [ $gsav e, $gsav mb ]
 gsexpr_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "pat") [ $gsav p, $gsav mb ]
-gsexpr_monoidal_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "monoidal-pat") [ $gsav p, $gsav mb ]
+gsexpr_monoidal_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]
 gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 
 gsexpr_natural_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "natural" ek sk e
@@ -112,7 +112,7 @@ gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e ->
 gsexpr_qlo_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "qlo" ek sk e
 gsexpr_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "open-expr" ek sk e
 gsexpr_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "pat" ek sk e
-gsexpr_monoidal_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "monoidal-pat" ek sk e
+gsexpr_monoidal_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "fallible-pat" ek sk e
 gsexpr_missing_case_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "missing-case" ek sk e
 
 gsqloitem_char = $gslambda_value $ \ r -> $gsbcconstr (gsvar "char") [ $gsav r ]
