@@ -356,7 +356,7 @@ globalEnv = Env{
             ,
             Nothing
         )),
-        ("analyze-impM", \ env -> (
+        ("impanalyzeM", \ env -> (
             expr env,
             empty
                 <|> EMissingCase <$> getPos

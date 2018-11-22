@@ -260,12 +260,12 @@ gstype_checker_run = [gs:value| λ 'a. λ 'env. st.run (a env) |]
 
 gstype_checker_unit = [gs:value| λ 'x. λ 'env. impunit (right x) |]
 
-gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. analyze-impM a env.
+gstype_checker_bind = [gs:value| λ 'a. λ 'k. λ 'env. impanalyzeM a env.
     case left 'err. impunit (left err)
     case right 'x. k x env
 |]
 
-gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. analyze-impM a env.
+gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. impanalyzeM a env.
     case left 'err. impunit (left err)
     case right 'x. impunit (right (f x))
 |]

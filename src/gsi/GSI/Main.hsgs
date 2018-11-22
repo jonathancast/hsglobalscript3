@@ -14,7 +14,7 @@ $gsdeclare compiler.global-env gscompiler_global_env
 
 -- Loops over arguments to process them
 gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
-    case 'a : 'as. analyze-impM file.stat a.
+    case 'a : 'as. impanalyzeM file.stat a.
         case left 'e. (analyze e.
             case ENOENT 'fn.
                 impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{no-such-file}
@@ -33,7 +33,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
         )
 |]
 
-gsload_document = [gs:value| λ 'fn. λ 'gstyc. λ 'k. analyze-impM gsio.file.read fn.
+gsload_document = [gs:value| λ 'fn. λ 'gstyc. λ 'k. impanalyzeM gsio.file.read fn.
     case right 's. (analyze parse advance-rune print-rune (file parser.global-env) (pos.init fn) s.
         case right 'f. (analyze f.
             case file.document 'pos 'd. (analyze process-document pos gstyc d.
