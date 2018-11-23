@@ -855,6 +855,7 @@ globalEnv = Env{
         ("lexeme", "GSDL.Syntax", "lexeme"),
         ("list.∈", "GSI.List", "gslist_member"),
         ("list.∉", "GSI.List", "gslist_not_member"),
+        ("list.≡", "GSI.List", "gslist_eq"),
         ("log.<>", "GSI.StdLib", "gscompose"),
         ("log.char", "GSI.Log", "gslogchar"),
         ("log.dstr", "GSI.Log", "gslog_dstr"),
