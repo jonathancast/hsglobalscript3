@@ -4,7 +4,15 @@ $gsimports
 
 $gsdeclare file.name.extension.get-w gsfile_name_extension_get_w
 
-gsfile_name_extension_get = [gs:value| λ 'fn. file.name.extension.get-w nothing fn |]
+gsfile_name_extension_get = [gs:value| λ 'fn. file.name.extension.get-w (λ 'e. e) fn |]
 
 gsfile_name_extension_get_w = [gs:value| λ 'ex. λ 'fn. analyze fn.
+    case 'c:'fn1. (analyze rune.≡ c r{.}.
+        case true. file.name.extension.get-w (λ 'e. e)  fn1
+        case false. (analyze rune.≡ c r{/}.
+            case true. file.name.extension.get-w (λ 'e. e) fn1
+            case false. file.name.extension.get-w (ex ∘ (λ 'e. c:e)) fn1
+        )
+    )
+    case nil. ex nil
 |]
