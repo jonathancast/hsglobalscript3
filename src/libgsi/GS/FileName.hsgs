@@ -1,4 +1,4 @@
-module GS.FileName (gsfile_name_extension_get) where
+module GS.FileName (gsfile_name_extension_get, gsfile_name_extension_set) where
 
 $gsimports
 
@@ -15,4 +15,11 @@ gsfile_name_extension_get_w = [gs:value| λ 'ex. λ 'fn. analyze fn.
         )
     )
     case nil. ex nil
+|]
+
+$gsdeclare file.name.extension.set-w gsfile_name_extension_set_w
+
+gsfile_name_extension_set = [gs:value| λ 'ex. λ 'fn. file.name.extension.set-w (λ 'e. e) (λ 'e. e) ex fn |]
+
+gsfile_name_extension_set_w = [gs:value| λ 'bd. λ 'exd. λ 'ex. λ 'fn. analyze fn.
 |]
