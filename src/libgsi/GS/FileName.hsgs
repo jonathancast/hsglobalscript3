@@ -1,0 +1,10 @@
+module GS.FileName (gsfile_name_extension_get) where
+
+$gsimports
+
+$gsdeclare file.name.extension.get-w gsfile_name_extension_get_w
+
+gsfile_name_extension_get = [gs:value| λ 'fn. file.name.extension.get-w nothing fn |]
+
+gsfile_name_extension_get_w = [gs:value| λ 'ex. λ 'fn. analyze fn.
+|]
