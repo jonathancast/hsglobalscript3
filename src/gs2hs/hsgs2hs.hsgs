@@ -5,9 +5,22 @@ $gsdeclare process-arg gsprocess_arg
 
 main = runGSProgram $ [gs:value| λ 'as. impmapM process-arg as |]
 
+$gsdeclare need-to-recompile gsneed_to_recompile
+
 gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
     case right 'st. (analyze st #is.dir.
         case false. (analyze list.≡ rune.≡ (file.name.extension.get a) qq{hsgs}.
+            case true. (impanalyzeM need-to-recompile a.
+            )
         )
     )
 |]
+
+$gsdeclare mk-hs-file gsmk_hs_file
+
+gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat a.
+    case right 'st. (impanalyzeM file.stat (mk-hs-file a).
+    )
+|]
+
+gsmk_hs_file = [gs:value| file.name.extension.set qq{hs} |]
