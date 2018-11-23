@@ -5,4 +5,9 @@ $gsdeclare process-arg gsprocess_arg
 
 main = runGSProgram $ [gs:value| λ 'as. impmapM process-arg as |]
 
-gsprocess_arg = [gs:value| λ 'a. undefined |]
+gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
+    case right 'st. (analyze st #is.dir.
+        case false. (analyze list.≡ rune.≡ (file.name.extension.get a) qq{hsgs}.
+        )
+    )
+|]
