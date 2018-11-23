@@ -22,4 +22,9 @@ $gsdeclare file.name.extension.set-w gsfile_name_extension_set_w
 gsfile_name_extension_set = [gs:value| λ 'ex. λ 'fn. file.name.extension.set-w (λ 'e. e) (λ 'e. e) ex fn |]
 
 gsfile_name_extension_set_w = [gs:value| λ 'bd. λ 'exd. λ 'ex. λ 'fn. analyze fn.
+    case 'c:'fn1. (analyze rune.≡ c r{.}.
+        case true. file.name.extension.set-w (bd ∘ exd) (λ 'e. c:e) ex fn1
+        case false. file.name.extension.set-w bd (exd ∘ (λ 'e. c:e)) ex fn1
+    )
+    case nil. bd (r{.} : ex)
 |]
