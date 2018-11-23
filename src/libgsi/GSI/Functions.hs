@@ -87,6 +87,7 @@ gsapiEvalPos pos v = $apiImplementationFailure $ "gsapiEvalPos " ++ gsvCode v ++
 
 gsevalString :: Pos -> GSValue -> IO String
 gsevalString pos v = gsevalString_w pos id v where
+    gsevalString_w pos ds (GSError err) = throwIO $ GSExcError err
     gsevalString_w pos ds (GSThunk th) = do
         v <- evalSync [StackTrace pos []] th
         gsevalString_w pos ds v
