@@ -20,6 +20,7 @@ $gsdeclare mk-hs-file gsmk_hs_file
 
 gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat a.
     case right 'st. (impanalyzeM file.stat (mk-hs-file a).
+        case left (ENOENT _). impunit true
     )
 |]
 
