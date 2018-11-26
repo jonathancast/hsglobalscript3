@@ -4,5 +4,6 @@ module GS.Util (gsimpmapM) where
 $gsimports
 
 gsimpmapM = [gs:value| λ 'f. λ 'xn. analyze xn.
-    case 'x:'xn1. impfor 'y ← f x; 'ys ← impmapM f xn1;. undefined
+    case 'x:'xn1. impfor 'y ← f x; 'ys1 ← impmapM f xn1;. impunit (y:ys1)
+    case nil. impunit nil
 |]
