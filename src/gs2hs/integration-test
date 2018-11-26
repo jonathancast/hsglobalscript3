@@ -6,4 +6,6 @@
 . $GS_SPEC/bin/gs-spec
 . $GS_SPEC/bin/hsgs-spec
 
+test_hsgs_empty_file
+
 true
