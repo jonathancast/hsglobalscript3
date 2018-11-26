@@ -29,6 +29,28 @@ gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat a.
 
 gsmk_hs_file = [gs:value| file.name.extension.set qq{hs} |]
 
-gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. analyze s.
+$gsdeclare split-input gssplit_input
+$gsdeclare compile-source gscompile_source
+$gsdeclare format-output gsformat_output
+$gsdeclare hsstring hsstring
+
+gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
+        'i ← split-input (pos.init fn) s;
+        'c ← compile-source i;
+        's1 ← format-output c;
+    . right $ concat $ qq{{-# LINE 1 §(hsstring fn) #-}\n} : s1
+|]
+
+gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
+
+gscompile_source = [gs:value| λ 'i. analyze i.
+    case nil. right nil
+|]
+
+gsformat_output = [gs:value| λ 'o. analyze o.
+    case nil. right nil
+|]
+
+hsstring = [gs:value| λ 's. r{"} : s <> qq{"} |]
