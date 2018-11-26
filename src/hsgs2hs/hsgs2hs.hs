@@ -787,6 +787,7 @@ globalEnv = Env{
         ("file.name.extension.set", "GS.FileName", "gsfile_name_extension_set"),
         ("file.read", "GSI.Env", "gsfileRead"),
         ("file.stat", "GSI.Env", "gsfileStat"),
+        ("file.write", "GSI.Env", "gsfile_write"),
         ("filter", "GSI.List", "gsfilter"),
         ("fmtdecimal", "GSI.String", "gsfmtdecimal"),
         ("foldl", "GSI.List", "gsfoldl"),

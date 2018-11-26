@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfileRead, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfileRead, gsfile_write, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
@@ -8,8 +8,8 @@ import qualified Data.Map as Map
 import Control.Exception (SomeException, try, catch, throwIO, fromException, displayException)
 
 import Data.Encoding.UTF8 (UTF8(..))
-import System.IO (Handle, hPutStrLn, hPutChar, stdout, stderr)
-import System.IO.Encoding (readFile)
+import System.IO (Handle, IOMode(..), withFile, hPutStrLn, stdout, stderr)
+import System.IO.Encoding (readFile, hPutChar)
 import System.IO.Error (isDoesNotExistError)
 import System.Environment (getArgs)
 import System.Exit (ExitCode(..), exitWith)
@@ -68,6 +68,10 @@ gsprimfileRead pos t fn = do
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimfileRead " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
         Right s -> $gslazystring s
 
+gsfile_write = $gsimpprim $ \ pos t fn s -> do
+    fns <- gsapiEvalString pos fn
+    let ?enc = UTF8Strict in withFile fns WriteMode $ \ h -> gsprimprint h pos t s
+
 gsprint :: GSValue
 gsprint = $gsimpprim (gsprimprint stdout)
 
@@ -90,7 +94,7 @@ gsprimprint h pos t (GSError err) = do
 gsprimprint h pos t (GSConstr pos1 c []) | c == gsvar "nil" =
     return $ $gsundefined_value
 gsprimprint h pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
-    hPutChar h ch
+    let ?enc = UTF8Strict in hPutChar h ch
     gsprimprint h pos t s
 gsprimprint h pos t (GSConstr pos1 c [ GSThunk th, s ]) | c == gsvar ":" = do
     v <- evalSync [StackTrace $gshere [StackTrace pos []]] th
