@@ -12,6 +12,7 @@ $gsdeclare mk-hs-file gsmk_hs_file
 gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
     case left (ENOENT _). impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{enoent}
     case right 'st. (analyze st #is.dir.
+        case true. impfor 'as ← dir.read a;. impmapM (λ 'a1. process-arg (a <> r{/} : a1)) as
         case false. (analyze list.≡ rune.≡ (file.name.extension.get a) qq{hsgs}.
             case true. (impanalyzeM need-to-recompile a.
                 case true. (impfor 's ← file.read a;. analyze compile-hsgs-source a s.
