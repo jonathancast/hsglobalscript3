@@ -7,5 +7,6 @@
 . $GS_SPEC/bin/hsgs-spec
 
 test_hsgs_empty_file
+test_hsgs_non_existent_directory
 
 true
