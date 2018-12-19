@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfileRead, gsfile_write, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfileRead, gsfile_write, gsdir_read, gsprint, gsprintError, gsENOENT_view) where
 
 import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evil
 
@@ -11,6 +11,7 @@ import Data.Encoding.UTF8 (UTF8(..))
 import System.IO (Handle, IOMode(..), withFile, hPutStrLn, stdout, stderr)
 import System.IO.Encoding (readFile, hPutChar)
 import System.IO.Error (isDoesNotExistError)
+import System.Directory (getDirectoryContents)
 import System.Environment (getArgs)
 import System.Exit (ExitCode(..), exitWith)
 
@@ -26,7 +27,7 @@ import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
-import GSI.Functions (gslazystring, gsapiEvalString)
+import GSI.Functions (gslazylist, gslazystring, gsapiEvalString)
 
 runGSProgram a = do
     as <- $gslist . map $gsstring <$> getArgs
@@ -71,6 +72,13 @@ gsprimfileRead pos t fn = do
 gsfile_write = $gsimpprim $ \ pos t fn s -> do
     fns <- gsapiEvalString pos fn
     let ?enc = UTF8Strict in withFile fns WriteMode $ \ h -> gsprimprint h pos t s
+
+gsdir_read = $gsimpprim $ \ pos t fn -> do
+    fns <- gsapiEvalString pos fn
+    mbas <- try $ getDirectoryContents fns
+    case mbas of
+        Left (e :: SomeException) -> $apiImplementationFailure $ "gsdir_read " ++ show fns ++ " (getDirectoryContents returned Left (" ++ show e ++ ")) next"
+        Right as -> $gslazylist =<< mapM $gslazystring (filter (\ a -> a /= "." && a /= "..") as)
 
 gsprint :: GSValue
 gsprint = $gsimpprim (gsprimprint stdout)

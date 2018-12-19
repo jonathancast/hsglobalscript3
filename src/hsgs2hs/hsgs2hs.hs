@@ -761,6 +761,7 @@ globalEnv = Env{
         ("compiler.env.view.insert", "GSDL.Compiler", "gscompiler_env_view_insert"),
         ("concat", "GSI.List", "gsconcat"),
         ("create-thread", "GSI.GSI", "gsicreateThread"),
+        ("dir.read", "GSI.Env", "gsdir_read"),
         ("document.in", "GSDL.AST", "gsdocument_in"),
         ("drop", "GSI.List", "gsdrop"),
         ("either.>>=", "GSI.Either", "gseitherbind"),
