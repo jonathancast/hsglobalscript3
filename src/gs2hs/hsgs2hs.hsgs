@@ -2,7 +2,7 @@
 
 import GSI.Env (runGSProgram)
 import GSI.Value (gslambda_value, gsav)
-import GSI.ByteCode (gsbcconstr)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 $gsdeclare process-arg gsprocess_arg
@@ -54,6 +54,8 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
 
+$gsdeclare view source-comp.char gssource_comp_char_view
+
 gscompile_source = [gs:value| λ 'i. analyze i.
     case nil. right nil
 |]
@@ -65,3 +67,5 @@ gsformat_output = [gs:value| λ 'o. analyze o.
 hsstring = [gs:value| λ 's. r{"} : s <> qq{"} |]
 
 gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
+
+gssource_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
