@@ -1,4 +1,8 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 import GSI.Env (runGSProgram)
+import GSI.Value (gslambda_value, gsav)
+import GSI.ByteCode (gsbcconstr)
 $gsimports
 
 $gsdeclare process-arg gsprocess_arg
@@ -43,6 +47,8 @@ gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
     . right $ concat $ qq{{-# LINE 1 §(hsstring fn) #-}\n} : s1
 |]
 
+$gsdeclare source-comp.char gssource_comp_char
+
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
@@ -56,3 +62,5 @@ gsformat_output = [gs:value| λ 'o. analyze o.
 |]
 
 hsstring = [gs:value| λ 's. r{"} : s <> qq{"} |]
+
+gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
