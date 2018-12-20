@@ -56,6 +56,8 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
 
 $gsdeclare view source-comp.char gssource_comp_char_view
 
+$gsdeclare dest-comp.char gsdest_comp_char
+
 gscompile_source = [gs:value| λ 'i. analyze i.
     case nil. right nil
 |]
@@ -69,3 +71,5 @@ hsstring = [gs:value| λ 's. r{"} : s <> qq{"} |]
 gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 
 gssource_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
+
+gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
