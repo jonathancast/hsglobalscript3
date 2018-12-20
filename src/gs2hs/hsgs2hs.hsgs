@@ -63,6 +63,8 @@ gscompile_source = [gs:value| λ 'i. analyze i.
     case nil. right nil
 |]
 
+$gsdeclare view dest-comp.char gsdest_comp_char_view
+
 gsformat_output = [gs:value| λ 'o. analyze o.
     case nil. right nil
 |]
@@ -74,3 +76,5 @@ gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsa
 gssource_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
 
 gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
+
+gsdest_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
