@@ -766,6 +766,7 @@ globalEnv = Env{
         ("drop", "GSI.List", "gsdrop"),
         ("either.>>=", "GSI.Either", "gseitherbind"),
         ("either.for", "GSI.Either", "gseitherFor"),
+        ("either.map", "GSI.Either", "gseithermap"),
         ("either.mapM", "GSI.Either", "gseither_mapM"),
         ("empty", "GSI.Parser", "gsempty"),
         ("error", "GSI.StdLib", "gserror"),
