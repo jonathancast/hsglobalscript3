@@ -59,6 +59,7 @@ $gsdeclare view source-comp.char gssource_comp_char_view
 $gsdeclare dest-comp.char gsdest_comp_char
 
 gscompile_source = [gs:value| λ 'i. analyze i.
+    case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case nil. right nil
 |]
 
