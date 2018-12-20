@@ -50,6 +50,7 @@ gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
 $gsdeclare source-comp.char gssource_comp_char
 
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
+    case 'c:'s1. either.map ((:) (source-comp.char c)) (split-input (advance-rune c pos) s1)
     case nil. right nil
 |]
 
