@@ -8,7 +8,7 @@ module GSI.ByteCode (
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
     gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
-    gsbcviewpattern_w, gsbcvarpattern_w, gsbcdiscardpattern_w
+    gsbcviewpattern_w, gsbcvarpattern_w, gsbcrunepattern_w, gsbcdiscardpattern_w
   ) where
 
 import Data.Proxy (Proxy(..))
@@ -305,6 +305,13 @@ gsbcviewpattern_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [
 gsbcvarpattern_w :: Pos -> GSVar -> GSExpr
 gsbcvarpattern_w pos v = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->
     gsreturn sk (GSRecord pos $ Map.fromList [(v, x)])
+
+gsbcrunepattern_w :: Pos -> Char -> GSExpr
+gsbcrunepattern_w pos ch = gsbcarg_w pos $ \ x -> gsbcforce_w pos ($gsav x) $ \ x0 -> case x0 of
+    GSRune ch1 -> if ch == ch1
+        then gsbcconstr_w pos (gsvar "1") [ $gsae $ gsbcrecord_w $gshere []]
+        else gsbcconstr_w pos (gsvar "0") []
+    _ -> gsbcimplementationfailure_w $gshere $ "gsbcrunepattern_w " ++ gsvCode x0 ++ " next"
 
 gsbcdiscardpattern_w :: Pos -> GSExpr
 gsbcdiscardpattern_w pos = gsbcarg_w pos $ \ x -> GSExpr $ \ cs sk ->

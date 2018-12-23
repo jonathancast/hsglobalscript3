@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-overlapping-patterns -fwarn-incomplete-patterns #-}
-module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), Generator(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, argCode, patCode, genCode) where
+module HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), PQLOItem(..), Generator(..), Param(..), interpolation, quote, globalEnv, scCode, eCode, qloiCode, argCode, patCode, pqloiCode, genCode) where
 
 import Control.Applicative (Alternative(..))
 
@@ -169,6 +169,30 @@ pattern env = empty
         <|> PView <$> getPos <*> ident
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
         <|> PDiscard <$> (getPos <* underscoreTerm)
+        <|> do
+            pos0 <- getPos
+            (v, s) <- lexeme $ do
+                v <- (:) <$> idStartChar <*> many idContChar
+                s <- char '{' *> pquoteItems env [] <* char '}'
+                return (v, s)
+            return $ PQLO pos0 v s
+
+pquoteItems :: Env -> [Char] -> Parser Char [PQLOItem]
+pquoteItems env qs = empty
+    <|> (if null qs then return [] else empty)
+    <|> do
+        pos <- getPos
+        ch <- matching "open delimiter" (\ c -> c `Map.member` delimiters)
+        (PQChar pos ch :) <$> pquoteItems env ((delimiters Map.! ch):qs)
+    <|> case qs of
+        [] -> empty
+        ch:qs' -> do
+            pos <- getPos
+            char ch
+            (PQChar pos ch:) <$> pquoteItems env qs'
+    <|> (:) <$> (PQChar <$> getPos <*> matching "ordinary character" (\ c -> not (c `elem` "()[]{}\\§"))) <*> pquoteItems env qs
+    <|> (:) <$> (PQQChar <$> getPos <*> (char '\\' *> symbol)) <*> pquoteItems env qs
+    <|> (:) <$> (PQInterpPat <$> getPos <*> (char '§' *> char '(' *> pattern env <* char ')')) <*> pquoteItems env qs
 
 generators :: Env -> Parser Char [(Pos, Generator)]
 generators env = ((,) <$> getPos <*> generator env) `endBy` semicolon
@@ -216,8 +240,14 @@ data QLOItem
 data Pattern
   = PVar Pos String
   | PView Pos String
+  | PQLO Pos String [PQLOItem]
   | PApp Pattern Pattern
   | PDiscard Pos
+
+data PQLOItem
+  = PQChar Pos Char
+  | PQQChar Pos Char
+  | PQInterpPat Pos Pattern
 
 data Generator
   = MatchGenerator String Pos Expr
@@ -474,8 +504,14 @@ argCode ArgField{} = "ArgField"
 patCode :: Pattern -> String
 patCode PView{} = "PView"
 patCode PVar{} = "PVar"
+patCode PQLO{} = "PQLO"
 patCode PApp{} = "PApp"
 patCode PDiscard{} = "PDiscard"
+
+pqloiCode :: PQLOItem -> String
+pqloiCode PQChar{} = "PQChar"
+pqloiCode PQQChar{} = "PQQChar"
+pqloiCode PQInterpPat{} = "PQInterpPat"
 
 genCode :: Generator -> String
 genCode MatchGenerator{} = "MatchGenerator"

@@ -28,7 +28,7 @@ import System.IO.Error (isDoesNotExistError)
 import GSI.Util (Pos(..), compilationTime, gsfatal, fmtPos)
 
 import HSGS.Parser (Parser, parse, string, Advanceable(..), advanceStr)
-import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, argCode, patCode, genCode)
+import HSGS.Syntax (SourceComp(..), Expr(..), QLOItem(..), Arg(..), Pattern(..), PQLOItem(..), Generator(..), Param(..), interpolation, quote, scCode, eCode, qloiCode, argCode, patCode, pqloiCode, genCode)
 import HSGS.Output (DestComp(..), HSImport(..), HSExpr(..), dcCode, hsiCode, hsCode)
 
 import qualified HSGS.Syntax as Syntax
@@ -496,6 +496,25 @@ compileMonoidalPat env p@(PVar pos _) = compileNonMonoidalPat env pos p
 compileMonoidalPat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
 compileMonoidalPat env (PApp p0 p1) = compileMonoidalPatApp env p0 [p1]
 compileMonoidalPat env p@PView{} = compileMonoidalPatApp env p []
+compileMonoidalPat env (PQLO pos "qq" s) = w s
+  where
+    w [] = return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.List" "gsnil_view" ],
+        HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` HSVar "gsnil_view" `HSApp` HSList []
+      )
+    w (PQChar pos1 ch:qis) = do
+        (is, p) <- w qis
+        return (
+            Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.List" "gscons_view", HSIType "GSI.Value" "GSArg", HSIVar "GSI.ByteCode" "gsbcrunepattern_w" ]
+                `Set.union` is
+            ,
+            HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` HSVar "gscons_view" `HSApp` HSList [
+                HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` (HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar ch),
+                HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` p
+            ]
+          )
+    w (qi:qis) = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
+compileMonoidalPat env (PQLO pos0 q s) = $gsfatal $ "compileMonoidalPat (PQLO pos " ++ show q ++ " s) next"
 compileMonoidalPat env p = $gsfatal $ "compileMonoidalPat " ++ patCode p ++ " next"
 
 compileNonMonoidalPat :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
@@ -1143,6 +1162,10 @@ boundVars :: Pattern -> Set String
 boundVars (PVar _ x) = Set.singleton x
 boundVars (PDiscard _) = Set.empty
 boundVars (PView _ _) = Set.empty
+boundVars (PQLO _ "qq" qis) = Set.unions $ map w qis where
+    w (PQChar _ _) = Set.empty
+    w qi = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
+boundVars (PQLO _ q _) = $gsfatal $ "boundVars (PQLO _ " ++ q ++ " _) next"
 boundVars (PApp p0 p1) = boundVars p0 `Set.union` boundVars p1
 boundVars p = $gsfatal $ "boundVars " ++ patCode p ++ " next"
 

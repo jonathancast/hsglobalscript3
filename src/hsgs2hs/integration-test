@@ -64,6 +64,7 @@ test_parenthesized_operators
 test_qq_literal
 test_qq_newline
 test_qq_interpolation
+test_qq_pattern_hsgs_syntax
 
 # Different functions
 
