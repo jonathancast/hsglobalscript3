@@ -66,6 +66,7 @@ test_qq_newline
 test_qq_interpolation
 test_qq_pattern_hsgs_syntax
 test_qq_pattern_quoted_bracket_hsgs_syntax
+test_qq_pattern_interpolation_hsgs_syntax
 
 # Different functions
 

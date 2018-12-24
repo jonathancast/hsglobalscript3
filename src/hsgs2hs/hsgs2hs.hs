@@ -505,6 +505,7 @@ compileMonoidalPat env (PQLO pos "qq" s) = w s
     w (PQChar pos1 ch:qis) = cons_pattern pos1 ch (w qis)
     w (PQQChar pos1 ch:qis) | ch `elem` "[]" = cons_pattern pos1 ch (w qis)
     w (PQQChar pos1 ch:qis) = $gsfatal $ "w (PQQChar " ++ show ch ++ " next"
+    w [PQInterpPat pos1 p] = compileMonoidalPat env p
     w (qi:qis) = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
 
     cons_pattern pos1 ch k = do
@@ -1169,6 +1170,7 @@ boundVars (PView _ _) = Set.empty
 boundVars (PQLO _ "qq" qis) = Set.unions $ map w qis where
     w (PQChar _ _) = Set.empty
     w (PQQChar _ _) = Set.empty
+    w (PQInterpPat _ p) = boundVars p
     w qi = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
 boundVars (PQLO _ q _) = $gsfatal $ "boundVars (PQLO _ " ++ q ++ " _) next"
 boundVars (PApp p0 p1) = boundVars p0 `Set.union` boundVars p1
