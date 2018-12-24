@@ -1,0 +1,40 @@
+module GSDL.GlobalEnv (gsparser_global_env) where
+
+$gsimports
+
+gsparser_global_env = [gs:value|
+    parser.env.else.insert (gsvar qq{case}) 〈〉 $
+    parser.env.missing-body.insert (gsvar qq{analyzeM}) expr.missing-case $
+    parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
+    parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
+    parser.env.qlo.insert (gsvar qq{qq}) 〈
+        'parse ∝ λ 'env. many symbol;
+        'annotate ∝ λ 'env. λ 'pos. λ 'qs. map (annotate-qloitem env pos) qs;
+        'validate ∝ λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉;
+        'type-check ∝ λ 'pos. λ 'qs. λ 'tye. type-checker.for
+                _ ← type-checker.unify pos (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) tye;
+                'qsa ← type-checker.mapM
+                    (λ 'qi. analyze qi.
+                        case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
+                    )
+                    qs
+                ;
+            . type-checker.unit qsa
+        ;
+        'compile ∝ λ 'pos. λ 'env. λ 'qs. foldr
+            (λ 'qi. λ 's. analyze qi.
+                case qloitem.char 'ch. gsbcapply pos (gsinject (:)) (gsav (gsinject ch) : gsae pos s : nil)
+            )
+            (gsbcenter pos (gsinject nil))
+            qs
+        ;
+    〉 $
+    parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
+    parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
+    parser.env.syntactic-category.insert (gsvar qq{analyzeM}) syntactic-category.lambda-like $
+    parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
+    parser.env.syntactic-category.insert (gsvar qq{case}) syntactic-category.lambda-like $
+    parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
+    parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
+    parser.env.empty
+|]

@@ -942,6 +942,7 @@ globalEnv = Env{
         ("parser.eof", "GSI.Parser", "gseof"),
         ("parser.fail", "GSI.Parser", "gsparser_fail"),
         ("parser.for", "GSI.Parser", "gsparserFor"),
+        ("parser.global-env", "GSDL.GlobalEnv", "gsparser_global_env"),
         ("parser.map", "GSI.Parser", "gsparser_map"),
         ("parser.map2", "GSI.Parser", "gsparser_map2"),
         ("parser.unit", "GSI.Parser", "gsparser_unit"),
