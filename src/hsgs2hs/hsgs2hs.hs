@@ -261,7 +261,7 @@ compileExpr env (EQLO pos "qq" s) = do
     w_ch pos ds [] = return (string_imports, [ string_expr pos (ds "") ])
     w_ch pos ds (QChar _ ch:qis) = w_ch pos (ds . (ch:)) qis
     w_ch pos ds (QQChar _ 'n':qis) = w_ch pos (ds . ('\n':)) qis
-    w_ch pos ds (QQChar _ ch:qis) | ch `elem` "§\\{}" = w_ch pos (ds . (ch:)) qis
+    w_ch pos ds (QQChar _ ch:qis) | ch `elem` "§\\{}[]" = w_ch pos (ds . (ch:)) qis
     w_ch pos ds (QQChar _ ch:qis) = $gsfatal $ "w_ch pos ds (QQChar _ " ++ show ch ++ ":qis) next"
     w_ch pos ds qis@(QInterpExpr{}:_) = do
         (ist, hst) <- w qis
@@ -502,8 +502,13 @@ compileMonoidalPat env (PQLO pos "qq" s) = w s
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.List" "gsnil_view" ],
         HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` HSVar "gsnil_view" `HSApp` HSList []
       )
-    w (PQChar pos1 ch:qis) = do
-        (is, p) <- w qis
+    w (PQChar pos1 ch:qis) = cons_pattern pos1 ch (w qis)
+    w (PQQChar pos1 ch:qis) | ch `elem` "[]" = cons_pattern pos1 ch (w qis)
+    w (PQQChar pos1 ch:qis) = $gsfatal $ "w (PQQChar " ++ show ch ++ " next"
+    w (qi:qis) = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
+
+    cons_pattern pos1 ch k = do
+        (is, p) <- k
         return (
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.List" "gscons_view", HSIType "GSI.Value" "GSArg", HSIVar "GSI.ByteCode" "gsbcrunepattern_w" ]
                 `Set.union` is
@@ -513,7 +518,6 @@ compileMonoidalPat env (PQLO pos "qq" s) = w s
                 HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` p
             ]
           )
-    w (qi:qis) = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
 compileMonoidalPat env (PQLO pos0 q s) = $gsfatal $ "compileMonoidalPat (PQLO pos " ++ show q ++ " s) next"
 compileMonoidalPat env p = $gsfatal $ "compileMonoidalPat " ++ patCode p ++ " next"
 
@@ -1164,6 +1168,7 @@ boundVars (PDiscard _) = Set.empty
 boundVars (PView _ _) = Set.empty
 boundVars (PQLO _ "qq" qis) = Set.unions $ map w qis where
     w (PQChar _ _) = Set.empty
+    w (PQQChar _ _) = Set.empty
     w qi = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
 boundVars (PQLO _ q _) = $gsfatal $ "boundVars (PQLO _ " ++ q ++ " _) next"
 boundVars (PApp p0 p1) = boundVars p0 `Set.union` boundVars p1
