@@ -8,7 +8,7 @@ module GSDL.AST (
     gsfile_document, gsfile_document_view,
     gsdocument_in, gsdocument_in_view,
     gstype_apply,
-    gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function,
+    gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
     gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_missing_case_view,
@@ -78,6 +78,7 @@ gsdocument_in = $gslambda_value $ \ mbe -> $gsbcarg $ \ mbg -> $gsbcconstr (gsva
 gsdocument_in_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "in" ek sk e
 
 gstype_empty_signature = [gs:value| type.signature type.env.empty |]
+gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 gstype_apply = [gs:value| foldl type.app |]
 
 gstype_unifiable_var = $gslambda_value $ \ r -> $gsbcconstr (gsvar "unifiable-var") [ $gsav r ]

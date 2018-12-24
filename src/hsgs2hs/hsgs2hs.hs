@@ -1001,6 +1001,7 @@ globalEnv = Env{
         ("type.app", "GSDL.AST", "gstype_app"),
         ("type.apply", "GSDL.AST", "gstype_apply"),
         ("type.const", "GSDL.AST", "gstype_const"),
+        ("type.consts", "GSDL.AST", "gstype_consts"),
         ("type.empty-signature", "GSDL.AST", "gstype_empty_signature"),
         ("type.env.empty",  "GSDL.AST", "gstype_env_empty"),
         ("type.env.implicits.get", "GSDL.AST", "gstype_env_implicits_get"),

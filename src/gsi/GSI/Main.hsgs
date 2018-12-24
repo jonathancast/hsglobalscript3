@@ -54,8 +54,6 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
         . right dty
 |]
 
-$gsdeclare type.consts gstype_consts
-
 gsparser_global_env = [gs:value|
     parser.env.else.insert (gsvar qq{case}) 〈〉 $
     parser.env.missing-body.insert (gsvar qq{analyzeM}) expr.missing-case $
@@ -390,8 +388,6 @@ gstype_monad = [gs:value| λ 'm. type.signature $
     ) $
     type.env.empty
 |]
-
-gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
 
 $gsdeclare load-document gsload_document
 
