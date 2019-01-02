@@ -36,7 +36,7 @@ $gsdeclare prim.<|> gsprimor
 
 gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. analyze xn.
     case process.step 'x 'xn1. process-lookahead (prim.<|> p (x #0)) xn1
-    case process.err 'pos 'un 'err 'exp. prim.<|> p (prim.fail err exp)
+    case process.err 'pos 'un 'err 'exp. prim.<|> p (prim.fail (fmt-error pos un err exp : nil) nil)
 |]
 
 $gsdeclare prim.empty gsprim_empty
