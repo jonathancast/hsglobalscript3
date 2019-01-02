@@ -12,15 +12,20 @@ $gsdeclare prim.unit gsprimunit
 $gsdeclare parse-process gsparse_process
 $gsdeclare parse-w gsparsew
 
-gsparse = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv pr (parser-run p) pos s;. parse-process (res #0) (res #1) |]
+gsparse = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. parse-process (parse-w adv pr (parser-run p) pos s) |]
 
-gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
-    -- > case nil. left err
-    case 'x0 : nil. (analyze x0 #1.
+$gsdeclare fmt-error gsfmtError
+
+$gsdeclare view process.step gsprocess_step_view
+$gsdeclare view process.err gsprocess_err_view
+
+gsparse_process = [gs:value| λ 'xn. analyze xn.
+    -- > case process.error 'err. left (pos.fmt (err #0) qq{Un-expected §(err #1); §(fmt-error (err #2) (err #3))})
+    case process.step 'x0 (process.err 'err). (analyze x0 #1.
         case true. right (x0 #0)
-        case false. left err
+        case false. left (pos.fmt (err #0) qq{Un-expected §(err #1); §(fmt-error (err #2) (err #3))})
     )
-    case 'x0 : 'xn1. parse-process xn1 err
+    case process.step 'x0 'xn1. parse-process xn1
 |]
 
 $gsdeclare process-lookahead gsparse_process_lookahead
@@ -29,12 +34,10 @@ $gsdeclare prim.fail gsprim_fail
 
 $gsdeclare prim.<|> gsprimor
 
-gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn.
-    case 'x:'xn1. process-lookahead (prim.<|> p (x #0)) xn1 err
-    case nil. prim.<|> p (prim.fail (err #0) (err #1))
+gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. analyze xn.
+    case process.step 'x 'xn1. process-lookahead (prim.<|> p (x #0)) xn1
+    case process.err 'err. prim.<|> p (prim.fail (err #2) (err #3))
 |]
-
-$gsdeclare fmt-error gsfmtError
 
 $gsdeclare prim.empty gsprim_empty
 
@@ -44,18 +47,18 @@ $gsdeclare view prim.get-pos gsprim_get_pos_view
 $gsdeclare view prim.lookahead gsprim_lookahead_view
 $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
 
+$gsdeclare process.step gsprocess_step
+$gsdeclare process.err gsprocess_err
+
 gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
-    case prim.fail 'err 'exp. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); §(fmt-error err exp)}; 〉
-    case prim.unit-plus 'x 'p1. for 'r1 ∝ parse-w adv pr p1 pos s;. 〈
-        '0 ∝ 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 : r1 #0;
-        '1 ∝ r1 #1;
-    〉
+    case prim.fail 'err 'exp. process.err 〈 '0 ∝ pos; '1 ∝ undefined; '2 ∝ err; '3 ∝ exp; 〉
+    case prim.unit-plus 'x 'p1. process.step 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 (parse-w adv pr p1 pos s)
     case prim.get-pos 'k. parse-w adv pr (k pos) pos s
-    case prim.lookahead 'pp. for 'res ∝ parse-w adv pr pp pos s;. parse-w adv pr (process-lookahead prim.empty (res #0) (res #1)) pos s
+    case prim.lookahead 'pp. parse-w adv pr (process-lookahead prim.empty (parse-w adv pr pp pos s)) pos s
     case prim.symbol-or-eof 'ek 'sk. (analyze s.
         case nil. parse-w adv pr ek pos s
         case 'c:'s1. (analyze sk c.
-            case left 'e. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(pr c); §(fmt-error (e #0) (e #1))}; 〉
+            case left 'e. process.err 〈 '0 ∝ pos; '1 ∝ pr c; '2 ∝ e #0; '3 ∝ e #1; 〉
             case right 'p1. parse-w adv pr p1 (adv c pos) s1
         )
     )
@@ -256,6 +259,12 @@ gsprim_unit_plus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ 
 gsprim_get_pos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "get-pos" ek sk e
 gsprim_lookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lookahead" ek sk e
 gsprim_symbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
+
+gsprocess_step = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar "step") [ $gsav x, $gsav xn ]
+gsprocess_err = $gslambda_value $ \ err -> $gsbcconstr (gsvar "err") [ $gsav err ]
+
+gsprocess_step_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "step" ek sk e
+gsprocess_err_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "err" ek sk e
 
 gsparser_advanceRune = [gs:value| λ 'c. λ 'pos. analyze rune.≡ c r{\n}.
     case true. 〈 'filename ∝ pos #filename; 'line ∝ pos #line + 1; 'col ∝ 1; 〉
