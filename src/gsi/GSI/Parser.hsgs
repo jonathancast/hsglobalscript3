@@ -14,10 +14,6 @@ $gsdeclare parse-w gsparsew
 
 gsparse = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. for 'res ∝ parse-w adv pr (parser-run p) pos s;. parse-process (res #0) (res #1) |]
 
-gsparser_run = [gs:value| λ 'p. p prim.unit |]
-
-$gsdeclare fmt-error gsfmtError
-
 gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
     -- > case nil. left err
     case 'x0 : nil. (analyze x0 #1.
@@ -27,17 +23,26 @@ gsparse_process = [gs:value| λ 'xn. λ 'err. analyze xn.
     case 'x0 : 'xn1. parse-process xn1 err
 |]
 
-$gsdeclare prim.empty gsprim_empty
+$gsdeclare process-lookahead gsparse_process_lookahead
 
 $gsdeclare prim.fail gsprim_fail
+
+$gsdeclare prim.<|> gsprimor
+
+gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn.
+    case 'x:'xn1. process-lookahead (prim.<|> p (x #0)) xn1 err
+    case nil. prim.<|> p (prim.fail (err #0) (err #1))
+|]
+
+$gsdeclare fmt-error gsfmtError
+
+$gsdeclare prim.empty gsprim_empty
 
 $gsdeclare view prim.fail gsprim_fail_view
 $gsdeclare view prim.unit-plus gsprim_unit_plus_view
 $gsdeclare view prim.get-pos gsprim_get_pos_view
 $gsdeclare view prim.lookahead gsprim_lookahead_view
 $gsdeclare view prim.symbol-or-eof gsprim_symbol_view
-
-$gsdeclare process-lookahead gsparse_process_lookahead
 
 gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
     case prim.fail 'err 'exp. 〈 '0 ∝ nil; '1 ∝ pos.fmt pos qq{Un-expected §(undefined); §(fmt-error err exp)}; 〉
@@ -56,12 +61,7 @@ gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
     )
 |]
 
-$gsdeclare prim.<|> gsprimor
-
-gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. λ 'err. analyze xn.
-    case 'x:'xn1. process-lookahead (prim.<|> p (x #0)) xn1 err
-    case nil. prim.<|> p (prim.fail (err #0) (err #1))
-|]
+gsparser_run = [gs:value| λ 'p. p prim.unit |]
 
 gspos_init = [gs:value| λ 'fn. 〈 'filename ∝ fn; 'line ∝ 1; 'col ∝ 1; 〉 |]
 
