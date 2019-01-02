@@ -22,8 +22,8 @@ $gsdeclare view process.err gsprocess_err_view
 gsparse_process = [gs:value| λ 'xn. analyze xn.
     -- > case process.err 'pos 'un 'err 'exp. left (fmt-error pos un err exp)
     case process.step 'x0 (process.err 'pos 'un 'err 'exp). (analyze x0 #1.
-        case true. right (x0 #0)
-        case false. left (fmt-error pos un err exp)
+        case nil. right (x0 #0)
+        case _:_. left (fmt-error pos un err exp)
     )
     case process.step 'x0 'xn1. parse-process xn1
 |]
@@ -52,7 +52,7 @@ $gsdeclare process.err gsprocess_err
 
 gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
     case prim.fail 'err 'exp. process.err pos undefined err exp
-    case prim.unit-plus 'x 'p1. process.step 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 (parse-w adv pr p1 pos s)
+    case prim.unit-plus 'x 'p1. process.step 〈 '0 ∝ x; '1 ∝ s; 〉 (parse-w adv pr p1 pos s)
     case prim.get-pos 'k. parse-w adv pr (k pos) pos s
     case prim.lookahead 'pp. parse-w adv pr (process-lookahead prim.empty (parse-w adv pr pp pos s)) pos s
     case prim.symbol-or-eof 'ek 'sk. (analyze s.
