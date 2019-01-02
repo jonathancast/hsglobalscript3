@@ -20,10 +20,10 @@ $gsdeclare view process.step gsprocess_step_view
 $gsdeclare view process.err gsprocess_err_view
 
 gsparse_process = [gs:value| λ 'xn. analyze xn.
-    -- > case process.err 'pos 'un 'err. left (pos.fmt pos qq{Un-expected §(un); §(fmt-error (err #1) (err #2))})
-    case process.step 'x0 (process.err 'pos 'un 'err). (analyze x0 #1.
+    -- > case process.err 'pos 'un 'err 'exp. left (pos.fmt pos qq{Un-expected §(un); §(fmt-error err exp)})
+    case process.step 'x0 (process.err 'pos 'un 'err 'exp). (analyze x0 #1.
         case true. right (x0 #0)
-        case false. left (pos.fmt pos qq{Un-expected §(un); §(fmt-error (err #1) (err #2))})
+        case false. left (pos.fmt pos qq{Un-expected §(un); §(fmt-error err exp)})
     )
     case process.step 'x0 'xn1. parse-process xn1
 |]
@@ -36,7 +36,7 @@ $gsdeclare prim.<|> gsprimor
 
 gsparse_process_lookahead = [gs:value| λ 'p. λ 'xn. analyze xn.
     case process.step 'x 'xn1. process-lookahead (prim.<|> p (x #0)) xn1
-    case process.err 'pos 'un 'err. prim.<|> p (prim.fail (err #1) (err #2))
+    case process.err 'pos 'un 'err 'exp. prim.<|> p (prim.fail err exp)
 |]
 
 $gsdeclare prim.empty gsprim_empty
@@ -51,14 +51,14 @@ $gsdeclare process.step gsprocess_step
 $gsdeclare process.err gsprocess_err
 
 gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
-    case prim.fail 'err 'exp. process.err pos undefined 〈 '1 ∝ err; '2 ∝ exp; 〉
+    case prim.fail 'err 'exp. process.err pos undefined err exp
     case prim.unit-plus 'x 'p1. process.step 〈 '0 ∝ x; '1 ∝ analyze s. case nil. true case _:_. false; 〉 (parse-w adv pr p1 pos s)
     case prim.get-pos 'k. parse-w adv pr (k pos) pos s
     case prim.lookahead 'pp. parse-w adv pr (process-lookahead prim.empty (parse-w adv pr pp pos s)) pos s
     case prim.symbol-or-eof 'ek 'sk. (analyze s.
         case nil. parse-w adv pr ek pos s
         case 'c:'s1. (analyze sk c.
-            case left 'e. process.err pos (pr c) 〈 '1 ∝ e #0; '2 ∝ e #1; 〉
+            case left 'e. process.err pos (pr c) (e #0) (e #1)
             case right 'p1. parse-w adv pr p1 (adv c pos) s1
         )
     )
@@ -261,7 +261,7 @@ gsprim_lookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ 
 gsprim_symbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
 
 gsprocess_step = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar "step") [ $gsav x, $gsav xn ]
-gsprocess_err = $gslambda_value $ \ pos -> $gsbcarg $ \ un -> $gsbcarg $ \ err -> $gsbcconstr (gsvar "err") [ $gsav pos, $gsav un, $gsav err ]
+gsprocess_err = $gslambda_value $ \ pos -> $gsbcarg $ \ un -> $gsbcarg $ \ err -> $gsbcarg $ \ exp -> $gsbcconstr (gsvar "err") [ $gsav pos, $gsav un, $gsav err, $gsav exp ]
 
 gsprocess_step_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "step" ek sk e
 gsprocess_err_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "err" ek sk e
