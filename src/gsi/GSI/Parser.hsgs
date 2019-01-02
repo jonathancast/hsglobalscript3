@@ -20,10 +20,10 @@ $gsdeclare view process.step gsprocess_step_view
 $gsdeclare view process.err gsprocess_err_view
 
 gsparse_process = [gs:value| λ 'xn. analyze xn.
-    -- > case process.err 'pos 'un 'err 'exp. left (pos.fmt pos (fmt-error un err exp))
+    -- > case process.err 'pos 'un 'err 'exp. left (fmt-error pos un err exp)
     case process.step 'x0 (process.err 'pos 'un 'err 'exp). (analyze x0 #1.
         case true. right (x0 #0)
-        case false. left (pos.fmt pos (fmt-error un err exp))
+        case false. left (fmt-error pos un err exp)
     )
     case process.step 'x0 'xn1. parse-process xn1
 |]
@@ -73,7 +73,7 @@ gsposFmt = [gs:value| λ 'pos. λ 'msg. qq{§(pos #filename):§(fmtdecimal (pos 
 
 $gsdeclare fmt-error-w gsfmt_error_w
 
-gsfmtError = [gs:value| λ 'un. λ 'errs. λ 'exps. qq{Un-expected §(un); §(fmt-error-w errs exps)} |]
+gsfmtError = [gs:value| λ 'pos. λ 'un. λ 'errs. λ 'exps. pos.fmt pos qq{Un-expected §(un); §(fmt-error-w errs exps)} |]
 
 $gsdeclare fmt-expected-w gsfmt_expected_w
 
