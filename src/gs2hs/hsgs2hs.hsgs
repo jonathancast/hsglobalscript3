@@ -70,7 +70,7 @@ gsformat_output = [gs:value| λ 'o. analyze o.
     case nil. right nil
 |]
 
-hsstring = [gs:value| λ 's. r{"} : s <> qq{"} |]
+hsstring = [gs:value| λ 's. qq{"§(s)"} |]
 
 gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 
