@@ -960,6 +960,7 @@ globalEnv = Env{
         ("print-error", "GSI.Env", "gsprintError"),
         ("print-rune", "GSI.Parser", "gsparser_print_rune"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char"),
+        ("quote", "GSDL.Syntax", "quote"),
         ("repeat", "GSI.List", "gsrepeat"),
         ("right", "GSI.Either", "gsright"),
         ("rune.code-point", "GSI.Rune", "gsrune_code_point"),
