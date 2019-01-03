@@ -761,6 +761,7 @@ globalEnv = Env{
         ("abend", "GSI.Env", "gsabend"),
         ("addition.+", "GSI.Addition", "gsaddition_plus"),
         ("advance-rune", "GSI.Parser", "gsparser_advanceRune"),
+        ("advance-string", "GSI.Parser", "gsparser_advance_string"),
         ("analyze", "GSI.StdLib", "gsanalyze"),
         ("analyze-type-checker-M", "GSDL.TypeChecker", "gstype_checker_analyze"),
         ("analyzeM", "GSI.StdLib", "gsanalyzeM"),

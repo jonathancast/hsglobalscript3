@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsparse_partial, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advanceRune, gsparser_print_rune) where
+module GSI.Parser (gsparse, gsparse_partial, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advanceRune, gsparser_advance_string, gsparser_print_rune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
@@ -281,6 +281,8 @@ gsparser_advanceRune = [gs:value| λ 'c. λ 'pos. analyze rune.≡ c r{\n}.
     case true. 〈 'filename ∝ pos #filename; 'line ∝ pos #line + 1; 'col ∝ 1; 〉
     case false. 〈 'filename ∝ pos #filename; 'line ∝ pos #line; 'col ∝ pos #col + 1; 〉
 |]
+
+gsparser_advance_string = [gs:value| λ 's. λ 'pos. foldl (λ 'pos0. λ 'c. advance-rune c pos0) pos s |]
 
 gsparser_print_rune = [gs:value| λ 'c. analyze rune.≡ c r{\n}.
     case true. qq{'\\n'}
