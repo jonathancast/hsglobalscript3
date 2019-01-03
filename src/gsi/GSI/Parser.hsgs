@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advanceRune, gsparser_print_rune) where
+module GSI.Parser (gsparse, gsparse_partial, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsparser_unary_or, gsparser_or, gsparser_getPos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advanceRune, gsparser_print_rune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
@@ -26,6 +26,13 @@ gsparse_process = [gs:value| λ 'xn. analyze xn.
         case _:_. left (fmt-error pos un err exp)
     )
     case process.step 'x0 'xn1. parse-process xn1
+|]
+
+$gsdeclare parse-partial-process gsparse_partial_process
+
+gsparse_partial = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. parse-partial-process (parse-w adv pr (parser-run p) pos s) |]
+
+gsparse_partial_process = [gs:value| λ 'xn. analyze xn.
 |]
 
 $gsdeclare process-lookahead gsparse_process_lookahead
