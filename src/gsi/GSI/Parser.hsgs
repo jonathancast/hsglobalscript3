@@ -33,6 +33,7 @@ $gsdeclare parse-partial-process gsparse_partial_process
 gsparse_partial = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. parse-partial-process (parse-w adv pr (parser-run p) pos s) |]
 
 gsparse_partial_process = [gs:value| λ 'xn. analyze xn.
+    case process.err 'pos 'un 'err 'exp. left (fmt-error pos un err exp)
 |]
 
 $gsdeclare process-lookahead gsparse_process_lookahead
