@@ -59,7 +59,7 @@ $gsdeclare process.step gsprocess_step
 $gsdeclare process.err gsprocess_err
 
 gsparsew = [gs:value| λ 'adv. λ 'pr. λ 'p. λ 'pos. λ 's. analyze p.
-    case prim.fail 'err 'exp. process.err pos undefined err exp
+    case prim.fail 'err 'exp. process.err pos (analyze s. case 'c:_. pr c case nil. qq{<EOF>}) err exp
     case prim.unit-plus 'x 'p1. process.step 〈 '0 ∝ x; '1 ∝ s; 〉 (parse-w adv pr p1 pos s)
     case prim.get-pos 'k. parse-w adv pr (k pos) pos s
     case prim.lookahead 'pp. parse-w adv pr (process-lookahead prim.empty (parse-w adv pr pp pos s)) pos s
