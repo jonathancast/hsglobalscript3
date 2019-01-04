@@ -21,6 +21,7 @@ gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
             case true. (impanalyzeM need-to-recompile a.
                 case true. (impfor 's ← file.read a;. analyze compile-hsgs-source a s.
                     case right 's1. file.write (mk-hs-file a) s1
+                    case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{compile-error}
                 )
             )
         )
