@@ -52,8 +52,8 @@ $gsdeclare source-comp.char gssource_comp_char
 $gsdeclare source-comp.pos gssource_comp_pos
 
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
-    case qq{\[gs:§('s1)}. (analyze parse-partial advance-rune print-rune (quote parser.global-env <* string qq{|\]}) (advance-string qq{\[gs:} pos) s.
-    )
+    case qq{\[gs:§('s1)}. either.for 'r ← parse-partial advance-rune print-rune (quote parser.global-env <* string qq{|\]}) (advance-string qq{\[gs:} pos) s1;.
+        either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
     case 'c:'s1. either.map ((:) (source-comp.char c)) (split-input (advance-rune c pos) s1)
     case nil. right nil
 |]
