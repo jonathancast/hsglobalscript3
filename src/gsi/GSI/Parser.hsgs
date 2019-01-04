@@ -86,11 +86,12 @@ gsfmtError = [gs:value| λ 'pos. λ 'un. λ 'errs. λ 'exps. pos.fmt pos qq{Un-e
 $gsdeclare fmt-expected-w gsfmt_expected_w
 
 gsfmt_error_w = [gs:value| λ 'errs. λ 'exps. analyze errs.
-    case 'err0:'errs1. qq{§(log.fmt err0); §(fmt-error-w errs1 exps)}
+    case 'err0:'errs1. qq{§(log.fmt err0)§(fmt-error-w errs1 exps)}
     case nil. (analyze exps.
-        case 'exp0:nil. qq{expected §(log.fmt exp0)}
-        case 'exp0:('exp1:nil). qq{expected §(log.fmt exp0) or §(log.fmt exp1)}
-        case _. qq{expected §(fmt-expected-w exps)}
+        case nil. qq{; }
+        case 'exp0:nil. qq{; expected §(log.fmt exp0)}
+        case 'exp0:('exp1:nil). qq{; expected §(log.fmt exp0) or §(log.fmt exp1)}
+        case _. qq{; expected §(fmt-expected-w exps)}
     )
 |]
 
