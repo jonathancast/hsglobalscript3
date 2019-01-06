@@ -7,6 +7,8 @@ module GSDL.AST (
     gstype_env_overlay, gstype_env_empty,
     gsfile_document, gsfile_document_view,
     gsdocument_in, gsdocument_in_view,
+    gssource_comp_char, gssource_comp_char_view,
+    gsdest_comp_char, gsdest_comp_char_view,
     gstype_apply,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -76,6 +78,15 @@ gsfile_document_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \
 gsdocument_in = $gslambda_value $ \ mbe -> $gsbcarg $ \ mbg -> $gsbcconstr (gsvar "in") [ $gsav mbe, $gsav mbg ]
 
 gsdocument_in_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "in" ek sk e
+
+gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
+gssource_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
+
+gssource_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
+
+gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
+
+gsdest_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
 
 gstype_empty_signature = [gs:value| type.signature type.env.empty |]
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]

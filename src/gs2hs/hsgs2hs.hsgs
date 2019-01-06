@@ -48,9 +48,6 @@ gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
     . right $ concat $ qq{{-# LINE 1 §(hsstring fn) #-}\n} : s1
 |]
 
-$gsdeclare source-comp.char gssource_comp_char
-$gsdeclare source-comp.pos gssource_comp_pos
-
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case qq{\[gs:§('s1)}. either.for 'r ← parse-partial advance-rune print-rune (quote parser.global-env <* string qq{|\]}) (advance-string qq{\[gs:} pos) s1;.
         either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
@@ -58,16 +55,10 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
 
-$gsdeclare view source-comp.char gssource_comp_char_view
-
-$gsdeclare dest-comp.char gsdest_comp_char
-
 gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case nil. right nil
 |]
-
-$gsdeclare view dest-comp.char gsdest_comp_char_view
 
 gsformat_output = [gs:value| λ 'o. analyze o.
     case dest-comp.char 'c : 'o1. either.map ((:) (c : nil)) (format-output o1)
@@ -75,12 +66,3 @@ gsformat_output = [gs:value| λ 'o. analyze o.
 |]
 
 hsstring = [gs:value| λ 's. qq{"§(s)"} |]
-
-gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
-gssource_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
-
-gssource_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
-
-gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
-
-gsdest_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
