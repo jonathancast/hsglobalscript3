@@ -44,9 +44,12 @@ document = [gs:value| λ 'env. parser.for
     . parser.unit (document.in mbe mbw)
 |]
 
-$gsdeclare keyword keyword
+$gsdeclare quote-param quote_param
 
+$gsdeclare keyword keyword
 quote = [gs:value| λ 'env. empty |]
+
+quote_param = [gs:value| λ 'env. empty |]
 
 $gsdeclare operator operator
 
