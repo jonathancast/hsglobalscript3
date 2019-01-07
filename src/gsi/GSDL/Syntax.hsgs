@@ -47,6 +47,8 @@ document = [gs:value| λ 'env. parser.for
 $gsdeclare quote-param quote_param
 
 $gsdeclare keyword keyword
+$gsdeclare keyword-op keyword_op
+
 quote = [gs:value| λ 'env. empty |]
 
 quote_param = [gs:value| λ 'env. empty |]
@@ -289,6 +291,13 @@ operator = [gs:value| λ 'env. lexeme $ parser.for
             case syntactic-category.variable. parser.unit 〈〉
         ;
     . parser.unit o
+|]
+
+keyword_op = [gs:value| λ 'kw. lexeme $ parser.for
+        's ← op-chars;
+        _ ← analyze list.≡ rune.≡ s kw.
+        ;
+    . parser.unit 〈〉
 |]
 
 $gsdeclare delimiter delimiter
