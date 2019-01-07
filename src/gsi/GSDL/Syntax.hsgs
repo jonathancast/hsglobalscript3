@@ -44,6 +44,8 @@ document = [gs:value| λ 'env. parser.for
     . parser.unit (document.in mbe mbw)
 |]
 
+$gsdeclare keyword keyword
+
 quote = [gs:value| λ 'env. empty |]
 
 $gsdeclare operator operator
@@ -228,6 +230,13 @@ gspat_atom = [gs:value| λ 'env.
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
+
+keyword = [gs:value| λ 'kw. lexeme $ parser.for
+        's ← ident-chars;
+        _ ← analyze list.≡ rune.≡ s kw.
+        ;
+    . parser.unit 〈〉
+|]
 
 ident = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
