@@ -76,6 +76,7 @@ gslist_eq = [gs:value| λ 'eq. λ 'xn. λ 'ys. analyze xn.
         case 'y:'ys1. eq x y && list.≡ eq xn1 ys1
     )
     case nil. (analyze ys.
+        case _:_. false
         case nil. true
     )
 |]
