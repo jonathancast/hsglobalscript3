@@ -19,7 +19,7 @@ import qualified Data.Map as Map
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, filename, line, col)
+import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, fmtCallers, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..))
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr, GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, whichExternal, gsae, gsav, gsvCode, argCode)
@@ -285,6 +285,7 @@ gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x
     GSConstr pos1 c' as
         | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
         | otherwise -> gsbcenter_w pos ek
+    GSClosure cs _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom c " ek sk •") ("GSClosure at " ++ fmtCallers cs "") "GSConstr"
     _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom c " ek sk •") (gsvCode x0) "GSConstr"
 
 gsbcviewpattern_w :: Pos -> GSValue -> [GSArg] -> GSExpr
