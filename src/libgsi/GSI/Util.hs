@@ -1,11 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Util (Pos(Pos), StackTrace(..), compilationTime, gshere, gsfatal, fmtPos, fmtStackTrace, filename, line, col) where
+module GSI.Util (Pos(Pos), StackTrace(..), compilationTime, gshere, gsfatal, fmtPos, fmtStackTrace, fmtCallers, filename, line, col) where
 
 import Language.Haskell.TH.Syntax (Lit(IntegerL), Loc, lift, runIO, location, loc_filename, loc_start)
 import Language.Haskell.TH.Lib (ExpQ, appE, conE, litE, stringE, varE)
 
 import Data.Time.Calendar (Day(..))
 import Data.Time.Clock (UTCTime(..), getCurrentTime)
+
+import Data.List (isSuffixOf)
 
 data Pos = Pos {
     filename :: String,
@@ -38,13 +40,23 @@ fmtPos :: Pos -> String -> String
 fmtPos p s = filename p ++ ':' : show (line p) ++ ':' : show (col p) ++ ": " ++ s
 
 fmtStackTrace :: StackTrace -> String -> String
-fmtStackTrace (StackTrace pos cs) msg = fmtPos pos $ msg ++ fmtCallers 10 0 cs "" where
-    fmtCallers 0 _ _ s = "\n..." ++ s
-    fmtCallers d n [] s = s
-    fmtCallers d n [c] s = '\n' : replicate (n * 4) ' ' ++ fmtStackTrace' d n c s
-    fmtCallers d n (c0:cs) s = '\n' : replicate ((n+1) * 4) ' ' ++ "(called from " ++ fmtStackTrace' (d-1) (n + 1) c0 (')' : fmtCallers (d -1) n cs s)
+fmtStackTrace (StackTrace pos cs) msg = fmtPos pos $ msg ++ fmtCallers cs "" where
 
-    fmtStackTrace' d n (StackTrace pos cs) s = fmtPos' pos (fmtCallers (d-1) n cs s)
+fmtCallers :: [StackTrace] -> String -> String
+fmtCallers cs s = fmtCallers' 0 (prune 10 cs) s where
+    fmtCallers' n (Callers []) = id
+    fmtCallers' _ Pruned = ("\n..."++)
+    fmtCallers' n (Callers [(pos, c)]) = ('\n':) . (replicate (n * 4) ' '++) . fmtPos' pos . fmtCallers' n c
+    fmtCallers' n (Callers ((pos, c0):cs)) = ('\n':) . (replicate ((n+1) * 4) ' '++) . ("(called from "++) . fmtPos' pos . fmtCallers' n c0 . (')':) . fmtCallers' n (Callers cs)
+
+prune n [] = Callers []
+prune 0 _ = Pruned
+prune d cs = Callers $ concatMap process cs where
+    process (StackTrace pos cs') = return (pos, prune (d-1) cs')
+
+data PrunedTree
+  = Callers [(Pos, PrunedTree)]
+  | Pruned
 
 fmtPos' :: Pos -> String -> String
 fmtPos' p s = filename p ++ ':' : show (line p) ++ ':' : show (col p) ++ s
