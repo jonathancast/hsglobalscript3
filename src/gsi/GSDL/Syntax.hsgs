@@ -52,7 +52,7 @@ $gsdeclare keyword-op keyword_op
 quote = [gs:value| λ 'env.
     <|> (parser.for
             _ ← keyword qq{expr};
-            'ps ← many quote-param;
+            'ps ← many $ quote-param env;
             _ ← keyword-op qq{|};
             'e ← expr env;
         . parser.unit (source-comp.expr ps e)
