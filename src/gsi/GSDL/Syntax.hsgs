@@ -244,11 +244,9 @@ gspat_atom = [gs:value| λ 'env.
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
 
-keyword = [gs:value| λ 'kw. lexeme $ parser.for
-        's ← ident-chars;
-        _ ← analyze list.≡ rune.≡ s kw.
-        ;
-    . parser.unit 〈〉
+keyword = [gs:value| λ 'kw. lexeme $ parser.for 's ← ident-chars;. analyze list.≡ rune.≡ s kw.
+    case false. parser.fail log{'§(log.str s)' is not '§(log.str kw)'}
+    case true. parser.unit 〈〉
 |]
 
 ident = [gs:value| λ 'env. lexeme $ parser.for
