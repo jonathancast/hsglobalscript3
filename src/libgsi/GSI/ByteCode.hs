@@ -90,7 +90,7 @@ gsbcarg = varE 'gsbcarg_w `appE` gshere
 
 gsbcarg_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
 gsbcarg_w pos fn = GSExpr $ \ cs sk -> do
-    aceEnter [ StackTrace pos cs ] (gslambda_w pos fn) sk
+    aceEnter [ StackTrace pos cs ] (GSClosure [StackTrace pos cs] (GSLambda (GSRawExpr . fn))) sk
 
 gsbcenter = varE 'gsbcenter_w `appE` gshere
 
