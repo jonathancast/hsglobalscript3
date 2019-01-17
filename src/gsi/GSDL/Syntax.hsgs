@@ -59,7 +59,14 @@ quote = [gs:value| λ 'env.
     )
 |]
 
-quote_param = [gs:value| λ 'env. empty |]
+quote_param = [gs:value| λ 'env.
+    <|> (parser.for
+            _ ← keyword qq{hsvs};
+            _ ← keyword-op qq{=};
+            'vs ← many (ident <* lexeme (char r{,}));
+        . parser.unit $ quote-param.hsvs vs
+    )
+|]
 
 $gsdeclare operator operator
 
