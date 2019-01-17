@@ -299,11 +299,8 @@ operator = [gs:value| λ 'env. lexeme $ parser.for
     . parser.unit o
 |]
 
-keyword_op = [gs:value| λ 'kw. lexeme $ parser.for
-        's ← op-chars;
-        _ ← analyze list.≡ rune.≡ s kw.
-        ;
-    . parser.unit 〈〉
+keyword_op = [gs:value| λ 'kw. lexeme $ parser.for 's ← op-chars;. analyze list.≡ rune.≡ s kw.
+    case true. parser.unit 〈〉
 |]
 
 $gsdeclare delimiter delimiter
