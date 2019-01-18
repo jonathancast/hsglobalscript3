@@ -1,9 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
-module TestHSGS (printTestExpr, printTestValue) where
+module TestHSGS (printTestExpr, printTestValue, printStackTrace) where
 
 import qualified Data.Map as Map
 
-import GSI.Util (StackTrace(..), gshere, fmtPos)
+import GSI.Util (StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (fmtErrorShort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, gsvCode, bcoCode)
@@ -73,3 +73,11 @@ formatString (GSConstr _ c [ r0, s1 ]) k | c == gsvar ":" = formatChar r0 $ \ r0
 formatString (GSConstr _ c []) k | c == gsvar "nil" = k $ id
 formatString (GSConstr _ c as) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatString "++) . fmtVarAtom c . (" next>"++)
 formatString v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatString "++) . (gsvCode v++) . (" next>"++)
+
+printStackTrace :: GSValue -> IO ()
+printStackTrace (GSThunk ts) = do
+    v <- evalSync [StackTrace $gshere []] ts
+    printStackTrace v
+printStackTrace (GSImplementationFailure pos msg) = putStr $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msg++) . ('>':) $ "\n"
+printStackTrace (GSClosure cs _) = putStr $ fmtCallers cs "\n"
+printStackTrace gsv = error $ "printStackTrace " ++ gsvCode gsv ++ " next"
