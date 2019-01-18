@@ -45,9 +45,9 @@ fmtStackTrace (StackTrace pos cs) msg = fmtPos pos $ msg ++ fmtCallers cs "" whe
 fmtCallers :: [StackTrace] -> String -> String
 fmtCallers cs s = fmtCallers' 0 (prune 10 cs) s where
     fmtCallers' n (Callers []) = id
-    fmtCallers' _ Pruned = ("\n..."++)
+    fmtCallers' n Pruned = ('\n':) . (replicate (n * 4) ' '++) . ("..."++)
     fmtCallers' n (Callers [(pos, c)]) = ('\n':) . (replicate (n * 4) ' '++) . fmtPos' pos . fmtCallers' n c
-    fmtCallers' n (Callers ((pos, c0):cs)) = ('\n':) . (replicate ((n+1) * 4) ' '++) . ("(called from "++) . fmtPos' pos . fmtCallers' n c0 . (')':) . fmtCallers' n (Callers cs)
+    fmtCallers' n (Callers ((pos, c0):cs)) = ('\n':) . (replicate ((n+1) * 4) ' '++) . ("(called from "++) . fmtPos' pos . fmtCallers' (n+1) c0 . (replicate (n * 4) ' '++) . (')':) . fmtCallers' n (Callers cs)
 
 prune n [] = Callers []
 prune 0 _ = Pruned
