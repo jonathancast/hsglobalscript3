@@ -1,14 +1,16 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
 
+import GSI.Util (StackTrace(..))
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), gslambda_value, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcconstr, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcat_w, gsbcarg, gsbcapply, gsbcforce, gsbcconstr, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 import GSI.BCFunctions (gsbcevalstacktrace)
 $gsimports
 
-gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
-    $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
+gslambda = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ (StackTrace pos cs) ->
+    $gsbcarg $ \ p -> $gsbcarg $ \ b -> gsbcat_w pos cs $ gsbcarg_w pos $ \ x ->
+        $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
 
 gscompose :: GSValue
 gscompose = [gs:value| λ 'f. λ 'g. λ 'x. f (g x) |]

@@ -1043,7 +1043,8 @@ globalEnv = Env{
     ],
     gsimplicits = Map.fromList [
         ("error", [ ImHere ]),
-        ("undefined", [ ImHere ])
+        ("undefined", [ ImHere ]),
+        ("λ", [ ImHere ])
     ],
     gsunaries = Map.fromList $ map (\ (gsn, hsm, hsn) -> (gsn, (Set.singleton $ HSIVar hsm hsn, HSVar hsn))) $ [
         ("*>", "GSI.Parser", "gsparser_unary_then"),

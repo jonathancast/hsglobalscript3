@@ -1,0 +1,4 @@
+import TestHSGS (printStackTrace)
+$gsimports
+
+main = printStackTrace [gs:value| λ 'x. undefined |]
