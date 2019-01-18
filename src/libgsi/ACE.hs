@@ -46,23 +46,23 @@ aceEnterThunkState :: [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
 aceEnterThunkState cs (GSTSExpr expr) sk = expr cs sk
 aceEnterThunkState cs (GSTSIntExpr e) sk = aceEnterIntExpr cs e sk
 aceEnterThunkState cs (GSApply pos fn args) sk =
-    aceEnter (StackTrace pos [] : cs) fn (foldr (aceArg (StackTrace pos [])) sk args)
+    aceEnter (StackTrace pos [] : cs) fn (aceArg (StackTrace pos []) args sk)
 aceEnterThunkState cs (GSTSField pos f r) sk =
     aceEnter (StackTrace pos [] : cs) r (aceField (StackTrace pos []) f sk)
 aceEnterThunkState cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
 
 aceEnterIntExpr :: [StackTrace] -> GSIntExpr -> GSExprCont a -> IO a
 aceEnterIntExpr cs (GSIntWithHere pos k) sk =
-    aceEnterIntExpr [StackTrace pos cs] k $ aceArg (StackTrace pos cs) (gsexternal $ StackTrace pos cs) $ sk
+    aceEnterIntExpr [StackTrace pos cs] k $ aceArg (StackTrace pos cs) [gsexternal $ StackTrace pos cs] $ sk
 aceEnterIntExpr cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
 aceEnterIntExpr cs (GSIntGEnter pos v) sk = aceEnter [StackTrace pos cs] v sk
 aceEnterIntExpr cs (GSIntBEnter pos e) sk = runGSExpr e [StackTrace pos cs] sk
 aceEnterIntExpr cs (GSIntEApply pos f as) sk = do
     avs <- mapM gsintprepare as
-    aceEnterIntExpr [StackTrace pos cs] f (foldr (aceArg (StackTrace pos cs)) sk avs)
+    aceEnterIntExpr [StackTrace pos cs] f (aceArg (StackTrace pos cs) avs sk)
 aceEnterIntExpr cs (GSIntGApply pos f as) sk = do
     avs <- mapM gsintprepare as
-    aceEnter [StackTrace pos cs] f (foldr (aceArg (StackTrace pos cs)) sk avs)
+    aceEnter [StackTrace pos cs] f (aceArg (StackTrace pos cs) avs sk)
 aceEnterIntExpr cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterIntExpr " ++ iexprCode e ++ " next"
 
 aceUpdate :: MVar (GSThunkState) -> GSExprCont a -> GSExprCont a
@@ -83,19 +83,22 @@ aceForce cs k sk = GSExprCont {
     gsthrow = gsthrow sk
   }
 
-aceArg :: StackTrace -> GSValue -> GSExprCont a -> GSExprCont a
-aceArg c1 a sk = GSExprCont {
-    gsreturn = \ v -> case v of
-        GSClosure cs (GSLambda f) -> case f a of
-            GSRawExpr e -> runGSExpr e (cs ++ [c1]) sk
-            bco@GSImp{} -> gsreturn sk $ GSClosure (cs ++ [c1]) bco
-            bco@GSLambda{} -> gsreturn sk $ GSClosure (cs ++ [c1]) bco
-            bco -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function; result is " ++ bcoCode bco ++ ") next"
-        GSClosure cs bco -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function is (GSClosure cs " ++ bcoCode bco ++ ")) next"
-        f -> gsthrow sk $ $gsimplementationfailure $ "aceArg (function is " ++ gsvCode f ++ ") next"
-      ,
+aceArg :: StackTrace -> [GSValue] -> GSExprCont a -> GSExprCont a
+aceArg c1 [] sk = sk
+aceArg c1 as sk = GSExprCont {
+    gsreturn = \ v -> gsapplyFunction c1 v as sk,
     gsthrow = gsthrow sk
   }
+
+gsapplyFunction :: StackTrace -> GSValue -> [GSValue] -> GSExprCont a -> IO a
+gsapplyFunction c1 v [] sk = gsreturn sk v
+gsapplyFunction c1 (GSClosure cs (GSLambda f)) (a:as) sk = case f a of
+    GSRawExpr e -> runGSExpr e (cs ++ [c1]) (aceArg c1 as sk)
+    bco@GSImp{} -> gsapplyFunction  c1 (GSClosure (cs ++ [c1]) bco) as sk
+    bco@GSLambda{} -> gsapplyFunction c1 (GSClosure cs bco) as sk
+    bco -> gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (result is " ++ bcoCode bco ++ ") next"
+gsapplyFunction c1 (GSClosure cs bco) as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (GSClosure cs " ++ bcoCode bco ++ ") next"
+gsapplyFunction c1 f as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction " ++ gsvCode f ++ ") next"
 
 aceField :: StackTrace -> GSVar -> GSExprCont a -> GSExprCont a
 aceField c1 f sk = GSExprCont{
