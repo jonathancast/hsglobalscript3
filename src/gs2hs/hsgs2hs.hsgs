@@ -73,6 +73,8 @@ gsprocess_params = [gs:value| λ 'ps. foldr
 |]
 
 gscompile_expr = [gs:value| λ 'env. λ 'e. analyze e.
+    case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
+    )
 |]
 
 gsformat_output = [gs:value| λ 'o. analyze o.
