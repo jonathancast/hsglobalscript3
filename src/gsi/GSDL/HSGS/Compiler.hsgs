@@ -1,0 +1,5 @@
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_empty) where
+
+$gsimports
+
+gshsgs_compiler_env_empty = [gs:value| 〈〉 |]

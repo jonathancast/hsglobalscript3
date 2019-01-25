@@ -49,3 +49,4 @@ src/libgsi/GSI/StdLib.hs$
 src/libgsi/GS/Util.hs$
 src/libgsi/GS/FileName.hs$
 src/gsi/GSDL/GlobalEnv\.hs$
+src/gsi/GSDL/HSGS/Compiler.hs$
