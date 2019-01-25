@@ -1097,6 +1097,7 @@ globalEnv = Env{
         ("qloitem.char", "GSDL.AST", "gsqloitem_char_view"),
         ("right", "GSI.Either", "gsright_view"),
         ("source-comp.char", "GSDL.AST", "gssource_comp_char_view"),
+        ("source-comp.expr", "GSDL.AST", "gssource_comp_expr_view"),
         ("syntactic-category.lambda-like", "GSDL.AST", "gssyntactic_category_lambda_like_view"),
         ("syntactic-category.variable", "GSDL.AST", "gssyntactic_category_variable_view"),
         ("syntactic-category.where", "GSDL.AST", "gssyntactic_category_where_view"),
