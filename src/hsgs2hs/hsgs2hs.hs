@@ -794,6 +794,7 @@ globalEnv = Env{
         ("either.>>=", "GSI.Either", "gseitherbind"),
         ("either.for", "GSI.Either", "gseitherFor"),
         ("either.map", "GSI.Either", "gseithermap"),
+        ("either.map2", "GSI.Either", "gseithermap2"),
         ("either.mapM", "GSI.Either", "gseither_mapM"),
         ("empty", "GSI.Parser", "gsempty"),
         ("error", "GSI.StdLib", "gserror"),

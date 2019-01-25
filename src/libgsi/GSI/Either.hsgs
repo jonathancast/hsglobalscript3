@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Either (gseitherFor, gseitherbind, gseithermap, gseither_mapM, gsleft, gsright, gsleft_view, gsright_view) where
+module GSI.Either (gseitherFor, gseitherbind, gseithermap, gseithermap2, gseither_mapM, gsleft, gsright, gsleft_view, gsright_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsav)
@@ -17,6 +17,9 @@ gseitherbind = [gs:value| λ 'e. λ 'k. analyze e.
 gseithermap = [gs:value| λ 'f. λ 'e. analyze e.
     case left 'e. left e
     case right 'x. right (f x)
+|]
+
+gseithermap2 = [gs:value| λ 'f. λ 'ex. λ 'ey. analyze ex.
 |]
 
 gseither_mapM = [gs:value| λ 'f. λ 'xn. analyze xn.
