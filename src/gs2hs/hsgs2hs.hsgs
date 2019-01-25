@@ -55,9 +55,14 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
 
+$gsdeclare compile-expr gscompile_expr
+
 gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case nil. right nil
+|]
+
+gscompile_expr = [gs:value| λ 'e. analyze e.
 |]
 
 gsformat_output = [gs:value| λ 'o. analyze o.
