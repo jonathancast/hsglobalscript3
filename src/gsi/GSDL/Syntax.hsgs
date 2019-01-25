@@ -55,7 +55,7 @@ quote = [gs:value| λ 'env.
             'ps ← many $ quote-param env;
             _ ← keyword-op qq{|};
             'e ← expr env;
-        . parser.unit (source-comp.expr ps e)
+        . parser.unit (source-comp.expr ps (e #0))
     )
 |]
 
