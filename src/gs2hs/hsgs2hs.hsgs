@@ -59,6 +59,7 @@ $gsdeclare compile-expr gscompile_expr
 
 gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
+    case source-comp.expr 'ps 'e : 'i1. either.map2 (λ 'p. (:) (dest-comp.expr (p #0) (p #1))) (compile-expr e) (compile-source i1)
     case nil. right nil
 |]
 
