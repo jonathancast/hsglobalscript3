@@ -871,6 +871,7 @@ globalEnv = Env{
         ("gsvar.name", "GSI.GSI", "gsigsvar_name"),
         ("gsvar.≡", "GSI.GSI", "gsigsvar_eq"),
         ("hsgs.compiler.env.empty", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_empty"),
+        ("hsgs.compiler.env.var.get", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_var_get"),
         ("ident", "GSDL.Syntax", "ident"),
         ("impanalyzeM", "GSI.StdLib", "gsanalyzeImpM"),
         ("impfor", "GSI.StdLib", "gsimpfor"),
