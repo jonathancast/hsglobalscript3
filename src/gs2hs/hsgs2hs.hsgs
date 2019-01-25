@@ -55,12 +55,20 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
 
+$gsdeclare process-params gsprocess_params
 $gsdeclare compile-expr gscompile_expr
 
 gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case source-comp.expr 'ps 'e : 'i1. either.map2 (λ 'p. (:) (dest-comp.expr (p #0) (p #1))) (compile-expr e) (compile-source i1)
     case nil. right nil
+|]
+
+gsprocess_params = [gs:value| λ 'ps. foldr
+    (λ 'p. analyze p.
+    )
+    hsgs.compiler.env.empty
+    ps
 |]
 
 gscompile_expr = [gs:value| λ 'e. analyze e.
