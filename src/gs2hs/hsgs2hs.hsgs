@@ -66,7 +66,9 @@ gscompile_source = [gs:value| λ 'i. analyze i.
 |]
 
 gsprocess_params = [gs:value| λ 'ps. foldr
-    (λ 'p. analyze p.
+    (λ 'p. λ 'env. analyze p.
+        case quote-param.hsvs 'vs.
+            foldr (λ 'v. λ 'env₁. hsgs.compiler.env.var.insert v 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var (gsvar.name v); 〉 env₁) env vs
     )
     hsgs.compiler.env.empty
     ps
