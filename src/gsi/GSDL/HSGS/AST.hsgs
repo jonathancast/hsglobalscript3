@@ -1,0 +1,9 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSDL.HSGS.AST (gshsexpr_var) where
+
+import GSI.Syn (gsvar)
+import GSI.Value (gslambda_value, gsav)
+import GSI.ByteCode (gsbcconstr)
+$gsimports
+
+gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
