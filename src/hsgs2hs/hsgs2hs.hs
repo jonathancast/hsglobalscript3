@@ -1099,6 +1099,7 @@ globalEnv = Env{
         ("pat.var", "GSDL.AST", "gspat_var_view"),
         ("pat.view", "GSDL.AST", "gspat_view_view"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char_view"),
+        ("quote-param.hsvs", "GSDL.AST", "gsquote_param_hsvs_view"),
         ("right", "GSI.Either", "gsright_view"),
         ("source-comp.char", "GSDL.AST", "gssource_comp_char_view"),
         ("source-comp.expr", "GSDL.AST", "gssource_comp_expr_view"),
