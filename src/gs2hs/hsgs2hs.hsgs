@@ -45,7 +45,7 @@ gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
         'i ← split-input (pos.init fn) s;
         'c ← compile-source i;
         's1 ← format-output c;
-    . right $ concat $ qq{{-# LINE 1 §(hsstring fn) #-}\n} : s1
+    . right qq{{-# LINE 1 §(hsstring fn) #-}\n§(s1)}
 |]
 
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
@@ -81,7 +81,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'e. analyze e.
 |]
 
 gsformat_output = [gs:value| λ 'o. analyze o.
-    case dest-comp.char 'c : 'o1. either.map ((:) (c : nil)) (format-output o1)
+    case dest-comp.char 'c : 'o1. either.map ((:) c) (format-output o1)
     case nil. right nil
 |]
 
