@@ -91,13 +91,13 @@ gsprimprint h pos t (GSThunk th) = do
     v <- evalSync [StackTrace $gshere [StackTrace pos []]] th
     gsprimprint h pos t v
 gsprimprint h pos t (GSInvalidProgram err) = do
-    hPutStrLn h $ fmtInvalidProgram err
+    hPutStrLn stderr $ fmtInvalidProgram err
     return $ $gsundefined_value
 gsprimprint h pos t (GSImplementationFailure pos1 msg) = do
-    hPutStrLn h $ fmtPos pos1 $ msg
+    hPutStrLn stderr $ fmtPos pos1 $ msg
     return $ $gsundefined_value
 gsprimprint h pos t (GSError err) = do
-    hPutStrLn h $ fmtError err
+    hPutStrLn stderr $ fmtError err
     return $ $gsundefined_value
 gsprimprint h pos t (GSConstr pos1 c []) | c == gsvar "nil" =
     return $ $gsundefined_value
@@ -108,10 +108,10 @@ gsprimprint h pos t (GSConstr pos1 c [ GSThunk th, s ]) | c == gsvar ":" = do
     v <- evalSync [StackTrace $gshere [StackTrace pos []]] th
     gsprimprint h pos t (GSConstr pos1 c [ v, s ])
 gsprimprint h pos t (GSConstr pos1 c [ GSImplementationFailure pos2 msg, s ]) | c == gsvar ":" = do
-    hPutStrLn h $ fmtPos pos2 $ msg
+    hPutStrLn stderr $ fmtPos pos2 $ msg
     gsprimprint h pos t s
 gsprimprint h pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
-    hPutStrLn h $ fmtPos $gshere $ "gsprimprint (" ++ gsvCode ch ++ " : _) next"
+    hPutStrLn stderr $ fmtPos $gshere $ "gsprimprint (" ++ gsvCode ch ++ " : _) next"
     gsprimprint h pos t s
 gsprimprint h pos t (GSConstr pos1 c as) =
     $apiImplementationFailure $ "gsprimprint " ++ fmtVarAtom c " next"
