@@ -7,7 +7,7 @@ module GSI.ByteCode (
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
     gsbcimpfor, gsbcimplet, gsbcimplet_w, gsbcimpbind, gsbcimpbind_w, gsbcimpbody, gsbcimpbody_w, gsbcimpunit, gsbcimpunit_w,
     gsbccomposeimpgen_w, gsbcimpexecbind_w, gsbcimpvarbind_w, gsbcemptyimpgen_w,
-    gsbcconstr_view, gsbcconstr_view_w, gsbcconstr_view_ww,
+    gsbcconstr_view, gsbcconstr_view_w,
     gsbcviewpattern_w, gsbcvarpattern_w, gsbcrunepattern_w, gsbcdiscardpattern_w
   ) where
 
@@ -281,15 +281,13 @@ gsbcemptyimpgen_w pos = gsbcimpfor_w pos $ do
 
 gsbcconstr_view = varE 'gsbcconstr_view_w `appE` gshere
 
-gsbcconstr_view_w pos = gsbcconstr_view_ww pos . gsvar
-
-gsbcconstr_view_ww :: Pos -> GSVar -> GSValue -> GSValue -> GSValue -> GSExpr
-gsbcconstr_view_ww pos c ek sk x = gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x0 of
-    GSConstr pos1 c' as
-        | c == c' -> gsbcapply_w pos sk (map GSArgVar as)
-        | otherwise -> gsbcenter_w pos ek
-    GSClosure cs _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom c " ek sk •") ("GSClosure at " ++ fmtCallers cs "") "GSConstr"
-    _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom c " ek sk •") (gsvCode x0) "GSConstr"
+gsbcconstr_view_w pos nm = gslambda_w pos $ \ ek -> gsbcarg_w pos $ \ sk -> gsbcarg_w pos $ \ x ->
+    gsbcforce_w pos (GSArgVar x) $ \ x0 -> case x0 of
+        GSConstr pos1 c as
+            | c == gsvar nm -> gsbcapply_w pos sk (map GSArgVar as)
+            | otherwise -> gsbcenter_w pos ek
+        GSClosure cs _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom (gsvar nm) " ek sk •") ("GSClosure at " ++ fmtCallers cs "") "GSConstr"
+        _ -> gsbcruntimetypeerror_w pos ("view " ++ fmtVarAtom (gsvar nm) " ek sk •") (gsvCode x0) "GSConstr"
 
 gsbcviewpattern_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcviewpattern_w pos v ps = gsbcarg_w $gshere $ \ x -> gsbcapply_w $gshere v [

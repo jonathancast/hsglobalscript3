@@ -94,8 +94,5 @@ gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $
 gsnil :: GSValue
 gsnil = GSConstr $gshere (gsvar "nil") []
 
-gscons_view :: GSValue
-gscons_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ xn -> $gsbcconstr_view ":" ek sk xn
-
-gsnil_view :: GSValue
-gsnil_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ xn -> $gsbcconstr_view "nil" ek sk xn
+gscons_view = $gsbcconstr_view ":"
+gsnil_view = $gsbcconstr_view "nil"

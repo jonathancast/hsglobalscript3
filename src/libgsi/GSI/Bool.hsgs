@@ -28,8 +28,5 @@ gsfalse = GSConstr $gshere (gsvar "false") []
 gstrue :: GSValue
 gstrue = GSConstr $gshere (gsvar "true") []
 
-gsfalse_view :: GSValue
-gsfalse_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ b -> $gsbcconstr_view "false" ek sk b
-
-gstrue_view :: GSValue
-gstrue_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ b -> $gsbcconstr_view "true" ek sk b
+gsfalse_view = $gsbcconstr_view "false"
+gstrue_view = $gsbcconstr_view "true"

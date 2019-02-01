@@ -118,5 +118,4 @@ gsprimprint h pos t (GSConstr pos1 c as) =
 gsprimprint h pos t msg =
     $apiImplementationFailure $ "gsprimprint " ++ gsvCode msg ++ " next"
 
-gsENOENT_view :: GSValue
-gsENOENT_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ err -> $gsbcconstr_view "ENOENT" ek sk err
+gsENOENT_view = $gsbcconstr_view "ENOENT"

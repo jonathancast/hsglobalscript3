@@ -1,8 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 import GSI.Env (runGSProgram)
-import GSI.Value (gslambda_value, gsav)
-import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 $gsdeclare process-arg gsprocess_arg

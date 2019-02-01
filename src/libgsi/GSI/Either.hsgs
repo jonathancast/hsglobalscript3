@@ -36,8 +36,5 @@ gsleft = $gslambda_value $ \ x -> $gsbcconstr (gsvar "left") [ $gsav x ]
 gsright :: GSValue
 gsright = $gslambda_value $ \ x -> $gsbcconstr (gsvar "right") [ $gsav x ]
 
-gsleft_view :: GSValue
-gsleft_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "left" ek sk e
-
-gsright_view :: GSValue
-gsright_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "right" ek sk e
+gsleft_view = $gsbcconstr_view "left"
+gsright_view = $gsbcconstr_view "right"

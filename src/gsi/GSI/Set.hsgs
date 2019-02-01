@@ -29,5 +29,5 @@ gsordered_set_insert = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
 gsordered_set_empty = $gsconstr (gsvar "empty") []
 gsordered_set_prim_branch = $gslambda_value $ \ x -> $gsbcarg $ \ l -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav x, $gsav l, $gsav r ]
 
-gsordered_set_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
-gsordered_set_branch_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "branch" ek sk e
+gsordered_set_empty_view = $gsbcconstr_view "empty"
+gsordered_set_branch_view = $gsbcconstr_view "branch"

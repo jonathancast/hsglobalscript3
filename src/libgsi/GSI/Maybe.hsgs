@@ -15,5 +15,5 @@ gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb.
 gsnothing = $gsconstr (gsvar "nothing") []
 gsjust = $gslambda_value $ \ x -> $gsbcconstr (gsvar "just") [ $gsav x ]
 
-gsnothing_view =  $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "nothing" ek sk e
-gsjust_view =  $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "just" ek sk e
+gsnothing_view =  $gsbcconstr_view "nothing"
+gsjust_view =  $gsbcconstr_view "just"

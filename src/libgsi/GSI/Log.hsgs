@@ -53,4 +53,4 @@ gslog_fmt_w = [gs:value| λ 'pcs. analyze pcs.
 gsparagraph_constituent_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gsparagraph_constituent_gsv = $gslambda_value $ \ x -> $gsbcconstr (gsvar "gsv") [ $gsav x ]
 
-gsparagraph_constituent_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ pc -> $gsbcconstr_view "char" ek sk pc
+gsparagraph_constituent_char_view = $gsbcconstr_view "char"

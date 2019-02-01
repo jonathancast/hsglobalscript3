@@ -268,17 +268,17 @@ gsprim_unit_plus = $gslambda_value $ \ x -> $gsbcarg $ \ p -> $gsbcconstr (gsvar
 gsprim_lookahead = $gslambda_value $ \ p -> $gsbcconstr (gsvar "lookahead") [ $gsav p ]
 gsprim_symbol = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcconstr (gsvar "symbol-or-eof") [ $gsav ek, $gsav sk ]
 
-gsprim_fail_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "fail" ek sk e
-gsprim_unit_plus_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "unit-plus" ek sk e
-gsprim_get_pos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "get-pos" ek sk e
-gsprim_lookahead_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "lookahead" ek sk e
-gsprim_symbol_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "symbol-or-eof" ek sk e
+gsprim_fail_view = $gsbcconstr_view "fail"
+gsprim_unit_plus_view = $gsbcconstr_view "unit-plus"
+gsprim_get_pos_view = $gsbcconstr_view "get-pos"
+gsprim_lookahead_view = $gsbcconstr_view "lookahead"
+gsprim_symbol_view = $gsbcconstr_view "symbol-or-eof"
 
 gsprocess_step = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar "step") [ $gsav x, $gsav xn ]
 gsprocess_err = $gslambda_value $ \ pos -> $gsbcarg $ \ un -> $gsbcarg $ \ err -> $gsbcarg $ \ exp -> $gsbcconstr (gsvar "err") [ $gsav pos, $gsav un, $gsav err, $gsav exp ]
 
-gsprocess_step_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "step" ek sk e
-gsprocess_err_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "err" ek sk e
+gsprocess_step_view = $gsbcconstr_view "step"
+gsprocess_err_view = $gsbcconstr_view "err"
 
 gsparser_advanceRune = [gs:value| λ 'c. λ 'pos. analyze rune.≡ c r{\n}.
     case true. 〈 'filename ∝ pos #filename; 'line ∝ pos #line + 1; 'col ∝ 1; 〉

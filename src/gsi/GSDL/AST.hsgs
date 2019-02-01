@@ -74,11 +74,11 @@ gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'view-types ∝ 
 
 gsfile_document = $gslambda_value $ \ pos -> $gsbcarg $ \ d -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav d ]
 
-gsfile_document_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "document" ek sk e
+gsfile_document_view = $gsbcconstr_view "document"
 
 gsdocument_in = $gslambda_value $ \ mbe -> $gsbcarg $ \ mbg -> $gsbcconstr (gsvar "in") [ $gsav mbe, $gsav mbg ]
 
-gsdocument_in_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "in" ek sk e
+gsdocument_in_view = $gsbcconstr_view "in"
 
 gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gssource_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
@@ -86,18 +86,18 @@ gssource_comp_expr = $gslambda_value $ \ ps -> $gsbcarg $ \ e -> $gsbcconstr (gs
 
 gsquote_param_hsvs = $gslambda_value $ \ vs -> $gsbcconstr (gsvar "hsvs") [ $gsav vs ]
 
-gsquote_param_hsvs_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "hsvs" ek sk p
+gsquote_param_hsvs_view = $gsbcconstr_view "hsvs"
 
-gssource_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
-gssource_comp_pos_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "pos" ek sk sc
-gssource_comp_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "expr" ek sk sc
+gssource_comp_char_view = $gsbcconstr_view "char"
+gssource_comp_pos_view = $gsbcconstr_view "pos"
+gssource_comp_expr_view = $gsbcconstr_view "expr"
 
 gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gsdest_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "char") [ $gsav pos ]
 gsdest_comp_expr = $gslambda_value $ \ is -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav is, $gsav e ]
 
-gsdest_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
-gsdest_comp_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "expr" ek sk sc
+gsdest_comp_char_view = $gsbcconstr_view "char"
+gsdest_comp_expr_view = $gsbcconstr_view "expr"
 
 gstype_empty_signature = [gs:value| type.signature type.env.empty |]
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]
@@ -110,12 +110,12 @@ gstype_forall = $gslambda_value $ \ v -> $gsbcarg $ \ ki -> $gsbcarg $ \ ty1 -> 
 gstype_app = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "app") [ $gsav ty0, $gsav ty1 ]
 gstype_function = $gslambda_value $ \ ty0 -> $gsbcarg $ \ ty1 -> $gsbcconstr (gsvar "function") [ $gsav ty0, $gsav ty1 ]
 
-gstype_unifiable_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "unifiable-var" ek sk ty
-gstype_const_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "const" ek sk ty
-gstype_signature_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "signature" ek sk ty
-gstype_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "app" ek sk ty
-gstype_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "function" ek sk ty
-gstype_forall_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ ty -> $gsbcconstr_view "forall" ek sk ty
+gstype_unifiable_var_view = $gsbcconstr_view "unifiable-var"
+gstype_const_view = $gsbcconstr_view "const"
+gstype_signature_view = $gsbcconstr_view "signature"
+gstype_app_view = $gsbcconstr_view "app"
+gstype_function_view = $gsbcconstr_view "function"
+gstype_forall_view = $gsbcconstr_view "forall"
 
 gskind_pointed = $gsconstr (gsvar "pointed") []
 
@@ -129,54 +129,54 @@ gsexpr_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "pat
 gsexpr_fallible_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]
 gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 
-gsexpr_natural_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "natural" ek sk e
-gsexpr_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "var" ek sk e
-gsexpr_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "app" ek sk e
-gsexpr_qlo_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "qlo" ek sk e
-gsexpr_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "open-expr" ek sk e
-gsexpr_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "pat" ek sk e
-gsexpr_fallible_pat_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "fallible-pat" ek sk e
-gsexpr_missing_case_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "missing-case" ek sk e
+gsexpr_natural_view = $gsbcconstr_view "natural"
+gsexpr_var_view = $gsbcconstr_view "var"
+gsexpr_app_view = $gsbcconstr_view "app"
+gsexpr_qlo_view = $gsbcconstr_view "qlo"
+gsexpr_open_expr_view = $gsbcconstr_view "open-expr"
+gsexpr_pat_view = $gsbcconstr_view "pat"
+gsexpr_fallible_pat_view = $gsbcconstr_view "fallible-pat"
+gsexpr_missing_case_view = $gsbcconstr_view "missing-case"
 
 gsqloitem_char = $gslambda_value $ \ r -> $gsbcconstr (gsvar "char") [ $gsav r ]
 
-gsqloitem_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ qi -> $gsbcconstr_view "char" ek sk qi
+gsqloitem_char_view = $gsbcconstr_view "char"
 
 gsimplicit_here = $gsconstr (gsvar "here") []
 
-gsimplicit_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
+gsimplicit_here_view = $gsbcconstr_view "here"
 
 gsarg_expr = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav pos, $gsav e ]
 gsarg_here = $gsconstr (gsvar "here") []
 gsarg_explicit = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "explicit") [ $gsav pos, $gsav e ]
 
-gsarg_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "expr" ek sk im
-gsarg_here_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "here" ek sk im
-gsarg_explicit_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "explicit" ek sk im
+gsarg_expr_view = $gsbcconstr_view "expr"
+gsarg_here_view = $gsbcconstr_view "here"
+gsarg_explicit_view = $gsbcconstr_view "explicit"
 
 gspat_discard = $gsconstr (gsvar "discard") []
 gspat_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gspat_view = $gslambda_value $ \ v -> $gsbcconstr (gsvar "view") [ $gsav v ]
 gspat_app = $gslambda_value $ \ p0 -> $gsbcarg $ \ pos -> $gsbcarg $ \ p1 -> $gsbcconstr (gsvar "app") [ $gsav p0, $gsav pos, $gsav p1 ]
 
-gspat_discard_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "discard" ek sk p
-gspat_var_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "var" ek sk p
-gspat_view_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "view" ek sk p
-gspat_app_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ p -> $gsbcconstr_view "app" ek sk p
+gspat_discard_view = $gsbcconstr_view "discard"
+gspat_var_view = $gsbcconstr_view "var"
+gspat_view_view = $gsbcconstr_view "view"
+gspat_app_view = $gsbcconstr_view "app"
 
 gsorder_of_being_open_expr = $gsconstr (gsvar "open-expr") []
 gsorder_of_being_pattern = $gsconstr (gsvar "pattern") []
 
 gscategory_fallible = $gsconstr (gsvar "fallible") []
-gscategory_fallible_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "fallible" ek sk im
+gscategory_fallible_view = $gsbcconstr_view "fallible"
 
-gsorder_of_being_open_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "open-expr" ek sk im
-gsorder_of_being_pattern_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ im -> $gsbcconstr_view "pattern" ek sk im
+gsorder_of_being_open_expr_view = $gsbcconstr_view "open-expr"
+gsorder_of_being_pattern_view = $gsbcconstr_view "pattern"
 
 gssyntactic_category_lambda_like = $gsconstr (gsvar "lambda-like") []
 gssyntactic_category_variable = $gsconstr (gsvar "variable") []
 gssyntactic_category_where = $gsconstr (gsvar "where") []
 
-gssyntactic_category_lambda_like_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ c -> $gsbcconstr_view "lambda-like" ek sk c
-gssyntactic_category_variable_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ c -> $gsbcconstr_view "variable" ek sk c
-gssyntactic_category_where_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ c -> $gsbcconstr_view "where" ek sk c
+gssyntactic_category_lambda_like_view = $gsbcconstr_view "lambda-like"
+gssyntactic_category_variable_view = $gsbcconstr_view "variable"
+gssyntactic_category_where_view = $gsbcconstr_view "where"

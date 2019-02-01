@@ -87,5 +87,5 @@ gsordered_map_to_list = [gs:value| λ 'm. analyze m.
 gsordered_map_empty = $gsconstr (gsvar "empty") []
 gsordered_map_prim_branch = $gslambda_value $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ l -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav k, $gsav v, $gsav l, $gsav r ]
 
-gsordered_map_empty_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "empty" ek sk e
-gsordered_map_branch_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ e -> $gsbcconstr_view "branch" ek sk e
+gsordered_map_empty_view = $gsbcconstr_view "empty"
+gsordered_map_branch_view = $gsbcconstr_view "branch"
