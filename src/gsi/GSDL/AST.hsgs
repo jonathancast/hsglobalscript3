@@ -9,7 +9,7 @@ module GSDL.AST (
     gsdocument_in, gsdocument_in_view,
     gssource_comp_char, gssource_comp_expr, gssource_comp_pos, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_expr_view,
     gsquote_param_hsvs, gsquote_param_hsvs_view,
-    gsdest_comp_char, gsdest_comp_pos, gsdest_comp_expr, gsdest_comp_char_view,
+    gsdest_comp_char, gsdest_comp_pos, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_expr_view,
     gstype_apply,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -97,6 +97,7 @@ gsdest_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "char") [ $gsav 
 gsdest_comp_expr = $gslambda_value $ \ is -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav is, $gsav e ]
 
 gsdest_comp_char_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "char" ek sk sc
+gsdest_comp_expr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ sc -> $gsbcconstr_view "expr" ek sk sc
 
 gstype_empty_signature = [gs:value| type.signature type.env.empty |]
 gstype_consts = [gs:value| λ 's. type.const (gsvar s) |]

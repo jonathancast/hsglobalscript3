@@ -1066,6 +1066,7 @@ globalEnv = Env{
         ("arg.here", "GSDL.AST", "gsarg_here_view"),
         ("category.fallible", "GSDL.AST", "gscategory_fallible_view"),
         ("dest-comp.char", "GSDL.AST", "gsdest_comp_char_view"),
+        ("dest-comp.expr", "GSDL.AST", "gsdest_comp_expr_view"),
         ("document.in", "GSDL.AST", "gsdocument_in_view"),
         ("eq", "GSI.OrderTotal", "gsord_eq_view"),
         ("expr.app", "GSDL.AST", "gsexpr_app_view"),
