@@ -7,7 +7,7 @@ module GSDL.AST (
     gstype_env_overlay, gstype_env_empty,
     gsfile_document, gsfile_document_view,
     gsdocument_in, gsdocument_in_view,
-    gssource_comp_char, gssource_comp_expr, gssource_comp_pos, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_expr_view,
+    gssource_comp_char, gssource_comp_imports, gssource_comp_expr, gssource_comp_pos, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_expr_view,
     gsquote_param_hsvs, gsquote_param_hsvs_view,
     gsdest_comp_char, gsdest_comp_pos, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_expr_view,
     gstype_apply,
@@ -81,6 +81,7 @@ gsdocument_in = $gslambda_value $ \ mbe -> $gsbcarg $ \ mbg -> $gsbcconstr (gsva
 gsdocument_in_view = $gsbcconstr_view "in"
 
 gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
+gssource_comp_imports = $gsconstr (gsvar "imports") []
 gssource_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
 gssource_comp_expr = $gslambda_value $ \ ps -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav ps, $gsav e ]
 

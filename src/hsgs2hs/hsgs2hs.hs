@@ -988,6 +988,7 @@ globalEnv = Env{
         ("rune.≡", "GSI.Rune", "gsruneEq"),
         ("source-comp.char", "GSDL.AST", "gssource_comp_char"),
         ("source-comp.expr", "GSDL.AST", "gssource_comp_expr"),
+        ("source-comp.imports", "GSDL.AST", "gssource_comp_imports"),
         ("source-comp.pos", "GSDL.AST", "gssource_comp_pos"),
         ("st.get-var", "GSI.ST", "gsstgetvar"),
         ("st.ref.new", "GSI.ST", "gsstrefnew"),
