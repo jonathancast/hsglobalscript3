@@ -7,6 +7,7 @@ import GSI.ByteCode (gsbcconstr, gsbcconstr_view)
 $gsimports
 
 gshsexpr_fmt_atom = [gs:value| λ 'e. λ 's. analyze e.
+    case hsexpr.var 'v. v <> s
 |]
 
 gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
