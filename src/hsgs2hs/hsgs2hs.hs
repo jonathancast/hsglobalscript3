@@ -496,6 +496,13 @@ compileMonoidalPat env p@(PVar pos _) = compileNonMonoidalPat env pos p
 compileMonoidalPat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
 compileMonoidalPat env (PApp p0 p1) = compileMonoidalPatApp env p0 [p1]
 compileMonoidalPat env p@PView{} = compileMonoidalPatApp env p []
+compileMonoidalPat env (PQLO pos "r" [PQChar pos1 ch]) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar ch
+  )
+compileMonoidalPat env (PQLO pos "r" [qi]) = $gsfatal $ "compileMonoidalPat (PQLO pos \"r\" [" ++ pqloiCode qi ++ "]) next"
+compileMonoidalPat env (PQLO pos "r" []) = $gsfatal $ "compileMonoidalPat (PQLO pos \"r\" []) next"
+compileMonoidalPat env (PQLO pos "r" qs) = $gsfatal $ "compileMonoidalPat (PQLO pos \"r\" qs) next"
 compileMonoidalPat env (PQLO pos "qq" s) = w s
   where
     w [] = return (
@@ -1194,6 +1201,7 @@ boundVars :: Pattern -> Set String
 boundVars (PVar _ x) = Set.singleton x
 boundVars (PDiscard _) = Set.empty
 boundVars (PView _ _) = Set.empty
+boundVars (PQLO _ "r" qis) = Set.empty
 boundVars (PQLO _ "qq" qis) = Set.unions $ map w qis where
     w (PQChar _ _) = Set.empty
     w (PQQChar _ _) = Set.empty
