@@ -795,6 +795,7 @@ globalEnv = Env{
         ("create-thread", "GSI.GSI", "gsicreateThread"),
         ("dest-comp.char", "GSDL.AST", "gsdest_comp_char"),
         ("dest-comp.expr", "GSDL.AST", "gsdest_comp_expr"),
+        ("dest-comp.imports", "GSDL.AST", "gsdest_comp_imports"),
         ("dest-comp.pos", "GSDL.AST", "gsdest_comp_pos"),
         ("dir.read", "GSI.Env", "gsdir_read"),
         ("document.in", "GSDL.AST", "gsdocument_in"),
