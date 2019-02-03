@@ -1088,6 +1088,7 @@ globalEnv = Env{
         ("gsvalue.rune", "GSI.GSI", "gsvalue_rune_view"),
         ("gsvalue.thunk", "GSI.GSI", "gsvalue_thunk_view"),
         ("gt", "GSI.OrderTotal", "gsord_gt_view"),
+        ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var_view"),
         ("implicit.here", "GSDL.AST", "gsimplicit_here_view"),
         ("just", "GSI.Maybe", "gsjust_view"),
         ("left", "GSI.Either", "gsleft_view"),
