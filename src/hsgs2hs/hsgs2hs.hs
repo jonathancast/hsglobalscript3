@@ -883,6 +883,7 @@ globalEnv = Env{
         ("impmapM", "GS.Util", "gsimpmapM"),
         ("impunit", "GSI.StdLib", "gsimpunit"),
         ("instantiate", "GSDL.TypeChecker", "gstype_checker_instantiate"),
+        ("interpolation", "GSDL.Syntax", "interpolation"),
         ("is-ascii-digit", "GSI.Rune", "gsisAsciiDigit"),
         ("is-lower", "GSI.Rune", "gsisLower"),
         ("is-space", "GSI.Rune", "gsisSpace"),
