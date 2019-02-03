@@ -44,11 +44,14 @@ document = [gs:value| λ 'env. parser.for
     . parser.unit (document.in mbe mbw)
 |]
 
-interpolation = [gs:value| empty |]
+$gsdeclare keyword keyword
+
+interpolation = [gs:value|
+    <|> (keyword qq{gsimports} *> parser.unit source-comp.imports)
+|]
 
 $gsdeclare quote-param quote_param
 
-$gsdeclare keyword keyword
 $gsdeclare keyword-op keyword_op
 
 quote = [gs:value| λ 'env.
