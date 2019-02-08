@@ -95,7 +95,7 @@ gssource_comp_imports_view = $gsbcconstr_view "imports"
 gssource_comp_expr_view = $gsbcconstr_view "expr"
 
 gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
-gsdest_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "char") [ $gsav pos ]
+gsdest_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
 gsdest_comp_imports = $gsconstr (gsvar "imports") []
 gsdest_comp_expr = $gslambda_value $ \ is -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav is, $gsav e ]
 
