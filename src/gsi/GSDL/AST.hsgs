@@ -9,7 +9,7 @@ module GSDL.AST (
     gsdocument_in, gsdocument_in_view,
     gssource_comp_char, gssource_comp_pos, gssource_comp_imports, gssource_comp_expr, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_imports_view, gssource_comp_expr_view,
     gsquote_param_hsvs, gsquote_param_hsvs_view,
-    gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
+    gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_pos_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
     gstype_apply,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
@@ -100,6 +100,7 @@ gsdest_comp_imports = $gsconstr (gsvar "imports") []
 gsdest_comp_expr = $gslambda_value $ \ is -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav is, $gsav e ]
 
 gsdest_comp_char_view = $gsbcconstr_view "char"
+gsdest_comp_pos_view = $gsbcconstr_view "pos"
 gsdest_comp_imports_view = $gsbcconstr_view "imports"
 gsdest_comp_expr_view = $gsbcconstr_view "expr"
 
