@@ -42,6 +42,7 @@ gsrepeat = [gs:value| λ 'x. x : repeat x |]
 
 gsreplicate = [gs:value| λ 'n. λ 'x. analyze natural.≡ n 0.
     case true. nil
+    case false. x : replicate (n - 1) x
 |]
 
 gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
