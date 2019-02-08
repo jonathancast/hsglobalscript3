@@ -83,10 +83,19 @@ gscompile_expr = [gs:value| λ 'env. λ 'e. analyze e.
     )
 |]
 
+$gsdeclare gather-imports gsgather_imports
+
 gsformat_output = [gs:value| λ 'o. analyze o.
     case dest-comp.char 'c : 'o1. c : format-output o1
     case dest-comp.expr _ 'e : 'o1. hsexpr.fmt-atom e (format-output o1)
     case nil. nil
+|]
+
+gsgather_imports = [gs:value|
+    foldl
+        (λ 'is. λ 'o. analyze o.
+        )
+        ordered-set.empty
 |]
 
 hsstring = [gs:value| λ 's. qq{"§(s)"} |]
