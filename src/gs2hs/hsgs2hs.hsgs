@@ -93,10 +93,8 @@ gsformat_output = [gs:value| λ 'o. analyze o.
 |]
 
 gsgather_imports = [gs:value|
-    foldl
-        (λ 'is. λ 'o. analyze o.
-        )
-        ordered-set.empty
+    foldl (ordered-set.∪ hsimport.<=>) ordered-set.empty ∘ map (λ 'o. analyze o.
+    )
 |]
 
 hsstring = [gs:value| λ 's. qq{"§(s)"} |]
