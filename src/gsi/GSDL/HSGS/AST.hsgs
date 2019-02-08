@@ -1,10 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.HSGS.AST (gshsexpr_fmt_atom, gshsexpr_var) where
+module GSDL.HSGS.AST (gshsimport_fmt, gshsexpr_fmt_atom, gshsexpr_var) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsav)
 import GSI.ByteCode (gsbcconstr, gsbcconstr_view)
 $gsimports
+
+gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
+|]
 
 gshsexpr_fmt_atom = [gs:value| λ 'e. λ 's. analyze e.
     case hsexpr.var 'v. v <> s
