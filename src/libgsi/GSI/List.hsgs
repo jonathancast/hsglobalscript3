@@ -41,6 +41,7 @@ gsfilter = [gs:value| λ 'p. λ 'xn. analyze xn.
 gsrepeat = [gs:value| λ 'x. x : repeat x |]
 
 gsreplicate = [gs:value| λ 'n. λ 'x. analyze natural.≡ n 0.
+    case true. nil
 |]
 
 gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
