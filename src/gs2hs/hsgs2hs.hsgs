@@ -95,6 +95,7 @@ gsformat_output = [gs:value| λ 'o. analyze o.
 gsgather_imports = [gs:value|
     foldl (ordered-set.∪ hsimport.<=>) ordered-set.empty ∘ map (λ 'o. analyze o.
         case dest-comp.char _. ordered-set.empty
+        case dest-comp.expr 'is _. is
     )
 |]
 
