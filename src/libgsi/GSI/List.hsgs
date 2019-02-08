@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_member, gslist_not_member, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_member, gslist_not_member, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -39,6 +39,9 @@ gsfilter = [gs:value| λ 'p. λ 'xn. analyze xn.
 |]
 
 gsrepeat = [gs:value| λ 'x. x : repeat x |]
+
+gsreplicate = [gs:value| λ 'n. λ 'x. analyze natural.≡ n 0.
+|]
 
 gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
     case 'x:'xn1. (analyze ys.

@@ -986,6 +986,7 @@ globalEnv = Env{
         ("quote", "GSDL.Syntax", "quote"),
         ("quote-param.hsvs", "GSDL.AST", "gsquote_param_hsvs"),
         ("repeat", "GSI.List", "gsrepeat"),
+        ("replicate", "GSI.List", "gsreplicate"),
         ("right", "GSI.Either", "gsright"),
         ("rune.code-point", "GSI.Rune", "gsrune_code_point"),
         ("rune.from-code-point", "GSI.Rune", "gsrune_from_code_point"),
