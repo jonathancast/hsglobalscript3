@@ -20,6 +20,7 @@ gsordered_set_member = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
 |]
 
 gsordered_set_to_list = [gs:value| λ 's. analyze s.
+    case prim.empty. nil
 |]
 
 gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
