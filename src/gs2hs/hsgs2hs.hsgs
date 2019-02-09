@@ -87,6 +87,7 @@ $gsdeclare gather-imports gsgather_imports
 
 gsformat_output = [gs:value| λ 'o. analyze o.
     case dest-comp.char 'c : 'o1. c : format-output o1
+    case dest-comp.pos 'pos : 'o1. qq{\n{-# LINE §(fmtdecimal (pos #line)) §(hsstring (pos #filename)) #-}\n§(replicate (pos #col - 1) r{ })§(format-output o1)}
     case dest-comp.imports : 'o1. foldr hsimport.fmt (format-output o1) (ordered-set.to-list (gather-imports o1))
     case dest-comp.expr _ 'e : 'o1. hsexpr.fmt-atom e (format-output o1)
     case nil. nil
