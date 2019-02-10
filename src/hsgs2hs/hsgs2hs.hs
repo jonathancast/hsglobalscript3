@@ -944,6 +944,7 @@ globalEnv = Env{
         ("ordered-map.values", "GSI.Map", "gsordered_map_values"),
         ("ordered-map.∪", "GSI.Map", "gsordered_map_union"),
         ("ordered-set.empty", "GSI.Set", "gsordered_set_empty"),
+        ("ordered-set.from-list", "GSI.Set", "gsordered_set_from_list"),
         ("ordered-set.insert", "GSI.Set", "gsordered_set_insert"),
         ("ordered-set.to-list", "GSI.Set", "gsordered_set_to_list"),
         ("ordered-set.∈", "GSI.Set", "gsordered_set_member"),
