@@ -14,6 +14,8 @@ gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
 
 gshsimport_var = $gslambda_value $ \ m -> $gsbcarg $ \ f -> $gsbcconstr (gsvar "var") [ $gsav m, $gsav f ]
 
+gshsimport_var_view = $gsbcconstr_view "var"
+
 gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}

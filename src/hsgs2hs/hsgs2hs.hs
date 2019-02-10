@@ -1113,6 +1113,7 @@ globalEnv = Env{
         ("gt", "GSI.OrderTotal", "gsord_gt_view"),
         ("hsexpr.app", "GSDL.HSGS.AST", "gshsexpr_app_view"),
         ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var_view"),
+        ("hsimport.var", "GSDL.HSGS.AST", "gshsimport_var_view"),
         ("implicit.here", "GSDL.AST", "gsimplicit_here_view"),
         ("just", "GSI.Maybe", "gsjust_view"),
         ("left", "GSI.Either", "gsleft_view"),
