@@ -20,6 +20,7 @@ gshsimport_var_view = $gsbcconstr_view "var"
 gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
     case hsexpr.string 's. (:) r{"} ∘ (<>) s ∘ (:) r{"}
+    case hsexpr.int 'n. (<>) (fmtdecimal n)
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
 |]
 
