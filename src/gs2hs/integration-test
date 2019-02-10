@@ -15,6 +15,7 @@ test_hsgs_normal_bracket
 
 # Different kinds of interpolations
 
+test_hsgs_variable_expressions
 test_hsgs_variable_values
 
 true
