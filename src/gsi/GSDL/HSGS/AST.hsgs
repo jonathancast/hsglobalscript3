@@ -11,6 +11,9 @@ gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
 |]
 
 gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
+    case hsimport.var 'm0 'v0. (analyze i1.
+        case hsimport.type 'm1 'v1. gt
+    )
 |]
 
 gshsimport_var = $gslambda_value $ \ m -> $gsbcarg $ \ f -> $gsbcconstr (gsvar "var") [ $gsav m, $gsav f ]
