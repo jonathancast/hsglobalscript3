@@ -57,6 +57,7 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
 |]
 
 $gsdeclare process-params gsprocess_params
+$gsdeclare compile-value gscompile_value
 $gsdeclare compile-expr gscompile_expr
 
 gscompile_source = [gs:value| λ 'i. analyze i.
@@ -75,6 +76,9 @@ gsprocess_params = [gs:value| λ 'ps. foldr
     )
     hsgs.compiler.env.empty
     ps
+|]
+
+gscompile_value = [gs:value| λ 'env. λ 'e. analyze e.
 |]
 
 gscompile_expr = [gs:value| λ 'env. λ 'e. analyze e.
