@@ -1129,6 +1129,7 @@ globalEnv = Env{
         ("source-comp.expr", "GSDL.AST", "gssource_comp_expr_view"),
         ("source-comp.imports", "GSDL.AST", "gssource_comp_imports_view"),
         ("source-comp.pos", "GSDL.AST", "gssource_comp_pos_view"),
+        ("source-comp.value", "GSDL.AST", "gssource_comp_value_view"),
         ("syntactic-category.lambda-like", "GSDL.AST", "gssyntactic_category_lambda_like_view"),
         ("syntactic-category.variable", "GSDL.AST", "gssyntactic_category_variable_view"),
         ("syntactic-category.where", "GSDL.AST", "gssyntactic_category_where_view"),
