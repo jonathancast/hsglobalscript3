@@ -12,8 +12,8 @@ gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
 gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
 |]
 
-gshsexpr_fmt_atom = [gs:value| λ 'e. λ 's. analyze e.
-    case hsexpr.var 'v. v <> s
+gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
+    case hsexpr.var 'v. (<>) v
 |]
 
 gshsexpr_applyvar = [gs:value| λ 'f. λ 'as. foldl hsexpr.app (hsexpr.var f) as |]
