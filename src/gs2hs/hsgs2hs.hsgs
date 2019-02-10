@@ -97,7 +97,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
                 )
                 (p #0)
             ;
-            '1 ∝ hsexpr.applyvar qq{gsbcenter_w} (p #1 : nil);
+            '1 ∝ hsexpr.applyvar qq{gsbcenter_w} (hspos pos : p #1 : nil);
         〉
     )
 |]
