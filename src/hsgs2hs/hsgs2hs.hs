@@ -336,14 +336,6 @@ compileExpr env (EApp f a) = $gsfatal $ "compileExpr (EApp f " ++ argCode a ++ "
 compileExpr env (EGens gs pos1) = compileGens env gs pos1
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
 
-compileBody :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileBody env pos e = do
-    (is, hse) <- compileArg env pos e Nothing Nothing
-    return (
-        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcimpbody_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
-        HSVar "gsbcimpbody_w" `HSApp` hspos pos `HSApp` hse
-      )
-
 compileBind :: Env -> Pos -> Expr -> StateT Integer (Either String) (Set HSImport, HSExpr)
 compileBind env pos e = do
     (is, hse) <- compileArg env pos e Nothing Nothing
