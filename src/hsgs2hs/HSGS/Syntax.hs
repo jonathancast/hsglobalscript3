@@ -39,12 +39,6 @@ quote env pos = empty
         e <- expr env
         return $ SCExpr ps e
     <|> do
-        keyword "bind"
-        ps <- many param
-        keywordOp "|"
-        e <- expr env
-        return $ SCBind pos ps e
-    <|> do
         keyword "value"
         ps <- many param
         keywordOp "|"
