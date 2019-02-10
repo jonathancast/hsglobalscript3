@@ -27,6 +27,9 @@ gsordered_set_from_list = [gs:value| λ 'cmp. λ 'xn. foldr (ordered-set.insert 
 
 gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
     case prim.empty. s1
+    case prim.branch 'x0 'l0 'r0. (analyze s1.
+        case prim.empty. s0
+    )
 |]
 
 gsordered_set_insert = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
