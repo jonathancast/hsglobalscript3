@@ -198,7 +198,6 @@ data SourceComp
   | SCDeclareVar String String
   | SCDeclareView String String
   | SCExpr [Param] Expr
-  | SCOpenExpr Pos [Param] Expr
   | SCValue Pos [Param] Expr
 
 data Expr
@@ -460,7 +459,6 @@ scCode SCImports{} = "SCImports"
 scCode SCDeclareVar{} = "SCDeclareVar"
 scCode SCDeclareView{} = "SCDeclareView"
 scCode SCExpr{} = "SCExpr"
-scCode SCOpenExpr{} = "SCOpenExpr"
 scCode SCValue{} = "SCValue"
 
 eCode :: Expr -> String
