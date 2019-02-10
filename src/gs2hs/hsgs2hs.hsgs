@@ -86,6 +86,8 @@ gscompile_value = [gs:value| λ 'env. λ 'e. analyze e.
     )
 |]
 
+$gsdeclare hspos hspos
+
 gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right 〈
@@ -117,5 +119,7 @@ gsgather_imports = [gs:value|
         case dest-comp.expr 'is _. is
     )
 |]
+
+hspos = [gs:value| λ 'pos. hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil) |]
 
 hsstring = [gs:value| λ 's. qq{"§(s)"} |]
