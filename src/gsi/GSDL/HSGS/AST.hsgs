@@ -35,4 +35,5 @@ gshsexpr_int = $gslambda_value $ \ n -> $gsbcconstr (gsvar "int") [ $gsav n ]
 gshsexpr_string = $gslambda_value $ \ s -> $gsbcconstr (gsvar "string") [ $gsav s ]
 
 gshsexpr_var_view = $gsbcconstr_view "var"
+gshsexpr_string_view = $gsbcconstr_view "string"
 gshsexpr_app_view = $gsbcconstr_view "app"
