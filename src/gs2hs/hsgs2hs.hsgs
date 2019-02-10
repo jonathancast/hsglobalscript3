@@ -80,14 +80,21 @@ gsprocess_params = [gs:value| λ 'ps. foldr
     ps
 |]
 
+$gsdeclare hspos hspos
+$gsdeclare hspos-import hspos_import
+
 gscompile_value = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right p
     )
+    case _. either.for 'p ← compile-expr env pos e;. right 〈
+        '0 ∝ ordered-set.∪ hsimport.<=>
+            (ordered-set.from-list hsimport.<=> (hsimport.var qq{System.IO.Unsafe} qq{unsafePerformIO} : hsimport.var qq{GSI.Value} qq{gsthunk_w} : hspos-import : nil))
+            (p #0)
+        ;
+        '1 ∝ hsexpr.applyvar qq{unsafePerformIO} (hsexpr.applyvar qq{gsthunk_w} (hspos pos : p #1 : nil) : nil);
+    〉
 |]
-
-$gsdeclare hspos hspos
-$gsdeclare hspos-import hspos_import
 
 gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
