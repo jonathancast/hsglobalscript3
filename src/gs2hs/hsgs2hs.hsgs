@@ -88,7 +88,7 @@ gscompile_value = [gs:value| λ 'env. λ 'e. analyze e.
 
 gscompile_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
-        case just 'p. right p
+        case just 'p. right 〈 '0 ∝ p #0; '1 ∝ hsexpr.applyvar qq{gsbcenter_w} (p #1 : nil); 〉
     )
 |]
 
