@@ -21,7 +21,6 @@ test_hsgs_comments
 # Different kinds of interpolations
 
 test_hsgs_variable_expressions
-test_hsgs_variable_binds
 test_hsgs_variable_values
 test_hsgs_application_values
 
