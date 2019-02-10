@@ -1114,6 +1114,7 @@ globalEnv = Env{
         ("gsvalue.thunk", "GSI.GSI", "gsvalue_thunk_view"),
         ("gt", "GSI.OrderTotal", "gsord_gt_view"),
         ("hsexpr.app", "GSDL.HSGS.AST", "gshsexpr_app_view"),
+        ("hsexpr.int", "GSDL.HSGS.AST", "gshsexpr_int_view"),
         ("hsexpr.string", "GSDL.HSGS.AST", "gshsexpr_string_view"),
         ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var_view"),
         ("hsimport.var", "GSDL.HSGS.AST", "gshsimport_var_view"),
