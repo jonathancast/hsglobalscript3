@@ -1,9 +1,12 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.OrderTotal (gsord_lt_view, gsord_eq_view, gsord_gt_view) where
+module GSI.OrderTotal (gsord_gt, gsord_lt_view, gsord_eq_view, gsord_gt_view) where
 
-import GSI.Value (gslambda_value)
+import GSI.Syn (gsvar)
+import GSI.Value (gsconstr)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 $gsimports
+
+gsord_gt = $gsconstr (gsvar "gt") []
 
 gsord_lt_view = $gsbcconstr_view "lt"
 gsord_eq_view = $gsbcconstr_view "eq"
