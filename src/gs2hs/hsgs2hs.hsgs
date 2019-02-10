@@ -93,9 +93,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right 〈
             '0 ∝ ordered-set.∪ hsimport.<=>
-                (ordered-set.from-list hsimport.<=>
-                    (hsimport.var qq{GSI.ByteCode} qq{gsbcenter_w} : nil)
-                )
+                (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcenter_w} : hspos-import : nil))
                 (p #0)
             ;
             '1 ∝ hsexpr.applyvar qq{gsbcenter_w} (hspos pos : p #1 : nil);
