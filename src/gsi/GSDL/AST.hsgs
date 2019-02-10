@@ -83,7 +83,7 @@ gsdocument_in_view = $gsbcconstr_view "in"
 gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gssource_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
 gssource_comp_imports = $gsconstr (gsvar "imports") []
-gssource_comp_value = $gslambda_value $ \ ps -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "value") [ $gsav ps, $gsav e ]
+gssource_comp_value = $gslambda_value $ \ ps -> $gsbcarg $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "value") [ $gsav ps, $gsav pos, $gsav e ]
 gssource_comp_expr = $gslambda_value $ \ ps -> $gsbcarg $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav ps, $gsav pos, $gsav e ]
 
 gsquote_param_hsvs = $gslambda_value $ \ vs -> $gsbcconstr (gsvar "hsvs") [ $gsav vs ]
