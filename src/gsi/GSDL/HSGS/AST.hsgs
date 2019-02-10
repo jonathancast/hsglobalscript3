@@ -3,7 +3,7 @@ module GSDL.HSGS.AST (gshsimport_fmt, gshsimport_cmp, gshsexpr_fmt_atom, gshsexp
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsav)
-import GSI.ByteCode (gsbcconstr, gsbcconstr_view)
+import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
 gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
@@ -17,5 +17,6 @@ gshsexpr_fmt_atom = [gs:value| λ 'e. λ 's. analyze e.
 |]
 
 gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
+gshsexpr_app = $gslambda_value $ \ f -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "app") [ $gsav f, $gsav x ]
 
 gshsexpr_var_view = $gsbcconstr_view "var"

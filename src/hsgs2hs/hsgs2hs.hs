@@ -879,6 +879,7 @@ globalEnv = Env{
         ("gsvar.fmt-bind-atom", "GSI.GSI", "gsigsvar_fmtBindAtom"),
         ("gsvar.name", "GSI.GSI", "gsigsvar_name"),
         ("gsvar.≡", "GSI.GSI", "gsigsvar_eq"),
+        ("hsexpr.app", "GSDL.HSGS.AST", "gshsexpr_app"),
         ("hsexpr.fmt-atom", "GSDL.HSGS.AST", "gshsexpr_fmt_atom"),
         ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var"),
         ("hsgs.compiler.env.empty", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_empty"),
