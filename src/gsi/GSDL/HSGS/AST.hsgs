@@ -17,6 +17,7 @@ gshsimport_var = $gslambda_value $ \ m -> $gsbcarg $ \ f -> $gsbcconstr (gsvar "
 gshsimport_type = $gslambda_value $ \ m -> $gsbcarg $ \ ty -> $gsbcconstr (gsvar "type") [ $gsav m, $gsav ty ]
 
 gshsimport_var_view = $gsbcconstr_view "var"
+gshsimport_type_view = $gsbcconstr_view "type"
 
 gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
