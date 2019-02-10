@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.HSGS.AST (gshsimport_fmt, gshsimport_cmp, gshsexpr_fmt_atom, gshsexpr_var) where
+module GSDL.HSGS.AST (gshsimport_fmt, gshsimport_cmp, gshsexpr_fmt_atom, gshsexpr_applyvar, gshsexpr_var) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsav)
@@ -15,6 +15,8 @@ gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
 gshsexpr_fmt_atom = [gs:value| λ 'e. λ 's. analyze e.
     case hsexpr.var 'v. v <> s
 |]
+
+gshsexpr_applyvar = [gs:value| λ 'f. λ 'as. foldl hsexpr.app (hsexpr.var f) as |]
 
 gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gshsexpr_app = $gslambda_value $ \ f -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "app") [ $gsav f, $gsav x ]
