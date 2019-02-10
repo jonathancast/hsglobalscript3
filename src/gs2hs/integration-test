@@ -13,4 +13,8 @@ test_hsgs_no_interpolations
 test_hsgs_haskell_interpolation
 test_hsgs_normal_bracket
 
+# Different kinds of interpolations
+
+test_hsgs_variable_values
+
 true
