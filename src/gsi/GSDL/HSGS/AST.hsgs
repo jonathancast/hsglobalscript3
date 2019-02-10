@@ -8,6 +8,7 @@ $gsimports
 
 gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
     case hsimport.var 'm 'f. qq{import §(m) (§(f))\n§(s)}
+    case hsimport.type 'm 'ty. qq{import §(m) (§(ty)(..))\n§(s)}
 |]
 
 gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
