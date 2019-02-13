@@ -47,6 +47,7 @@ data GSValue
   | GSConstr Pos GSVar [GSValue]
   | GSRecord Pos GSValueEnv
   | GSNatural Integer
+  | GSRational Rational
   | GSRune Char
   | GSExternal SomeGSExternal
 
@@ -238,6 +239,7 @@ gsvCode GSClosure{} = "GSClosure"
 gsvCode GSConstr{} = "GSConstr"
 gsvCode GSRecord{} = "GSRecord"
 gsvCode GSNatural{} = "GSNatural"
+gsvCode GSRational{} = "GSRational"
 gsvCode GSRune{} = "GSRune"
 gsvCode GSExternal{} = "GSExternal"
 
