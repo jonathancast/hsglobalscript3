@@ -41,10 +41,7 @@ gsabend = $gsimpprim $ \ pos t  sv -> do
     throwIO (GSExcAbend pos s) :: IO GSValue
 
 gsfileStat :: GSValue
-gsfileStat = $gsimpprim gsprimfileStat
-
-gsprimfileStat :: Pos -> Thread -> GSValue -> IO GSValue
-gsprimfileStat pos t fn = do
+gsfileStat = $gsimpprim $ \ pos t fn -> do
     fns <- gsapiEvalString pos fn
     mbst <- try $ getFileStatus fns
     case mbst of
