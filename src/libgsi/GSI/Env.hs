@@ -15,7 +15,7 @@ import System.Directory (getDirectoryContents)
 import System.Environment (getArgs)
 import System.Exit (ExitCode(..), exitWith)
 
-import System.Posix.Files (getFileStatus, isDirectory)
+import System.Posix.Files (getFileStatus, isDirectory, modificationTime)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
@@ -49,7 +49,8 @@ gsfileStat = $gsimpprim $ \ pos t fn -> do
             return $ GSConstr $gshere (gsvar "left") [ GSConstr $gshere (gsvar "ENOENT") [ fn ] ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> return $ GSConstr $gshere (gsvar "right") [ GSRecord $gshere $ Map.fromList [
-            (gsvar "is.dir", gsbool $ isDirectory st)
+            (gsvar "is.dir", gsbool $ isDirectory st),
+            (gsvar "mod.time", GSRational $ toRational $ modificationTime st)
           ] ]
 
 gsfileRead :: GSValue
