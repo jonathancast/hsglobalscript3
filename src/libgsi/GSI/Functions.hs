@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazylist, gslazylist_w, gslazystring, gslazystring_w, gsbool, gsnatural, gsnatural_w, gsapiEval, gsapiEvalPos, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazylist, gslazylist_w, gslazystring, gslazystring_w, gsbool, gsapiEval, gsapiEvalPos, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
 
 import Control.Exception (Exception(..), throwIO, try)
 
@@ -43,11 +43,6 @@ gslazystring_w pos s = gslazylist_w pos $ map GSRune s
 gsbool b = case b of
     False -> GSConstr $gshere (gsvar "false") []
     True -> GSConstr $gshere (gsvar "true") []
-
-gsnatural = varE 'gsnatural_w `appE` gshere
-
-gsnatural_w :: Pos -> Integer -> GSValue
-gsnatural_w pos n = GSNatural n
 
 gsevalChar :: Pos -> GSValue -> IO Char
 gsevalChar pos (GSThunk th) = do
