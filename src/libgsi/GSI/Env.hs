@@ -21,7 +21,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtInvalidProgram, fmtError)
 import GSI.Value (GSValue(..), gslambda_value, gsapply, gsimpprim, gsundefined_value, gsvCode)
-import GSI.Functions (gslist, gsstring)
+import GSI.Functions (gsbool, gslist, gsstring)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
@@ -49,10 +49,7 @@ gsfileStat = $gsimpprim $ \ pos t fn -> do
             return $ GSConstr $gshere (gsvar "left") [ GSConstr $gshere (gsvar "ENOENT") [ fn ] ]
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimenvFileStat " ++ show fns ++ " (stat returned Left (" ++ show e ++ ")) next"
         Right st -> return $ GSConstr $gshere (gsvar "right") [ GSRecord $gshere $ Map.fromList [
-            (gsvar "is.dir", case isDirectory st of
-                False -> GSConstr $gshere (gsvar "false") []
-                True -> GSConstr $gshere (gsvar "true") []
-            )
+            (gsvar "is.dir", gsbool $ isDirectory st)
           ] ]
 
 gsfileRead :: GSValue
