@@ -34,6 +34,7 @@ aceEnter cs v@GSConstr{} sk = gsreturn sk v
 aceEnter cs v@GSRecord{} sk = gsreturn sk v
 aceEnter cs v@GSRune{} sk = gsreturn sk v
 aceEnter cs v@GSNatural{} sk = gsreturn sk v
+aceEnter cs v@GSRational{} sk = gsreturn sk v
 aceEnter cs0 v@(GSClosure cs1 bco) sk = case bco of
     GSRawExpr e -> runGSExpr e (cs1 ++ cs0) sk
     GSImp{} -> gsreturn sk v
