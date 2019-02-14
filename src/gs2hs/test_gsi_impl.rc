@@ -1,0 +1,22 @@
+#! /home/jcast/plan9/bin/rc
+
+if (~ $#TEST_DIR 0) TEST_DIR=.
+
+while ([ -d $1 ]) shift
+
+if (! [ -f $1 ]) {
+    echo $1^': no such file or directory' >[1=2]
+    exit 1
+}
+
+> $TEST_DIR/test-fixtures/temp.hsgs
+echo '{-# LANGUAGE TemplateHaskell #-}' >> $TEST_DIR/test-fixtures/temp.hsgs
+echo 'import TestHSGS (printTestExpr)' >> $TEST_DIR/test-fixtures/temp.hsgs
+echo '$gsimports' >> $TEST_DIR/test-fixtures/temp.hsgs
+echo '' >> $TEST_DIR/test-fixtures/temp.hsgs
+echo -n 'main = printTestExpr [gs:expr| ' >> $TEST_DIR/test-fixtures/temp.hsgs
+cat $1 >> $TEST_DIR/test-fixtures/temp.hsgs
+echo '|]' >> $TEST_DIR/test-fixtures/temp.hsgs
+
+./hsgs2hs $TEST_DIR/test-fixtures/temp.hsgs || exit $status
+exec runghc `{./test-ghcoptions} $TEST_DIR/test-fixtures/temp.hs

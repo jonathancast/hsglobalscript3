@@ -6,6 +6,8 @@
 . $GS_SPEC/bin/gs-spec
 . $GS_SPEC/bin/hsgs-spec
 
+fn test_gsi_impl { ./test_gsi_impl.rc $* }
+
 test_hsgs_empty_file
 test_hsgs_non_existent_directory
 test_hsgs_empty_directory
