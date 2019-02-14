@@ -27,8 +27,9 @@ gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
 |]
 
 gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat a.
-    case right 'st. (impanalyzeM file.stat (mk-hs-file a).
+    case right 'st.gs. (impanalyzeM file.stat (mk-hs-file a).
         case left (ENOENT _). impunit true
+        case right 'st.hs. impunit (rational.> (st.gs #mod.time) (st.hs #mod.time))
     )
 |]
 
