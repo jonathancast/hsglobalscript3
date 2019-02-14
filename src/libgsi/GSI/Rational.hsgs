@@ -1,0 +1,10 @@
+{-# LANGUAGE TemplateHaskell #-}
+module GSI.Rational (gsrational_gt) where
+
+import GSI.Value (gslambda_value, gsav, gsvCode)
+import GSI.ByteCode (gsbcarg, gsbcforce, gsbcruntimetypeerror)
+$gsimports
+
+gsrational_gt = $gslambda_value $ \ r0 -> $gsbcarg $ \ r1 -> $gsbcforce ($gsav r0) $ \ r0v -> $gsbcforce ($gsav r1) $ \ r1v ->
+    case r0v of
+        _ -> $gsbcruntimetypeerror "rational.>" (gsvCode r0v) "GSRational"

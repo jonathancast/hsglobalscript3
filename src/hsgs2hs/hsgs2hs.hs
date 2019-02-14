@@ -976,6 +976,7 @@ globalEnv = Env{
         ("qloitem.char", "GSDL.AST", "gsqloitem_char"),
         ("quote", "GSDL.Syntax", "quote"),
         ("quote-param.hsvs", "GSDL.AST", "gsquote_param_hsvs"),
+        ("rational.>", "GSI.Rational", "gsrational_gt"),
         ("repeat", "GSI.List", "gsrepeat"),
         ("replicate", "GSI.List", "gsreplicate"),
         ("right", "GSI.Either", "gsright"),

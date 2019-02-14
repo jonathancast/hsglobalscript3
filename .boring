@@ -51,3 +51,4 @@ src/libgsi/GS/FileName.hs$
 src/gsi/GSDL/GlobalEnv\.hs$
 src/gsi/GSDL/HSGS/Compiler.hs$
 src/gsi/GSDL/HSGS/AST.hs$
+src/libgsi/GSI/Rational.hs$
