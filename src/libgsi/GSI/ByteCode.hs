@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -61,6 +61,11 @@ gsbcrecord_w pos fs = GSExpr $ \ cs sk -> do
         fv <- gsprepare_w pos fa
         return (v, fv)
     gsreturn sk $ GSRecord pos $ Map.fromList fs'
+
+gsbcbool = varE 'gsbcbool_w `appE` gshere
+gsbcbool_w pos b = case b of
+    True -> gsbcconstr_w pos (gsvar "true") []
+    False -> gsbcconstr_w pos (gsvar "false") []
 
 gsbcconstr = varE 'gsbcconstr_w `appE` gshere
 
