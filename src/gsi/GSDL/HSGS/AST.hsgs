@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.HSGS.AST (gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type, gshsexpr_fmt_atom, gshsexpr_applyvar, gshsexpr_var, gshsexpr_int, gshsexpr_string) where
+module GSDL.HSGS.AST (gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type, gshsexpr_fmt_atom, gshsexpr_applyvar, gshsexpr_var, gshsexpr_int, gshsexpr_string, gshsexpr_list) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsav)
@@ -41,6 +41,7 @@ gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gshsexpr_app = $gslambda_value $ \ f -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "app") [ $gsav f, $gsav x ]
 gshsexpr_int = $gslambda_value $ \ n -> $gsbcconstr (gsvar "int") [ $gsav n ]
 gshsexpr_string = $gslambda_value $ \ s -> $gsbcconstr (gsvar "string") [ $gsav s ]
+gshsexpr_list = $gslambda_value $ \ es -> $gsbcconstr (gsvar "list") [ $gsav es ]
 
 gshsexpr_var_view = $gsbcconstr_view "var"
 gshsexpr_string_view = $gsbcconstr_view "string"
