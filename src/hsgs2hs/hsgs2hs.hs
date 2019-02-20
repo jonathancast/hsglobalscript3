@@ -985,6 +985,7 @@ globalEnv = Env{
         ("repeat", "GSI.List", "gsrepeat"),
         ("replicate", "GSI.List", "gsreplicate"),
         ("right", "GSI.Either", "gsright"),
+        ("rune.<=>", "GSI.Rune", "gsrune_compare"),
         ("rune.code-point", "GSI.Rune", "gsrune_code_point"),
         ("rune.from-code-point", "GSI.Rune", "gsrune_from_code_point"),
         ("rune.≠", "GSI.Rune", "gsrune_neq"),

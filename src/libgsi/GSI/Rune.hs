@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Rune (gsisAsciiDigit, gsisLower, gsis_upper, gsisSpace, gsrune_code_point, gsrune_from_code_point, gsrune_neq, gsruneEq) where
+module GSI.Rune (gsisAsciiDigit, gsisLower, gsis_upper, gsisSpace, gsrune_code_point, gsrune_from_code_point, gsrune_compare, gsrune_neq, gsruneEq) where
 
 import Data.Char (isDigit, isLower, isUpper, isSpace, chr, ord)
 
@@ -25,6 +25,13 @@ gsrune_code_point = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case
 gsrune_from_code_point = $gslambda_value $ \ n -> $gsbcforce ($gsav n) $ \ n0 -> case n0 of
     GSNatural n0hs -> $gsbcrune $ chr $ fromInteger n0hs
     _ -> $gsbcimplementationfailure $ "gsrune_from_code_point " ++ gsvCode n0 ++ " next"
+
+gsrune_compare = $gslambda_value $ \ c0 -> $gsbcarg $ \ c1 -> $gsbcforce ($gsav c0) $ \ c0_0 -> $gsbcforce ($gsav c1) $ \ c1_0 -> case (c0_0, c1_0) of
+    (GSRune c0hs, GSRune c1hs) -> case c0hs `compare` c1hs of
+        LT -> $gsbcconstr (gsvar "lt") []
+        EQ -> $gsbcconstr (gsvar "eq") []
+        GT -> $gsbcconstr (gsvar "gt") []
+    _ -> $gsbcimplementationfailure $ "gsrune_neq " ++ gsvCode c0_0 ++ ' ' : gsvCode c1_0 ++ " next"
 
 gsrune_neq = $gslambda_value $ \ c0 -> $gsbcarg $ \ c1 -> $gsbcforce ($gsav c0) $ \ c0_0 -> $gsbcforce ($gsav c1) $ \ c1_0 -> case (c0_0, c1_0) of
     (GSRune c0hs, GSRune c1hs) ->
