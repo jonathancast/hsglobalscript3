@@ -57,6 +57,7 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
 
+$gsdeclare hsgs.compiler.global-env gshsgs_compiler_global_env
 $gsdeclare process-params gsprocess_params
 $gsdeclare compile-value gscompile_value
 $gsdeclare compile-expr gscompile_expr
@@ -65,9 +66,9 @@ gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case source-comp.imports : 'i1. either.map ((:) dest-comp.imports) (compile-source i1)
     case source-comp.pos 'pos : 'i1. either.map ((:) (dest-comp.pos pos)) (compile-source i1)
-    case source-comp.value 'ps 'pos 'e : 'i1. either.for 'p ← compile-value (process-params ps hsgs.compiler.env.empty) pos e; 'o1 ← compile-source i1;.
+    case source-comp.value 'ps 'pos 'e : 'i1. either.for 'p ← compile-value (process-params ps hsgs.compiler.global-env) pos e; 'o1 ← compile-source i1;.
         right (dest-comp.expr (p #0) (p #1) : o1)
-    case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps hsgs.compiler.env.empty) pos e; 'o1 ← compile-source i1;.
+    case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps hsgs.compiler.global-env) pos e; 'o1 ← compile-source i1;.
         right (dest-comp.expr (p #0) (p #1) : o1)
     case nil. right nil
 |]
@@ -141,3 +142,7 @@ hspos_import = [gs:value| hsimport.type qq{GSI.Util} qq{Pos} |]
 hspos = [gs:value| λ 'pos. hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil) |]
 
 hsstring = [gs:value| λ 's. qq{"§(s)"} |]
+
+gshsgs_compiler_global_env = [gs:value|
+    hsgs.compiler.env.empty
+|]
