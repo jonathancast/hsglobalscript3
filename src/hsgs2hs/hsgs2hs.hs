@@ -788,6 +788,7 @@ globalEnv = Env{
         ("either.map2", "GSI.Either", "gseithermap2"),
         ("either.mapM", "GSI.Either", "gseither_mapM"),
         ("empty", "GSI.Parser", "gsempty"),
+        ("eq", "GSI.OrderTotal", "gsord_eq"),
         ("error", "GSI.StdLib", "gserror"),
         ("exec-main-thread", "GSI.GSI", "gsiexecMainThread"),
         ("expr", "GSDL.Syntax", "expr"),
