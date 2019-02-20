@@ -87,6 +87,9 @@ gslist_eq = [gs:value| λ 'eq. λ 'xn. λ 'ys. analyze xn.
 |]
 
 gslist_compare = [gs:value| λ 'cmp. λ 'xn. λ 'ys. analyze xn.
+    case nil. (analyze ys.
+        case nil. eq
+    )
     case 'x:'xn1. (analyze ys.
         case 'y:'ys1. ord.<|> (cmp x y) (list.<=> cmp xn1 ys1)
     )
