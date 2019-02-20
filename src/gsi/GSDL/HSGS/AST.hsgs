@@ -18,6 +18,7 @@ gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
     )
     case hsimport.type 'm0 'ty0. (analyze i1.
         case hsimport.var 'm1 'v1. lt
+        case hsimport.type 'm1 'ty1. ord.<|> (list.<=> rune.<=> m0 m1) (list.<=> rune.<=> ty0 ty1)
     )
 |]
 
