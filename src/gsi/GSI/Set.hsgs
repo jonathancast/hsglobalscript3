@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Set (gsordered_set_member, gsordered_set_to_list, gsordered_set_from_list, gsordered_set_insert, gsordered_set_union, gsordered_set_empty) where
+module GSI.Set (gsordered_set_member, gsordered_set_to_list, gsordered_set_from_list, gsordered_set_singleton, gsordered_set_insert, gsordered_set_union, gsordered_set_empty) where
 
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
@@ -32,6 +32,8 @@ gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
         case prim.empty. s0
     )
 |]
+
+gsordered_set_singleton = [gs:value| λ 'x. prim.branch x prim.empty prim.empty |]
 
 gsordered_set_insert = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
     case prim.empty. prim.branch x prim.empty prim.empty

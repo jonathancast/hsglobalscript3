@@ -932,6 +932,7 @@ globalEnv = Env{
         ("ordered-set.empty", "GSI.Set", "gsordered_set_empty"),
         ("ordered-set.from-list", "GSI.Set", "gsordered_set_from_list"),
         ("ordered-set.insert", "GSI.Set", "gsordered_set_insert"),
+        ("ordered-set.singleton", "GSI.Set", "gsordered_set_singleton"),
         ("ordered-set.to-list", "GSI.Set", "gsordered_set_to_list"),
         ("ordered-set.∈", "GSI.Set", "gsordered_set_member"),
         ("ordered-set.∪", "GSI.Set", "gsordered_set_union"),
