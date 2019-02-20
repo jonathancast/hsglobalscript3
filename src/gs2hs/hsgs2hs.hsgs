@@ -109,6 +109,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
             '1 ∝ hsexpr.applyvar qq{gsbcenter_w} (hspos pos : p #1 : nil);
         〉
     )
+    case expr.app 'f 'x. compile-app env pos f (x : nil)
 |]
 
 gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
