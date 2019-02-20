@@ -30,6 +30,8 @@ gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
     case prim.empty. s1
     case prim.branch 'x0 'l0 'r0. (analyze s1.
         case prim.empty. s0
+        case prim.branch 'x1 'l1 'r1. (analyze cmp x0 x1.
+        )
     )
 |]
 
