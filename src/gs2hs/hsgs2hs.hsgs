@@ -97,6 +97,8 @@ gscompile_value = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     〉
 |]
 
+$gsdeclare compile-app gscompile_app
+
 gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right 〈
@@ -107,6 +109,9 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
             '1 ∝ hsexpr.applyvar qq{gsbcenter_w} (hspos pos : p #1 : nil);
         〉
     )
+|]
+
+gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
 |]
 
 $gsdeclare gather-imports gsgather_imports
