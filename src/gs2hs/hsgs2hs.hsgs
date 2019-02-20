@@ -113,6 +113,9 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
 |]
 
 gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
+    case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
+        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
+    )
 |]
 
 $gsdeclare gather-imports gsgather_imports
