@@ -921,6 +921,7 @@ globalEnv = Env{
         ("not-followed-by", "GSI.Parser", "gsparser_notFollowedBy"),
         ("nothing", "GSI.Maybe", "gsnothing"),
         ("optional", "GSI.Parser", "gsparser_optional"),
+        ("ord.<|>", "GSI.OrderTotal", "gsord_or"),
         ("order-of-being.open-expr", "GSDL.AST", "gsorder_of_being_open_expr"),
         ("order-of-being.pattern", "GSDL.AST", "gsorder_of_being_pattern"),
         ("ordered-map.empty", "GSI.Map", "gsordered_map_empty"),
