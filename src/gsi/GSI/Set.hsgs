@@ -45,6 +45,10 @@ gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
 |]
 
 gssplit_lt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
+    case prim.branch 'x1 'l 'r. (analyze cmp x x1.
+        case lt. split-lt cmp x l
+        case gt. prim.branch x1 l (split-lt cmp x r)
+    )
 |]
 
 gssplit_gt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
