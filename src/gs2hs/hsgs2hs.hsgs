@@ -144,5 +144,9 @@ hspos = [gs:value| λ 'pos. hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filenam
 hsstring = [gs:value| λ 's. qq{"§(s)"} |]
 
 gshsgs_compiler_global_env = [gs:value|
+    (λ 'gvs. λ 'env. foldr (λ 't. λ 'env. hsgs.compiler.env.var.insert (t #0) 〈 '0 ∝ ordered-set.singleton (hsimport.var (t #1) (t #2)); '1 ∝ hsexpr.var (t #2); 〉 env) env gvs)
+        (
+            nil
+        ) $
     hsgs.compiler.env.empty
 |]
