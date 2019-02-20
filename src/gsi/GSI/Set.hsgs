@@ -53,6 +53,11 @@ gssplit_lt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
 |]
 
 gssplit_gt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
+    case prim.empty. prim.empty
+    case prim.branch 'x1 'l 'r. (analyze cmp x x1.
+        case lt. prim.branch x1 (split-gt cmp x l) r
+        case gt. split-gt cmp x r
+    )
 |]
 
 gsordered_set_singleton = [gs:value| λ 'x. prim.branch x prim.empty prim.empty |]
