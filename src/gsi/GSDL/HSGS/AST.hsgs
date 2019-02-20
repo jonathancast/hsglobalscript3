@@ -13,7 +13,11 @@ gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
 
 gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
     case hsimport.var 'm0 'v0. (analyze i1.
-        case hsimport.type 'm1 'v1. gt
+        case hsimport.type 'm1 'ty1. gt
+        case hsimport.var 'm1 'v1. ord.<|> (list.<=> rune.<=> m0 m1) (list.<=> rune.<=> v0 v1)
+    )
+    case hsimport.type 'm0 'ty0. (analyze i1.
+        case hsimport.var 'm1 'v1. lt
     )
 |]
 
