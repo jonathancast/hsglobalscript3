@@ -65,19 +65,19 @@ gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case source-comp.imports : 'i1. either.map ((:) dest-comp.imports) (compile-source i1)
     case source-comp.pos 'pos : 'i1. either.map ((:) (dest-comp.pos pos)) (compile-source i1)
-    case source-comp.value 'ps 'pos 'e : 'i1. either.for 'p ← compile-value (process-params ps) pos e; 'o1 ← compile-source i1;.
+    case source-comp.value 'ps 'pos 'e : 'i1. either.for 'p ← compile-value (process-params ps hsgs.compiler.env.empty) pos e; 'o1 ← compile-source i1;.
         right (dest-comp.expr (p #0) (p #1) : o1)
-    case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps) pos e; 'o1 ← compile-source i1;.
+    case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps hsgs.compiler.env.empty) pos e; 'o1 ← compile-source i1;.
         right (dest-comp.expr (p #0) (p #1) : o1)
     case nil. right nil
 |]
 
-gsprocess_params = [gs:value| λ 'ps. foldr
+gsprocess_params = [gs:value| λ 'ps. λ 'env. foldr
     (λ 'p. λ 'env. analyze p.
         case quote-param.hsvs 'vs.
             foldr (λ 'v. λ 'env₁. hsgs.compiler.env.var.insert v 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var (gsvar.name v); 〉 env₁) env vs
     )
-    hsgs.compiler.env.empty
+    env
     ps
 |]
 
