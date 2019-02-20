@@ -21,7 +21,7 @@ src/gsi/gsi.hs$
 src/libgsi/GSI/Maybe.hs$
 src/gsi/GSI/Map.hs$
 src/libgsi/GSI/Either.hs$
-src/gsi/GSI/OrderTotal.hs$
+src/libgsi/GSI/OrderTotal.hs$
 src/gsi/test-gsi.hs$
 src/libgsi/GSI/List.hs$
 src/gsi/GSDL/AST.hs$
