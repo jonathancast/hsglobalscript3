@@ -27,6 +27,7 @@ gsordered_set_to_list = [gs:value| λ 's. analyze s.
 gsordered_set_from_list = [gs:value| λ 'cmp. λ 'xn. foldr (ordered-set.insert cmp) ordered-set.empty xn |]
 
 $gsdeclare split-lt gssplit_lt
+$gsdeclare split-gt gssplit_gt
 
 gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
     case prim.empty. s1
@@ -38,6 +39,9 @@ gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
 |]
 
 gssplit_lt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
+|]
+
+gssplit_gt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
 |]
 
 gsordered_set_singleton = [gs:value| λ 'x. prim.branch x prim.empty prim.empty |]
