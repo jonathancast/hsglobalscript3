@@ -902,6 +902,7 @@ globalEnv = Env{
         ("log.fmt", "GSI.Log", "gslog_fmt"),
         ("log.nil", "GSI.Log", "gslogempty"),
         ("log.str", "GSI.Log", "gslog_str"),
+        ("lt", "GSI.OrderTotal", "gsord_lt"),
         ("many", "GSI.Parser", "gsmany"),
         ("many1", "GSI.Parser", "gsmany1"),
         ("map", "GSI.List", "gsmap"),
