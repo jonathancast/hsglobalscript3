@@ -34,6 +34,12 @@ gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
     case prim.branch 'x0 'l0 'r0. (analyze s1.
         case prim.empty. s0
         case prim.branch 'x1 'l1 'r1. (analyze cmp x0 x1.
+            case lt. prim.branch x1
+                (prim.branch x0
+                    (ordered-set.∪ cmp l0 (split-lt cmp x0 l1)) -- Everything $<$ both §gs{x0} and §gs{x1}
+                    (ordered-set.∪ cmp (split-gt cmp x0 l1) (split-lt cmp x1 r0)) -- Everything $>$ §gs{x0} but $<$ §gs{x1}
+                )
+                (ordered-set.∪ cmp (split-gt cmp x1 r0) r1) -- Everything $>$ both §gs{x0} and §gs{x1}
         )
     )
 |]
