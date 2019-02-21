@@ -304,21 +304,9 @@ compileExpr env (EQLO pos0 "r" [QQChar pos1 'n']) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '\n'
   )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 '{']) = return (
+compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "{}()" = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '{'
-  )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 '}']) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '}'
-  )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 '(']) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '('
-  )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 ')']) = return (
-    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
-    HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar ')'
+    HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar ch
   )
 compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) = $gsfatal $ "compileExpr env (EQLO pos0 \"r\" [QQChar pos1 " ++ show ch ++ "]) next"
 compileExpr env (EQLO pos0 "r" [qi]) = $gsfatal $ "compileExpr env (EQLO pos0 \"r\" [" ++ qloiCode qi ++ "]) next"
