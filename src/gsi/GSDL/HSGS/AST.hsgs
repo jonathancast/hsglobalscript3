@@ -50,5 +50,6 @@ gshsexpr_list = $gslambda_value $ \ es -> $gsbcconstr (gsvar "list") [ $gsav es 
 
 gshsexpr_var_view = $gsbcconstr_view "var"
 gshsexpr_string_view = $gsbcconstr_view "string"
+gshsexpr_list_view = $gsbcconstr_view "list"
 gshsexpr_int_view = $gsbcconstr_view "int"
 gshsexpr_app_view = $gsbcconstr_view "app"
