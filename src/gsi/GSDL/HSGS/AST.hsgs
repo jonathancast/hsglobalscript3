@@ -38,6 +38,7 @@ gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
 gshsexpr_fmt = [gs:value| λ 'e. analyze e.
     case hsexpr.var _. hsexpr.fmt-atom e
     case hsexpr.app 'f 'x. hsexpr.fmt f ∘ (:) r{ } ∘ hsexpr.fmt-atom x
+    case hsexpr.list _. hsexpr.fmt-atom e
 |]
 
 gshsexpr_applyvar = [gs:value| λ 'f. λ 'as. foldl hsexpr.app (hsexpr.var f) as |]
