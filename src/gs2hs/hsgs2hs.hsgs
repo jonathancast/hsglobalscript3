@@ -51,7 +51,7 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
         case left _. either.map ((:) (source-comp.char r{$})) (split-input (advance-rune r{$} pos) s1)
         case right 'r. either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
     )
-    case qq{\[gs:§('s1)}. either.for 'r ← parse-partial advance-rune print-rune (quote parser.global-env <* string qq{|\]}) (advance-string qq{\[gs:} pos) s1;.
+    case qq{\[gs:§('s1)}. either.for 'r ← parse-partial advance-rune print-rune (quote parser.global-env pos <* string qq{|\]}) (advance-string qq{\[gs:} pos) s1;.
         either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
     case 'c:'s1. either.map ((:) (source-comp.char c)) (split-input (advance-rune c pos) s1)
     case nil. right nil
@@ -66,7 +66,7 @@ gscompile_source = [gs:value| λ 'i. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
     case source-comp.imports : 'i1. either.map ((:) dest-comp.imports) (compile-source i1)
     case source-comp.pos 'pos : 'i1. either.map ((:) (dest-comp.pos pos)) (compile-source i1)
-    case source-comp.value 'ps 'pos 'e : 'i1. either.for 'p ← compile-value (process-params ps hsgs.compiler.global-env) pos e; 'o1 ← compile-source i1;.
+    case source-comp.value 'pos0 'ps 'pos1 'e : 'i1. either.for 'p ← compile-value pos0 (process-params ps hsgs.compiler.global-env) pos1 e; 'o1 ← compile-source i1;.
         right (dest-comp.expr (p #0) (p #1) : o1)
     case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps hsgs.compiler.global-env) pos e; 'o1 ← compile-source i1;.
         right (dest-comp.expr (p #0) (p #1) : o1)
@@ -85,16 +85,16 @@ gsprocess_params = [gs:value| λ 'ps. λ 'env. foldr
 $gsdeclare hspos hspos
 $gsdeclare hspos-import hspos_import
 
-gscompile_value = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
+gscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right p
     )
-    case _. either.for 'p ← compile-expr env pos e;. right 〈
+    case _. either.for 'p ← compile-expr env pos1 e;. right 〈
         '0 ∝ ordered-set.∪ hsimport.<=>
             (ordered-set.from-list hsimport.<=> (hsimport.var qq{System.IO.Unsafe} qq{unsafePerformIO} : hsimport.var qq{GSI.Value} qq{gsthunk_w} : hspos-import : nil))
             (p #0)
         ;
-        '1 ∝ hsexpr.applyvar qq{unsafePerformIO} (hsexpr.applyvar qq{gsthunk_w} (hspos pos : p #1 : nil) : nil);
+        '1 ∝ hsexpr.applyvar qq{unsafePerformIO} (hsexpr.applyvar qq{gsthunk_w} (hspos pos0 : p #1 : nil) : nil);
     〉
 |]
 

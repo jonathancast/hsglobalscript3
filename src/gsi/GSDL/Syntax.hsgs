@@ -54,22 +54,22 @@ $gsdeclare quote-param quote_param
 
 $gsdeclare keyword-op keyword_op
 
-quote = [gs:value| λ 'env.
+quote = [gs:value| λ 'env. λ 'pos0.
     <|> (parser.for
             _ ← keyword qq{value};
             'ps ← many $ quote-param env;
             _ ← keyword-op qq{|};
-            'pos ← get-pos;
+            'pos1 ← get-pos;
             'e ← expr env;
-        . parser.unit (source-comp.value ps pos (e #0))
+        . parser.unit (source-comp.value pos0 ps pos1 (e #0))
     )
     <|> (parser.for
             _ ← keyword qq{expr};
             'ps ← many $ quote-param env;
             _ ← keyword-op qq{|};
-            'pos ← get-pos;
+            'pos1 ← get-pos;
             'e ← expr env;
-        . parser.unit (source-comp.expr ps pos (e #0))
+        . parser.unit (source-comp.expr ps pos1 (e #0))
     )
 |]
 
