@@ -9,6 +9,7 @@ $gsimports
 gsord_or = [gs:value| λ 'o0. λ 'o1. analyze o0.
     case lt. lt
     case eq. o1
+    case gt. gt
 |]
 
 gsord_lt = $gsconstr (gsvar "lt") []
