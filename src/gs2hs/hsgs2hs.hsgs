@@ -125,7 +125,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
                 map (λ 'p1. p1 #0) as1 <>
                 nil
             );
-            '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : p #1 : hsexpr.list (map (λ 'p1. p1 #1) as) : nil);
+            '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : p #1 : hsexpr.list (map (λ 'p1. p1 #1) as1) : nil);
         〉
     )
 |]
