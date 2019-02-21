@@ -21,4 +21,8 @@ test_hsgs_comments
 test_hsgs_variable_expressions
 test_hsgs_variable_values
 
+# Different kinds of expressions
+
+test_expression_application_syntax
+
 true
