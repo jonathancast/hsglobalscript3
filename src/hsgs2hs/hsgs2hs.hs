@@ -304,7 +304,7 @@ compileExpr env (EQLO pos0 "r" [QQChar pos1 'n']) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '\n'
   )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "{}()" = return (
+compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "(){}" = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar ch
   )
