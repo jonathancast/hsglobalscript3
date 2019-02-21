@@ -38,7 +38,12 @@ gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
 |]
 
+$gsdeclare fmt-list-w gsfmt_list_w
+
 gsfmt_list = [gs:value| λ 'es. analyze es.
+|]
+
+gsfmt_list_w = [gs:value| λ 'es. analyze es.
 |]
 
 gshsexpr_fmt = [gs:value| λ 'e. analyze e.
