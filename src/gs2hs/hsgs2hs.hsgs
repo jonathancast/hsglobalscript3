@@ -37,12 +37,13 @@ gsmk_hs_file = [gs:value| file.name.extension.set qq{hs} |]
 
 $gsdeclare split-input gssplit_input
 $gsdeclare compile-source gscompile_source
+$gsdeclare hsgs.compiler.global-env gshsgs_compiler_global_env
 $gsdeclare format-output gsformat_output
 $gsdeclare hsstring hsstring
 
 gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
         'i ← split-input (pos.init fn) s;
-        'c ← compile-source i;
+        'c ← compile-source i hsgs.compiler.global-env;
     . right qq{{-# LINE 1 §(hsstring fn) #-}\n§(format-output c)}
 |]
 
@@ -57,18 +58,17 @@ gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
     case nil. right nil
 |]
 
-$gsdeclare hsgs.compiler.global-env gshsgs_compiler_global_env
 $gsdeclare process-params gsprocess_params
 $gsdeclare compile-value gscompile_value
 $gsdeclare compile-expr gscompile_expr
 
-gscompile_source = [gs:value| λ 'i. analyze i.
-    case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1)
-    case source-comp.imports : 'i1. either.map ((:) dest-comp.imports) (compile-source i1)
-    case source-comp.pos 'pos : 'i1. either.map ((:) (dest-comp.pos pos)) (compile-source i1)
-    case source-comp.value 'pos0 'ps 'pos1 'e : 'i1. either.for 'p ← compile-value pos0 (process-params ps hsgs.compiler.global-env) pos1 e; 'o1 ← compile-source i1;.
+gscompile_source = [gs:value| λ 'i. λ 'env. analyze i.
+    case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1 env)
+    case source-comp.imports : 'i1. either.map ((:) dest-comp.imports) (compile-source i1 env)
+    case source-comp.pos 'pos : 'i1. either.map ((:) (dest-comp.pos pos)) (compile-source i1 env)
+    case source-comp.value 'pos0 'ps 'pos1 'e : 'i1. either.for 'p ← compile-value pos0 (process-params ps env) pos1 e; 'o1 ← compile-source i1 env;.
         right (dest-comp.expr (p #0) (p #1) : o1)
-    case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps hsgs.compiler.global-env) pos e; 'o1 ← compile-source i1;.
+    case source-comp.expr 'ps 'pos 'e : 'i1. either.for 'p ← compile-expr (process-params ps env) pos e; 'o1 ← compile-source i1 env;.
         right (dest-comp.expr (p #0) (p #1) : o1)
     case nil. right nil
 |]
