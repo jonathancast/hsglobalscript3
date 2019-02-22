@@ -46,7 +46,7 @@ document = [gs:value| λ 'env. parser.for
 
 $gsdeclare keyword keyword
 
-interpolation = [gs:value|
+interpolation = [gs:value| λ 'env.
     <|> (keyword qq{gsimports} *> parser.unit source-comp.imports)
 |]
 

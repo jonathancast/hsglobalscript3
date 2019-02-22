@@ -48,7 +48,7 @@ gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
 |]
 
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
-    case r{$}:'s1. (analyze parse-partial advance-rune print-rune interpolation (advance-rune r{$} pos) s1.
+    case r{$}:'s1. (analyze parse-partial advance-rune print-rune (interpolation parser.global-env) (advance-rune r{$} pos) s1.
         case left _. either.map ((:) (source-comp.char r{$})) (split-input (advance-rune r{$} pos) s1)
         case right 'r. either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
     )
