@@ -102,6 +102,7 @@ $gsdeclare compile-app gscompile_app
 
 gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
+        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
         case just 'p. right 〈
             '0 ∝ ordered-set.∪ hsimport.<=>
                 (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcenter_w} : hspos-import : nil))
