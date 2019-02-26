@@ -1,5 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.HSGS.AST (gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type, gshsexpr_fmt_atom, gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_int, gshsexpr_string, gshsexpr_list) where
+module GSDL.HSGS.AST (
+    gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
+    gshsexpr_fmt_atom,
+    gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_int, gshsexpr_string, gshsexpr_list
+  ) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsav)
