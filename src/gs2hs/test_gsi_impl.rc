@@ -1,4 +1,4 @@
-#! /home/jcast/plan9/bin/rc
+#! /usr/local/plan9/bin/rc
 
 if (~ $#TEST_DIR 0) TEST_DIR=.
 
