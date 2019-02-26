@@ -2,6 +2,8 @@ module GSDL.HSGS.Syntax (interpolation, quote) where
 
 $gsimports
 
+$gsdeclare keyword keyword
+
 interpolation = [gs:value| λ 'env.
     <|> (keyword qq{gsimports} *> parser.unit source-comp.imports)
     <|> (parser.for
@@ -40,4 +42,9 @@ quote_param = [gs:value| λ 'env.
             'vs ← many (ident env <* lexeme (char r{,}));
         . parser.unit $ quote-param.hsvs vs
     )
+|]
+
+keyword = [gs:value| λ 'kw. lexeme $ parser.for 's ← ident-chars;. analyze list.≡ rune.≡ s kw.
+    case false. parser.fail log{'§(log.str s)' is not '§(log.str kw)'}
+    case true. parser.unit 〈〉
 |]
