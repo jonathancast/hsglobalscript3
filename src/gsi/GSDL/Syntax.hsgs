@@ -351,7 +351,7 @@ ident_chars = [gs:value|
 $gsdeclare hsident-start-char hsident_start_char
 $gsdeclare hsident-comp-char hsident_comp_char
 
-hsident = [gs:value| parser.map2 (:) hsident-start-char (max-many hsident-comp-char) |]
+hsident = [gs:value| lexeme (parser.map2 (:) hsident-start-char (max-many hsident-comp-char)) |]
 
 hsident_start_char = [gs:value| matching log{HS ident start char} is-lower |]
 hsident_comp_char = [gs:value| matching log{HS ident cont char} (λ 'c. is-letter c || is-ascii-digit c || rune.≡ c r{_}) |]
