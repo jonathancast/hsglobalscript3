@@ -3,6 +3,7 @@ module GSDL.HSGS.Syntax (interpolation, quote) where
 $gsimports
 
 $gsdeclare keyword keyword
+$gsdeclare hsident hsident
 
 interpolation = [gs:value| λ 'env.
     <|> (keyword qq{gsimports} *> parser.unit source-comp.imports)
@@ -54,3 +55,11 @@ keyword = [gs:value| λ 'kw. lexeme $ parser.for 's ← ident-chars;. analyze li
 keyword_op = [gs:value| λ 'kw. lexeme $ parser.for 's ← op-chars;. analyze list.≡ rune.≡ s kw.
     case true. parser.unit 〈〉
 |]
+
+$gsdeclare hsident-start-char hsident_start_char
+$gsdeclare hsident-comp-char hsident_comp_char
+
+hsident = [gs:value| lexeme (parser.map2 (:) hsident-start-char (max-many hsident-comp-char)) |]
+
+hsident_start_char = [gs:value| matching log{HS ident start char} is-lower |]
+hsident_comp_char = [gs:value| matching log{HS ident cont char} (λ 'c. is-letter c || is-ascii-digit c || rune.≡ c r{_}) |]

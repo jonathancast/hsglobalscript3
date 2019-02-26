@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, hsident, ident, ident_chars, op_chars, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, ident, ident_chars, op_chars, lexeme, whitespace) where
 
 $gsimports
 
@@ -287,14 +287,6 @@ $gsdeclare concat gsconcat
 ident_chars = [gs:value|
     parser.map2 (<>) ident-component (parser.map concat (max-many cont-component))
 |]
-
-$gsdeclare hsident-start-char hsident_start_char
-$gsdeclare hsident-comp-char hsident_comp_char
-
-hsident = [gs:value| lexeme (parser.map2 (:) hsident-start-char (max-many hsident-comp-char)) |]
-
-hsident_start_char = [gs:value| matching log{HS ident start char} is-lower |]
-hsident_comp_char = [gs:value| matching log{HS ident cont char} (λ 'c. is-letter c || is-ascii-digit c || rune.≡ c r{_}) |]
 
 gsconcat = [gs:value| foldr (<>) nil |]
 

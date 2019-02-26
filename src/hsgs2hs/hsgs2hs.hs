@@ -862,7 +862,6 @@ globalEnv = Env{
         ("hsgs.compiler.env.empty", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_empty"),
         ("hsgs.compiler.env.var.get", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_var_get"),
         ("hsgs.compiler.env.var.insert", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_var_insert"),
-        ("hsident", "GSDL.Syntax", "hsident"),
         ("hsimport.<=>", "GSDL.HSGS.AST", "gshsimport_cmp"),
         ("hsimport.fmt", "GSDL.HSGS.AST", "gshsimport_fmt"),
         ("hsimport.type", "GSDL.HSGS.AST", "gshsimport_type"),
