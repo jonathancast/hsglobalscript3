@@ -1121,6 +1121,7 @@ globalEnv = Env{
         ("quote-param.hsvs", "GSDL.AST", "gsquote_param_hsvs_view"),
         ("right", "GSI.Either", "gsright_view"),
         ("source-comp.char", "GSDL.AST", "gssource_comp_char_view"),
+        ("source-comp.declare", "GSDL.AST", "gssource_comp_declare_view"),
         ("source-comp.expr", "GSDL.AST", "gssource_comp_expr_view"),
         ("source-comp.imports", "GSDL.AST", "gssource_comp_imports_view"),
         ("source-comp.pos", "GSDL.AST", "gssource_comp_pos_view"),
