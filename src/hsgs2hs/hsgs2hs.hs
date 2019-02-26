@@ -875,6 +875,7 @@ globalEnv = Env{
         ("instantiate", "GSDL.TypeChecker", "gstype_checker_instantiate"),
         ("interpolation", "GSDL.Syntax", "interpolation"),
         ("is-ascii-digit", "GSI.Rune", "gsisAsciiDigit"),
+        ("is-letter", "GSI.Rune", "gsis_letter"),
         ("is-lower", "GSI.Rune", "gsisLower"),
         ("is-space", "GSI.Rune", "gsisSpace"),
         ("is-upper", "GSI.Rune", "gsis_upper"),
