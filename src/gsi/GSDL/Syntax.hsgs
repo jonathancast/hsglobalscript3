@@ -280,8 +280,6 @@ $gsdeclare op-cont-char opContChar
 
 op_chars = [gs:value| op-component <* not-followed-by delimiter |]
 
-$gsdeclare max-many gsmax_many
-
 $gsdeclare ident-component ident_component
 $gsdeclare cont-component cont_component
 $gsdeclare concat gsconcat
@@ -337,8 +335,6 @@ opContChar = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.�
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
 
 lexeme = [gs:value| λ 'p. p <* whitespace |]
-
-gsmax_many = [gs:value| λ 'p. many p <* not-followed-by p |]
 
 whitespace = [gs:value| many (
     <|> matching log{whitespace} is-space
