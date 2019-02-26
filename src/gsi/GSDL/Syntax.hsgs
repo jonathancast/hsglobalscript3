@@ -49,6 +49,12 @@ $gsdeclare hsident hsident
 
 interpolation = [gs:value| λ 'env.
     <|> (keyword qq{gsimports} *> parser.unit source-comp.imports)
+    <|> (parser.for
+            _ ← keyword qq{gsdeclare};
+            'v ← ident env;
+            'hsv ← hsident;
+        . parser.unit $ source-comp.declare v hsv
+    )
 |]
 
 $gsdeclare quote-param quote_param
