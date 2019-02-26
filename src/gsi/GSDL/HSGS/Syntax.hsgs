@@ -1,4 +1,4 @@
-module GSDL.HSGS.Syntax (interpolation) where
+module GSDL.HSGS.Syntax (interpolation, quote) where
 
 $gsimports
 
@@ -9,5 +9,24 @@ interpolation = [gs:value| λ 'env.
             'v ← ident env;
             'hsv ← hsident;
         . parser.unit $ source-comp.declare v hsv
+    )
+|]
+
+quote = [gs:value| λ 'env. λ 'pos0.
+    <|> (parser.for
+            _ ← keyword qq{value};
+            'ps ← many $ quote-param env;
+            _ ← keyword-op qq{|};
+            'pos1 ← get-pos;
+            'e ← expr env;
+        . parser.unit (source-comp.value pos0 ps pos1 (e #0))
+    )
+    <|> (parser.for
+            _ ← keyword qq{expr};
+            'ps ← many $ quote-param env;
+            _ ← keyword-op qq{|};
+            'pos1 ← get-pos;
+            'e ← expr env;
+        . parser.unit (source-comp.expr ps pos1 (e #0))
     )
 |]

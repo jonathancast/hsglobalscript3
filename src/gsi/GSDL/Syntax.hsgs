@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, quote, quote_param, expr, keyword, keyword_op, hsident, ident, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, quote_param, expr, keyword, keyword_op, hsident, ident, lexeme, whitespace) where
 
 $gsimports
 
@@ -42,25 +42,6 @@ document = [gs:value| λ 'env. parser.for
             *> (generator env <* lexeme (char r{;}))
         );
     . parser.unit (document.in mbe mbw)
-|]
-
-quote = [gs:value| λ 'env. λ 'pos0.
-    <|> (parser.for
-            _ ← keyword qq{value};
-            'ps ← many $ quote-param env;
-            _ ← keyword-op qq{|};
-            'pos1 ← get-pos;
-            'e ← expr env;
-        . parser.unit (source-comp.value pos0 ps pos1 (e #0))
-    )
-    <|> (parser.for
-            _ ← keyword qq{expr};
-            'ps ← many $ quote-param env;
-            _ ← keyword-op qq{|};
-            'pos1 ← get-pos;
-            'e ← expr env;
-        . parser.unit (source-comp.expr ps pos1 (e #0))
-    )
 |]
 
 quote_param = [gs:value| λ 'env.

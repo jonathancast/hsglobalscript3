@@ -972,7 +972,7 @@ globalEnv = Env{
         ("print-error", "GSI.Env", "gsprintError"),
         ("print-rune", "GSI.Parser", "gsparser_print_rune"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char"),
-        ("quote", "GSDL.Syntax", "quote"),
+        ("quote", "GSDL.HSGS.Syntax", "quote"),
         ("quote-param", "GSDL.Syntax", "quote_param"),
         ("quote-param.hsvs", "GSDL.AST", "gsquote_param_hsvs"),
         ("rational.>", "GSI.Rational", "gsrational_gt"),
