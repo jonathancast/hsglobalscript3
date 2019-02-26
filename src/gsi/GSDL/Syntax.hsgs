@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, keyword_op, hsident, ident, ident_chars, op_chars, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, hsident, ident, ident_chars, op_chars, lexeme, whitespace) where
 
 $gsimports
 
@@ -271,10 +271,6 @@ operator = [gs:value| λ 'env. lexeme $ parser.for
             case syntactic-category.variable. parser.unit 〈〉
         ;
     . parser.unit o
-|]
-
-keyword_op = [gs:value| λ 'kw. lexeme $ parser.for 's ← op-chars;. analyze list.≡ rune.≡ s kw.
-    case true. parser.unit 〈〉
 |]
 
 $gsdeclare delimiter delimiter
