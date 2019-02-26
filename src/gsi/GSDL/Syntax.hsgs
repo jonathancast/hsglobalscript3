@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, keyword, keyword_op, hsident, ident, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, keyword, keyword_op, hsident, ident, ident_chars, lexeme, whitespace) where
 
 $gsimports
 
@@ -133,8 +133,6 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
 
 $gsdeclare parens parens
 $gsdeclare natural natural
-
-$gsdeclare ident-chars ident_chars
 
 $gsdeclare idmc gsidmc
 $gsdeclare qloitem gsqloitem
