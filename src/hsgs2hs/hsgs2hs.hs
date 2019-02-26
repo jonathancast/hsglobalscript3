@@ -915,6 +915,7 @@ globalEnv = Env{
         ("not", "GSI.Bool", "gsnot"),
         ("not-followed-by", "GSI.Parser", "gsparser_notFollowedBy"),
         ("nothing", "GSI.Maybe", "gsnothing"),
+        ("op-chars", "GSDL.Syntax", "op_chars"),
         ("optional", "GSI.Parser", "gsparser_optional"),
         ("ord.<|>", "GSI.OrderTotal", "gsord_or"),
         ("order-of-being.open-expr", "GSDL.AST", "gsorder_of_being_open_expr"),
