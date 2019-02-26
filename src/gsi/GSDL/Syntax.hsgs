@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, interpolation, quote, ident, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, quote, keyword, hsident, ident, lexeme, whitespace) where
 
 $gsimports
 
@@ -43,9 +43,6 @@ document = [gs:value| λ 'env. parser.for
         );
     . parser.unit (document.in mbe mbw)
 |]
-
-$gsdeclare keyword keyword
-$gsdeclare hsident hsident
 
 interpolation = [gs:value| λ 'env.
     <|> (keyword qq{gsimports} *> parser.unit source-comp.imports)
