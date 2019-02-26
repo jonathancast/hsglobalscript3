@@ -22,6 +22,10 @@ test_hsgs_variable_expressions
 test_hsgs_variable_values
 test_hsgs_application_values
 
+# Different kinds of declarations
+
+test_hsgs_variable_declarations
+
 # Different kinds of expressions
 
 test_expression_application_syntax
