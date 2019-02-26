@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, quote, keyword, hsident, ident, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, quote, keyword, keyword_op, hsident, ident, lexeme, whitespace) where
 
 $gsimports
 
@@ -45,8 +45,6 @@ document = [gs:value| λ 'env. parser.for
 |]
 
 $gsdeclare quote-param quote_param
-
-$gsdeclare keyword-op keyword_op
 
 quote = [gs:value| λ 'env. λ 'pos0.
     <|> (parser.for

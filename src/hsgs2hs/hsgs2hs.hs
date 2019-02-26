@@ -882,6 +882,7 @@ globalEnv = Env{
         ("is-upper", "GSI.Rune", "gsis_upper"),
         ("just", "GSI.Maybe", "gsjust"),
         ("keyword", "GSDL.Syntax", "keyword"),
+        ("keyword-op", "GSDL.Syntax", "keyword_op"),
         ("kind.pointed", "GSDL.AST", "gskind_pointed"),
         ("left", "GSI.Either", "gsleft"),
         ("lexeme", "GSDL.Syntax", "lexeme"),
