@@ -7,7 +7,6 @@ module GSDL.AST (
     gstype_env_overlay, gstype_env_empty,
     gsfile_document, gsfile_document_view,
     gsdocument_in, gsdocument_in_view,
-    gsquote_param_hsvs, gsquote_param_hsvs_view,
     gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_pos_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
     gstype_apply,
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
@@ -78,10 +77,6 @@ gsfile_document_view = $gsbcconstr_view "document"
 gsdocument_in = $gslambda_value $ \ mbe -> $gsbcarg $ \ mbg -> $gsbcconstr (gsvar "in") [ $gsav mbe, $gsav mbg ]
 
 gsdocument_in_view = $gsbcconstr_view "in"
-
-gsquote_param_hsvs = $gslambda_value $ \ vs -> $gsbcconstr (gsvar "hsvs") [ $gsav vs ]
-
-gsquote_param_hsvs_view = $gsbcconstr_view "hsvs"
 
 gsdest_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsav ch ]
 gsdest_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]

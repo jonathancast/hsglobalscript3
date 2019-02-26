@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.HSGS.AST (
     gssource_comp_char, gssource_comp_pos, gssource_comp_imports, gssource_comp_declare, gssource_comp_value, gssource_comp_expr, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_imports_view, gssource_comp_declare_view, gssource_comp_value_view, gssource_comp_expr_view,
+    gsquote_param_hsvs, gsquote_param_hsvs_view,
     gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
     gshsexpr_fmt_atom,
     gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_int, gshsexpr_string, gshsexpr_list
@@ -24,6 +25,10 @@ gssource_comp_imports_view = $gsbcconstr_view "imports"
 gssource_comp_declare_view = $gsbcconstr_view "declare"
 gssource_comp_value_view = $gsbcconstr_view "value"
 gssource_comp_expr_view = $gsbcconstr_view "expr"
+
+gsquote_param_hsvs = $gslambda_value $ \ vs -> $gsbcconstr (gsvar "hsvs") [ $gsav vs ]
+
+gsquote_param_hsvs_view = $gsbcconstr_view "hsvs"
 
 gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
     case hsimport.var 'm 'f. qq{import §(m) (§(f))\n§(s)}
