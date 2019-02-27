@@ -134,6 +134,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
             '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : p #1 : hsexpr.list (map (λ 'p1. p1 #1) as1) : nil);
         〉
     )
+    case expr.app 'f1 'a. compile-app env pos f1 (a:as)
 |]
 
 gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
