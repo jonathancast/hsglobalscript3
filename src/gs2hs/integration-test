@@ -28,6 +28,7 @@ test_hsgs_variable_declarations
 
 # Different kinds of expressions
 
+test_number
 test_expression_application_syntax
 
 true
