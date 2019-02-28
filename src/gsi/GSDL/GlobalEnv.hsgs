@@ -1,4 +1,4 @@
-module GSDL.GlobalEnv (gsparser_global_env) where
+module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env) where
 
 $gsimports
 
@@ -37,4 +37,17 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
     parser.env.empty
+|]
+
+gsannotator_global_env = [gs:value|
+    annotator.env.namespace.insert (gsvar qq{λ}) (λ 'as. analyze as.
+        case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
+    ) $
+    annotator.env.namespace.insert (gsvar qq{case}) (λ 'as. analyze as.
+        case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
+    ) $
+    annotator.env.category.insert (gsvar qq{case}) (λ 'as. analyze as.
+        case (arg.expr _ (expr.pat 'p0 _)):_. just category.fallible : nil
+    ) $
+    annotator.env.empty
 |]

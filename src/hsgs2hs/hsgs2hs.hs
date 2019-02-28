@@ -750,6 +750,7 @@ globalEnv = Env{
         ("annotator.env.empty", "GSDL.Annotator", "gsannotator_env_empty"),
         ("annotator.env.namespace.get", "GSDL.Annotator", "gsannotator_env_namespace_get"),
         ("annotator.env.namespace.insert", "GSDL.Annotator", "gsannotator_env_namespace_insert"),
+        ("annotator.global-env", "GSDL.GlobalEnv", "gsannotator_global_env"),
         ("arg.explicit", "GSDL.AST", "gsarg_explicit"),
         ("arg.expr", "GSDL.AST", "gsarg_expr"),
         ("arg.here", "GSDL.AST", "gsarg_here"),

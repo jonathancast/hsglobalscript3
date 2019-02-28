@@ -41,7 +41,6 @@ gsload_document = [gs:value| λ 'fn. λ 'gstyc. λ 'k. impanalyzeM gsio.file.rea
     )
 |]
 
-$gsdeclare annotator.global-env gsannotator_global_env
 $gsdeclare validator.global-env gsvalidator_global_env
 $gsdeclare type-checker.global-env gstype_checker_global_env
 
@@ -51,19 +50,6 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
             _ ← validate-document pos validator.global-env dspec;
             'dty ← type-checker.run (type-check-document pos gstyc dspec) type-checker.global-env;
         . right dty
-|]
-
-gsannotator_global_env = [gs:value|
-    annotator.env.namespace.insert (gsvar qq{λ}) (λ 'as. analyze as.
-        case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
-    ) $
-    annotator.env.namespace.insert (gsvar qq{case}) (λ 'as. analyze as.
-        case (arg.expr _ (expr.pat 'p0 _)):((arg.expr _ (expr.open-expr 'e1 _)):_). just (pat.bound-vars p0) : just (pat.bound-vars p0) : nil
-    ) $
-    annotator.env.category.insert (gsvar qq{case}) (λ 'as. analyze as.
-        case (arg.expr _ (expr.pat 'p0 _)):_. just category.fallible : nil
-    ) $
-    annotator.env.empty
 |]
 
 gsvalidator_global_env = [gs:value|
