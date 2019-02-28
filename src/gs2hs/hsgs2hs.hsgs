@@ -145,8 +145,13 @@ gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
             '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
         〉
     )
-    case arg.expr 'pos 'e. (analyze e.
-    )
+    case arg.expr 'pos 'e. either.for 'p ← compile-expr env pos e;. right 〈
+        '0 ∝ ordered-set.∪ hsimport.<=>
+            (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
+            (p #0)
+        ;
+        '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos pos : p #1 : nil);
+    〉
 |]
 
 $gsdeclare gather-imports gsgather_imports
