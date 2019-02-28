@@ -743,6 +743,7 @@ globalEnv = Env{
         ("analyze-type-checker-M", "GSDL.TypeChecker", "gstype_checker_analyze"),
         ("analyzeM", "GSI.StdLib", "gsanalyzeM"),
         ("annotate-document", "GSDL.Annotate", "gsannotate_document"),
+        ("annotate-expr", "GSDL.Annotate", "gsannotate_expr"),
         ("annotate-qloitem", "GSDL.Annotate", "gsannotate_qloitem"),
         ("annotator.env.category.get", "GSDL.Annotator", "gsannotator_env_category_get"),
         ("annotator.env.category.insert", "GSDL.Annotator", "gsannotator_env_category_insert"),

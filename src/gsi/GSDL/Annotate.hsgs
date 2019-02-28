@@ -1,4 +1,4 @@
-module GSDL.Annotate (gsannotate_document, gsannotate_qloitem, ) where
+module GSDL.Annotate (gsannotate_document, gsannotate_expr, gsannotate_qloitem, ) where
 
 $gsimports
 
