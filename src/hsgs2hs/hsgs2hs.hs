@@ -462,8 +462,8 @@ compileApp env (EApp f a) as = $gsfatal $ "compileApp (EApp f " ++ argCode a ++ 
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
 compileFalliblePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
-compileFalliblePat env p@(PVar pos _) = compileNonMonoidalPat env pos p
-compileFalliblePat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
+compileFalliblePat env p@(PVar pos _) = compileInfalliblePat env pos p
+compileFalliblePat env p@(PDiscard pos) = compileInfalliblePat env pos p
 compileFalliblePat env (PApp p0 p1) = compileFalliblePatApp env p0 [p1]
 compileFalliblePat env p@PView{} = compileFalliblePatApp env p []
 compileFalliblePat env (PQLO pos "r" [PQChar pos1 ch]) = return (
@@ -499,8 +499,8 @@ compileFalliblePat env (PQLO pos "qq" s) = w s
 compileFalliblePat env (PQLO pos0 q s) = $gsfatal $ "compileFalliblePat (PQLO pos " ++ show q ++ " s) next"
 compileFalliblePat env p = $gsfatal $ "compileFalliblePat " ++ patCode p ++ " next"
 
-compileNonMonoidalPat :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
-compileNonMonoidalPat env pos p = do
+compileInfalliblePat :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
+compileInfalliblePat env pos p = do
     (isp, hsp) <- compilePat env p
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIVar "GSI.StdLib" "gsinfalliblepattern", HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` isp,
