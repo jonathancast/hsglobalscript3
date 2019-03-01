@@ -198,7 +198,7 @@ compileArg env pos (ENumber _ n) s Nothing = return (
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
   )
 compileArg env pos (EPat p) s Nothing = lift $ compilePatArg env pos p
-compileArg env pos (EPat p) s (Just Monoidal) = lift $ compileMonoidalPatArg env pos p
+compileArg env pos (EPat p) s (Just Fallible) = lift $ compileMonoidalPatArg env pos p
 compileArg env pos (EOpen e) s Nothing = compileOpenArg env pos fvs e where
     fvs = case s of
         Nothing -> Set.empty
@@ -1195,7 +1195,7 @@ globalEnv = Env{
     ],
     gscategories = Map.fromList [
         ("case", \ as -> case as of
-            (_, EPat p) : (_, EOpen b) : _ -> return [ Just Monoidal, Nothing ]
+            (_, EPat p) : (_, EOpen b) : _ -> return [ Just Fallible, Nothing ]
             _ -> return []
         )
     ]
@@ -1250,7 +1250,7 @@ data SigMonad = SM{
   }
 
 data Category
-  = Monoidal
+  = Fallible
 
 sigCode :: Signature -> String
 sigCode s = s `seq` $gsfatal "sigCode next"
