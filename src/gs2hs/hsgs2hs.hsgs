@@ -161,6 +161,10 @@ gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
 |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
+    case pat.var 'v. right 〈
+        '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcvarpattern_w} : hspos-import : hsimport.var qq{GSI.Syn} qq{gsvar} : nil);
+        '1 ∝ hsexpr.applyvar qq{gsbcvarpattern_w} (hspos pos : hsexpr.app (hsexpr.var qq{gsvar}) (hsexpr.string (gsvar.name v)) : nil);
+    〉
 |]
 
 $gsdeclare gather-imports gsgather_imports
