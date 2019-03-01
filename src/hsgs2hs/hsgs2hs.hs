@@ -461,19 +461,19 @@ compileApp env e@(EApp f (ArgField pos m)) as = do
 compileApp env (EApp f a) as = $gsfatal $ "compileApp (EApp f " ++ argCode a ++ ") next"
 compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 
-compileMonoidalPat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
-compileMonoidalPat env p@(PVar pos _) = compileNonMonoidalPat env pos p
-compileMonoidalPat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
-compileMonoidalPat env (PApp p0 p1) = compileFalliblePatApp env p0 [p1]
-compileMonoidalPat env p@PView{} = compileFalliblePatApp env p []
-compileMonoidalPat env (PQLO pos "r" [PQChar pos1 ch]) = return (
+compileFalliblePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
+compileFalliblePat env p@(PVar pos _) = compileNonMonoidalPat env pos p
+compileFalliblePat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
+compileFalliblePat env (PApp p0 p1) = compileFalliblePatApp env p0 [p1]
+compileFalliblePat env p@PView{} = compileFalliblePatApp env p []
+compileFalliblePat env (PQLO pos "r" [PQChar pos1 ch]) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar ch
   )
-compileMonoidalPat env (PQLO pos "r" [qi]) = $gsfatal $ "compileMonoidalPat (PQLO pos \"r\" [" ++ pqloiCode qi ++ "]) next"
-compileMonoidalPat env (PQLO pos "r" []) = $gsfatal $ "compileMonoidalPat (PQLO pos \"r\" []) next"
-compileMonoidalPat env (PQLO pos "r" qs) = $gsfatal $ "compileMonoidalPat (PQLO pos \"r\" qs) next"
-compileMonoidalPat env (PQLO pos "qq" s) = w s
+compileFalliblePat env (PQLO pos "r" [qi]) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" [" ++ pqloiCode qi ++ "]) next"
+compileFalliblePat env (PQLO pos "r" []) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" []) next"
+compileFalliblePat env (PQLO pos "r" qs) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" qs) next"
+compileFalliblePat env (PQLO pos "qq" s) = w s
   where
     w [] = return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.List" "gsnil_view" ],
@@ -482,7 +482,7 @@ compileMonoidalPat env (PQLO pos "qq" s) = w s
     w (PQChar pos1 ch:qis) = cons_pattern pos1 ch (w qis)
     w (PQQChar pos1 ch:qis) | ch `elem` "[]" = cons_pattern pos1 ch (w qis)
     w (PQQChar pos1 ch:qis) = $gsfatal $ "w (PQQChar " ++ show ch ++ " next"
-    w [PQInterpPat pos1 p] = compileMonoidalPat env p
+    w [PQInterpPat pos1 p] = compileFalliblePat env p
     w (qi:qis) = $gsfatal $ "w " ++ pqloiCode qi ++ " next"
 
     cons_pattern pos1 ch k = do
@@ -496,8 +496,8 @@ compileMonoidalPat env (PQLO pos "qq" s) = w s
                 HSConstr "GSArgExpr" `HSApp` hspos pos1 `HSApp` p
             ]
           )
-compileMonoidalPat env (PQLO pos0 q s) = $gsfatal $ "compileMonoidalPat (PQLO pos " ++ show q ++ " s) next"
-compileMonoidalPat env p = $gsfatal $ "compileMonoidalPat " ++ patCode p ++ " next"
+compileFalliblePat env (PQLO pos0 q s) = $gsfatal $ "compileFalliblePat (PQLO pos " ++ show q ++ " s) next"
+compileFalliblePat env p = $gsfatal $ "compileFalliblePat " ++ patCode p ++ " next"
 
 compileNonMonoidalPat :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
 compileNonMonoidalPat env pos p = do
@@ -509,7 +509,7 @@ compileNonMonoidalPat env pos p = do
 
 compileMonoidalPatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
 compileMonoidalPatArg env pos p = do
-    (is, e) <- compileMonoidalPat env p
+    (is, e) <- compileFalliblePat env p
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e
@@ -520,7 +520,7 @@ compileFalliblePatApp env (PView pos v) as = do
     (isv, ev) <- case Map.lookup v (gsviews env) of
         Nothing -> Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
         Just (isv, ev) -> return (isv, ev)
-    as' <- mapM (compileMonoidalPat env) as
+    as' <- mapM (compileFalliblePat env) as
     return (
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` isv `Set.union` Set.unions (map (\ (is, _) -> is) as'),
         HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` ev `HSApp` HSList (map (\ (_, e) -> HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e) as')
