@@ -464,8 +464,8 @@ compileApp env f as = $gsfatal $ "compileApp " ++ eCode f ++ " next"
 compileMonoidalPat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
 compileMonoidalPat env p@(PVar pos _) = compileNonMonoidalPat env pos p
 compileMonoidalPat env p@(PDiscard pos) = compileNonMonoidalPat env pos p
-compileMonoidalPat env (PApp p0 p1) = compileMonoidalPatApp env p0 [p1]
-compileMonoidalPat env p@PView{} = compileMonoidalPatApp env p []
+compileMonoidalPat env (PApp p0 p1) = compileFalliblePatApp env p0 [p1]
+compileMonoidalPat env p@PView{} = compileFalliblePatApp env p []
 compileMonoidalPat env (PQLO pos "r" [PQChar pos1 ch]) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar ch
@@ -515,8 +515,8 @@ compileMonoidalPatArg env pos p = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e
       )
 
-compileMonoidalPatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
-compileMonoidalPatApp env (PView pos v) as = do
+compileFalliblePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
+compileFalliblePatApp env (PView pos v) as = do
     (isv, ev) <- case Map.lookup v (gsviews env) of
         Nothing -> Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
         Just (isv, ev) -> return (isv, ev)
@@ -525,8 +525,8 @@ compileMonoidalPatApp env (PView pos v) as = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcviewpattern_w", HSIType "GSI.Util" "Pos", HSIType "GSI.Value" "GSArg" ] `Set.union` isv `Set.union` Set.unions (map (\ (is, _) -> is) as'),
         HSVar "gsbcviewpattern_w" `HSApp` hspos pos `HSApp` ev `HSApp` HSList (map (\ (_, e) -> HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` e) as')
       )
-compileMonoidalPatApp env (PApp pf px) as = compileMonoidalPatApp env pf (px:as)
-compileMonoidalPatApp env p as = $gsfatal $ "compileMonoidalPatApp " ++ patCode p ++ " next"
+compileFalliblePatApp env (PApp pf px) as = compileFalliblePatApp env pf (px:as)
+compileFalliblePatApp env p as = $gsfatal $ "compileFalliblePatApp " ++ patCode p ++ " next"
 
 compilePat :: Env -> Pattern -> Either String (Set HSImport, HSExpr)
 compilePat env (PVar pos v) = return (
