@@ -198,7 +198,7 @@ compileArg env pos (ENumber _ n) s Nothing = return (
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
   )
 compileArg env pos (EPat p) s Nothing = lift $ compilePatArg env pos p
-compileArg env pos (EPat p) s (Just Fallible) = lift $ compileMonoidalPatArg env pos p
+compileArg env pos (EPat p) s (Just Fallible) = lift $ compileFalliblePatArg env pos p
 compileArg env pos (EOpen e) s Nothing = compileOpenArg env pos fvs e where
     fvs = case s of
         Nothing -> Set.empty
@@ -507,8 +507,8 @@ compileNonMonoidalPat env pos p = do
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` HSVar "gsinfalliblepattern" `HSApp` HSList [ HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hsp ]
       )
 
-compileMonoidalPatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
-compileMonoidalPatArg env pos p = do
+compileFalliblePatArg :: Env -> Pos -> Pattern -> Either String (Set HSImport, HSExpr)
+compileFalliblePatArg env pos p = do
     (is, e) <- compileFalliblePat env p
     return (
         Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Util" "Pos" ] `Set.union` is,
