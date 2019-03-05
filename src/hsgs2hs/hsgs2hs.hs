@@ -773,7 +773,7 @@ globalEnv = Env{
         ("document.in", "GSDL.AST", "gsdocument_in"),
         ("drop", "GSI.List", "gsdrop"),
         ("either.>>=", "GSI.Either", "gseither_bind"),
-        ("either.for", "GSI.Either", "gseitherFor"),
+        ("either.for", "GSI.Either", "gseither_for"),
         ("either.map", "GSI.Either", "gseithermap"),
         ("either.map2", "GSI.Either", "gseithermap2"),
         ("either.mapM", "GSI.Either", "gseither_mapM"),

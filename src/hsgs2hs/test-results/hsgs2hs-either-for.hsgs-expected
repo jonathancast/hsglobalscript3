@@ -5,10 +5,10 @@ import GSI.ByteCode (gsbcapply_w)
 import GSI.ByteCode (gsbcarg_w)
 import GSI.ByteCode (gsbcemptymonadgen_w)
 import GSI.ByteCode (gsbcenter_w)
-import GSI.Either (gseitherFor)
+import GSI.Either (gseither_for)
 import GSI.Either (gsright)
 
 {-# LINE 2 "./test-fixtures/either-for.hsgs" #-}
-(gsbcapply_w (Pos "./test-fixtures/either-for.hsgs" 2 19) gseitherFor [ GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 29) (gsbcemptymonadgen_w (Pos "./test-fixtures/either-for.hsgs" 2 29) (GSArgVar gsright)), GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 31) (gsbcarg_w (Pos "./test-fixtures/either-for.hsgs" 2 31) (\ env -> gsbcenter_w (Pos "./test-fixtures/either-for.hsgs" 2 31) x)) ])
+(gsbcapply_w (Pos "./test-fixtures/either-for.hsgs" 2 19) gseither_for [ GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 29) (gsbcemptymonadgen_w (Pos "./test-fixtures/either-for.hsgs" 2 29) (GSArgVar gsright)), GSArgExpr (Pos "./test-fixtures/either-for.hsgs" 2 31) (gsbcarg_w (Pos "./test-fixtures/either-for.hsgs" 2 31) (\ env -> gsbcenter_w (Pos "./test-fixtures/either-for.hsgs" 2 31) x)) ])
 {-# LINE 2 "./test-fixtures/either-for.hsgs" #-}
                                   
