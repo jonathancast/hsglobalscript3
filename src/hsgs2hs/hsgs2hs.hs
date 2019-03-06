@@ -858,6 +858,7 @@ globalEnv = Env{
         ("hsexpr.fmt", "GSDL.HSGS.AST", "gshsexpr_fmt"),
         ("hsexpr.fmt-atom", "GSDL.HSGS.AST", "gshsexpr_fmt_atom"),
         ("hsexpr.int", "GSDL.HSGS.AST", "gshsexpr_int"),
+        ("hsexpr.lambda", "GSDL.HSGS.AST", "gshsexpr_lambda"),
         ("hsexpr.list", "GSDL.HSGS.AST", "gshsexpr_list"),
         ("hsexpr.string", "GSDL.HSGS.AST", "gshsexpr_string"),
         ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var"),
