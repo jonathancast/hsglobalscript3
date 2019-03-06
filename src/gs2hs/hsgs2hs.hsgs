@@ -124,6 +124,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     )
     case expr.app 'f 'x. compile-app env pos f (x : nil)
     case expr.pat 'p _. compile-pat env pos p
+    case expr.open-expr 'e (just 'fvs). compile-open-expr env pos fvs e
 |]
 
 $gsdeclare compile-arg gscompile_arg
