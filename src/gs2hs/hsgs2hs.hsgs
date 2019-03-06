@@ -162,6 +162,11 @@ gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
 
 $gsdeclare gen-sym gsgen_sym
 
+$gsdeclare compile-local-env gscompile_local_env
+
+gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. analyze fvs.
+|]
+
 gsgen_sym = [gs:value| λ 'env. λ 'k. undefined |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
