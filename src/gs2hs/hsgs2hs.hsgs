@@ -105,6 +105,7 @@ gscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
 
 $gsdeclare compile-app gscompile_app
 $gsdeclare compile-pat gscompile_pat
+$gsdeclare compile-open-expr gscompile_open_expr
 
 gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.natural 'n. right 〈
@@ -163,6 +164,8 @@ gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
 $gsdeclare gen-sym gsgen_sym
 
 $gsdeclare compile-local-env gscompile_local_env
+
+gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. undefined |]
 
 gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. analyze fvs.
 |]
