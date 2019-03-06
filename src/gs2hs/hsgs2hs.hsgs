@@ -166,7 +166,16 @@ $gsdeclare gen-sym gsgen_sym
 
 $gsdeclare compile-local-env gscompile_local_env
 
-gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. undefined |]
+gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. gen-sym env $ λ 'env1. λ 'envhs. either.for
+        'p ← compile-local-env env1 pos fvs envhs $ λ 'env2. compile-expr env2 pos e;
+    . right 〈
+        '0 ∝ ordered-set.∪ hsimport.<=>
+            (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcarg_w} : hspos-import : nil))
+            (p #0)
+        ;
+        '1 ∝ hsexpr.applyvar qq{gsbcarg_w} (hspos pos : hsexpr.lambda envhs (p #1) : nil);
+    〉
+|]
 
 gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. analyze fvs.
 |]
