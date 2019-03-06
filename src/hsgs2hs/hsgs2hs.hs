@@ -774,7 +774,7 @@ globalEnv = Env{
         ("drop", "GSI.List", "gsdrop"),
         ("either.>>=", "GSI.Either", "gseither_bind"),
         ("either.for", "GSI.Either", "gseither_for"),
-        ("either.map", "GSI.Either", "gseithermap"),
+        ("either.map", "GSI.Either", "gseither_map"),
         ("either.map2", "GSI.Either", "gseithermap2"),
         ("either.mapM", "GSI.Either", "gseither_mapM"),
         ("empty", "GSI.Parser", "gsempty"),
@@ -1164,7 +1164,7 @@ globalEnv = Env{
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright"),
                     gsbind = (Set.singleton $ HSIVar "GSI.Either" "gseither_bind", HSVar "gseither_bind"),
-                    gsmap = (Set.singleton $ HSIVar "GSI.Either" "gseithermap", HSVar "gseithermap")
+                    gsmap = (Set.singleton $ HSIVar "GSI.Either" "gseither_map", HSVar "gseither_map")
                 },
                 Just $ SigOpen $ gensBoundVars $ map (\ ( _, g) -> g) gs
               ]
