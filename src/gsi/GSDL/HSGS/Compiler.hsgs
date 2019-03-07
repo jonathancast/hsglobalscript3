@@ -2,10 +2,10 @@ module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_v
 
 $gsimports
 
-gshsgs_compiler_env_gen_sym = [gs:value| λ 'env. λ 'k. k
-    〈 'vars ∝ env #vars; 'gen-sym ∝ env #gen-sym + 1; 〉
-    qq{x§(natural.fmt-decimal (env #gen-sym))}
-|]
+gshsgs_compiler_env_gen_sym = [gs:value| λ 'env. λ 'k. k qq{x§(natural.fmt-decimal (env #gen-sym))} 〈
+    'vars ∝ env #vars;
+    'gen-sym ∝ env #gen-sym + 1;
+〉 |]
 
 gshsgs_compiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env. 〈
     'vars ∝ ordered-map.insert gsvar.compare v a (env #vars);
