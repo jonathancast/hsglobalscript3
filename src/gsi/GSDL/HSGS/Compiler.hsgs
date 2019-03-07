@@ -1,6 +1,8 @@
-module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_empty) where
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_empty) where
 
 $gsimports
+
+gshsgs_compiler_env_gen_sym = [gs:value| λ 'env. λ 'k. undefined |]
 
 gshsgs_compiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env. 〈
     'vars ∝ ordered-map.insert gsvar.compare v a (env #vars);

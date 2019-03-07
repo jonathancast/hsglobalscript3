@@ -162,11 +162,9 @@ gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
     〉
 |]
 
-$gsdeclare gen-sym gsgen_sym
-
 $gsdeclare compile-local-env gscompile_local_env
 
-gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. gen-sym env $ λ 'env1. λ 'envhs. either.for
+gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. hsgs.compiler.env.gen-sym env $ λ 'env1. λ 'envhs. either.for
         'p ← compile-local-env env1 pos fvs envhs $ λ 'env2. compile-expr env2 pos e;
     . right 〈
         '0 ∝ ordered-set.∪ hsimport.<=>
@@ -179,8 +177,6 @@ gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. gen-sym env $
 
 gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. analyze fvs.
 |]
-
-gsgen_sym = [gs:value| λ 'env. λ 'k. undefined |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
     case pat.var 'v. right 〈
