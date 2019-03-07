@@ -176,6 +176,7 @@ gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. hsgs.compiler
 |]
 
 gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. analyze fvs.
+    case nil. k env
     case 'f0:'fvs1. hsgs.compiler.env.gen-sym env $ λ 'xhs. λ 'env1. either.for
             'p ← compile-local-env env1 pos fvs1 envhs k;
         . right 〈
