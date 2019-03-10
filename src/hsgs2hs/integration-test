@@ -69,7 +69,7 @@ test_qq_pattern_interpolation_hsgs_syntax
 
 # Different functions
 
-ok_diff_compiled '-- undefined function --' hsgs2hs undefined-call.hsgs .hs runghc `{./test-ghcoptions}
+test_undefined_function_hsgs
 ok_diff_compiled '-- undefined argument --' hsgs2hs undefined-argument.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- undefined value --' hsgs2hs undefined-value.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiler '-- error function --' hsgs2hs error-call.hsgs .hs
