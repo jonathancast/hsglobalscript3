@@ -82,6 +82,7 @@ gsfmt_list = [gs:value| λ 'es. analyze es.
 
 gsfmt_list_w = [gs:value| λ 'es. analyze es.
     case 'e:nil. hsexpr.fmt e ∘ (:) r{ }
+    case 'e:'es. hsexpr.fmt e ∘ (<>) qq{, } ∘ fmt-list-w es
 |]
 
 gshsexpr_fmt = [gs:value| λ 'e. analyze e.
