@@ -46,7 +46,7 @@ $gsdeclare type-checker.global-env gstype_checker_global_env
 
 gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
     either.for
-            'dspec ← right (annotate-document annotator.global-env pos d);
+            'dspec ← right (annotate-document annotator.global-env d);
             _ ← validate-document pos validator.global-env dspec;
             'dty ← type-checker.run (type-check-document pos gstyc dspec) type-checker.global-env;
         . right dty
