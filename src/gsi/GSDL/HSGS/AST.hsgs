@@ -89,6 +89,7 @@ gsfmt_list_w = [gs:value| λ 'es. analyze es.
 gshsexpr_fmt = [gs:value| λ 'e. analyze e.
     case hsexpr.var _. hsexpr.fmt-atom e
     case hsexpr.app 'f 'x. hsexpr.fmt f ∘ (:) r{ } ∘ hsexpr.fmt-atom x
+    case hsexpr.lambda 'x 'e. (<>) qq{\\ } ∘ (<>) x ∘ (<>) qq{ -> } ∘ hsexpr.fmt e
     case hsexpr.list _. hsexpr.fmt-atom e
 |]
 
