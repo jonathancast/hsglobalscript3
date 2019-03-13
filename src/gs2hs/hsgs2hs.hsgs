@@ -184,7 +184,7 @@ gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. an
                 (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbclfield_w} : hspos-import : hsimport.var qq{GSI.Syn} qq{gsvar} : nil))
                 (p #0)
             ;
-            '1 ∝ hsexpr.applyvar qq{gsbclfield_w} (hspos pos : hsexpr.applyvar qq{gsvar} (hsexpr.string (gsvar.name f0) : nil) : hsexpr.var envhs : hsexpr.lambda xhs (p #1));
+            '1 ∝ hsexpr.applyvar qq{gsbclfield_w} (hspos pos : hsexpr.applyvar qq{gsvar} (hsexpr.string (gsvar.name f0) : nil) : hsexpr.var envhs : hsexpr.lambda xhs (p #1) : nil);
         〉
 |]
 
