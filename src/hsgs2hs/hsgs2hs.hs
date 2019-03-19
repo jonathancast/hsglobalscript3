@@ -775,7 +775,7 @@ globalEnv = Env{
         ("either.>>=", "GSI.Either", "gseither_bind"),
         ("either.for", "GSI.Either", "gseither_for"),
         ("either.map", "GSI.Either", "gseither_map"),
-        ("either.map2", "GSI.Either", "gseithermap2"),
+        ("either.map2", "GSI.Either", "gseither_map2"),
         ("either.mapM", "GSI.Either", "gseither_mapM"),
         ("empty", "GSI.Parser", "gsempty"),
         ("eq", "GSI.OrderTotal", "gsord_eq"),
