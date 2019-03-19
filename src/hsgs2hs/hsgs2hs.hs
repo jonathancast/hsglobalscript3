@@ -805,7 +805,7 @@ globalEnv = Env{
         ("foldl", "GSI.List", "gsfoldl"),
         ("foldr", "GSI.List", "gsfoldr"),
         ("for", "GSI.StdLib", "gsfor"),
-        ("get-pos", "GSI.Parser", "gsparser_getPos"),
+        ("get-pos", "GSI.Parser", "gsparser_get_pos"),
         ("gsae", "GSI.GSI", "gsigsae"),
         ("gsapply", "GSI.GSI", "gsigsapply"),
         ("gsav", "GSI.GSI", "gsigsav"),
