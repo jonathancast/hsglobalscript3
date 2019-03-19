@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsanalyzeImpM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
+module GSI.StdLib (gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gserror, gsundefined, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
 
 import GSI.Util (StackTrace(..))
 import GSI.Syn (gsvar, fmtVarAtom)
@@ -21,7 +21,7 @@ gsanalyze = [gs:value| λ 'e. λ 'cs. cs e |]
 
 gsanalyzeM = [gs:value| λ 'm. λ 'e. λ 'cs. m #(>>=) e cs |]
 
-gsanalyzeImpM = $gslambda_value $ \ a -> $gsbcarg $ \cs -> $gsbcimpfor $ do
+gsimpanalyzeM = $gslambda_value $ \ a -> $gsbcarg $ \cs -> $gsbcimpfor $ do
     x <- $gsbcimpbind $ $gsav a
     $gsbcimpbody $ $gsae $ $gsbcapply cs [ $gsav x ]
 

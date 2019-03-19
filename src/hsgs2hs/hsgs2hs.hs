@@ -872,7 +872,7 @@ globalEnv = Env{
         ("hsimport.var", "GSDL.HSGS.AST", "gshsimport_var"),
         ("ident", "GSDL.Syntax", "ident"),
         ("ident-chars", "GSDL.Syntax", "ident_chars"),
-        ("impanalyzeM", "GSI.StdLib", "gsanalyzeImpM"),
+        ("impanalyzeM", "GSI.StdLib", "gsimpanalyzeM"),
         ("impfor", "GSI.StdLib", "gsimpfor"),
         ("implicit.here", "GSDL.AST", "gsimplicit_here"),
         ("impmapM", "GS.Util", "gsimpmapM"),
