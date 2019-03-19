@@ -50,10 +50,7 @@ gsfileStat = $gsimpprim $ \ pos t fn -> do
           ] ]
 
 gsfile_read :: GSValue
-gsfile_read = $gsimpprim gsprimfileRead
-
-gsprimfileRead :: Pos -> Thread -> GSValue -> IO GSValue
-gsprimfileRead pos t fn = do
+gsfile_read = $gsimpprim $ \ pos t fn -> do
     fns <- gsapiEvalString pos fn
     mbs <- try $ readFile fns
     case mbs of
