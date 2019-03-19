@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Rune (gsisAsciiDigit, gsisLower, gsis_upper, gsis_letter, gsisSpace, gsrune_code_point, gsrune_from_code_point, gsrune_compare, gsrune_neq, gsruneEq) where
+module GSI.Rune (gsis_ascii_digit, gsisLower, gsis_upper, gsis_letter, gsisSpace, gsrune_code_point, gsrune_from_code_point, gsrune_compare, gsrune_neq, gsruneEq) where
 
 import Data.Char (isDigit, isLower, isUpper, isLetter, isSpace, chr, ord)
 
@@ -7,7 +7,7 @@ import GSI.Syn (gsvar)
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcnatural, gsbcrune, gsbcimplementationfailure)
 
-gsisAsciiDigit = hspred2gspred isDigit
+gsis_ascii_digit = hspred2gspred isDigit
 
 gsisLower = hspred2gspred isLower
 gsis_upper = hspred2gspred isUpper
