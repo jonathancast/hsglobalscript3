@@ -881,7 +881,7 @@ globalEnv = Env{
         ("interpolation", "GSDL.HSGS.Syntax", "interpolation"),
         ("is-ascii-digit", "GSI.Rune", "gsis_ascii_digit"),
         ("is-letter", "GSI.Rune", "gsis_letter"),
-        ("is-lower", "GSI.Rune", "gsisLower"),
+        ("is-lower", "GSI.Rune", "gsis_lower"),
         ("is-space", "GSI.Rune", "gsisSpace"),
         ("is-upper", "GSI.Rune", "gsis_upper"),
         ("just", "GSI.Maybe", "gsjust"),
