@@ -801,7 +801,7 @@ globalEnv = Env{
         ("file.stat", "GSI.Env", "gsfile_stat"),
         ("file.write", "GSI.Env", "gsfile_write"),
         ("filter", "GSI.List", "gsfilter"),
-        ("fmtdecimal", "GSI.String", "gsfmtdecimal"),
+        ("fmtdecimal", "GSI.String", "gsfmt_decimal"),
         ("foldl", "GSI.List", "gsfoldl"),
         ("foldr", "GSI.List", "gsfoldr"),
         ("for", "GSI.StdLib", "gsfor"),

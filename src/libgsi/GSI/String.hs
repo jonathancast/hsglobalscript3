@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.String (gsbcstring, gsbcstring_w, gsbcstringlit, gsbcstringlit_w, gsfmtdecimal) where
+module GSI.String (gsbcstring, gsbcstring_w, gsbcstringlit, gsbcstringlit_w, gsfmt_decimal) where
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -24,5 +24,5 @@ gsbcstringlit = varE 'gsbcstringlit_w `appE` gshere
 gsbcstringlit_w :: Pos -> String -> GSExpr
 gsbcstringlit_w pos s = foldr (\ ch e1 -> $gsbcapply gscons [ $gsav $ GSRune ch, $gsae e1 ]) ($gsbcenter gsnil) s
 
-gsfmtdecimal :: GSValue
-gsfmtdecimal = $gslambda_value $ \ n -> $gsbcevalnatural ($gsav n) $ \ n_hs -> $gsbcenter ($gsstring (show n_hs))
+gsfmt_decimal :: GSValue
+gsfmt_decimal = $gslambda_value $ \ n -> $gsbcevalnatural ($gsav n) $ \ n_hs -> $gsbcenter ($gsstring (show n_hs))
