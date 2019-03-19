@@ -80,7 +80,7 @@ gsparser_run = [gs:value| λ 'p. p prim.unit |]
 gspos_init = [gs:value| λ 'fn. 〈 'filename ∝ fn; 'line ∝ 1; 'col ∝ 1; 〉 |]
 
 gsposFmt :: GSValue
-gsposFmt = [gs:value| λ 'pos. λ 'msg. qq{§(pos #filename):§(fmtdecimal (pos #line)):§(fmtdecimal (pos #col)): §(msg)} |]
+gsposFmt = [gs:value| λ 'pos. λ 'msg. qq{§(pos #filename):§(fmt-decimal (pos #line)):§(fmt-decimal (pos #col)): §(msg)} |]
 
 $gsdeclare fmt-error-w gsfmt_error_w
 

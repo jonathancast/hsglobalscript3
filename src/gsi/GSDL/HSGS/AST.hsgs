@@ -69,7 +69,7 @@ gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
     case hsexpr.string 's. (:) r{"} ∘ (<>) s ∘ (:) r{"}
     case hsexpr.list 'es. (:) r{\[} ∘ fmt-list es ∘ (:) r{\]}
-    case hsexpr.int 'n. (<>) (fmtdecimal n)
+    case hsexpr.int 'n. (<>) (fmt-decimal n)
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
     case hsexpr.lambda _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
 |]
