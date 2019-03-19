@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Rune (gsis_ascii_digit, gsis_lower, gsis_upper, gsis_letter, gsisSpace, gsrune_code_point, gsrune_from_code_point, gsrune_compare, gsrune_neq, gsruneEq) where
+module GSI.Rune (gsis_ascii_digit, gsis_lower, gsis_upper, gsis_letter, gsis_space, gsrune_code_point, gsrune_from_code_point, gsrune_compare, gsrune_neq, gsruneEq) where
 
 import Data.Char (isDigit, isLower, isUpper, isLetter, isSpace, chr, ord)
 
@@ -13,7 +13,7 @@ gsis_lower = hspred2gspred isLower
 gsis_upper = hspred2gspred isUpper
 gsis_letter = hspred2gspred isLetter
 
-gsisSpace = hspred2gspred isSpace
+gsis_space = hspred2gspred isSpace
 
 hspred2gspred p = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case r0 of
     GSRune r0v -> if p r0v then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []

@@ -882,7 +882,7 @@ globalEnv = Env{
         ("is-ascii-digit", "GSI.Rune", "gsis_ascii_digit"),
         ("is-letter", "GSI.Rune", "gsis_letter"),
         ("is-lower", "GSI.Rune", "gsis_lower"),
-        ("is-space", "GSI.Rune", "gsisSpace"),
+        ("is-space", "GSI.Rune", "gsis_space"),
         ("is-upper", "GSI.Rune", "gsis_upper"),
         ("just", "GSI.Maybe", "gsjust"),
         ("kind.pointed", "GSDL.AST", "gskind_pointed"),
