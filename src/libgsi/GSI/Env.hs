@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (runGSProgram, gsabend, gsfile_stat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gsENOENT_view) where
 
 import qualified Data.Map as Map
 
@@ -36,8 +36,8 @@ gsabend = $gsimpprim $ \ pos t  sv -> do
     s <- gsapiEvalString $gshere sv
     throwIO (GSExcAbend pos s) :: IO GSValue
 
-gsfileStat :: GSValue
-gsfileStat = $gsimpprim $ \ pos t fn -> do
+gsfile_stat :: GSValue
+gsfile_stat = $gsimpprim $ \ pos t fn -> do
     fns <- gsapiEvalString pos fn
     mbst <- try $ getFileStatus fns
     case mbst of
