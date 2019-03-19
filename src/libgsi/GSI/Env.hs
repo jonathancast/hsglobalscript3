@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfileRead, gsfile_write, gsdir_read, gsprint, gsprintError, gsENOENT_view) where
+module GSI.Env (runGSProgram, gsabend, gsfileStat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gsENOENT_view) where
 
 import qualified Data.Map as Map
 
@@ -49,8 +49,8 @@ gsfileStat = $gsimpprim $ \ pos t fn -> do
             (gsvar "mod.time", GSRational $ toRational $ modificationTime st)
           ] ]
 
-gsfileRead :: GSValue
-gsfileRead = $gsimpprim gsprimfileRead
+gsfile_read :: GSValue
+gsfile_read = $gsimpprim gsprimfileRead
 
 gsprimfileRead :: Pos -> Thread -> GSValue -> IO GSValue
 gsprimfileRead pos t fn = do
