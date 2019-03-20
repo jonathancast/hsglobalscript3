@@ -1,4 +1,4 @@
-module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env) where
+module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gstype_checker_global_env) where
 
 $gsimports
 
@@ -50,4 +50,285 @@ gsannotator_global_env = [gs:value|
         case (arg.expr _ (expr.pat 'p0 _)):_. just category.fallible : nil
     ) $
     annotator.env.empty
+|]
+
+$gsdeclare type.pattern gstype_pattern
+$gsdeclare type.pattern.fallible gstype_pattern_fallible
+$gsdeclare type.generator gstype_generator
+$gsdeclare type.generator.fallible gstype_generator_fallible
+$gsdeclare type.open-expr gstype_open_expr
+
+$gsdeclare type.addition gstype_addition
+
+$gsdeclare type.monad gstype_monad
+
+$gsdeclare type-checker.gstyc.type gstype_checker_gstyc_type
+$gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
+$gsdeclare type-checker.args.type gstype_checker_args_type
+
+gstype_checker_global_env = [gs:value|
+    type.env.type.insert (gsvar qq{analyze}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.consts qq{α}) $
+                type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
+                    type.consts qq{β}
+    ) $
+    type.env.type.insert (gsvar qq{case}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{σ}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.pattern.fallible (type.consts qq{α}) (type.consts qq{σ})) $
+                type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
+                    type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
+                        type.function (type.consts qq{α}) (type.consts qq{β})
+    ) $
+    type.env.type.insert (gsvar qq{λ}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{σ}) kind.pointed $
+            type.function (type.const (gsvar qq{stack-trace.t})) $
+                type.function (type.pattern (type.consts qq{α}) (type.consts qq{σ})) $
+                    type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
+                        type.function (type.consts qq{α}) (type.consts qq{β})
+    ) $
+    type.env.implicits.insert (gsvar qq{λ}) (implicit.here : nil) $
+    type.env.type.insert (gsvar qq{gsvar}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{gsvar.t}
+    ) $
+    type.env.type.insert (gsvar qq{gsmain}) (
+        type.function type-checker.gstyc.type $
+            type.function type-checker.gsrun.type $
+                type.function (type.app (type.consts qq{list.t}) $ type.app (type.consts qq{list.t}) $ type.consts qq{rune.t}) $
+                    type.app (type.consts qq{gsi.m}) type.empty-signature
+    ) $
+    type.env.type.insert (gsvar qq{gsapply}) (
+        type.function (type.consts qq{gsvalue.t}) $
+            type.function (type.app (type.consts qq{list.t}) $ type.consts qq{gsvalue.t}) $
+                type.app (type.consts qq{gsi.m}) (type.consts qq{gsvalue.t})
+    ) $
+    type.env.type.insert (gsvar qq{gsinject}) (type.forall (gsvar qq{α}) kind.pointed $
+        type.function (type.consts qq{α}) (type.consts qq{gsvalue.t})
+    ) $
+    type.env.type.insert (gsvar qq{load-document}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $
+            type.function (
+                type.function (type.consts qq{pos.t}) $
+                    type.function (type.consts qq{gsdl.type.t}) $
+                        type.app (type.consts qq{type-checker.m}) type.empty-signature
+            ) $
+                type.function (
+                    type.function (type.consts qq{pos.t}) $
+                        type.function (type.consts qq{gsdl.document.t}) $
+                            type.app (type.consts qq{gsio.m}) type.empty-signature
+                ) $
+                    type.app (type.consts qq{gsio.m}) type.empty-signature
+    ) $
+    type.env.type.insert (gsvar qq{process-document}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.function (type.consts qq{pos.t}) $ type.function (type.consts qq{type.t}) $
+                type.app (type.consts qq{type-checker.m}) type.empty-signature
+            ) $
+                type.function (type.consts qq{gsdl.document.t}) $
+                    type.apply (type.consts qq{either.t}) (type.consts qq{log.t} : type.consts qq{gsdl.document.t} : nil)
+    ) $
+    type.env.type.insert (gsvar qq{annotate-document}) (
+        type.function (type.consts qq{gsdl.annotator.env.t}) $
+            type.function (type.consts qq{pos.t}) $
+                type.function (type.consts qq{gsdl.document.t}) $
+                    type.consts qq{gsdl.document.t}
+    ) $
+    type.env.type.insert (gsvar qq{annotator.global-env}) (type.consts qq{gsdl.annotator.env.t}) $
+    type.env.type.insert (gsvar qq{validate-document}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.consts qq{gsdl.validator.env.t}) $
+                type.function (type.consts qq{gsdl.document.t}) $
+                    type.apply (type.consts qq{either.t}) (type.consts qq{log.t} : type.empty-signature : nil)
+    ) $
+    type.env.type.insert (gsvar qq{validator.global-env}) (type.consts qq{gsdl.validator.env.t}) $
+    type.env.type.insert (gsvar qq{type-check-document}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.function (type.consts qq{pos.t}) $ type.function (type.consts qq{type.t}) $
+                type.app (type.consts qq{type-checker.m}) type.empty-signature
+            ) $
+                type.function (type.consts qq{gsdl.document.t}) $
+                    type.app (type.consts qq{type-checker.m}) (type.consts qq{gsdl.document.t})
+    ) $
+    type.env.type.insert (gsvar qq{type-checker.global-env}) (type.consts qq{type-checker.env.t}) $
+    type.env.view-type.insert (gsvar qq{file.document}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.consts qq{gsdl.document.t}) (type.consts qq{gsdl.file.t})
+    ) $
+    type.env.type.insert (gsvar qq{type.function}) (
+        type.function (type.consts qq{type.t}) $ type.function (type.consts qq{type.t}) $ type.consts qq{type.t}
+    ) $
+    type.env.type.insert (gsvar qq{type.app}) (
+        type.function (type.consts qq{type.t}) $ type.function (type.consts qq{type.t}) $ type.consts qq{type.t}
+    ) $
+    type.env.type.insert (gsvar qq{type.const}) (
+        type.function (type.consts qq{gsvar.t}) $ type.consts qq{type.t}
+    ) $
+    type.env.type.insert (gsvar qq{type.consts}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{type.t}
+    ) $
+    type.env.type.insert (gsvar qq{type.empty-signature}) (type.consts qq{type.t}) $
+    type.env.type.insert (gsvar qq{type-checker.unify}) (
+        type.function (type.consts qq{pos.t}) $
+            type.function (type.consts qq{type.t}) $ type.function (type.consts qq{type.t}) $
+                type.app (type.const (gsvar qq{type-checker.m})) type.empty-signature
+    ) $
+    type.env.type.insert (gsvar qq{type-checker.run}) (
+        type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.app (type.consts qq{type-checker.m}) (type.consts qq{α})) $
+                type.function (type.consts qq{type-checker.env.t}) $
+                    type.apply (type.consts qq{either.t}) (type.consts qq{log.t} : type.consts qq{α} : nil)
+    ) $
+    type.env.type.insert (gsvar qq{type-checker.unit}) (
+        type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.consts qq{α}) $ type.app (type.consts qq{type-checker.m}) (type.consts qq{α})
+    ) $
+    type.env.type.insert (gsvar qq{map}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
+                type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) (type.app (type.consts qq{list.t}) (type.consts qq{β}))
+    ) $
+    type.env.type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
+    type.env.type.insert (gsvar qq{+}) (type.forall (gsvar qq{α}) kind.pointed $
+        type.function (type.addition (type.consts qq{α})) $
+            type.function (type.consts qq{α}) $ type.function (type.consts qq{α}) $ type.consts qq{α}
+    ) $
+    type.env.type.insert (gsvar qq{natural.addition}) (type.addition (type.consts qq{natural.t})) $
+    type.env.type.insert (gsvar qq{@}) (type.forall (gsvar qq{α}) kind.pointed $
+        type.function (type.consts qq{α}) $ type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) $
+            type.app (type.consts qq{list.t}) (type.consts qq{α})
+    ) $
+    type.env.type.insert (gsvar qq{nil}) (type.forall (gsvar qq{α}) kind.pointed $
+        type.app (type.consts qq{list.t}) (type.consts qq{α})
+    ) $
+    type.env.view-type.insert (gsvar qq{true}) (type.consts qq{bool.t}) $
+    type.env.view-type.insert (gsvar qq{false}) (type.consts qq{bool.t}) $
+    type.env.type.insert (gsvar qq{just}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.function (type.consts qq{α}) $
+            type.app (type.consts qq{maybe.t}) (type.consts qq{α})
+    ) $
+    type.env.view-type.insert (gsvar qq{just}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.function (type.consts qq{α}) $
+            type.app (type.consts qq{maybe.t}) (type.consts qq{α})
+    ) $
+    type.env.view-type.insert (gsvar qq{nothing}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.app (type.consts qq{maybe.t}) (type.consts qq{α})
+    ) $
+    type.env.view-type.insert (gsvar qq{right}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.consts qq{β}) $
+                type.apply (type.consts qq{either.t}) (type.consts qq{α} : type.consts qq{β} : nil)
+    ) $
+    type.env.type.insert (gsvar qq{undefined}) (
+        type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
+    ) $
+    type.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
+    type.env.type.insert (gsvar qq{∘}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{γ}) kind.pointed $
+            type.function (type.function (type.consts qq{β}) (type.consts qq{γ})) $
+                type.function (type.function (type.consts qq{α}) (type.consts qq{β})) $
+                    type.function (type.consts qq{α}) (type.consts qq{γ})
+    ) $
+    type.env.view-type.insert (gsvar qq{gsvalue.thunk}) (
+        type.function (type.consts qq{gsvalue.thunk.t}) $ type.consts qq{gsvalue.t}
+    ) $
+    type.env.type.insert (gsvar qq{create-thread}) (
+        type.function (type.consts qq{gsvalue.t}) $ type.app (type.consts qq{gsi.m}) (type.consts qq{gsi.thread.t})
+    ) $
+    type.env.type.insert (gsvar qq{exec-main-thread}) (
+        type.function (type.consts qq{gsi.thread.t}) $ type.app (type.consts qq{gsi.m}) type.empty-signature
+    ) $
+    type.env.type.insert (gsvar qq{>>=}) (
+        type.forall (gsvar qq{m}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.monad (type.consts qq{m})) $
+                type.function (type.app (type.consts qq{m}) (type.consts qq{α})) $
+                    type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
+                        type.app (type.consts qq{m}) (type.consts qq{β})
+    ) $
+    type.env.type.insert (gsvar qq{mapM0}) (
+        type.forall (gsvar qq{m}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.monad (type.consts qq{m})) $
+                type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
+                    type.function (type.app (type.consts qq{list.t}) (type.consts qq{α})) $
+                        type.app (type.consts qq{m}) type.empty-signature
+    ) $
+    type.env.type.insert (gsvar qq{analyzeM}) (
+        type.forall (gsvar qq{m}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.monad (type.consts qq{m})) $
+                type.function (type.app (type.consts qq{m}) (type.consts qq{α})) $
+                    type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
+                        type.app (type.consts qq{m}) (type.consts qq{β})
+    ) $
+    type.env.type.insert (gsvar qq{gsi.monad}) (type.monad (type.consts qq{gsi.m})) $
+    type.env.type.insert (gsvar qq{gsio.monad}) (type.monad (type.consts qq{gsio.m})) $
+    type.env.type.insert (gsvar qq{gsio.file.read}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $
+            type.app (type.consts qq{gsio.m}) $
+                type.apply (type.consts qq{either.t}) (type.consts qq{file.error.t} : type.app (type.consts qq{list.t}) (type.consts qq{rune.t}) : nil)
+    ) $
+    type.env.type.insert (gsvar qq{parse}) (
+        type.forall (gsvar qq{s}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.function (type.consts qq{s}) $ type.function (type.consts qq{pos.t}) $ type.consts qq{pos.t}) $
+                type.function (type.function (type.consts qq{s}) $ type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $
+                    type.function (type.apply (type.consts qq{parser.t}) (type.consts qq{s} : type.consts qq{α} : nil)) $
+                        type.function (type.consts qq{pos.t}) $
+                            type.function (type.app (type.consts qq{list.t}) (type.consts qq{s})) $
+                                type.apply (type.consts qq{either.t}) (type.consts qq{parser.error.t} : type.consts qq{α} : nil)
+    ) $
+    type.env.type.insert (gsvar qq{pos.init}) (
+        type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{pos.t}
+    ) $
+    type.env.type.insert (gsvar qq{advance-rune}) (
+        type.function (type.consts qq{rune.t}) $ type.function (type.consts qq{pos.t}) $ type.consts qq{pos.t}
+    ) $
+    type.env.type.insert (gsvar qq{print-rune}) (
+        type.function (type.consts qq{rune.t}) $ type.app (type.consts qq{list.t}) (type.consts qq{rune.t})
+    ) $
+    type.env.type.insert (gsvar qq{parser.global-env}) (type.consts qq{gsdl.parser.env.t}) $
+    type.env.type.insert (gsvar qq{file}) (
+        type.function (type.consts qq{gsdl.parser.env.t}) $
+            type.apply (type.consts qq{parser.t}) (type.consts qq{rune.t} : type.consts qq{gsdl.file.t} : nil)
+    ) $
+    type.env.empty
+|]
+
+gstype_checker_gstyc_type = [gs:value|
+    type.function (type.const (gsvar qq{pos.t})) $
+        type.function (type.const (gsvar qq{type.t})) $
+            type.app (type.const (gsvar qq{type-checker.m})) type.empty-signature
+|]
+
+gstype_checker_gsrun_type = [gs:value|
+    type.function (type.const (gsvar qq{gsvalue.t})) $
+        type.function type-checker.args.type $
+            type.app (type.const (gsvar qq{gsi.m})) type.empty-signature
+|]
+
+gstype_checker_args_type = [gs:value|
+    type.app (type.const (gsvar qq{list.t})) $ type.app (type.const (gsvar qq{list.t})) $ type.const (gsvar qq{rune.t})
+|]
+
+gstype_pattern = [gs:value| λ 'α. λ 'σ. type.function α $ type.generator σ |]
+gstype_pattern_fallible = [gs:value| λ 'α. λ 'σ. type.function α $ type.generator.fallible σ |]
+gstype_generator = [gs:value| λ 'σ. σ |]
+gstype_generator_fallible = [gs:value| λ 'σ. type.app (type.consts qq{generator.fallible.t}) σ |]
+gstype_open_expr = [gs:value| λ 'σ. λ 'α. type.function σ α |]
+
+gstype_addition = [gs:value| λ 'α. type.signature (
+    type.env.type.insert (gsvar qq{0}) α (
+    type.env.type.insert (gsvar qq{+}) (type.function α $ type.function α $ α) 
+    type.env.empty))
+|]
+
+gstype_monad = [gs:value| λ 'm. type.signature $
+    type.env.type.insert (gsvar qq{unit}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.function (type.consts qq{α}) $ type.app m (type.consts qq{α})
+    ) $
+    type.env.type.insert (gsvar qq{>>=}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
+            type.function (type.app m (type.consts qq{α})) $
+                type.function (type.function (type.consts qq{α}) (type.app m (type.consts qq{β}))) $
+                    type.app m (type.consts qq{β})
+    ) $
+    type.env.empty
 |]
