@@ -139,7 +139,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
         case just 'p.
             (analyze list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as.
                 case false. λ 'k. k nothing env
-            ) $ λ 'mbhere. λ 'env1. either.for 'as1 ← either.mapM (compile-arg env1) as;. right 〈
+            ) $ λ 'mbhere. λ 'env1. either.for 'as1 ← either.mapM (compile-arg mbhere env1) as;. right 〈
                 '0 ∝ foldr (ordered-set.∪ hsimport.<=>) ordered-set.empty (
                     ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hspos-import : nil) :
                     p #0 :
@@ -152,7 +152,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.app 'f1 'a. compile-app env pos f1 (a:as)
 |]
 
-gscompile_arg = [gs:value| λ 'env. λ 'a. analyze a.
+gscompile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
         case just 'p. right 〈
