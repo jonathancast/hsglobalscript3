@@ -890,6 +890,7 @@ globalEnv = Env{
         ("left", "GSI.Either", "gsleft"),
         ("lexeme", "GSDL.Syntax", "lexeme"),
         ("list.<=>", "GSI.List", "gslist_compare"),
+        ("list.∃", "GSI.List", "gslist_exists"),
         ("list.∈", "GSI.List", "gslist_member"),
         ("list.∉", "GSI.List", "gslist_not_member"),
         ("list.≡", "GSI.List", "gslist_eq"),
