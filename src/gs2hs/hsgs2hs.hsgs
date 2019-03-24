@@ -137,8 +137,15 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
         case just 'p.
+            -- To implement §gs{here}, we need to find the call stack for the whole implementation.
+            -- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{compile-arg}
             (analyze list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as.
                 case false. λ 'k. k nothing env
+                case true. λ 'k. hsgs.compiler.env.gen-sym env $ λ 'herehs. λ 'env1. either.for 'p1 ← k (just herehs) env1;.
+                    right 〈
+                        '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcwithhere_w} : hspos-import : nil) (p1 #0);
+                        '1 ∝ hsexpr.applyvar qq{gsbcwithhere_w} (hspos pos : hsexpr.lambda herehs (p1 #1) : nil);
+                    〉
             ) $ λ 'mbhere. λ 'env1. either.for 'as1 ← either.mapM (compile-arg mbhere env1) as;. right 〈
                 '0 ∝ foldr (ordered-set.∪ hsimport.<=>) ordered-set.empty (
                     ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hspos-import : nil) :
