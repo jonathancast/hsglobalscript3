@@ -96,6 +96,10 @@ gslist_compare = [gs:value| λ 'cmp. λ 'xn. λ 'ys. analyze xn.
 |]
 
 gslist_exists = [gs:value| λ 'p. λ 'xn. analyze xn.
+    case 'x:'xn1. (analyze p x.
+        case false. list.∃ p xn1
+    )
+    case nil. false
 |]
 
 gslist_not_member = [gs:value| λ 'eq. λ 'x. λ 'xn. not (list.∈ eq x xn) |]
