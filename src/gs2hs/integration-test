@@ -33,4 +33,8 @@ test_unbound_variable
 test_function_variable
 test_expression_application_syntax
 
+# Different functions
+
+test_undefined_function_hsgs
+
 true
