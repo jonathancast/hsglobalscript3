@@ -167,6 +167,10 @@ gscompile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
         ;
         '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos pos : p #1 : nil);
     〉
+    case arg.here. right 〈
+        '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : nil);
+        '1 ∝ hsexpr.applyvar qq{GSArgVar} (hsexpr.var (analyze mbhere. case just 'here. here) : nil);
+    〉
 |]
 
 $gsdeclare compile-local-env gscompile_local_env
