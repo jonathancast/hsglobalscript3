@@ -18,6 +18,7 @@ gsadd_implicits_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.pat 'p 'mb. expr.pat (add-implicits-pat env p) mb
     case expr.fallible-pat 'p 'mb. expr.fallible-pat (add-implicits-pat env p) mb
     case expr.open-expr 'e 'mb. expr.open-expr (add-implicits-expr env e) mb
+    case expr.missing-case. expr.missing-case
 |]
 
 gsadd_implicits_arg = [gs:value| λ 'env. λ 'a. analyze a.
