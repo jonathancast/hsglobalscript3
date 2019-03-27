@@ -7,6 +7,7 @@ module GSDL.Parser (
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
     gsdl_parser_env_else_get, gsdl_parser_env_else_insert,
     gsdl_parser_env_missing_else_get, gsdl_parser_env_missing_else_insert,
+    gsdl_parser_env_else_needs_comma_get,
     gsdl_parser_env_empty
   ) where
 
@@ -21,6 +22,7 @@ gsdl_parser_env_qlo_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compa
 gsdl_parser_env_missing_body_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-body) |]
 gsdl_parser_env_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #else) |]
 gsdl_parser_env_missing_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #missing-else) |]
+gsdl_parser_env_else_needs_comma_get = [gs:value| λ 'env. env #else-needs-comma |]
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 
