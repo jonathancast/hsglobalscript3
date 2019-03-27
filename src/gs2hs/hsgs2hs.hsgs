@@ -131,6 +131,10 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.pat 'p _. compile-pat env pos p
     case expr.fallible-pat 'p _. compile-fallible-pat env pos p
     case expr.open-expr 'e (just 'fvs). compile-open-expr env pos fvs e
+    case expr.missing-case. hsgs.compiler.env.gen-sym env $ λ 'xhs. λ 'env1. right 〈
+        '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcarg_w} : hspos-import : hsimport.var qq{GSI.ByteCode} qq{gsbcprim_w} : hspos-import : hsimport.var qq{GSI.CalculusPrims} qq{gspriminsufficientcases} : nil);
+        '1 ∝ hsexpr.applyvar qq{gsbcarg_w} (hspos pos : hsexpr.lambda xhs (hsexpr.applyvar qq{gsbcprim_w} (hspos pos : hsexpr.var qq{gspriminsufficientcases} : hsexpr.var xhs : nil)) : nil);
+    〉
 |]
 
 $gsdeclare compile-arg gscompile_arg
