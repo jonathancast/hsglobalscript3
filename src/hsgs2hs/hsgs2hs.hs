@@ -946,6 +946,7 @@ globalEnv = Env{
         ("parser.>>=", "GSI.Parser", "gsparser_bind"),
         ("parser.choice", "GSI.Parser", "gsparser_choice"),
         ("parser.env.else-needs-comma.get", "GSDL.Parser", "gsdl_parser_env_else_needs_comma_get"),
+        ("parser.env.else-needs-comma.set", "GSDL.Parser", "gsdl_parser_env_else_needs_comma_set"),
         ("parser.env.else.get", "GSDL.Parser", "gsdl_parser_env_else_get"),
         ("parser.env.else.insert", "GSDL.Parser", "gsdl_parser_env_else_insert"),
         ("parser.env.empty", "GSDL.Parser", "gsdl_parser_env_empty"),
