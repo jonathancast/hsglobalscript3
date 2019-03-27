@@ -196,7 +196,7 @@ gscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. hsgs.compiler
 gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. analyze fvs.
     case nil. k env
     case 'f0:'fvs1. hsgs.compiler.env.gen-sym env $ λ 'xhs. λ 'env1. either.for
-            'p ← compile-local-env env1 pos fvs1 envhs k;
+            'p ← compile-local-env (hsgs.compiler.env.var.insert f0 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var xhs; 〉 env1) pos fvs1 envhs k;
         . right 〈
             '0 ∝ ordered-set.∪ hsimport.<=>
                 (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbclfield_w} : hspos-import : hsimport.var qq{GSI.Syn} qq{gsvar} : nil))
