@@ -33,6 +33,7 @@ test_unbound_variable
 test_function_variable
 test_function_literal
 test_variable_function_body
+test_parameter_function_body
 test_expression_application_syntax
 
 # Different functions
