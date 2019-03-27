@@ -240,6 +240,7 @@ hsstring = [gs:value| λ 's. qq{"§(s)"} |]
 $gsdeclare hsgs.compiler.env.var.simple-insert gshsgs_compiler_env_var_simple_insert
 
 gshsgs_compiler_global_env = [gs:value|
+    hsgs.compiler.env.var.simple-insert (gsvar qq{analyze}) qq{GSI.StdLib} qq{gsanalyze} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{map}) qq{GSI.List} qq{gsmap} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{not}) qq{GSI.Bool} qq{gsnot} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue} $
