@@ -119,6 +119,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         case just _. parser.for
                 _ ← analyze parser.env.else-needs-comma.get env.
                     case true. lexeme (char r{,})
+                    case false. parser.unit 〈〉
                 ;
                 'pose ← get-pos;
                 'e ←
