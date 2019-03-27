@@ -31,6 +31,7 @@ gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
+    'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. 〈
     'signature ∝ env #signature;
@@ -39,6 +40,7 @@ gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. �
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
+    'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
@@ -47,6 +49,7 @@ gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
+    'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
     'signature ∝ env #signature;
@@ -55,6 +58,7 @@ gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
     'qlo ∝ env #qlo;
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
+    'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
@@ -63,6 +67,7 @@ gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'missing-body ∝ env #missing-body;
     'else ∝ ordered-map.insert gsvar.compare v e (env #else);
     'missing-else ∝ env #missing-else;
+    'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
@@ -71,6 +76,7 @@ gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'missing-body ∝ env #missing-body;
     'else ∝ env #else;
     'missing-else ∝ ordered-map.insert gsvar.compare v e (env #missing-else);
+    'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 
 gsdl_parser_env_empty = [gs:value| 〈
@@ -80,4 +86,5 @@ gsdl_parser_env_empty = [gs:value| 〈
     'missing-body ∝ ordered-map.empty;
     'else ∝ ordered-map.empty;
     'missing-else ∝ ordered-map.empty;
+    'else-needs-comma ∝ true;
 〉 |]
