@@ -109,6 +109,7 @@ gscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
 
 $gsdeclare compile-app gscompile_app
 $gsdeclare compile-pat gscompile_pat
+$gsdeclare compile-fallible-pat gscompile_fallible_pat
 $gsdeclare compile-open-expr gscompile_open_expr
 
 gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
@@ -211,6 +212,9 @@ gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcvarpattern_w} : hspos-import : hsimport.var qq{GSI.Syn} qq{gsvar} : nil);
         '1 ∝ hsexpr.applyvar qq{gsbcvarpattern_w} (hspos pos : hsexpr.app (hsexpr.var qq{gsvar}) (hsexpr.string (gsvar.name v)) : nil);
     〉
+|]
+
+gscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
 |]
 
 $gsdeclare gather-imports gsgather_imports
