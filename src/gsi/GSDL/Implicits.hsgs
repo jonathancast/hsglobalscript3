@@ -25,5 +25,6 @@ gsadd_implicits_arg = [gs:value| λ 'env. λ 'a. analyze a.
 |]
 
 gsadd_implicits_pat = [gs:value| λ 'env. λ 'p. analyze p.
+    case pat.discard. pat.discard
     case pat.var 'v. pat.var v
 |]
