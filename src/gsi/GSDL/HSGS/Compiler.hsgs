@@ -1,4 +1,4 @@
-module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_empty) where
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_empty) where
 
 $gsimports
 
@@ -15,5 +15,6 @@ gshsgs_compiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env. 〈
 〉 |]
 
 gshsgs_compiler_env_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #vars) |]
+gshsgs_compiler_env_view_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #views) |]
 
 gshsgs_compiler_env_empty = [gs:value| 〈 'vars ∝ ordered-map.empty; 'views ∝ ordered-map.empty; 'gen-sym ∝ 0; 〉 |]
