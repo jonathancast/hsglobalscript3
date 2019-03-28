@@ -36,6 +36,7 @@ test_variable_function_body
 test_parameter_function_body
 test_discard_pattern_hsgs_syntax
 test_variable_pattern_hsgs_syntax
+test_view_pattern_hsgs_syntax
 test_expression_application_syntax
 
 # Different functions
