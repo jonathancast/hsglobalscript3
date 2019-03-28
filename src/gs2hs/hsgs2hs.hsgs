@@ -228,6 +228,9 @@ $gsdeclare compile-infallible-pat gscompile_infallible_pat
 gscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
     case pat.discard. compile-infallible-pat env pos p
     case pat.var _. compile-infallible-pat env pos p
+    case pat.view 'v. (analyze hsgs.compiler.env.view.get v env.
+        case nothing. left $ pos.fmt pos qq{view §(gsvar.name v) not in scope}
+    )
 |]
 
 gscompile_infallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. either.for 'r ← compile-pat env pos p;. right 〈
