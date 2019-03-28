@@ -77,7 +77,7 @@ gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
 $gsdeclare fmt-list-w gsfmt_list_w
 
 gsfmt_list = [gs:value| λ 'es. analyze es.
-    case nil. undefined
+    case nil. λ 's. s
     case _. (:) r{ } ∘ fmt-list-w es
 |]
 
