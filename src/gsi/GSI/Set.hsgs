@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Set (gsordered_set_member, gsordered_set_to_list, gsordered_set_from_list, gsordered_set_singleton, gsordered_set_insert, gsordered_set_inserts, gsordered_set_union, gsordered_set_empty) where
+module GSI.Set (gsordered_set_member, gsordered_set_to_list, gsordered_set_from_list, gsordered_set_singleton, gsordered_set_insert, gsordered_set_inserts, gsordered_set_union, gsordered_set_unions, gsordered_set_empty) where
 
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
@@ -52,6 +52,8 @@ gsordered_set_union = [gs:value| λ 'cmp. λ 's0. λ 's1. analyze s0.
         )
     )
 |]
+
+gsordered_set_unions = [gs:value| λ 'cmp. foldr (ordered-set.∪ cmp) ordered-set.empty |]
 
 gssplit_lt = [gs:value| λ 'cmp. λ 'x. λ 's. analyze s.
     case prim.empty. prim.empty
