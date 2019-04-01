@@ -296,6 +296,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.var.simple-insert (gsvar qq{λ}) qq{GSI.StdLib} qq{gslambda} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{nothing}) qq{GSI.Maybe} qq{gsnothing_view} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue_view} $
     hsgs.compiler.env.empty
 |]
