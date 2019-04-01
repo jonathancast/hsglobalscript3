@@ -242,6 +242,14 @@ gscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
 gscompile_fallible_pat_app = [gs:value| λ 'env. λ 'pos. λ 'p. λ 'as. analyze p.
     case pat.view 'v. (analyze hsgs.compiler.env.view.get v env.
         case nothing. left $ pos.fmt pos qq{view §(gsvar.name v) not in scope}
+        case just 'r. either.for 'ras ← either.mapM (λ 'a. either.for 'ra ← compile-fallible-pat env (a #0) (a #1);. right 〈 'pos ∝ a #0; 'is ∝ ra #0; 'cp ∝ ra #1; 〉) as;. right 〈
+            '0 ∝ ordered-set.unions hsimport.<=> (
+                ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcviewpattern_w} : hspos-import : hsimport.type qq{GSI.Value} qq{GSArg} : nil) :
+                r #0 :
+                map (λ 'ra. ra #is) ras
+            );
+            '1 ∝ hsexpr.applyvar qq{gsbcviewpattern_w} (hspos pos : r #1 : hsexpr.list (map (λ 'ra. hsexpr.applyvar qq{GSArgExpr} (hspos (ra #pos) : ra #cp : nil)) ras) : nil);
+        〉
     )
 |]
 
