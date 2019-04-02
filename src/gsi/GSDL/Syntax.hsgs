@@ -205,7 +205,15 @@ gsgenerator = [gs:value| λ 'env.
 $gsdeclare pat.function gspat_function
 
 gspat = [gs:value| λ 'env.
-    <|> pat.function env
+    <|> (parser.for 'pos0 ← get-pos;'p0 ← pat.function env;.
+        <|> parser.unit p0
+        <|> parser.for
+                'posop ← get-pos;
+                'op ← operator env;
+                'pos1 ← get-pos;
+                'p1 ← pat.function env;
+            . parser.unit (pat.app (pat.app (pat.view op) pos0 p0) pos1 p1)
+    )
 |]
 
 $gsdeclare pat.atom gspat_atom
