@@ -286,6 +286,7 @@ $gsdeclare hsgs.compiler.env.var.simple-insert gshsgs_compiler_env_var_simple_in
 $gsdeclare hsgs.compiler.env.view.simple-insert gshsgs_compiler_env_view_simple_insert
 
 gshsgs_compiler_global_env = [gs:value|
+    hsgs.compiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{analyze}) qq{GSI.StdLib} qq{gsanalyze} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{case}) qq{GSI.StdLib} qq{gscase} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust} $
