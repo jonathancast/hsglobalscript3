@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Parser (gsparse, gsparse_partial, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsmax_many, gsparser_unary_or, gsparser_or, gsparser_get_pos, gsempty, gsparser_notFollowedBy, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advance_rune, gsparser_advance_string, gsparser_print_rune) where
+module GSI.Parser (gsparse, gsparse_partial, gsparser_run, gspos_init, gsposFmt, gsparserFor, gsparser_app, gsparser_then, gsparser_unary_then, gsparser_after, gsparser_bind, gsparser_map, gsparser_unit, gsparser_fail, gsparser_map2, gseof, gssymbol, gsparser_matching, gsparser_string, gsparser_char, gsparser_choice, gsparser_optional, gsmany, gsmany1, gsmax_many, gsparser_unary_or, gsparser_or, gsparser_get_pos, gsempty, gsparser_not_followed_by, gsprim_unit_plus_view, gsprim_symbol_view, gsparser_advance_rune, gsparser_advance_string, gsparser_print_rune) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (GSValue, gslambda_value, gsconstr, gsundefined_value, gsav, gsae)
@@ -157,7 +157,7 @@ gsparser_or = [gs:value| λ 'p0. λ 'p1. λ 'k. prim.<|> (p0 k) (p1 k) |]
 
 $gsdeclare difference-w gsparser_difference_w
 
-gsparser_notFollowedBy = [gs:value| λ 'p. λ 'k. difference-w (k 〈〉) (p prim.unit) |]
+gsparser_not_followed_by = [gs:value| λ 'p. λ 'k. difference-w (k 〈〉) (p prim.unit) |]
 
 $gsdeclare prim.unit-plus gsprim_unit_plus
 $gsdeclare prim.lookahead gsprim_lookahead

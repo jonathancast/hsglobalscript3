@@ -920,7 +920,7 @@ globalEnv = Env{
         ("natural.≡", "GSI.Natural", "gsnatural_eq"),
         ("nil", "GSI.List", "gsnil"),
         ("not", "GSI.Bool", "gsnot"),
-        ("not-followed-by", "GSI.Parser", "gsparser_notFollowedBy"),
+        ("not-followed-by", "GSI.Parser", "gsparser_not_followed_by"),
         ("nothing", "GSI.Maybe", "gsnothing"),
         ("op-chars", "GSDL.Syntax", "op_chars"),
         ("optional", "GSI.Parser", "gsparser_optional"),
