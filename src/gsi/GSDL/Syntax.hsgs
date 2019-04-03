@@ -149,15 +149,15 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
         . parser.unit 〈 '0 ∝ expr.structure-literal gs; '1 ∝ nil; 〉
     )
     <|> (parser.for
-            'v ← ident-chars;
+            'v ← parser.map gsvar ident-chars;
             _ ← char r{\{};
-            'e ← analyze parser.env.qlo.get (gsvar v) env.
-                case nothing. parser.fail log{§(log.str (gsvar.fmt-atom (gsvar v))) is not a qlo}
+            'e ← analyze parser.env.qlo.get v env.
+                case nothing. parser.fail log{§(log.str (gsvar.fmt-atom v)) is not a qlo}
                 case just 'e. parser.unit e
             ;
             'x ← idmc env (e #parse) r{\}};
             _ ← lexeme $ char r{\}};
-        . parser.unit 〈 '0 ∝ expr.qlo (gsvar v) e x; '1 ∝ nil; 〉
+        . parser.unit 〈 '0 ∝ expr.qlo v e x; '1 ∝ nil; 〉
     )
     <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
     <|> (parser.for
