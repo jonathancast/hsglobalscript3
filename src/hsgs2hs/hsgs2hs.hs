@@ -805,6 +805,7 @@ globalEnv = Env{
         ("fmt-decimal", "GSI.String", "gsfmt_decimal"),
         ("foldl", "GSI.List", "gsfoldl"),
         ("foldr", "GSI.List", "gsfoldr"),
+        ("followed-by", "GSI.Parser", "gsparser_followed_by"),
         ("for", "GSI.StdLib", "gsfor"),
         ("get-pos", "GSI.Parser", "gsparser_get_pos"),
         ("gsae", "GSI.GSI", "gsigsae"),
