@@ -151,7 +151,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
     <|> (parser.for
             'v ← ident-chars;
             'e ← analyze parser.env.qlo.get (gsvar v) env.
-                case nothing. parser.fail log{§(gsv v) is not a qlo}
+                case nothing. parser.fail log{§(log.str (gsvar.fmt-atom (gsvar v))) is not a qlo}
                 case just 'e. parser.unit e
             ;
             _ ← char r{\{};
@@ -241,7 +241,7 @@ ident = [gs:value| λ 'env. lexeme $ parser.for
         _ ← not-followed-by (char r{\{} <|> char r{<} <|> char r{/});
         _ ← analyze parser.env.syntactic-category.get v env.
             case syntactic-category.variable. parser.unit 〈〉
-            case syntactic-category.lambda-like. parser.fail log{'§(undefined)' is lambda-like}
+            case syntactic-category.lambda-like. parser.fail log{'§(log.str (gsvar.fmt-atom v))' is lambda-like}
         ;
     . parser.unit v
 |]
