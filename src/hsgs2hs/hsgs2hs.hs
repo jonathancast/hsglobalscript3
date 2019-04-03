@@ -926,6 +926,7 @@ globalEnv = Env{
         ("op-chars", "GSDL.Syntax", "op_chars"),
         ("optional", "GSI.Parser", "gsparser_optional"),
         ("ord.<|>", "GSI.OrderTotal", "gsord_or"),
+        ("order-of-being.identifier", "GSDL.AST", "gsorder_of_being_identifier"),
         ("order-of-being.open-expr", "GSDL.AST", "gsorder_of_being_open_expr"),
         ("order-of-being.pattern", "GSDL.AST", "gsorder_of_being_pattern"),
         ("ordered-map.empty", "GSI.Map", "gsordered_map_empty"),
