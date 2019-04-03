@@ -1128,6 +1128,7 @@ globalEnv = Env{
         ("lt", "GSI.OrderTotal", "gsord_lt_view"),
         ("nil", "GSI.List", "gsnil_view"),
         ("nothing", "GSI.Maybe", "gsnothing_view"),
+        ("order-of-being.identifier", "GSDL.AST", "gsorder_of_being_identifier_view"),
         ("order-of-being.open-expr", "GSDL.AST", "gsorder_of_being_open_expr_view"),
         ("order-of-being.pattern", "GSDL.AST", "gsorder_of_being_pattern_view"),
         ("ordered-map.empty", "GSI.Map", "gsordered_map_empty_view"),
