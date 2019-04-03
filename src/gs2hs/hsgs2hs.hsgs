@@ -240,6 +240,7 @@ gscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
 |]
 
 gscompile_fallible_pat_app = [gs:value| λ 'env. λ 'pos. λ 'p. λ 'as. analyze p.
+    case pat.app 'p0 'pos1 'p1. compile-fallible-pat-app env pos p0 (〈 '0 ∝ pos1; '1 ∝ p1; 〉 : as)
     case pat.view 'v. (analyze hsgs.compiler.env.view.get v env.
         case nothing. left $ pos.fmt pos qq{view §(gsvar.name v) not in scope}
         case just 'r. either.for 'ras ← either.mapM (λ 'a. either.for 'ra ← compile-fallible-pat env (a #0) (a #1);. right 〈 'pos ∝ a #0; 'is ∝ ra #0; 'cp ∝ ra #1; 〉) as;. right 〈
