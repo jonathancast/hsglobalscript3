@@ -83,6 +83,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     <|> (parser.for
             'pos ← get-pos;
             'p ← analyze s.
+                case order-of-being.identifier : 's1. parser.for 'i ← parser.map gsvar $ lexeme ident-chars;. parser.unit 〈 '0 ∝ expr.identifier i; '1 ∝ s1; 〉
                 case order-of-being.pattern : 's1. parser.for 'p ← pat env;. parser.unit 〈 '0 ∝ expr.pat p nothing; '1 ∝ s1; 〉
                 case nil. parser.for 'p ← expr.atom false env;. parser.unit 〈 '0 ∝ p #0; '1 ∝ nil; 〉
             ;
