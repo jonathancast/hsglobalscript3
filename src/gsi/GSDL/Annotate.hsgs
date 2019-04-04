@@ -57,6 +57,7 @@ gsannotate_expr_arg = [gs:value| λ 'env. λ 'e. λ 'ns. λ 'c. analyze e.
         )
         case just 'bvs. bvs
     ))
+    case expr.value-var 'v. expr.value-var v
     case expr.app 'f 'x. annotate-app env f (x:nil)
     case expr.missing-case. expr.missing-case
 |]
