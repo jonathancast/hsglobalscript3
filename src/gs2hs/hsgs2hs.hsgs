@@ -173,6 +173,13 @@ gscompile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
             '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
         〉
     )
+    case arg.expr 'pos (expr.value-var 'v). (analyze hsgs.compiler.env.var.get v env.
+        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
+        case just 'p. right 〈
+            '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.singleton (hsimport.type qq{GSI.Value} qq{GSArg})) (p #0);
+            '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
+        〉
+    )
     case arg.expr 'pos 'e. either.for 'p ← compile-expr env pos e;. right 〈
         '0 ∝ ordered-set.∪ hsimport.<=>
             (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
