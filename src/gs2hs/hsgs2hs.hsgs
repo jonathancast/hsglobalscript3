@@ -303,6 +303,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.var.simple-insert (gsvar qq{not}) qq{GSI.Bool} qq{gsnot} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{undefined}) qq{GSI.StdLib} qq{gsundefined} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{value}) qq{GSI.StdLib} qq{gsvalue} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{λ}) qq{GSI.StdLib} qq{gslambda} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $
