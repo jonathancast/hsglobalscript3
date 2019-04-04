@@ -30,9 +30,9 @@ gsparser_global_env = [gs:value|
         ;
     〉 $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
-    parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{for}) (order-of-being.generator : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{value}) (order-of-being.value-var : nil) $
+    parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.syntactic-category.insert (gsvar qq{analyzeM}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{case}) syntactic-category.lambda-like $
