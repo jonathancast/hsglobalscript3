@@ -11,12 +11,12 @@ module GSDL.AST (
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
-    gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_identifier, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_missing_case_view,
+    gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_missing_case_view,
     gsqloitem_char, gsqloitem_char_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
-    gsorder_of_being_identifier, gsorder_of_being_open_expr, gsorder_of_being_identifier_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view,
+    gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_open_expr_view, gsorder_of_being_pattern, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view,
     gscategory_fallible, gscategory_fallible_view,
     gssyntactic_category_lambda_like, gssyntactic_category_variable, gssyntactic_category_where, gssyntactic_category_lambda_like_view, gssyntactic_category_variable_view, gssyntactic_category_where_view
   ) where
@@ -102,10 +102,10 @@ gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 gsexpr_structure_literal = $gslambda_value $ \ gs -> $gsbcconstr (gsvar "structure-literal") [ $gsav gs ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
 gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
-gsexpr_identifier = $gslambda_value $ \ i -> $gsbcconstr (gsvar "identifier") [ $gsav i ]
+gsexpr_fallible_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]
 gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "open-expr") [ $gsav e, $gsav mb ]
 gsexpr_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "pat") [ $gsav p, $gsav mb ]
-gsexpr_fallible_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]
+gsexpr_value_var = $gslambda_value $ \ i -> $gsbcconstr (gsvar "value-var") [ $gsav i ]
 gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 
 gsexpr_natural_view = $gsbcconstr_view "natural"
@@ -143,16 +143,16 @@ gspat_var_view = $gsbcconstr_view "var"
 gspat_view_view = $gsbcconstr_view "view"
 gspat_app_view = $gsbcconstr_view "app"
 
-gsorder_of_being_identifier = $gsconstr (gsvar "identifier") []
 gsorder_of_being_open_expr = $gsconstr (gsvar "open-expr") []
 gsorder_of_being_pattern = $gsconstr (gsvar "pattern") []
+gsorder_of_being_value_var = $gsconstr (gsvar "value-var") []
 
 gscategory_fallible = $gsconstr (gsvar "fallible") []
 gscategory_fallible_view = $gsbcconstr_view "fallible"
 
-gsorder_of_being_identifier_view = $gsbcconstr_view "identifier"
 gsorder_of_being_open_expr_view = $gsbcconstr_view "open-expr"
 gsorder_of_being_pattern_view = $gsbcconstr_view "pattern"
+gsorder_of_being_value_var_view = $gsbcconstr_view "value-var"
 
 gssyntactic_category_lambda_like = $gsconstr (gsvar "lambda-like") []
 gssyntactic_category_variable = $gsconstr (gsvar "variable") []
