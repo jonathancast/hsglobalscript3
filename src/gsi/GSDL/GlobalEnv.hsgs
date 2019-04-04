@@ -36,6 +36,7 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{analyzeM}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{case}) syntactic-category.lambda-like $
+    parser.env.syntactic-category.insert (gsvar qq{for}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
     parser.env.empty
