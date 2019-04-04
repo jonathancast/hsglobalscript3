@@ -40,6 +40,7 @@ test_view_pattern_hsgs_syntax
 test_view_pattern_arg_hsgs_syntax
 test_view_pattern_operator_hsgs_syntax
 test_expression_application_syntax
+test_value_function
 
 # Different functions
 
