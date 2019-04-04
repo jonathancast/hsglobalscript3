@@ -102,6 +102,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         'ves ← parser.unit $ foldl expr.app (expr.var v) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
         'posh ← get-pos;
         'h ← analyze s.
+            case order-of-being.generator : _. parser.map (λ 'gs. expr.generator gs nothing) (many (generator env <* lexeme (char r{;})))
             case order-of-being.pattern : _. parser.map (λ 'p. expr.pat p nothing) (pat env)
             case nil. parser.for 'p ← expr env;. parser.unit (p #0)
         ;
