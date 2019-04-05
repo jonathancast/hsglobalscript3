@@ -203,7 +203,31 @@ gsqloitem = [gs:value| λ 'env. λ 'cl.
 |]
 
 gsgenerator = [gs:value| λ 'env.
-    parser.fail log{generator next}
+    <|> (parser.for
+            'pos0 ← get-pos;
+            'p0 ← parser.choice $
+                map (λ 'o. parser.for
+                        'x0 ← analyze o.
+                        ;
+                    . parser.unit 〈 '0 ∝ o; '1 ∝ x0; 〉
+                ) $
+                ordered-set.to-list $
+                foldr
+                    (λ 'sig. λ 's. analyze sig.
+                    )
+                    ordered-set.empty
+                    $
+                parser.env.signatures.get $
+                parser.env.generator.get $
+                env
+            ;
+            'op ← operator env;
+            _ ← analyze parser.env.signature.get op (parser.env.generator.get env).
+            ;
+            'x1 ← analyze parser.env.signature.get op (parser.env.generator.get env).
+            ;
+        . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) x1)
+    )
 |]
 
 $gsdeclare pat.function gspat_function
