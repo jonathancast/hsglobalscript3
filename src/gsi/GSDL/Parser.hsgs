@@ -34,6 +34,16 @@ gsdl_parser_env_generator_get = [gs:value| λ 'env. 〈
     'missing-else ∝ ordered-map.empty;
     'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
+gsdl_parser_env_generator_set = [gs:value| λ 'env1. λ 'env. 〈
+    'signature ∝ env #signature;
+    'syntactic-category ∝ env #syntactic-category;
+    'qlo ∝ env #qlo;
+    'missing-body ∝ env #missing-body;
+    'else ∝ env #else;
+    'missing-else ∝ env #missing-else;
+    'else-needs-comma ∝ env1 #else-needs-comma;
+    'generator.signature ∝ env1 #signature;
+〉 |]
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 

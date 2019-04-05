@@ -962,6 +962,7 @@ globalEnv = Env{
         ("parser.env.else.insert", "GSDL.Parser", "gsdl_parser_env_else_insert"),
         ("parser.env.empty", "GSDL.Parser", "gsdl_parser_env_empty"),
         ("parser.env.generator.get", "GSDL.Parser", "gsdl_parser_env_generator_get"),
+        ("parser.env.generator.set", "GSDL.Parser", "gsdl_parser_env_generator_set"),
         ("parser.env.missing-body.get", "GSDL.Parser", "gsdl_parser_env_missing_body_get"),
         ("parser.env.missing-body.insert", "GSDL.Parser", "gsdl_parser_env_missing_body_insert"),
         ("parser.env.missing-else.get", "GSDL.Parser", "gsdl_parser_env_missing_else_get"),
