@@ -999,6 +999,7 @@ globalEnv = Env{
         ("quote", "GSDL.HSGS.Syntax", "quote"),
         ("quote-param.hsvs", "GSDL.HSGS.AST", "gsquote_param_hsvs"),
         ("rational.>", "GSI.Rational", "gsrational_gt"),
+        ("record.∧", "GSI.StdLib", "gsrecord_and"),
         ("repeat", "GSI.List", "gsrepeat"),
         ("replicate", "GSI.List", "gsreplicate"),
         ("right", "GSI.Either", "gsright"),
