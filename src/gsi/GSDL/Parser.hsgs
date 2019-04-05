@@ -8,7 +8,7 @@ module GSDL.Parser (
     gsdl_parser_env_else_get, gsdl_parser_env_else_insert,
     gsdl_parser_env_missing_else_get, gsdl_parser_env_missing_else_insert,
     gsdl_parser_env_else_needs_comma_get, gsdl_parser_env_else_needs_comma_set,
-    gsdl_parser_env_generator_get,
+    gsdl_parser_env_generator_get, gsdl_parser_env_generator_modify,
     gsdl_parser_env_empty
   ) where
 
@@ -44,6 +44,7 @@ gsdl_parser_env_generator_set = [gs:value| λ 'env1. λ 'env. 〈
     'else-needs-comma ∝ env1 #else-needs-comma;
     'generator.signature ∝ env1 #signature;
 〉 |]
+gsdl_parser_env_generator_modify = [gs:value| λ 'f. λ 'env. parser.env.generator.set (f (parser.env.generator.get env)) env |]
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 
