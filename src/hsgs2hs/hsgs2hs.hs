@@ -969,6 +969,7 @@ globalEnv = Env{
         ("parser.env.qlo.insert", "GSDL.Parser", "gsdl_parser_env_qlo_insert"),
         ("parser.env.signature.get", "GSDL.Parser", "gsdl_parser_env_signature_get"),
         ("parser.env.signature.insert", "GSDL.Parser", "gsdl_parser_env_signature_insert"),
+        ("parser.env.signatures.get", "GSDL.Parser", "gsdl_parser_env_signatures_get"),
         ("parser.env.syntactic-categories", "GSDL.Parser", "gsdl_parser_env_syntactic_categories"),
         ("parser.env.syntactic-category.get", "GSDL.Parser", "gsdl_parser_env_syntactic_category_get"),
         ("parser.env.syntactic-category.insert", "GSDL.Parser", "gsdl_parser_env_syntactic_category_insert"),

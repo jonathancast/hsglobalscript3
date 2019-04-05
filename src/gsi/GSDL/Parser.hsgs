@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 module GSDL.Parser (
-    gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
+    gsdl_parser_env_signatures_get, gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
     gsdl_parser_env_syntactic_category_get, gsdl_parser_env_syntactic_category_insert,
     gsdl_parser_env_qlo_get, gsdl_parser_env_qlo_insert,
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
@@ -14,6 +14,7 @@ module GSDL.Parser (
 
 $gsimports
 
+gsdl_parser_env_signatures_get = [gs:value| λ 'env. ordered-map.values (env #signature) |]
 gsdl_parser_env_signature_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #signature) |]
 gsdl_parser_env_syntactic_category_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #syntactic-category).
     case just 'c. c
