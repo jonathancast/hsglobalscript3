@@ -214,6 +214,7 @@ gsgenerator = [gs:value| λ 'env.
                 ordered-set.to-list $
                 foldr
                     (λ 'sig. λ 's. analyze sig.
+                        case 'o : _. ordered-set.insert order-of-being.<=> o s
                     )
                     ordered-set.empty
                     $
