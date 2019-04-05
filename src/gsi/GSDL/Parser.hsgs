@@ -28,10 +28,6 @@ gsdl_parser_env_else_needs_comma_get = [gs:value| λ 'env. env #else-needs-comma
 
 gsdl_parser_env_generator_get = [gs:value| λ 'env. 〈
     'signature ∝ env #generator.signature;
-    'syntactic-category ∝ ordered-map.empty;
-    'missing-body ∝ ordered-map.empty;
-    'else ∝ ordered-map.empty;
-    'missing-else ∝ ordered-map.empty;
     'else-needs-comma ∝ env #else-needs-comma;
 〉 |]
 gsdl_parser_env_generator_set = [gs:value| λ 'env1. λ 'env. record.∧
