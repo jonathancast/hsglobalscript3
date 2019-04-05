@@ -6,6 +6,7 @@ module GSI.Value (
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
+    gsvenvUnion,
     fmtExternal,
     gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, whichExternal
   ) where
@@ -224,6 +225,9 @@ instance GSExternal GSBCO
 
 instance GSExternal GSValue where
     fmtExternal_w v = return $ ("GSValue"++) . (' ':) . gsvFmt v
+
+gsvenvUnion :: GSValueEnv -> GSValueEnv -> GSValueEnv
+gsvenvUnion = Map.union
 
 gsvFmt :: GSValue -> String -> String
 gsvFmt (GSClosure _ bco) = ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':)
