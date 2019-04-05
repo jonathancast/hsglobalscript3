@@ -27,7 +27,7 @@ gsdl_parser_env_missing_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gs
 gsdl_parser_env_else_needs_comma_get = [gs:value| λ 'env. env #else-needs-comma |]
 
 gsdl_parser_env_generator_get = [gs:value| λ 'env. 〈
-    'signature ∝ ordered-map.empty;
+    'signature ∝ env #generator.signature;
     'syntactic-category ∝ ordered-map.empty;
     'missing-body ∝ ordered-map.empty;
     'else ∝ ordered-map.empty;
@@ -45,6 +45,7 @@ gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
     'else-needs-comma ∝ env #else-needs-comma;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. 〈
     'signature ∝ env #signature;
@@ -54,6 +55,7 @@ gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. �
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
     'else-needs-comma ∝ env #else-needs-comma;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
@@ -63,6 +65,7 @@ gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
     'else-needs-comma ∝ env #else-needs-comma;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
     'signature ∝ env #signature;
@@ -72,6 +75,7 @@ gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. 〈
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
     'else-needs-comma ∝ env #else-needs-comma;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
@@ -81,6 +85,7 @@ gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'else ∝ ordered-map.insert gsvar.compare v e (env #else);
     'missing-else ∝ env #missing-else;
     'else-needs-comma ∝ env #else-needs-comma;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'signature ∝ env #signature;
@@ -90,6 +95,7 @@ gsdl_parser_env_missing_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. 〈
     'else ∝ env #else;
     'missing-else ∝ ordered-map.insert gsvar.compare v e (env #missing-else);
     'else-needs-comma ∝ env #else-needs-comma;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 gsdl_parser_env_else_needs_comma_set = [gs:value| λ 'b. λ 'env. 〈
     'signature ∝ env #signature;
@@ -99,6 +105,7 @@ gsdl_parser_env_else_needs_comma_set = [gs:value| λ 'b. λ 'env. 〈
     'else ∝ env #else;
     'missing-else ∝ env #missing-else;
     'else-needs-comma ∝ b;
+    'generator.signature ∝ env #generator.signature;
 〉 |]
 
 gsdl_parser_env_empty = [gs:value| 〈
@@ -109,4 +116,5 @@ gsdl_parser_env_empty = [gs:value| 〈
     'else ∝ ordered-map.empty;
     'missing-else ∝ ordered-map.empty;
     'else-needs-comma ∝ true;
+    'generator.signature ∝ ordered-map.empty;
 〉 |]
