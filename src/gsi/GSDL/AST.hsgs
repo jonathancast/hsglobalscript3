@@ -149,6 +149,9 @@ gspat_var_view = $gsbcconstr_view "var"
 gspat_view_view = $gsbcconstr_view "view"
 gspat_app_view = $gsbcconstr_view "app"
 
+gsorder_of_being_to_code = [gs:value| λ 'o. analyze o.
+|]
+
 gsorder_of_being_expr = $gsconstr (gsvar "expr") []
 gsorder_of_being_generator = $gsconstr (gsvar "generator") []
 gsorder_of_being_open_expr = $gsconstr (gsvar "open-expr") []
