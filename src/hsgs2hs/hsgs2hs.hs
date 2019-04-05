@@ -918,6 +918,7 @@ globalEnv = Env{
         ("max-many", "GSI.Parser", "gsmax_many"),
         ("maybe", "GSI.Maybe", "gsmaybe"),
         ("monad.>>=", "GSI.Monad", "gsmonad_bind"),
+        ("natural.<=>", "GSI.Natural", "gsnatural_cmp"),
         ("natural.addition", "GSI.Natural", "gsnatural_addition"),
         ("natural.div-mod", "GSI.Natural", "gsnatural_div_mod"),
         ("natural.fmt-decimal", "GSI.Format", "gsnatural_fmt_decimal"),
