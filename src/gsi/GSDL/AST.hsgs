@@ -17,6 +17,7 @@ module GSDL.AST (
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
     gsgenerator_var, gsgenerator_app,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
+    gsorder_of_being_cmp,
     gsorder_of_being_expr, gsorder_of_being_generator, gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_pattern, gsorder_of_being_generator_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view,
     gscategory_fallible, gscategory_fallible_view,
     gssyntactic_category_lambda_like, gssyntactic_category_variable, gssyntactic_category_where, gssyntactic_category_lambda_like_view, gssyntactic_category_variable_view, gssyntactic_category_where_view
@@ -148,6 +149,8 @@ gspat_discard_view = $gsbcconstr_view "discard"
 gspat_var_view = $gsbcconstr_view "var"
 gspat_view_view = $gsbcconstr_view "view"
 gspat_app_view = $gsbcconstr_view "app"
+
+gsorder_of_being_cmp = [gs:value| λ 'o0. λ 'o1. natural.<=> (order-of-being.to-code o0) (order-of-being.to-code o1) |]
 
 gsorder_of_being_to_code = [gs:value| λ 'o. analyze o.
 |]
