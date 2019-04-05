@@ -48,16 +48,7 @@ gsdl_parser_env_generator_modify = [gs:value| λ 'f. λ 'env. parser.env.generat
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 
-gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. 〈
-    'signature ∝ ordered-map.insert gsvar.compare v s (env #signature);
-    'syntactic-category ∝ env #syntactic-category;
-    'qlo ∝ env #qlo;
-    'missing-body ∝ env #missing-body;
-    'else ∝ env #else;
-    'missing-else ∝ env #missing-else;
-    'else-needs-comma ∝ env #else-needs-comma;
-    'generator.signature ∝ env #generator.signature;
-〉 |]
+gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. record.∧ 〈 'signature ∝ ordered-map.insert gsvar.compare v s (env #signature); 〉 env |]
 gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. 〈
     'signature ∝ env #signature;
     'syntactic-category ∝ ordered-map.insert gsvar.compare v c (env #syntactic-category);
