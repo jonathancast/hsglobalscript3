@@ -202,12 +202,15 @@ gsqloitem = [gs:value| λ 'env. λ 'cl.
     <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl);. parser.unit (qloitem.char r))
 |]
 
+$gsdeclare pat.function gspat_function
+
 gsgenerator = [gs:value| λ 'env.
     <|> (parser.for
             'pos0 ← get-pos;
             'p0 ← parser.choice $
                 map (λ 'o. parser.for
                         'x0 ← analyze o.
+                            case order-of-being.pattern. parser.map generator.pattern $ pat.function env
                         ;
                     . parser.unit 〈 '0 ∝ o; '1 ∝ x0; 〉
                 ) $
@@ -230,8 +233,6 @@ gsgenerator = [gs:value| λ 'env.
         . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) x1)
     )
 |]
-
-$gsdeclare pat.function gspat_function
 
 gspat = [gs:value| λ 'env.
     <|> (parser.for 'pos0 ← get-pos; 'p0 ← pat.function env;.
