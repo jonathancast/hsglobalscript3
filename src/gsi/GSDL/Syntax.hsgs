@@ -231,9 +231,9 @@ gsgenerator = [gs:value| λ 'env.
                     case true. parser.unit s1
                 )
             ;
-            'x1 ← analyze s1.
+            'g1 ← analyze s1.
             ;
-        . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) x1)
+        . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) g1)
     )
 |]
 
