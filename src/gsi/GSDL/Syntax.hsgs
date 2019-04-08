@@ -227,6 +227,8 @@ gsgenerator = [gs:value| λ 'env.
             ;
             'op ← operator env;
             's1 ← analyze parser.env.signature.get op (parser.env.generator.get env).
+                case just ('o : 's1). (analyze order-of-being.≡ o (p0 #0).
+                )
             ;
             'x1 ← analyze s1.
             ;
