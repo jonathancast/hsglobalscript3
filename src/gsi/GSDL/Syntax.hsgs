@@ -361,7 +361,7 @@ identStartChar = [gs:value| matching log{ident start character} is-lower |]
 identContChar = [gs:value| matching log{ident cont character} is-lower |]
 ident_up_cont_char = [gs:value| matching log{ident cont character} (λ 'c. is-upper c || is-ascii-digit c) |]
 
-op_start_char = [gs:value| matching log{op start character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘}) |]
+op_start_char = [gs:value| matching log{op start character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘} || is-non-ascii-symbol c) |]
 opContChar = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘}) |]
 
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
