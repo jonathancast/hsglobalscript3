@@ -226,9 +226,9 @@ gsgenerator = [gs:value| λ 'env.
                 env
             ;
             'op ← operator env;
-            _ ← analyze parser.env.signature.get op (parser.env.generator.get env).
+            's1 ← analyze parser.env.signature.get op (parser.env.generator.get env).
             ;
-            'x1 ← analyze parser.env.signature.get op (parser.env.generator.get env).
+            'x1 ← analyze s1.
             ;
         . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) x1)
     )
