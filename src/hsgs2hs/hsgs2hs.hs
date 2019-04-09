@@ -810,6 +810,7 @@ globalEnv = Env{
         ("followed-by", "GSI.Parser", "gsparser_followed_by"),
         ("for", "GSI.StdLib", "gsfor"),
         ("generator.app", "GSDL.AST", "gsgenerator_app"),
+        ("generator.expr", "GSDL.AST", "gsgenerator_expr"),
         ("generator.pattern", "GSDL.AST", "gsgenerator_pattern"),
         ("generator.var", "GSDL.AST", "gsgenerator_var"),
         ("get-pos", "GSI.Parser", "gsparser_get_pos"),
