@@ -3,6 +3,7 @@ module GSDL.Implicits (gsadd_implicits_expr) where
 $gsimports
 
 $gsdeclare add-implicits-pat gsadd_implicits_pat
+$gsdeclare add-implicits-generator gsadd_implicits_generator
 
 $gsdeclare add-implicits-arg gsadd_implicits_arg
 
@@ -31,4 +32,7 @@ gsadd_implicits_pat = [gs:value| λ 'env. λ 'p. analyze p.
     case pat.var 'v. pat.var v
     case pat.view 'v. pat.view v
     case pat.app 'p0 'pos1 'p1. pat.app (add-implicits-pat env p0) pos1 (add-implicits-pat env p1)
+|]
+
+gsadd_implicits_generator = [gs:value| λ 'env. λ 'g. analyze g.
 |]
