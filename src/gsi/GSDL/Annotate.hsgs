@@ -34,6 +34,8 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.missing-case. expr.missing-case
 |]
 
+$gsdeclare annotate-generator gsannotate_generator
+
 gsannotate_expr_arg = [gs:value| λ 'env. λ 'e. λ 'ns. λ 'c. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
@@ -88,6 +90,9 @@ gsannotate_arg = [gs:value| λ 'env. λ 'a. λ 'ns. λ 'c. analyze a.
 
 gsannotate_qloitem = [gs:value| λ 'env. λ 'q. analyze q.
     case qloitem.char 'ch. qloitem.char ch
+|]
+
+gsannotate_generator = [gs:value| λ 'env. λ 'g. analyze g.
 |]
 
 gsannotate_pat = [gs:value| λ 'env. λ 'p. analyze p.
