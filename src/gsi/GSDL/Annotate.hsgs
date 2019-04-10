@@ -54,6 +54,7 @@ gsannotate_expr_arg = [gs:value| λ 'env. λ 'e. λ 'ns. λ 'c. analyze e.
             ))
     case expr.generator 'g 'mb. -- See pat case
         (analyze c.
+            case nothing. expr.generator
         )
             (annotate-generator env g)
             (just (analyze mb.
