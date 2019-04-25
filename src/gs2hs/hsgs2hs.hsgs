@@ -108,6 +108,7 @@ gscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
 |]
 
 $gsdeclare compile-app gscompile_app
+$gsdeclare compile-generator gscompile_generator
 $gsdeclare compile-pat gscompile_pat
 $gsdeclare compile-fallible-pat gscompile_fallible_pat
 $gsdeclare compile-open-expr gscompile_open_expr
@@ -217,6 +218,9 @@ gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. an
             ;
             '1 ∝ hsexpr.applyvar qq{gsbclfield_w} (hspos pos : hsexpr.applyvar qq{gsvar} (hsexpr.string (gsvar.name f0) : nil) : hsexpr.var envhs : hsexpr.lambda xhs (p #1) : nil);
         〉
+|]
+
+gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
 |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
