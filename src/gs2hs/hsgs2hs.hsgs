@@ -108,7 +108,7 @@ gscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
 |]
 
 $gsdeclare compile-app gscompile_app
-$gsdeclare compile-generator gscompile_generator
+$gsdeclare compile-generators gscompile_generators
 $gsdeclare compile-pat gscompile_pat
 $gsdeclare compile-fallible-pat gscompile_fallible_pat
 $gsdeclare compile-open-expr gscompile_open_expr
@@ -129,7 +129,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
         〉
     )
     case expr.app 'f 'x. compile-app env pos f (x : nil)
-    case expr.generators 'gs. compile-generator env pos gs
+    case expr.generators 'gs. compile-generators env pos gs
     case expr.pat 'p _. compile-pat env pos p
     case expr.fallible-pat 'p _. compile-fallible-pat env pos p
     case expr.open-expr 'e (just 'fvs). compile-open-expr env pos fvs e
@@ -221,7 +221,7 @@ gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. an
         〉
 |]
 
-gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
+gscompile_generators = [gs:value| λ 'env. λ 'pos. λ 'gs. analyze gs.
 |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
