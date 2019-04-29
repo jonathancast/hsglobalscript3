@@ -57,7 +57,7 @@ gsannotate_expr_arg = [gs:value| λ 'env. λ 'e. λ 'ns. λ 'c. analyze e.
             case nothing. expr.generators
         )
             (map
-                (λ 'p. 〈 '0 ∝ annotate-generator env (p #0); '1 ∝ just (analyze p #1.
+                (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ annotate-generator env (p #gen); 'bvs ∝ just (analyze p #bvs.
                 ); 〉 )
                 gs
             )

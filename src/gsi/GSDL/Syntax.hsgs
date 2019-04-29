@@ -206,9 +206,10 @@ gsqloitem = [gs:value| λ 'env. λ 'cl.
 $gsdeclare pat.function gspat_function
 
 gsgenerators = [gs:value| λ 'env. many $ parser.for
+        'pos ← get-pos;
         'g ← generator env;
         _ ← lexeme (char r{;});
-    . parser.unit 〈 '0 ∝ g; '1 ∝ nothing; 〉
+    . parser.unit 〈 'pos ∝ pos; 'gen ∝ g; 'bvs ∝ nothing; 〉
 |]
 
 gsgenerator = [gs:value| λ 'env.
