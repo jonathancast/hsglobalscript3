@@ -93,6 +93,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
 
 $gsdeclare lambda-like-keyword gslambda_like_keyword
 
+$gsdeclare generators gsgenerators
 $gsdeclare pat gspat
 
 gsexpr_lambda_like = [gs:value| λ 'env. parser.for
@@ -102,7 +103,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         'ves ← parser.unit $ foldl expr.app (expr.var v) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
         'posh ← get-pos;
         'h ← analyze s.
-            case order-of-being.generator : _. parser.map (λ 'gs. expr.generators (map (λ 'g. 〈 '0 ∝ g; '1 ∝ nothing; 〉) gs)) (many (generator env <* lexeme (char r{;})))
+            case order-of-being.generator : _. parser.map (λ 'gs. expr.generators (map (λ 'g. 〈 '0 ∝ g; '1 ∝ nothing; 〉) gs)) (generators env)
             case order-of-being.pattern : _. parser.map (λ 'p. expr.pat p nothing) (pat env)
             case nil. parser.for 'p ← expr env;. parser.unit (p #0)
         ;
@@ -148,7 +149,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
     <|> parens (expr env)
     <|> (parser.for
             _ ← lexeme $ char r{〈};
-            'gs ← many (generator env <* lexeme (char r{;}));
+            'gs ← generators env;
             _ ← lexeme $ char r{〉};
         . parser.unit 〈 '0 ∝ expr.structure-literal gs; '1 ∝ nil; 〉
     )
@@ -203,6 +204,8 @@ gsqloitem = [gs:value| λ 'env. λ 'cl.
 |]
 
 $gsdeclare pat.function gspat_function
+
+gsgenerators = [gs:value| λ 'env. many (generator env <* lexeme (char r{;})) |]
 
 gsgenerator = [gs:value| λ 'env.
     <|> (parser.for
