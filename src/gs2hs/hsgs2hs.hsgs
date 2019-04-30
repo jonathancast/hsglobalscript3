@@ -129,7 +129,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
         〉
     )
     case expr.app 'f 'x. compile-app env pos f (x : nil)
-    case expr.generators 'gs. compile-generators env pos gs
+    case expr.generators 'gs 'pos1. compile-generators env pos gs
     case expr.pat 'p _. compile-pat env pos p
     case expr.fallible-pat 'p _. compile-fallible-pat env pos p
     case expr.open-expr 'e (just 'fvs). compile-open-expr env pos fvs e
