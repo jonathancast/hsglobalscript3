@@ -243,10 +243,11 @@ gsgenerator = [gs:value| λ 'env.
                     case true. parser.unit s1
                 )
             ;
+            'pos1 ← get-pos;
             'g1 ← analyze s1.
                 case order-of-being.expr : _. parser.map generator.expr $ expr.function env
             ;
-        . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) g1)
+        . parser.unit (generator.app (generator.app (generator.var op) pos0 (p0 #1)) pos1 g1)
     )
 |]
 
