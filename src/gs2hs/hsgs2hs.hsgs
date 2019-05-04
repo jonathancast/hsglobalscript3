@@ -221,7 +221,12 @@ gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. an
         〉
 |]
 
+$gsdeclare compile-generator gscompile_generator
+
 gscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
+|]
+
+gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
 |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
