@@ -224,6 +224,17 @@ gscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. an
 $gsdeclare compile-generator gscompile_generator
 
 gscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
+    case 'g:'gs1. either.for 'p0 ← compile-generator env (g #pos) (g #gen);.
+        hsgs.compiler.env.gen-sym env $ λ 'envhs. λ 'env1.
+            either.for 'p1 ← compile-generators env1 gs1 pos1;. right 〈
+                '0 ∝ ordered-set.unions hsimport.<=> (
+                    (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbccomposegen_w} : hspos-import : hsimport.type qq{GSI.Value} qq{GSArg} : nil)) :
+                    p0 #0 :
+                    p1 #0 :
+                    nil
+                );
+                '1 ∝ hsexpr.applyvar qq{gsbccomposegen_w} (hspos (g #0) : hsexpr.applyvar qq{GSArgExpr} (hspos (g #0) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
+            〉
 |]
 
 gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
