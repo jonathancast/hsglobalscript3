@@ -103,6 +103,7 @@ gsannotate_qloitem = [gs:value| λ 'env. λ 'q. analyze q.
 |]
 
 gsannotate_generator = [gs:value| λ 'env. λ 'g. analyze g.
+    case generator.app 'f 'pos 'x. generator.app (annotate-generator f) pos (annotate-generator x)
 |]
 
 gsannotate_pat = [gs:value| λ 'env. λ 'p. analyze p.
