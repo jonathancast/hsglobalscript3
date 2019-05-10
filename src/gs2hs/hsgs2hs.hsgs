@@ -237,7 +237,12 @@ gscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
             〉
 |]
 
+$gsdeclare compile-generator-app gscompile_generator_app
+
 gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
+|]
+
+gscompile_generator_app = [gs:value| λ 'env. λ 'pos. λ 'g. λ 'as. analyze g.
 |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
