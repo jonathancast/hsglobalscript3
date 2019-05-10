@@ -240,6 +240,7 @@ gscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
 $gsdeclare compile-generator-app gscompile_generator_app
 
 gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
+    case generator.app 'g0 'pos1 'g1. compile-generator-app env pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : nil)
 |]
 
 gscompile_generator_app = [gs:value| λ 'env. λ 'pos. λ 'g. λ 'as. analyze g.
