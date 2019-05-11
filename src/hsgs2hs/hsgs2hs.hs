@@ -1126,6 +1126,7 @@ globalEnv = Env{
         ("false", "GSI.Bool", "gsfalse_view"),
         ("file.document", "GSDL.AST", "gsfile_document_view"),
         ("generator.app", "GSDL.AST", "gsgenerator_app_view"),
+        ("generator.var", "GSDL.AST", "gsgenerator_var_view"),
         ("gsvalue.constr", "GSI.GSI", "gsvalue_constr_view"),
         ("gsvalue.error", "GSI.GSI", "gsvalue_error_view"),
         ("gsvalue.function", "GSI.GSI", "gsvalue_function_view"),

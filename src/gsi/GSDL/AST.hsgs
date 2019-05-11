@@ -15,7 +15,7 @@ module GSDL.AST (
     gsqloitem_char, gsqloitem_char_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
-    gsgenerator_var, gsgenerator_app, gsgenerator_expr, gsgenerator_pattern, gsgenerator_app_view,
+    gsgenerator_var, gsgenerator_app, gsgenerator_expr, gsgenerator_pattern, gsgenerator_var_view, gsgenerator_app_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_eq, gsorder_of_being_cmp,
     gsorder_of_being_expr, gsorder_of_being_generator, gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_pattern, gsorder_of_being_expr_view, gsorder_of_being_generator_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view,
@@ -143,6 +143,7 @@ gsgenerator_app = $gslambda_value $ \ g0 -> $gsbcarg $ \ pos -> $gsbcarg $ \ g1 
 gsgenerator_expr = $gslambda_value $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav e ]
 gsgenerator_pattern = $gslambda_value $ \ p -> $gsbcconstr (gsvar "pattern") [ $gsav p ]
 
+gsgenerator_var_view = $gsbcconstr_view "var"
 gsgenerator_app_view = $gsbcconstr_view "app"
 
 gspat_discard = $gsconstr (gsvar "discard") []
