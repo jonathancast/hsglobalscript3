@@ -246,6 +246,18 @@ gscompile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
 $gsdeclare compile-generator-arg gscompile_generator_arg
 
 gscompile_generator_app = [gs:value| λ 'env. λ 'pos. λ 'g. λ 'as. analyze g.
+    case generator.var 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.generator.get env).
+        case nothing. left $ pos.fmt pos qq{generator §(gsvar.name v) not in scope}
+        case just 'p. either.for 'as1 ← either.mapM (compile-generator-arg env) as;. right 〈
+            '0 ∝ ordered-set.unions hsimport.<=> (
+                ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hspos-import : nil) :
+                p #0 :
+                map (λ 'p1. p1 #0) as1 <>
+                nil
+            );
+            '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : p #1 : hsexpr.list (map (λ 'p1. p1 #1) as1) : nil);
+        〉
+    )
     case generator.app 'g0 'pos1 'g1. compile-generator-app env pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : as)
 |]
 
