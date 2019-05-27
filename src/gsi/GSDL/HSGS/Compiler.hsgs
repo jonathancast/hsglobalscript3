@@ -1,4 +1,4 @@
-module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_empty) where
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_empty) where
 
 $gsimports
 
@@ -17,5 +17,13 @@ gshsgs_compiler_env_generator_get = [gs:value| λ 'env. 〈
     'vars ∝ env #generators;
     'gen-sym ∝ env #gen-sym;
 〉 |]
+
+gshsgs_compiler_env_generator_modify = [gs:value| λ 'f. λ 'env. for
+        'env2 ∝ for 'env1 ∝ f (hsgs.compiler.env.generator.get env);. 〈
+            'generators ∝ env1 #vars;
+            'gen-sym ∝ env1 #gen-sym;
+        〉;
+    . record.∧ env2 env
+|]
 
 gshsgs_compiler_env_empty = [gs:value| 〈 'vars ∝ ordered-map.empty; 'views ∝ ordered-map.empty; 'generators ∝ ordered-map.empty; 'gen-sym ∝ 0; 〉 |]
