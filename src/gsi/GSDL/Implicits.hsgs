@@ -38,4 +38,5 @@ gsadd_implicits_pat = [gs:value| λ 'env. λ 'p. analyze p.
 gsadd_implicits_generator = [gs:value| λ 'env. λ 'g. analyze g.
     case generator.var 'v. generator.var v
     case generator.app 'g0 'pos 'g1. generator.app (add-implicits-generator env g0) pos (add-implicits-generator env g1)
+    case generator.pattern 'p. generator.pattern (add-implicits-pat env p)
 |]
