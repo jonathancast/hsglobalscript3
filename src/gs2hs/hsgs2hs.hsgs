@@ -269,6 +269,12 @@ gscompile_generator_arg = [gs:value| λ 'env. λ 'a. analyze a #1.
         ;
         '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos (a #0) : r #1 : nil);
     〉
+    case generator.expr (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
+        case just 'p. right 〈
+            '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.singleton (hsimport.type qq{GSI.Value} qq{GSArg})) (p #0);
+            '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
+        〉
+    )
 |]
 
 gscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
