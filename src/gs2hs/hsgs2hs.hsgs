@@ -235,6 +235,10 @@ gscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
                 );
                 '1 ∝ hsexpr.applyvar qq{gsbccomposegen_w} (hspos (g #0) : hsexpr.applyvar qq{GSArgExpr} (hspos (g #0) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
             〉
+    case nil. right 〈
+        '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcemptygen_w} : hspos-import : nil);
+        '1 ∝ hsexpr.app (hsexpr.var qq{gsbcemptygen_w}) (hspos pos1);
+    〉
 |]
 
 $gsdeclare compile-generator-app gscompile_generator_app
