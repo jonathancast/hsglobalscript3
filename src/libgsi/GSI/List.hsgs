@@ -55,6 +55,7 @@ gszip = [gs:value| λ 'xn. λ 'ys. analyze xn.
 gsmap2 = [gs:value| λ 'f. λ 'xn. λ 'ys. analyze xn.
     case 'x:'xn1. (analyze ys.
         case 'y:'ys1. f x y : map2 f xn1 ys1
+        case nil. nil
     )
     case _. nil
 |]
