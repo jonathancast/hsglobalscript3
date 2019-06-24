@@ -222,7 +222,7 @@ gsgenerator = [gs:value| λ 'env.
             'p0 ← parser.choice $
                 map (λ 'o. parser.for
                         'x0 ← analyze o.
-                            case order-of-being.pattern. parser.map generator.pattern $ pat.function env
+                            case order-of-being.pattern. parser.for 'p ← pat.function env;. parser.unit $ generator.pattern p nothing
                         ;
                     . parser.unit 〈 '0 ∝ o; '1 ∝ x0; 〉
                 ) $
