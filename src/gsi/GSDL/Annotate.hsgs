@@ -131,6 +131,8 @@ gsannotate_generator_app = [gs:value| λ 'env. λ 'f. λ 'as. analyze f.
 gsannotate_generator_arg = [gs:value| λ 'env. λ 'c. λ 'p. 〈 '0 ∝ p #0; '1 ∝ annotate-generator env (p #1); 〉 |]
 
 gsannotate_get_name_set_generator_args = [gs:value| λ 'as. analyze as.
+    case 'p : 'as1. (analyze p #1.
+    )
 |]
 
 gsannotate_set_name_set_generator_arg = [gs:value| λ 'ns. λ 'p. analyze p #1.
