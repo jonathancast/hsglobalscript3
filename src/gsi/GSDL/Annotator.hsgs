@@ -1,10 +1,6 @@
-module GSDL.Annotator (gsannotator_env_namespace_insert, gsannotator_env_category_insert, gsannotator_env_category_get, gsannotator_env_empty, gspat_bound_vars) where
+module GSDL.Annotator (gsannotator_env_category_insert, gsannotator_env_category_get, gsannotator_env_empty, gspat_bound_vars) where
 
 $gsimports
-
-gsannotator_env_namespace_insert = [gs:value| λ 'v. λ 'ns. λ 'env.
-    〈 'category ∝ env #category; 〉
-|]
 
 gsannotator_env_category_insert = [gs:value| λ 'v. λ 'c. λ 'env.
     〈 'category ∝ ordered-map.insert gsvar.compare v c (env #category); 〉
