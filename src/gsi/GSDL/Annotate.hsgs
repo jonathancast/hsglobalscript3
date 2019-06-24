@@ -36,82 +36,113 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
 
 $gsdeclare annotate-generator gsannotate_generator
 
-gsannotate_expr_arg = [gs:value| λ 'env. λ 'e. λ 'ns. λ 'c. analyze e.
+gsannotate_expr_arg = [gs:value| λ 'env. λ 'c. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
     case expr.qlo 'v 'e 'x. expr.qlo v e (e #annotate env x)
     case expr.pat 'p 'mb.
-        (analyze c.
-            case nothing. expr.pat
-            case just category.fallible. expr.fallible-pat
-        )
-            (annotate-pat env p)
-            (just (analyze mb.
-                case nothing. (analyze ns.
-                    case nothing. pat.bound-vars p
-                    case just 'bvs. bvs
-                )
-            ))
+        for 'p ∝ annotate-pat env p;.
+            (analyze c.
+                case nothing. expr.pat
+                case just category.fallible. expr.fallible-pat
+            )
+                (p #0)
+                (just (p #1))
     case expr.generators 'gs 'pos1. -- See pat case
         (analyze c.
             case nothing. expr.generators
         )
             (map
-                (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ annotate-generator env (p #gen); 'bvs ∝ just (analyze p #bvs.
-                ); 〉 )
+                (λ 'p. for 'p1 ∝ annotate-generator env (p #gen);. 〈 'pos ∝ p #pos; 'gen ∝ p1 #0; 'bvs ∝ just (p1 #1); 〉 )
                 gs
             )
             pos1
-    case expr.open-expr 'e1 'mb. expr.open-expr (annotate-expr env e1) (just (analyze mb.
-        case nothing. (analyze ns.
-            case nothing. nil
-            case just 'bvs. bvs
-        )
-        case just 'bvs. bvs
-    ))
+    case expr.open-expr 'e1 'mb. expr.open-expr (annotate-expr env e1) nothing
     case expr.value-var 'v. expr.value-var v
     case expr.app 'f 'x. annotate-app env f (x:nil)
     case expr.missing-case. expr.missing-case
 |]
 
 $gsdeclare annotate-arg gsannotate_arg
+$gsdeclare annotate-get-name-set gsannotate_get_name_set
+$gsdeclare annotate-set-name-set-arg gsannotate_set_name_set_arg
 
 gsannotate_app = [gs:value| λ 'env. λ 'f. λ 'as. analyze f.
-    case expr.var 'v. foldl expr.app (expr.var v) $
-        map3 (annotate-arg env)
-            as
-            (analyze annotator.env.namespace.get v env.
-                case nothing. repeat nothing
-                case just 'ns-decl. ns-decl as <> repeat nothing
-            )
-            (analyze annotator.env.category.get v env.
-                case nothing. repeat nothing
-                case just 'c-decl. c-decl as <> repeat nothing
-            )
-    case expr.app 'f1 'x. annotate-app env f1 (x:as)
+    case expr.app 'f0 'a. annotate-app env f0 (a:as)
+    case expr.var 'v.
+        for 'cs ∝ analyze annotator.env.category.get v env.
+                    case nothing. nil
+                    case just 'c-decl. c-decl as
+            ;. for 'as1 ∝ map2 (annotate-arg env) (cs <> repeat nothing) as;.
+                for 'ns ∝ annotate-get-name-set as1;.
+                    foldl expr.app (expr.var v) (map (annotate-set-name-set-arg ns) as1)
 |]
 
 $gsdeclare annotate-expr-arg gsannotate_expr_arg
 
-gsannotate_arg = [gs:value| λ 'env. λ 'a. λ 'ns. λ 'c. analyze a.
-    case arg.expr 'pos1 'e. arg.expr pos1 (annotate-expr-arg env e ns c)
-    case arg.explicit 'pos1 'e. arg.explicit pos1 (annotate-expr-arg env e ns c)
+gsannotate_arg = [gs:value| λ 'env. λ 'c. λ 'a. analyze a.
+    case arg.expr 'pos 'e. arg.expr pos (annotate-expr-arg env c e)
+    case arg.explicit 'pos 'e. arg.explicit pos (annotate-expr env e)
+|]
+
+gsannotate_get_name_set = [gs:value| λ 'as. analyze as.
+    case arg.expr _ (expr.pat _ (just 'ns)) : _. ns
+    case arg.expr _ (expr.fallible-pat _ (just 'ns)) : _. ns
+    case _ : 'as1. annotate-get-name-set as1
+|]
+
+$gsdeclare annotate-set-name-set gsannotate_set_name_set
+
+gsannotate_set_name_set_arg = [gs:value| λ 'ns. λ 'a. analyze a.
+    case arg.expr 'pos 'e. arg.expr pos (annotate-set-name-set ns e)
+    case arg.explicit 'pos 'e. arg.explicit pos (annotate-set-name-set ns e)
+|]
+
+gsannotate_set_name_set = [gs:value| λ 'ns. λ 'e. analyze e.
+    case expr.open-expr 'e1 _. expr.open-expr e1 (just ns)
+    case 'e. e
 |]
 
 gsannotate_qloitem = [gs:value| λ 'env. λ 'q. analyze q.
     case qloitem.char 'ch. qloitem.char ch
 |]
 
+$gsdeclare annotate-generator-app gsannotate_generator_app
+
 gsannotate_generator = [gs:value| λ 'env. λ 'g. analyze g.
-    case generator.var 'x. generator.var x
-    case generator.app 'f 'pos 'x. generator.app (annotate-generator env f) pos (annotate-generator env x)
-    case generator.pattern 'p. generator.pattern (annotate-pat env p)
+    case generator.var 'x. 〈 '0 ∝ generator.var x; '1 ∝ nil; 〉
+    case generator.app 'f 'pos 'x. annotate-generator-app env f (〈 '0 ∝ pos; '1 ∝ x; 〉 : nil)
+    case generator.pattern 'p0. for 'r ∝ annotate-pat env p0;. generator.pattern (r #0)
     case generator.expr 'e. generator.expr (annotate-expr env e)
 |]
 
+$gsdeclare annotate-generator-arg gsannotate_generator_arg
+$gsdeclare annotate-get-name-set-generator-args gsannotate_get_name_set_generator_args
+$gsdeclare annotate-set-name-set-generator-arg gsannotate_set_name_set_generator_arg
+
+gsannotate_generator_app = [gs:value| λ 'env. λ 'f. λ 'as. analyze f.
+    case generator.var 'v. for 'as1 ∝ map2 (annotate-generator-arg env) (repeat nothing) as;.
+        for 'ns ∝ annotate-get-name-set-generator-args as1;.
+            〈 '0 ∝ foldl (λ 'g. λ 'p. generator.app g (p #0) (p #1)) (generator.var v) (map (annotate-set-name-set-generator-arg ns) as1); '1 ∝ ns; 〉
+    case generator.app 'f0 'pos 'x. annotate-generator-app env f0 (〈 '0 ∝ pos; '1 ∝ x; 〉 : as)
+|]
+
+gsannotate_generator_arg = [gs:value| λ 'env. λ 'c. λ 'p. 〈 '0 ∝ p #0; '1 ∝ annotate-generator env (p #1); 〉 |]
+
+gsannotate_get_name_set_generator_args = [gs:value| λ 'as. analyze as.
+|]
+
+gsannotate_set_name_set_generator_arg = [gs:value| λ 'ns. λ 'p. analyze p #1.
+    case generator.pattern 'p0. 〈 '0 ∝ p #0; '1 ∝ generator.pattern p0; 〉
+    case generator.expr 'e. 〈 '0 ∝ p #0; '1 ∝ generator.expr e; 〉
+|]
+
 gsannotate_pat = [gs:value| λ 'env. λ 'p. analyze p.
-    case pat.discard. pat.discard
-    case pat.var 'v. pat.var v
-    case pat.view 'v. pat.view v
-    case pat.app 'p0 'pos1 'p1. pat.app (annotate-pat env p0) pos1 (annotate-pat env p1)
+    case pat.discard. 〈 '0 ∝ pat.discard; '1 ∝ nil; 〉
+    case pat.var 'v. 〈 '0 ∝ pat.var v; '1 ∝ v : nil; 〉
+    case pat.view 'v. 〈 '0 ∝ pat.view v; '1 ∝ nil; 〉
+    case pat.app 'p0 'pos1 'p1. for
+            'p0a ∝ annotate-pat env p0;
+            'p1a ∝ annotate-pat env p1;
+        . 〈 '0 ∝ pat.app (p0a #0) pos1 (p1a #0); '1 ∝ p0a #1 <> p1a # 1; 〉
 |]
