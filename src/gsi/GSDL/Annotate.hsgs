@@ -113,8 +113,8 @@ $gsdeclare annotate-generator-app gsannotate_generator_app
 gsannotate_generator = [gs:value| λ 'env. λ 'g. analyze g.
     case generator.var 'x. 〈 '0 ∝ generator.var x; '1 ∝ nil; 〉
     case generator.app 'f 'pos 'x. annotate-generator-app env f (〈 '0 ∝ pos; '1 ∝ x; 〉 : nil)
-    case generator.pattern 'p0 _. for 'r ∝ annotate-pat env p0;. generator.pattern (r #0) (just (r #1))
-    case generator.expr 'e. generator.expr (annotate-expr env e)
+    case generator.pattern 'p0 _. for 'r ∝ annotate-pat env p0;. 〈 '0 ∝ generator.pattern (r #0) (just (r #1)); '1 ∝ r #1; 〉
+    case generator.expr 'e. 〈 '0 ∝ generator.expr (annotate-expr env e); '1 ∝ nil; 〉
 |]
 
 $gsdeclare annotate-generator-arg gsannotate_generator_arg
@@ -128,10 +128,11 @@ gsannotate_generator_app = [gs:value| λ 'env. λ 'f. λ 'as. analyze f.
     case generator.app 'f0 'pos 'x. annotate-generator-app env f0 (〈 '0 ∝ pos; '1 ∝ x; 〉 : as)
 |]
 
-gsannotate_generator_arg = [gs:value| λ 'env. λ 'c. λ 'p. 〈 '0 ∝ p #0; '1 ∝ annotate-generator env (p #1); 〉 |]
+gsannotate_generator_arg = [gs:value| λ 'env. λ 'c. λ 'p. for 'r ∝ annotate-generator env (p #1);. 〈 '0 ∝ p #0; '1 ∝ r #0; 〉 |]
 
 gsannotate_get_name_set_generator_args = [gs:value| λ 'as. analyze as.
     case 'p : 'as1. (analyze p #1.
+        case generator.pattern _ (just 'ns). ns
     )
 |]
 
