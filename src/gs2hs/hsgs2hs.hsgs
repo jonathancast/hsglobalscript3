@@ -233,7 +233,7 @@ gscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
                     p1 #0 :
                     nil
                 );
-                '1 ∝ hsexpr.applyvar qq{gsbccomposegen_w} (hspos (g #0) : hsexpr.applyvar qq{GSArgExpr} (hspos (g #0) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
+                '1 ∝ hsexpr.applyvar qq{gsbccomposegen_w} (hspos (g #pos) : hsexpr.applyvar qq{GSArgExpr} (hspos (g #pos) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
             〉
     case nil. right 〈
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcemptygen_w} : hspos-import : nil);
