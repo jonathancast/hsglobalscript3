@@ -281,7 +281,7 @@ gscompile_generator_arg = [gs:value| λ 'env. λ 'a. analyze a #1.
     )
     case generator.expr (expr.natural 'n). right 〈
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hsimport.type qq{GSI.Value} qq{GSValue} : hspos-import : nil);
-        '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (hsexpr.app (hsexpr.var qq{GSNatural}) (hsexpr.int));
+        '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (hsexpr.app (hsexpr.var qq{GSNatural}) (hsexpr.int n));
     〉
 |]
 
