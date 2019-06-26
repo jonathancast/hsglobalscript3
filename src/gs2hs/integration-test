@@ -42,6 +42,7 @@ test_view_pattern_operator_hsgs_syntax
 test_expression_application_syntax
 test_value_function
 test_case_hsgs_syntax
+test_for_variable
 
 # Different functions
 
