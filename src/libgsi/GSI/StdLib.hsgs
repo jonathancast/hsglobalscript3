@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gsvalue, gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
+module GSI.StdLib (gsvalue, gsmatch, gslambda, gscompose, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
 
 import GSI.Util (StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
@@ -9,6 +9,8 @@ import GSI.BCFunctions (gsbcevalstacktrace)
 $gsimports
 
 gsvalue = $gslambda_value $ \ v -> $gsbcenter v
+
+gsmatch = $gslambda_value $ \ p -> $gsbcarg $ \ e -> $gsbcapply p [ $gsav e ]
 
 gslambda = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ (StackTrace pos cs) ->
     $gsbcarg $ \ p -> $gsbcarg $ \ b -> gsbcat_w pos cs $ gsbcarg_w pos $ \ x ->
