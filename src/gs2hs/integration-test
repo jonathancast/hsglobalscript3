@@ -43,6 +43,7 @@ test_expression_application_syntax
 test_value_function
 test_case_hsgs_syntax
 test_for_variable
+test_lexical_variable_hsgs_syntax
 
 # Different functions
 
