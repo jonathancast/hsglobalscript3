@@ -151,7 +151,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
             _ ← lexeme $ char r{〈};
             'p ← generators env;
             _ ← lexeme $ char r{〉};
-        . parser.unit 〈 '0 ∝ expr.structure-literal (p #0); '1 ∝ nil; 〉
+        . parser.unit 〈 '0 ∝ expr.structure-literal (p #0) (p #1); '1 ∝ nil; 〉
     )
     <|> (parser.for
             'v ← parser.map gsvar ident-chars;

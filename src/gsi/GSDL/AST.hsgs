@@ -101,7 +101,7 @@ gskind_pointed = $gsconstr (gsvar "pointed") []
 
 gsexpr_natural = $gslambda_value $ \ n -> $gsbcconstr (gsvar "natural") [ $gsav n ]
 gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
-gsexpr_structure_literal = $gslambda_value $ \ gs -> $gsbcconstr (gsvar "structure-literal") [ $gsav gs ]
+gsexpr_structure_literal = $gslambda_value $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "structure-literal") [ $gsav gs, $gsav pos1 ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
 gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
 gsexpr_fallible_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]

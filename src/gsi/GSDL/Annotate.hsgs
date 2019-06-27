@@ -24,11 +24,12 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
     case expr.qlo 'v 'e 'x. expr.qlo v e (e #annotate env x)
-    case expr.structure-literal 'gs. expr.structure-literal
+    case expr.structure-literal 'gs 'pos1. expr.structure-literal
         (map
             (λ 'p. for 'p1 ∝ annotate-generator env (p #gen);. 〈 'pos ∝ p #pos; 'gen ∝ p1 #0; 'bvs ∝ just (p1 #1); 〉 )
             gs
         )
+        pos1
     case expr.pat 'p 'mb. expr.pat (annotate-pat env p) (just (analyze mb.
         case nothing. pat.bound-vars p
     ))
