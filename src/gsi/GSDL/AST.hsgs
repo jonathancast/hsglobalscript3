@@ -11,7 +11,7 @@ module GSDL.AST (
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
-    gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_generators, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_generators_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_value_var_view, gsexpr_missing_case_view,
+    gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_generators, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_structure_literal_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_generators_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_value_var_view, gsexpr_missing_case_view,
     gsqloitem_char, gsqloitem_char_view,
     gsimplicit_here, gsimplicit_here_view,
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
@@ -113,6 +113,7 @@ gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 
 gsexpr_natural_view = $gsbcconstr_view "natural"
 gsexpr_var_view = $gsbcconstr_view "var"
+gsexpr_structure_literal_view = $gsbcconstr_view "structure-literal"
 gsexpr_app_view = $gsbcconstr_view "app"
 gsexpr_qlo_view = $gsbcconstr_view "qlo"
 gsexpr_generators_view = $gsbcconstr_view "generators"
