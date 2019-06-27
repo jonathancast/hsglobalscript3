@@ -16,6 +16,7 @@ gsannotate_document = [gs:value| λ 'env. λ 'd. analyze d.
 |]
 
 $gsdeclare annotate-pat gsannotate_pat
+$gsdeclare annotate-generator gsannotate_generator
 
 $gsdeclare annotate-app gsannotate_app
 
@@ -23,6 +24,11 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
     case expr.qlo 'v 'e 'x. expr.qlo v e (e #annotate env x)
+    case expr.structure-literal 'gs. expr.structure-literal
+        (map
+            (λ 'p. for 'p1 ∝ annotate-generator env (p #gen);. 〈 'pos ∝ p #pos; 'gen ∝ p1 #0; 'bvs ∝ just (p1 #1); 〉 )
+            gs
+        )
     case expr.pat 'p 'mb. expr.pat (annotate-pat env p) (just (analyze mb.
         case nothing. pat.bound-vars p
     ))
@@ -33,8 +39,6 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.app 'f 'x. annotate-app env f (x:nil)
     case expr.missing-case. expr.missing-case
 |]
-
-$gsdeclare annotate-generator gsannotate_generator
 
 gsannotate_expr_arg = [gs:value| λ 'env. λ 'c. λ 'e. analyze e.
     case expr.var 'v. expr.var v
