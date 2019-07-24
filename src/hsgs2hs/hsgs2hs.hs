@@ -1028,6 +1028,7 @@ globalEnv = Env{
         ("st.set-var", "GSI.ST", "gsstsetvar"),
         ("string", "GSI.Parser", "gsparser_string"),
         ("symbol", "GSI.Parser", "gssymbol"),
+        ("syntactic-category.high-prec-prefix-op", "GSDL.AST", "gssyntactic_category_high_prec_prefix_op"),
         ("syntactic-category.lambda-like", "GSDL.AST", "gssyntactic_category_lambda_like"),
         ("syntactic-category.variable", "GSDL.AST", "gssyntactic_category_variable"),
         ("syntactic-category.where", "GSDL.AST", "gssyntactic_category_where"),
