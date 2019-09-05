@@ -6,9 +6,7 @@ import Prelude hiding (readFile, writeFile) -- Because Haskell is stupid and evi
 import qualified Data.Map as Map
 
 import Control.Exception (SomeException, try)
-
-import Data.Encoding.UTF8 (UTF8(..))
-import System.IO.Encoding (readFile)
+import System.IO (openFile, IOMode(ReadMode), hSetEncoding, utf8, hGetContents)
 
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
@@ -32,7 +30,10 @@ gsio_file_read = $gsimpprim gsioprim_file_read
 gsioprim_file_read :: Pos -> Thread -> GSValue -> IO GSValue
 gsioprim_file_read pos t fn = do
     fns <- gsapiEvalString $gshere fn
-    mbs <- try $ let ?enc = UTF8Strict in readFile fns
+    mbs <- try $ do
+        ifh <- openFile fns ReadMode
+        hSetEncoding ifh utf8
+        hGetContents ifh
     case mbs of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsioprim_file_read " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
         Right s -> do

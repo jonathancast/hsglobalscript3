@@ -5,4 +5,3 @@ if [ -x /usr/bin/apt ]; then
 fi
 cabal update
 cabal install HUnit
-cabal install encoding

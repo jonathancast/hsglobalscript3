@@ -17,12 +17,10 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 import Control.Exception (catchJust)
-import Data.Encoding.UTF8 (UTF8(..))
 import System.Directory (doesDirectoryExist, doesFileExist, getDirectoryContents, getModificationTime)
 import System.Environment (getArgs)
 import System.Exit (exitWith, ExitCode(..))
-import System.IO (hPutStrLn, stderr)
-import System.IO.Encoding (readFile, writeFile)
+import System.IO (openFile, IOMode(ReadMode, WriteMode), hSetEncoding, utf8, hGetContents, hPutStr, hPutStrLn, hClose, stderr)
 import System.IO.Error (isDoesNotExistError)
 
 import GSI.Util (Pos(..), compilationTime, gsfatal, fmtPos)
@@ -44,16 +42,20 @@ processArg m a = do
         as <- getDirectoryContents a
         mapM_ (\ a' -> processArg (modCat m a') (a ++ '/' : a')) $ filter (\ a' -> a' /= "." && a' /= "..") as
       else if irf && ".hsgs" `isSuffixOf` a then do
-        let ?enc = UTF8Strict
         b <- needToRecompile a
         if b then do
-            s <- readFile a
+            ifh <- openFile a ReadMode
+            hSetEncoding ifh utf8
+            s <- hGetContents ifh
             case compileHSGSSource m a s of
                 Left err -> do
                     hPutStrLn stderr err
                     exitWith $ ExitFailure 1
                 Right s' -> do
-                    writeFile (mkHSFile a) s'
+                    ofh <- openFile (mkHSFile a) WriteMode
+                    hSetEncoding ofh utf8
+                    hPutStr ofh s'
+                    hClose ofh
         else do
             return ()
       else if irf then return ()
