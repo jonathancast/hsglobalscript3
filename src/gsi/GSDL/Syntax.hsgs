@@ -78,6 +78,8 @@ gsexpr_function = [gs:value| λ 'env. parser.for 'p ← expr.atom true env;. exp
 
 $gsdeclare pat.atom gspat_atom
 
+$gsdeclare high-prec-prefix-op high_prec_prefix_op
+
 gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     <|> parser.unit 〈 '0 ∝ e; '1 ∝ s; 〉
     <|> (parser.for
@@ -328,6 +330,15 @@ operator = [gs:value| λ 'env. lexeme $ parser.for
         _ ← analyze parser.env.syntactic-category.get o env.
             case syntactic-category.variable. parser.unit 〈〉
             case syntactic-category.high-prec-prefix-op. parser.fail log{'§(log.str (gsvar.fmt-atom o))' is a prefix operator}
+        ;
+    . parser.unit o
+|]
+
+high_prec_prefix_op = [gs:value| λ 'env. lexeme $ parser.for
+        'o ← parser.map gsvar op-chars;
+        _ ← analyze parser.env.syntactic-category.get o env.
+            case syntactic-category.variable. parser.fail log{'§(log.str (gsvar.fmt-atom o))' is a regular operator}
+            case syntactic-category.high-prec-prefix-op. parser.unit 〈〉
         ;
     . parser.unit o
 |]
