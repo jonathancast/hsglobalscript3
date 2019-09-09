@@ -20,7 +20,7 @@ module GSDL.AST (
     gsorder_of_being_eq, gsorder_of_being_cmp,
     gsorder_of_being_expr, gsorder_of_being_generator, gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_pattern, gsorder_of_being_expr_view, gsorder_of_being_generator_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view,
     gscategory_fallible, gscategory_fallible_view,
-    gssyntactic_category_lambda_like, gssyntactic_category_high_prec_prefix_op, gssyntactic_category_variable, gssyntactic_category_where, gssyntactic_category_lambda_like_view, gssyntactic_category_variable_view, gssyntactic_category_where_view
+    gssyntactic_category_lambda_like, gssyntactic_category_high_prec_prefix_op, gssyntactic_category_variable, gssyntactic_category_where, gssyntactic_category_lambda_like_view, gssyntactic_category_high_prec_prefix_op_view, gssyntactic_category_variable_view, gssyntactic_category_where_view
   ) where
 
 import GSI.Syn (gsvar)
@@ -186,6 +186,7 @@ gssyntactic_category_lambda_like = $gsconstr (gsvar "lambda-like") []
 gssyntactic_category_variable = $gsconstr (gsvar "variable") []
 gssyntactic_category_where = $gsconstr (gsvar "where") []
 
+gssyntactic_category_high_prec_prefix_op_view = $gsbcconstr_view "high-prec-prefix-op"
 gssyntactic_category_lambda_like_view = $gsbcconstr_view "lambda-like"
 gssyntactic_category_variable_view = $gsbcconstr_view "variable"
 gssyntactic_category_where_view = $gsbcconstr_view "where"
