@@ -326,6 +326,7 @@ operator = [gs:value| λ 'env. lexeme $ parser.for
         'o ← parser.map gsvar op-chars;
         _ ← analyze parser.env.syntactic-category.get o env.
             case syntactic-category.variable. parser.unit 〈〉
+            case syntactic-category.high-prec-prefix-op. parser.fail log{'§(log.str (gsvar.fmt-atom o))' is a prefix operator}
         ;
     . parser.unit o
 |]
