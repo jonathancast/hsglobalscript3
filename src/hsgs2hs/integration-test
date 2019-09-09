@@ -102,4 +102,4 @@ ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-paren
 
 # ok_diff_compiled:  runghc `{./test-ghcoptions}
 # import TestHSGS (printTestExpr)
-# main = printTestExpr 
+# main = printTestExpr
