@@ -29,6 +29,7 @@ gsparser_global_env = [gs:value|
             qs
         ;
     〉 $
+    parser.env.signature.insert (gsvar qq{#}) (order-of-being.var-name : nil) $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{for}) (order-of-being.generator : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{value}) (order-of-being.value-var : nil) $
