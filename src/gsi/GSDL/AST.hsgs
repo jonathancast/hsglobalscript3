@@ -18,7 +18,7 @@ module GSDL.AST (
     gsgenerator_var, gsgenerator_app, gsgenerator_expr, gsgenerator_pattern, gsgenerator_var_view, gsgenerator_app_view, gsgenerator_expr_view, gsgenerator_pattern_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_eq, gsorder_of_being_cmp,
-    gsorder_of_being_expr, gsorder_of_being_generator, gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_var_name, gsorder_of_being_pattern, gsorder_of_being_expr_view, gsorder_of_being_generator_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view,
+    gsorder_of_being_expr, gsorder_of_being_generator, gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_var_name, gsorder_of_being_pattern, gsorder_of_being_expr_view, gsorder_of_being_generator_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view, gsorder_of_being_var_name_view,
     gscategory_fallible, gscategory_fallible_view,
     gssyntactic_category_lambda_like, gssyntactic_category_arg_operator, gssyntactic_category_variable, gssyntactic_category_where, gssyntactic_category_lambda_like_view, gssyntactic_category_arg_operator_view, gssyntactic_category_variable_view, gssyntactic_category_where_view
   ) where
@@ -184,6 +184,7 @@ gsorder_of_being_generator_view = $gsbcconstr_view "generator"
 gsorder_of_being_open_expr_view = $gsbcconstr_view "open-expr"
 gsorder_of_being_pattern_view = $gsbcconstr_view "pattern"
 gsorder_of_being_value_var_view = $gsbcconstr_view "value-var"
+gsorder_of_being_var_name_view = $gsbcconstr_view "var-name"
 
 gssyntactic_category_arg_operator = $gsconstr (gsvar "arg-operator") []
 gssyntactic_category_lambda_like = $gsconstr (gsvar "lambda-like") []
