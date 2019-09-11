@@ -279,12 +279,12 @@ gspat_function_w = [gs:value| λ 'env. λ 'p.
     <|> parser.for 'pos ← get-pos; 'p1 ← pat.atom env;. pat.function-w env (pat.app p pos p1)
 |]
 
-$gsdeclare pident pident
+$gsdeclare ident ident
 
 gspat_atom = [gs:value| λ 'env.
     <|> (parser.for _ ← lexeme (char r{_});. parser.unit pat.discard)
     <|> (parser.for 'v ← var env;. parser.unit (pat.view v))
-    <|> (parser.for 'v ← char r{'} *> pident;. parser.unit (pat.var v))
+    <|> (parser.for 'v ← char r{'} *> ident;. parser.unit (pat.var v))
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
@@ -324,7 +324,7 @@ colon_paren = [gs:value| λ 'env. lexeme $ parser.for
     . parser.unit v
 |]
 
-pident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
+ident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
 
 $gsdeclare ident-start-char identStartChar
 $gsdeclare ident-cont-char identContChar
