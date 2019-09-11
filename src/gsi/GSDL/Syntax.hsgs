@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, ident, ident_chars, op_chars, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, var, ident_chars, op_chars, lexeme, whitespace) where
 
 $gsimports
 
@@ -173,7 +173,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
     )
     <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
     <|> (parser.for
-            'v ← ident env;
+            'v ← var env;
             'es ← analyze a.
                 case true. many $ explicit-arg env
                 case false. parser.unit nil
@@ -189,7 +189,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
 gsexplicit_arg = [gs:value| λ 'env. parser.for
         _ ← matching log{explicit application character} (rune.≡ r{_});
         'pose ← get-pos;
-        'e ← parser.map expr.var (ident env);
+        'e ← parser.map expr.var (var env);
     . parser.unit 〈 '0 ∝ pose; '1 ∝ e; 〉
 |]
 
@@ -283,13 +283,13 @@ $gsdeclare pident pident
 
 gspat_atom = [gs:value| λ 'env.
     <|> (parser.for _ ← lexeme (char r{_});. parser.unit pat.discard)
-    <|> (parser.for 'v ← ident env;. parser.unit (pat.view v))
+    <|> (parser.for 'v ← var env;. parser.unit (pat.view v))
     <|> (parser.for 'v ← char r{'} *> pident;. parser.unit (pat.var v))
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]
 
-ident = [gs:value| λ 'env. lexeme $ parser.for
+var = [gs:value| λ 'env. lexeme $ parser.for
         'v ← parser.map gsvar ident-chars;
         _ ← not-followed-by (char r{\{} <|> char r{<} <|> char r{/});
         _ ← analyze parser.env.syntactic-category.get v env.
