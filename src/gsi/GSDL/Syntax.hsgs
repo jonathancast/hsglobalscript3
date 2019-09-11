@@ -57,9 +57,7 @@ expr = [gs:value| λ 'env.
         <|> parser.for
                 'posop ← get-pos;
                 'op ← operator env;
-                's1 ← analyze parser.env.signature.get op env.
-                    case nothing. parser.unit nil
-                ;
+                's1 ← parser.unit $ parser.env.signature.get op env;
                 'es ← many $ explicit-arg env;
                 'opes ← parser.unit $ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
                 'pos1 ← get-pos;
@@ -89,6 +87,12 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
                 case order-of-being.value-var : 's1. parser.for 'i ← parser.map gsvar $ lexeme ident-chars;. parser.unit 〈 '0 ∝ arg.expr pos (expr.value-var i); '1 ∝ s1; 〉
                 case nil.
                     <|> (parser.for 'p ← expr.atom false env;. parser.unit 〈 '0 ∝ arg.expr pos (p #0); '1 ∝ nil; 〉)
+                    <|> (parser.for
+                            'op ← arg-operator env;
+                            'a ← analyze parser.env.signature.get op env.
+                            ;
+                        . undefined
+                    )
             ;
         . expr.function.w env (expr.app e (p #0)) (p #1)
     )
@@ -101,7 +105,7 @@ $gsdeclare pat gspat
 
 gsexpr_lambda_like = [gs:value| λ 'env. parser.for
         'v ← lambda-like-keyword env;
-        's ← parser.unit $ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
+        's ← parser.unit $ parser.env.signature.get v env;
         'es ← many $ explicit-arg env;
         'ves ← parser.unit $ foldl expr.app (expr.var v) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
         'posh ← get-pos;
@@ -177,7 +181,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
             'ves ← parser.unit $ foldl expr.app (expr.var v) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
         . parser.unit 〈
             '0 ∝ ves;
-            '1 ∝ analyze parser.env.signature.get v env. case nothing. nil case just 's. s;
+            '1 ∝ parser.env.signature.get v env;
         〉
     )
 |]
@@ -242,7 +246,7 @@ gsgenerator = [gs:value| λ 'env.
             ;
             'op ← operator env;
             's1 ← analyze parser.env.signature.get op (parser.env.generator.get env).
-                case just ('o : 's1). (analyze order-of-being.≡ o (p0 #0).
+                case 'o : 's1. (analyze order-of-being.≡ o (p0 #0).
                     case true. parser.unit s1
                 )
             ;
