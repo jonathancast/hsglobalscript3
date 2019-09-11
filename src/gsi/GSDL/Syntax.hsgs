@@ -346,7 +346,7 @@ arg_operator = [gs:value| λ 'env. lexeme $ parser.for
 $gsdeclare delimiter delimiter
 
 $gsdeclare op-component op_component
-$gsdeclare op-cont-char opContChar
+$gsdeclare op-cont-char op_cont_char
 
 op_chars = [gs:value| op-component <* not-followed-by delimiter |]
 
@@ -362,12 +362,12 @@ gsconcat = [gs:value| foldr (<>) nil |]
 
 cont_component = [gs:value| parser.map2 (:) delimiter ident-component |]
 
-$gsdeclare ident-start-char identStartChar
+$gsdeclare ident-start-char ident_start_char
 $gsdeclare ident-comp-cont ident_comp_cont
 
 ident_component = [gs:value| parser.map2 (:) ident-start-char ident-comp-cont |]
 
-$gsdeclare ident-cont-char identContChar
+$gsdeclare ident-cont-char ident_cont_char
 $gsdeclare ident-up-cont-char ident_up_cont_char
 $gsdeclare ident-comp-up-cont ident_comp_up_cont
 
@@ -388,12 +388,12 @@ op_component = [gs:value| parser.map2 (:) op-start-char (max-many op-cont-char) 
 
 delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.≡ c r{.}) |]
 
-identStartChar = [gs:value| matching log{ident start character} is-lower |]
-identContChar = [gs:value| matching log{ident cont character} is-lower |]
+ident_start_char = [gs:value| matching log{ident start character} is-lower |]
+ident_cont_char = [gs:value| matching log{ident cont character} is-lower |]
 ident_up_cont_char = [gs:value| matching log{ident cont character} (λ 'c. is-upper c || is-ascii-digit c) |]
 
 op_start_char = [gs:value| matching log{op start character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘} || is-non-ascii-symbol c) |]
-opContChar = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘}) |]
+op_cont_char = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘}) |]
 
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
 
