@@ -325,9 +325,6 @@ colon_paren = [gs:value| λ 'env. lexeme $ parser.for
 
 ident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
 
-$gsdeclare ident-start-char identStartChar
-$gsdeclare ident-cont-char identContChar
-
 operator = [gs:value| λ 'env. lexeme $ parser.for
         'o ← parser.map gsvar op-chars;
         _ ← analyze parser.env.syntactic-category.get o env.
@@ -365,13 +362,14 @@ gsconcat = [gs:value| foldr (<>) nil |]
 
 cont_component = [gs:value| parser.map2 (:) delimiter ident-component |]
 
+$gsdeclare ident-start-char identStartChar
 $gsdeclare ident-comp-cont ident_comp_cont
 
 ident_component = [gs:value| parser.map2 (:) ident-start-char ident-comp-cont |]
 
-$gsdeclare ident-comp-up-cont ident_comp_up_cont
-
+$gsdeclare ident-cont-char identContChar
 $gsdeclare ident-up-cont-char ident_up_cont_char
+$gsdeclare ident-comp-up-cont ident_comp_up_cont
 
 ident_comp_cont = [gs:value|
     <|> (not-followed-by (ident-cont-char <|> ident-up-cont-char) *> parser.unit nil)
