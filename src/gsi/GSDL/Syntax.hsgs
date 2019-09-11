@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, var, ident_chars, op_chars, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, ident, ident_chars, op_chars, lexeme, whitespace) where
 
 $gsimports
 
@@ -149,6 +149,7 @@ gsexpr_lambda_like = [gs:value| λ 'env. parser.for
 $gsdeclare parens parens
 $gsdeclare natural natural
 
+$gsdeclare var var
 $gsdeclare idmc gsidmc
 $gsdeclare qloitem gsqloitem
 
@@ -278,8 +279,6 @@ gspat_function_w = [gs:value| λ 'env. λ 'p.
     <|> parser.unit p
     <|> parser.for 'pos ← get-pos; 'p1 ← pat.atom env;. pat.function-w env (pat.app p pos p1)
 |]
-
-$gsdeclare ident ident
 
 gspat_atom = [gs:value| λ 'env.
     <|> (parser.for _ ← lexeme (char r{_});. parser.unit pat.discard)
