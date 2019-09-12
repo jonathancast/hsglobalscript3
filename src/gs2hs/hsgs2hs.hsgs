@@ -133,6 +133,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
     case expr.app 'f 'x. (analyze x.
         case arg.here. compile-app env pos f (x : nil)
         case arg.expr _ _. compile-app env pos f (x : nil)
+        case arg.app 'af 'pos1 'ax. compile-custom-app env pos f af (ax : nil)
     )
     case expr.generators 'gs 'pos1. compile-generators env gs pos1
     case expr.pat 'p _. compile-pat env pos p
