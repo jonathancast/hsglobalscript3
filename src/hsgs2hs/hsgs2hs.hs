@@ -1111,6 +1111,7 @@ globalEnv = Env{
     gsviews = Map.fromList $ map (\ (gsn, hsm, hsn) -> (gsn, (Set.singleton $ HSIVar hsm hsn, HSVar hsn))) $ [
         (":", "GSI.List", "gscons_view"),
         ("ENOENT", "GSI.Env", "gsENOENT_view"),
+        ("arg.app", "GSDL.AST", "gsarg_app_view"),
         ("arg.explicit", "GSDL.AST", "gsarg_explicit_view"),
         ("arg.expr", "GSDL.AST", "gsarg_expr_view"),
         ("arg.here", "GSDL.AST", "gsarg_here_view"),

@@ -14,7 +14,7 @@ module GSDL.AST (
     gsexpr_natural, gsexpr_var, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_generators, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_structure_literal_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_generators_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_value_var_view, gsexpr_missing_case_view,
     gsqloitem_char, gsqloitem_char_view,
     gsimplicit_here, gsimplicit_here_view,
-    gsarg_expr, gsarg_here, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view,
+    gsarg_expr, gsarg_here, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view, gsarg_app_view,
     gsgenerator_var, gsgenerator_app, gsgenerator_expr, gsgenerator_pattern, gsgenerator_var_view, gsgenerator_app_view, gsgenerator_expr_view, gsgenerator_pattern_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_eq, gsorder_of_being_cmp,
@@ -141,6 +141,7 @@ gsarg_var_name = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var-name") [ $gsav
 gsarg_expr_view = $gsbcconstr_view "expr"
 gsarg_here_view = $gsbcconstr_view "here"
 gsarg_explicit_view = $gsbcconstr_view "explicit"
+gsarg_app_view = $gsbcconstr_view "app"
 
 gsgenerator_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gsgenerator_app = $gslambda_value $ \ g0 -> $gsbcarg $ \ pos -> $gsbcarg $ \ g1 -> $gsbcconstr (gsvar "app") [ $gsav g0, $gsav pos, $gsav g1 ]
