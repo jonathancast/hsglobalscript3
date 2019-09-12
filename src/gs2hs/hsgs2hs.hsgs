@@ -108,6 +108,7 @@ gscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
 |]
 
 $gsdeclare compile-app gscompile_app
+$gsdeclare compile-custom-app gscompile_custom_app
 $gsdeclare compile-generators gscompile_generators
 $gsdeclare compile-pat gscompile_pat
 $gsdeclare compile-fallible-pat gscompile_fallible_pat
@@ -170,6 +171,8 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     )
     case expr.app 'f1 'a. compile-app env pos f1 (a:as)
 |]
+
+gscompile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. undefined |]
 
 gscompile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
