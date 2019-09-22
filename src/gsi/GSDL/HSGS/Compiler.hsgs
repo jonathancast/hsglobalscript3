@@ -26,4 +26,9 @@ gshsgs_compiler_env_generator_modify = [gs:value| λ 'f. λ 'env. for
     . record.∧ env2 env
 |]
 
-gshsgs_compiler_env_empty = [gs:value| 〈 'vars ∝ ordered-map.empty; 'views ∝ ordered-map.empty; 'generators ∝ ordered-map.empty; 'gen-sym ∝ 0; 〉 |]
+gshsgs_compiler_env_empty = [gs:value| 〈
+    'vars ∝ ordered-map.empty;
+    'views ∝ ordered-map.empty;
+    'generators ∝ ordered-map.empty;
+    'gen-sym ∝ 0;
+〉 |]
