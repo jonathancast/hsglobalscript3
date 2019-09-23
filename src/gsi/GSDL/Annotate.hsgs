@@ -88,6 +88,7 @@ $gsdeclare annotate-expr-arg gsannotate_expr_arg
 
 gsannotate_arg = [gs:value| λ 'env. λ 'c. λ 'a. analyze a.
     case arg.var 'v. arg.var v
+    case arg.var-name 'v. arg.var-name v
     case arg.expr 'pos 'e. arg.expr pos (annotate-expr-arg env c e)
     case arg.explicit 'pos 'e. arg.explicit pos (annotate-expr env e)
     case arg.app 'af 'ax. arg.app (annotate-arg env nothing af) (annotate-arg env nothing ax)
