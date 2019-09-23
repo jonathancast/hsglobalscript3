@@ -176,6 +176,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
 gscompile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. analyze af.
     case arg.var 'v. (analyze hsgs.compiler.env.arg-var.get v env.
         case nothing. left $ pos.fmt pos qq{argument §(gsvar.name v) not in scope}
+        case just 'c. c env pos f as
     )
 |]
 
