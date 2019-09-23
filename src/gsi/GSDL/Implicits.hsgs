@@ -27,6 +27,7 @@ gsadd_implicits_expr = [gs:value| λ 'env. λ 'e. analyze e.
 
 gsadd_implicits_arg = [gs:value| λ 'env. λ 'a. analyze a.
     case arg.var 'v. arg.var v
+    case arg.var-name 'v. arg.var-name v
     case arg.expr 'pos 'e. arg.expr pos (add-implicits-expr env e)
     case arg.app 'af 'ax. arg.app (add-implicits-arg env af) (add-implicits-arg env ax)
 |]
