@@ -1118,6 +1118,7 @@ globalEnv = Env{
         ("arg.expr", "GSDL.AST", "gsarg_expr_view"),
         ("arg.here", "GSDL.AST", "gsarg_here_view"),
         ("arg.var", "GSDL.AST", "gsarg_var_view"),
+        ("arg.var-name", "GSDL.AST", "gsarg_var_name_view"),
         ("category.fallible", "GSDL.AST", "gscategory_fallible_view"),
         ("dest-comp.char", "GSDL.HSGS.AST", "gsdest_comp_char_view"),
         ("dest-comp.expr", "GSDL.HSGS.AST", "gsdest_comp_expr_view"),
