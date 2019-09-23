@@ -68,6 +68,7 @@ gspareval pos xs ys = do
 gspriminsufficientcases :: Pos -> GSValue -> IO GSValue
 gspriminsufficientcases pos v@GSError{} = return v
 gspriminsufficientcases pos v@GSImplementationFailure{} = return v
+gspriminsufficientcases pos v@GSInvalidProgram{} = return v
 gspriminsufficientcases pos (GSThunk th) = do
     v <- evalSync [StackTrace pos []] th
     gspriminsufficientcases pos v
