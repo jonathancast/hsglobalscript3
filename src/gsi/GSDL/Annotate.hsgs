@@ -81,6 +81,7 @@ gsannotate_app = [gs:value| λ 'env. λ 'f. λ 'as. analyze f.
             ;. for 'as1 ∝ map2 (annotate-arg env) (cs <> repeat nothing) as;.
                 for 'ns ∝ annotate-get-name-set as1;.
                     foldl expr.app (expr.var v) (map (annotate-set-name-set-arg ns) as1)
+    case expr.unary 'v. foldl expr.app (expr.unary v) (map (annotate-arg env nothing) as)
     case expr.structure-literal _ _. foldl expr.app (annotate-expr env f) (map (annotate-arg env nothing) as)
 |]
 
