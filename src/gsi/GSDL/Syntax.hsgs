@@ -66,6 +66,15 @@ expr = [gs:value| λ 'env.
                 ;
             . parser.unit 〈 '0 ∝ expr.app (expr.app opes (arg.expr pos0 (p0 #0))) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
     )
+    <|> (parser.for
+            'op ← operator env;
+            'opes ← parser.unit $ expr.unary op;
+            's ← parser.unit nil;
+            'pos1 ← get-pos;
+            'p1 ← expr.function env;
+            's1 ← analyze s. case nil. parser.unit nil;
+        . parser.unit 〈 '0 ∝ expr.app opes (arg.expr pos1 (p1 #0)); '1 ∝ s1; 〉
+    )
     <|> expr.lambda-like env
 |]
 
