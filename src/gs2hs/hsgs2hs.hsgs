@@ -154,16 +154,16 @@ $gsdeclare compile-args gscompile_args
 gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-        case just 'p.
-            -- To implement §gs{here}, we need to find the call stack for the whole application.
-            -- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{compile-arg}
-            (analyze need-here as.
-                case false. compile-args pos p as nothing env
-                case true. supply-here env pos (compile-args pos p as)
-            )
+        case just 'p. (analyze need-here as.
+            case false. compile-args pos p as nothing env
+            case true. supply-here env pos (compile-args pos p as)
+        )
     )
     case expr.app 'f1 'a. compile-app env pos f1 (a:as)
 |]
+
+-- To implement §gs{here}, we need to find the call stack for the whole application.
+-- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{compile-arg}
 
 gsneed_here = [gs:value| λ 'as. list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as |]
 
