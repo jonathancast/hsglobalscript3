@@ -796,6 +796,7 @@ globalEnv = Env{
         ("expr.pat", "GSDL.AST", "gsexpr_pat"),
         ("expr.qlo", "GSDL.AST", "gsexpr_qlo"),
         ("expr.structure-literal", "GSDL.AST", "gsexpr_structure_literal"),
+        ("expr.unary", "GSDL.AST", "gsexpr_unary"),
         ("expr.value-var", "GSDL.AST", "gsexpr_value_var"),
         ("expr.var", "GSDL.AST", "gsexpr_var"),
         ("false", "GSI.Bool", "gsfalse"),
