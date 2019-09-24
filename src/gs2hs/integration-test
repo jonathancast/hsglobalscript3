@@ -47,6 +47,7 @@ test_lexical_variable_hsgs_syntax
 test_empty_structure_literal
 test_record_literal_field
 test_field_extraction
+test_prefix_operators
 
 # Different functions
 
