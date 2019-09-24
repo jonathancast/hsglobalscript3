@@ -159,6 +159,13 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
             case true. supply-here env pos (compile-args pos p as)
         )
     )
+    case expr.unary 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.unary.get env).
+        case nothing. left $ pos.fmt pos qq{unary §(gsvar.fmt-atom v) not in scope}
+        case just 'p. (analyze need-here as.
+            case false. compile-args pos p as nothing env
+            case true. supply-here env pos (compile-args pos p as)
+        )
+    )
     case expr.app 'f1 'a. compile-app env pos f1 (a:as)
 |]
 
