@@ -55,7 +55,6 @@ expr = [gs:value| λ 'env.
     <|> (parser.for 'pos0 ← get-pos; 'p0 ← expr.function env;.
         <|> parser.unit p0
         <|> parser.for
-                'posop ← get-pos;
                 'op ← operator env;
                 's1 ← parser.unit $ parser.env.signature.get op env;
                 'es ← many $ explicit-arg env;
