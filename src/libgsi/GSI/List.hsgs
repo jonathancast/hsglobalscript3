@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_compare, gslist_exists, gslist_member, gslist_not_member, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -95,6 +95,14 @@ gslist_compare = [gs:value| λ 'cmp. λ 'xn. λ 'ys. analyze xn.
     case 'x:'xn1. (analyze ys.
         case 'y:'ys1. ord.<|> (cmp x y) (list.<=> cmp xn1 ys1)
     )
+|]
+
+gslist_forall = [gs:value| λ 'p. λ 'xn. analyze xn.
+    case 'x:'xn1. (analyze p x.
+        case true. list.∀ p xn1
+        case false. false
+    )
+    case nil. true
 |]
 
 gslist_exists = [gs:value| λ 'p. λ 'xn. analyze xn.
