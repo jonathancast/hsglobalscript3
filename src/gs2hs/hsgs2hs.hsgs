@@ -148,6 +148,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
 $gsdeclare compile-arg gscompile_arg
 
 $gsdeclare need-here gsneed_here
+$gsdeclare supply-here gssupply_here
 
 gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
@@ -157,11 +158,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
             -- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{compile-arg}
             (analyze need-here as.
                 case false. λ 'k. k nothing env
-                case true. λ 'k. hsgs.compiler.env.gen-sym env $ λ 'herehs. λ 'env1. either.for 'p1 ← k (just herehs) env1;.
-                    right 〈
-                        '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcwithhere_w} : hspos-import : nil) (p1 #0);
-                        '1 ∝ hsexpr.applyvar qq{gsbcwithhere_w} (hspos pos : hsexpr.lambda herehs (p1 #1) : nil);
-                    〉
+                case true. supply-here env pos
             ) $ λ 'mbhere. λ 'env1. either.for 'as1 ← either.mapM (compile-arg mbhere env1) as;. right 〈
                 '0 ∝ foldr (ordered-set.∪ hsimport.<=>) ordered-set.empty (
                     ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hspos-import : nil) :
@@ -176,6 +173,13 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
 |]
 
 gsneed_here = [gs:value| λ 'as. list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as |]
+
+gssupply_here = [gs:value|  λ 'env. λ 'pos. λ 'k. hsgs.compiler.env.gen-sym env $ λ 'herehs. λ 'env1. either.for 'p1 ← k (just herehs) env1;.
+    right 〈
+        '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcwithhere_w} : hspos-import : nil) (p1 #0);
+        '1 ∝ hsexpr.applyvar qq{gsbcwithhere_w} (hspos pos : hsexpr.lambda herehs (p1 #1) : nil);
+    〉
+|]
 
 gscompile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. analyze af.
     case arg.var 'v. (analyze hsgs.compiler.env.arg-var.get v env.
