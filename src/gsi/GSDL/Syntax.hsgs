@@ -347,7 +347,6 @@ arg_operator = [gs:value| λ 'env. lexeme $ parser.for
 $gsdeclare delimiter delimiter
 
 $gsdeclare op-component op_component
-$gsdeclare op-cont-char op_cont_char
 
 op_chars = [gs:value| op-component <* not-followed-by delimiter |]
 
@@ -384,6 +383,7 @@ ident_comp_up_cont = [gs:value|
 |]
 
 $gsdeclare op-start-char op_start_char
+$gsdeclare op-cont-char op_cont_char
 
 op_component = [gs:value| parser.map2 (:) op-start-char (max-many op-cont-char) |]
 
