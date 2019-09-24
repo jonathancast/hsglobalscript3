@@ -151,7 +151,7 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p.
-            -- To implement §gs{here}, we need to find the call stack for the whole implementation.
+            -- To implement §gs{here}, we need to find the call stack for the whole application.
             -- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{compile-arg}
             (analyze list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as.
                 case false. λ 'k. k nothing env
