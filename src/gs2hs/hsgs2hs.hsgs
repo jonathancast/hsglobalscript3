@@ -120,7 +120,7 @@ gscompile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
         '1 ∝ hsexpr.applyvar qq{gsbcnatural_w} (hspos pos : hsexpr.int n : nil);
     〉
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
-        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p. right 〈
             '0 ∝ ordered-set.∪ hsimport.<=>
                 (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcenter_w} : hspos-import : nil))
@@ -149,7 +149,7 @@ $gsdeclare compile-arg gscompile_arg
 
 gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
-        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p.
             -- To implement §gs{here}, we need to find the call stack for the whole implementation.
             -- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{compile-arg}
@@ -175,21 +175,21 @@ gscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
 
 gscompile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. analyze af.
     case arg.var 'v. (analyze hsgs.compiler.env.arg-var.get v env.
-        case nothing. left $ pos.fmt pos qq{argument §(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{argument §(gsvar.fmt-atom v) not in scope}
         case just 'c. c env pos f as
     )
 |]
 
 gscompile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
-        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p. right 〈
             '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.singleton (hsimport.type qq{GSI.Value} qq{GSArg})) (p #0);
             '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
         〉
     )
     case arg.expr 'pos (expr.value-var 'v). (analyze hsgs.compiler.env.var.get v env.
-        case nothing. left $ pos.fmt pos qq{§(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p. right 〈
             '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.singleton (hsimport.type qq{GSI.Value} qq{GSArg})) (p #0);
             '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
@@ -264,7 +264,7 @@ $gsdeclare compile-generator-arg gscompile_generator_arg
 
 gscompile_generator_app = [gs:value| λ 'env. λ 'pos. λ 'g. λ 'as. analyze g.
     case generator.var 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.generator.get env).
-        case nothing. left $ pos.fmt pos qq{generator §(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{generator §(gsvar.fmt-atom v) not in scope}
         case just 'p. either.for 'as1 ← either.mapM (compile-generator-arg env) as;. right 〈
             '0 ∝ ordered-set.unions hsimport.<=> (
                 ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hspos-import : nil) :
@@ -316,7 +316,7 @@ gscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
     case pat.discard. compile-infallible-pat env pos p
     case pat.var _. compile-infallible-pat env pos p
     case pat.view 'v. (analyze hsgs.compiler.env.view.get v env.
-        case nothing. left $ pos.fmt pos qq{view §(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{view §(gsvar.fmt-atom v) not in scope}
         case just 'r. right 〈
             '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcviewpattern_w} : hspos-import : nil) $ r #0;
             '1 ∝ hsexpr.applyvar qq{gsbcviewpattern_w} (hspos pos : r #1 : hsexpr.list nil : nil);
@@ -328,7 +328,7 @@ gscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
 gscompile_fallible_pat_app = [gs:value| λ 'env. λ 'pos. λ 'p. λ 'as. analyze p.
     case pat.app 'p0 'pos1 'p1. compile-fallible-pat-app env pos p0 (〈 '0 ∝ pos1; '1 ∝ p1; 〉 : as)
     case pat.view 'v. (analyze hsgs.compiler.env.view.get v env.
-        case nothing. left $ pos.fmt pos qq{view §(gsvar.name v) not in scope}
+        case nothing. left $ pos.fmt pos qq{view §(gsvar.fmt-atom v) not in scope}
         case just 'r. either.for 'ras ← either.mapM (λ 'a. either.for 'ra ← compile-fallible-pat env (a #0) (a #1);. right 〈 'pos ∝ a #0; 'is ∝ ra #0; 'cp ∝ ra #1; 〉) as;. right 〈
             '0 ∝ ordered-set.unions hsimport.<=> (
                 ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcviewpattern_w} : hspos-import : hsimport.type qq{GSI.Value} qq{GSArg} : nil) :
