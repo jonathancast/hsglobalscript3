@@ -384,7 +384,14 @@ ident_comp_up_cont = [gs:value|
 $gsdeclare op-start-char op_start_char
 $gsdeclare op-cont-char op_cont_char
 
-op_component = [gs:value| parser.map2 (:) op-start-char (max-many op-cont-char) |]
+op_component = [gs:value| parser.for
+        's ← parser.map2 (:) op-start-char (max-many op-cont-char);
+        _ ← analyze s.
+            case _ : (_ : _). (analyze list.∀ (rune.≡ r{-}) s. case false. parser.unit 〈〉 case true. parser.fail log{§(log.str s) is a comment delimiter})
+            case _. parser.unit 〈〉
+        ;
+    . parser.unit s
+|]
 
 delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.≡ c r{.}) |]
 
