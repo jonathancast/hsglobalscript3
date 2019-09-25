@@ -9,6 +9,8 @@ if (! [ -f $1 ]) {
     exit 1
 }
 
+rm -f $TEST_DIR/test-fixtures/temp.hs
+
 > $TEST_DIR/test-fixtures/temp.hsgs
 echo '{-# LANGUAGE TemplateHaskell #-}' >> $TEST_DIR/test-fixtures/temp.hsgs
 echo 'import TestHSGS (printTestExpr)' >> $TEST_DIR/test-fixtures/temp.hsgs
