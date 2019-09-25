@@ -1,4 +1,4 @@
-module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gstype_checker_global_env) where
+module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gstype_checker_global_env, gshsgs_compiler_global_env) where
 
 $gsimports
 
@@ -332,3 +332,39 @@ gstype_monad = [gs:value| λ 'm. type.signature $
     ) $
     type.env.empty
 |]
+
+$gsdeclare hsgs.compiler.env.var.simple-insert gshsgs_compiler_env_var_simple_insert
+$gsdeclare hsgs.compiler.env.view.simple-insert gshsgs_compiler_env_view_simple_insert
+
+gshsgs_compiler_global_env = [gs:value|
+    hsgs.compiler.env.generator.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{∝}) qq{GSI.StdLib} qq{gsmatch}) $
+    hsgs.compiler.env.unary.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_unary_plus}) $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{analyze}) qq{GSI.StdLib} qq{gsanalyze} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{case}) qq{GSI.StdLib} qq{gscase} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{for}) qq{GSI.StdLib} qq{gsfor} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{map}) qq{GSI.List} qq{gsmap} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{not}) qq{GSI.Bool} qq{gsnot} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{undefined}) qq{GSI.StdLib} qq{gsundefined} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{value}) qq{GSI.StdLib} qq{gsvalue} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{λ}) qq{GSI.StdLib} qq{gslambda} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{nothing}) qq{GSI.Maybe} qq{gsnothing_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue_view} $
+    hsgs.compiler.env.arg-var.insert (gsvar qq{#}) (λ 'env. λ 'pos. λ 'f. λ 'as. analyze as.
+        case arg.var-name 'v : nil. either.for 'p ← hsgs.compile-arg nothing env (arg.expr pos f);. right 〈
+            '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcfield_w} : hspos-import : hsimport.var qq{GSI.Syn} qq{gsvar} : nil) (p #0);
+            '1 ∝ hsexpr.applyvar qq{gsbcfield_w} (hspos pos : p #1 : hsexpr.applyvar qq{gsvar} (hsexpr.string (gsvar.name v) : nil) : nil);
+        〉
+    ) $
+    hsgs.compiler.env.empty
+|]
+
+gshsgs_compiler_env_var_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hsgs.compiler.env.var.insert v 〈 '0 ∝ ordered-set.singleton (hsimport.var m hsv); '1 ∝ hsexpr.var hsv; 〉 |]
+gshsgs_compiler_env_view_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hsgs.compiler.env.view.insert v 〈 '0 ∝ ordered-set.singleton (hsimport.var m hsv); '1 ∝ hsexpr.var hsv; 〉 |]
