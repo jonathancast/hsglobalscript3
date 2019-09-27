@@ -6,7 +6,9 @@
 . $GS_SPEC/bin/gs-spec
 . $GS_SPEC/bin/hsgs-spec
 
-fn test_gsi_impl { ./test_gsi_impl.rc $* }
+# .hsgs files
+
+fn test_gsi_impl { ./test_hsgs_gsi $* }
 
 test_hsgs_empty_file
 test_hsgs_non_existent_directory
@@ -16,17 +18,17 @@ test_hsgs_haskell_interpolation
 test_hsgs_normal_bracket
 test_hsgs_comments
 
-# Different kinds of interpolations
+## Different kinds of interpolations
 
 test_hsgs_variable_expressions
 test_hsgs_variable_values
 test_hsgs_application_values
 
-# Different kinds of declarations
+## Different kinds of declarations
 
 test_hsgs_variable_declarations
 
-# Different kinds of expressions
+## Different kinds of expressions
 
 test_number
 test_unbound_variable
@@ -48,8 +50,9 @@ test_empty_structure_literal
 test_record_literal_field
 test_field_extraction
 test_prefix_operators
+TODO=todo test_monadic_generators
 
-# Different functions
+## Different functions
 
 test_undefined_function_hsgs
 

@@ -1,0 +1,29 @@
+#! /usr/local/plan9/bin/rc
+
+while ([ -d $1 ]) shift
+
+GS_FILE=$1
+
+if (! [ -f $GS_FILE ]) {
+    echo $GS_FILE^': no such file or directory' >[1=2]
+    exit 1
+}
+
+HSGS_FILE=`{echo $GS_FILE | sed 's/\.gs$/.hsgs/'}
+HS_FILE=`{echo $GS_FILE | sed 's/\.gs$/\.hs/'}
+
+if (! [ -f $HS_File ] || [ $GS_FILE -nt $HS_FILE ] || [ ./hsgs2hs -nt $HS_FILE ]) {
+    > $HSGS_FILE {
+        echo '{-# LANGUAGE TemplateHaskell #-}'
+        echo 'import TestHSGS (printTestExpr)'
+        echo '$gsimports'
+        echo ''
+        echo 'main = printTestExpr [gs:expr|'
+        cat $GS_FILE
+        echo '|]'
+    }
+
+    ./hsgs2hs $HSGS_FILE || exit $status
+}
+
+exec runghc `{./test-ghcoptions} $HS_FILE
