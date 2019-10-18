@@ -3,3 +3,4 @@
 $HSGLOBALSCRIPT/bin/hsgs2hs $HSGLOBALSCRIPT/src/libgsi $HSGLOBALSCRIPT/src/gsi .
 
 ghc --make `{./ghcoptions} hsgs2hs.hs
+ghc --make `{./ghcoptions} test-gsi2hs.hs

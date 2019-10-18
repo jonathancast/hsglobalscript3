@@ -1,0 +1,11 @@
+#! /usr/local/plan9/bin/rc
+
+while ([ -d $1 ]) shift
+
+GS_FILE=$1
+
+HS_FILE=`{echo $GS_FILE | sed 's/\.gs$/\.hs/'}
+
+./test-gsi2hs $GS_FILE || exit $status
+
+exec runghc `{./test-ghcoptions} $HS_FILE

@@ -1,0 +1,36 @@
+import GSI.Env (runGSProgram)
+$gsimports
+
+$gsdeclare process-arg gsprocess_arg
+
+main = runGSProgram $ [gs:value| λ 'as. impmapM process-arg as |]
+
+$gsdeclare need-to-recompile gsneed_to_recompile
+$gsdeclare compile-gs-source gscompile_gs_source
+$gsdeclare mk-hs-file gsmk_hs_file
+
+gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
+    case left (ENOENT _). impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{enoent}
+    case right 'st. (analyze st #is.dir.
+        case true. impfor 'as ← dir.read a;. impmapM (λ 'a1. process-arg (a <> r{/} : a1)) as
+        case false. (analyze file.name.extension.get a.
+            case qq{gs}. (impanalyzeM need-to-recompile a.
+                case true. (impfor 's ← file.read a;. analyze compile-gs-source a s.
+                    case right 's1. file.write (mk-hs-file a) s1
+                    case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{compile-error}
+                )
+            )
+        )
+    )
+|]
+
+gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat a.
+    case right 'st.gs. (impanalyzeM file.stat (mk-hs-file a).
+        case left (ENOENT _). impunit true
+        case right 'st.hs. impunit (rational.> (st.gs #mod.time) (st.hs #mod.time))
+    )
+|]
+
+gsmk_hs_file = [gs:value| file.name.extension.set qq{hs} |]
+
+gscompile_gs_source = [gs:value| λ 'fn. λ 's. undefined |]
