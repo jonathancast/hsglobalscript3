@@ -8,7 +8,7 @@ module GSI.GSI (
     gsigsiae, gsigsiagv,
     gsigsvar,
     gsieval_sync, gsigsfmtError,
-    gsigsevalSync, gsicreateThread, gsiexecMainThread,
+    gsicreateThread, gsiexecMainThread,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gseval_state_error_view, gseval_state_implementation_failure_view, gseval_state_whnf_view,
     gswhnf_natural_view, gswhnf_rune_view, gswhnf_constr_view, gswhnf_function_view,
@@ -190,13 +190,6 @@ gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: 
         v' <- evalSync [StackTrace pos []] ts
         w pos v'
     w _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
-
-gsigsevalSync = $gsimpprim $ \ pos t vv -> do
-    v <- gsapiEvalExternal pos vv :: IO GSValue
-    v' <- case v of
-        GSThunk ts -> evalSync [StackTrace pos []] ts
-        _ -> return v
-    return $ gsexternal v'
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
