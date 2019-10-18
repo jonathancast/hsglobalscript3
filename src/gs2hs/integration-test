@@ -60,4 +60,6 @@ echo '## test-gsi'
 
 fn test_gsi_impl { ./test-gsi $* }
 
+test_non_existent_file
+
 true
