@@ -55,3 +55,4 @@ src/libgsi/GSI/Rational.hs
 src/gsi/GSDL/HSGS/Syntax.hs
 src/gsi/GSDL/Implicits.hs
 src/gs2hs/GSDL/HSGS/Compile.hs
+src/gs2hs/GSDL/HSGS/GlobalEnv.hs
