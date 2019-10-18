@@ -10,6 +10,7 @@ module GSI.GSI (
     gsieval_sync, gsigsfmtError,
     gsigsevalSync, gsicreateThread, gsiexecMainThread,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
+    gseval_state_error_view, gseval_state_implementation_failure_view, gseval_state_whnf_view,
     gsvalue_constr, gsvalue_error_view, gsvalue_implementation_failure_view, gsvalue_natural_view, gsvalue_rune_view, gsvalue_constr_view, gsvalue_function_view, gsvalue_thunk_view
   ) where
 
@@ -261,6 +262,10 @@ gsigsvar_fmtBindAtom = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> c
         | Just vhsv <- fromExternal ve -> $gsbcstringlit (fmtVarBindAtom vhsv "")
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_fmt " ++ whichExternal ve ++ " next"
     _ -> $gsbcimplementationfailure $ "gsigsvar_fmt " ++ gsvCode vv ++ " next"
+
+gseval_state_error_view = $gsbcconstr_view "error"
+gseval_state_implementation_failure_view = $gsbcconstr_view "implementation-failure"
+gseval_state_whnf_view = $gsbcconstr_view "whnf"
 
 gsvalue_constr = $gslambda_value $ \ posv -> $gsbcarg $ \ vv -> $gsbcarg $ \ asv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
