@@ -11,6 +11,7 @@ module GSI.GSI (
     gsigsevalSync, gsicreateThread, gsiexecMainThread,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gseval_state_error_view, gseval_state_implementation_failure_view, gseval_state_whnf_view,
+    gswhnf_natural_view, gswhnf_rune_view, gswhnf_constr_view, gswhnf_function_view,
     gsvalue_constr, gsvalue_error_view, gsvalue_implementation_failure_view, gsvalue_natural_view, gsvalue_rune_view, gsvalue_constr_view, gsvalue_function_view, gsvalue_thunk_view
   ) where
 
@@ -266,6 +267,26 @@ gsigsvar_fmtBindAtom = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ vv -> c
 gseval_state_error_view = $gsbcconstr_view "error"
 gseval_state_implementation_failure_view = $gsbcconstr_view "implementation-failure"
 gseval_state_whnf_view = $gsbcconstr_view "whnf"
+
+gswhnf_natural_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
+    (GSExternal e) | Just (GSNatural n) <- fromExternal e -> $gsbcapply sk [ $gsav $ GSNatural n ]
+    _ -> $gsbcenter ek
+
+gswhnf_rune_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
+    GSExternal e | Just (GSRune r) <- fromExternal e -> $gsbcapply sk [ $gsav $ GSRune r ]
+    _ -> $gsbcenter ek
+
+gswhnf_constr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
+    GSExternal e | Just (GSConstr pos c as) <- fromExternal e -> $gsbcapply sk [
+        $gsav $ gsexternal pos,
+        $gsav $ gsexternal c,
+        $gsav $ $gslist $ map gsexternal as
+      ]
+    _ -> $gsbcenter ek
+
+gswhnf_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
+    GSExternal e | Just (GSClosure _ GSLambda{}) <- fromExternal e -> $gsbcapply sk [ $gsav v ]
+    _ -> $gsbcenter ek
 
 gsvalue_constr = $gslambda_value $ \ posv -> $gsbcarg $ \ vv -> $gsbcarg $ \ asv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->

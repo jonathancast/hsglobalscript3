@@ -1212,7 +1212,11 @@ globalEnv = Env{
         ("type.forall", "GSDL.AST", "gstype_forall_view"),
         ("type.function", "GSDL.AST", "gstype_function_view"),
         ("type.signature", "GSDL.AST", "gstype_signature_view"),
-        ("type.unifiable-var", "GSDL.AST", "gstype_unifiable_var_view")
+        ("type.unifiable-var", "GSDL.AST", "gstype_unifiable_var_view"),
+        ("whnf.constr", "GSI.GSI", "gswhnf_constr_view"),
+        ("whnf.function", "GSI.GSI", "gswhnf_function_view"),
+        ("whnf.natural", "GSI.GSI", "gswhnf_natural_view"),
+        ("whnf.rune", "GSI.GSI", "gswhnf_rune_view")
     ],
     gssignatures = Map.fromList [
         ("λ", \ as -> case as of
