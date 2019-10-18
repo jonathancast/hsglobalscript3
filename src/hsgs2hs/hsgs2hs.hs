@@ -784,6 +784,7 @@ globalEnv = Env{
         ("empty", "GSI.Parser", "gsempty"),
         ("eq", "GSI.OrderTotal", "gsord_eq"),
         ("error", "GSI.StdLib", "gserror"),
+        ("eval-sync", "GSI.GSI", "gsieval_sync"),
         ("exec-main-thread", "GSI.GSI", "gsiexecMainThread"),
         ("expr", "GSDL.Syntax", "expr"),
         ("expr.app", "GSDL.AST", "gsexpr_app"),

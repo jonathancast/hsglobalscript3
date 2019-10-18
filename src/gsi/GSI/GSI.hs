@@ -7,6 +7,7 @@ module GSI.GSI (
     gsigsintbcvarpattern, gsigsintbcdiscardpattern,
     gsigsiae, gsigsiagv,
     gsigsvar,
+    gsieval_sync,
     gsigsevalSync, gsicreateThread, gsiexecMainThread, gsigsfmtError,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gsvalue_constr, gsvalue_error_view, gsvalue_implementation_failure_view, gsvalue_natural_view, gsvalue_rune_view, gsvalue_constr_view, gsvalue_function_view, gsvalue_thunk_view
@@ -24,9 +25,9 @@ import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
-import GSI.Functions (gslist, gsapiEval, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
+import GSI.Functions (gslist, gsstring, gsapiEval, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcevalnatural, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcenter_w, gsbcexternal, gsbcconstr, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcevalnatural, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcenter_w, gsbcexternal, gsbcconstr, gsbcconstr_view, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
 import GSI.String (gsbcstringlit)
 
@@ -174,6 +175,19 @@ gsigsae = $gslambda_value $ \ posv -> $gsbcarg $ \ ev ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav ev) $ \ e -> $gsbcexternal (gsargexpr_w pos e)
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
+
+gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: GSValue) -> $gsbcimpprim $ \ pos t -> w pos v where
+    w :: Pos -> GSValue -> IO GSValue
+    w _ (GSError e) = return $ $gsconstr (gsvar "error") [ gsexternal e ]
+    w _ (GSImplementationFailure pos err) = return $ $gsconstr (gsvar "implementation-failure") [ gsexternal pos, $gsstring err ]
+    w _ v@GSNatural{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ v@GSRune{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ v@GSConstr{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w pos (GSThunk ts) = do
+        v' <- evalSync [StackTrace pos []] ts
+        w pos v'
+    w _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
 
 gsigsevalSync = $gsimpprim $ \ pos t vv -> do
     v <- gsapiEvalExternal pos vv :: IO GSValue
