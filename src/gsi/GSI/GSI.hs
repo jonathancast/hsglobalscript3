@@ -7,8 +7,8 @@ module GSI.GSI (
     gsigsintbcvarpattern, gsigsintbcdiscardpattern,
     gsigsiae, gsigsiagv,
     gsigsvar,
-    gsieval_sync,
-    gsigsevalSync, gsicreateThread, gsiexecMainThread, gsigsfmtError,
+    gsieval_sync, gsigsfmtError,
+    gsigsevalSync, gsicreateThread, gsiexecMainThread,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gsvalue_constr, gsvalue_error_view, gsvalue_implementation_failure_view, gsvalue_natural_view, gsvalue_rune_view, gsvalue_constr_view, gsvalue_function_view, gsvalue_thunk_view
   ) where
