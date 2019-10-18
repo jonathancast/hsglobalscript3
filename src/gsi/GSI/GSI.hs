@@ -12,7 +12,7 @@ module GSI.GSI (
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gseval_state_error_view, gseval_state_implementation_failure_view, gseval_state_whnf_view,
     gswhnf_natural_view, gswhnf_rune_view, gswhnf_constr_view, gswhnf_function_view,
-    gsvalue_constr, gsvalue_error_view, gsvalue_implementation_failure_view, gsvalue_natural_view, gsvalue_rune_view, gsvalue_constr_view, gsvalue_function_view, gsvalue_thunk_view
+    gsvalue_constr
   ) where
 
 import Control.Exception (SomeException, try, throwIO, fromException)
@@ -285,35 +285,3 @@ gsvalue_constr = $gslambda_value $ \ posv -> $gsbcarg $ \ vv -> $gsbcarg $ \ asv
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav vv) $ \ v ->
         $gsbcevallist ($gsav asv) $ \ as0 -> $gsbcevalmap $gsbcevalexternal (map $gsav as0) $ \ as ->
             $gsbcexternal (GSConstr pos v as)
-
-gsvalue_error_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    (GSExternal e) | Just (GSError err) <- fromExternal e -> $gsbcapply sk [ $gsav $ gsexternal err ]
-    _ -> $gsbcenter ek
-
-gsvalue_implementation_failure_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    (GSExternal e) | Just (GSImplementationFailure pos err) <- fromExternal e -> $gsbcapply sk [ $gsav $ gsexternal pos, $gsae $ $gsbcstringlit err ]
-    _ -> $gsbcenter ek
-
-gsvalue_natural_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    (GSExternal e) | Just (GSNatural n) <- fromExternal e -> $gsbcapply sk [ $gsav $ GSNatural n ]
-    _ -> $gsbcenter ek
-
-gsvalue_rune_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    GSExternal e | Just (GSRune r) <- fromExternal e -> $gsbcapply sk [ $gsav $ GSRune r ]
-    _ -> $gsbcenter ek
-
-gsvalue_constr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    GSExternal e | Just (GSConstr pos c as) <- fromExternal e -> $gsbcapply sk [
-        $gsav $ gsexternal pos,
-        $gsav $ gsexternal c,
-        $gsav $ $gslist $ map gsexternal as
-      ]
-    _ -> $gsbcenter ek
-
-gsvalue_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    GSExternal e | Just (GSClosure _ GSLambda{}) <- fromExternal e -> $gsbcapply sk [ $gsav v ]
-    _ -> $gsbcenter ek
-
-gsvalue_thunk_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    GSExternal e | Just GSThunk{} <- fromExternal e -> $gsbcapply sk [ $gsav v ]
-    _ -> $gsbcenter ek
