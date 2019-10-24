@@ -108,7 +108,6 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{∘}) (gsinject (∘)) $
     compiler.env.view.insert (gsvar qq{false}) (gsinject (view false)) $
     compiler.env.view.insert (gsvar qq{file.document}) (gsinject (view file.document)) $
-    compiler.env.view.insert (gsvar qq{gsvalue.thunk}) (gsinject (view gsvalue.thunk)) $
     compiler.env.view.insert (gsvar qq{just}) (gsinject (view just)) $
     compiler.env.view.insert (gsvar qq{nothing}) (gsinject (view nothing)) $
     compiler.env.view.insert (gsvar qq{right}) (gsinject (view right)) $
