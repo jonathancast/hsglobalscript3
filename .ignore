@@ -58,3 +58,4 @@ src/gs2hs/GSDL/HSGS/Compile.hs
 src/gs2hs/GSDL/HSGS/GlobalEnv.hs
 src/gs2hs/test-gsi2hs
 src/gs2hs/test-gsi2hs.hs
+src/gsi/TestGSI/RunTime.hs

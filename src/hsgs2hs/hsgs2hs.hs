@@ -1051,6 +1051,7 @@ globalEnv = Env{
         ("syntactic-category.lambda-like", "GSDL.AST", "gssyntactic_category_lambda_like"),
         ("syntactic-category.variable", "GSDL.AST", "gssyntactic_category_variable"),
         ("syntactic-category.where", "GSDL.AST", "gssyntactic_category_where"),
+        ("test-gsi.gsrun", "TestGSI.RunTime", "gstest_gsi_gsrun"),
         ("true", "GSI.Bool", "gstrue"),
         ("type-check-arg", "GSDL.TypeCheck", "gstype_check_arg"),
         ("type-check-document", "GSDL.TypeCheck", "gstype_check_document"),
