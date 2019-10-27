@@ -1,0 +1,5 @@
+module TestGSI.CompileTime (gstest_gsi_gstyc) where
+
+$gsimports
+
+gstest_gsi_gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.unit 〈〉 |]

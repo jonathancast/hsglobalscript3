@@ -3,9 +3,4 @@
 import GSI.Env (runGSProgram)
 $gsimports
 
-$gsdeclare gstyc gstyc
-$gsdeclare gsrun gsrun
-
-main = runGSProgram $ [gs:value| gsmain gstyc test-gsi.gsrun |]
-
-gstyc = [gs:value| λ 'pos. λ 'ty. type-checker.unit 〈〉 |]
+main = runGSProgram $ [gs:value| gsmain test-gsi.gstyc test-gsi.gsrun |]
