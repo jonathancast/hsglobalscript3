@@ -163,7 +163,7 @@ processFVS :: [Param] -> Set String
 processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 
 compileValue :: Env -> Pos -> Expr -> Compiler (Set HSImport, HSExpr)
-compileValue env pos e@(EVar pos1 v) = case Map.lookup v (gsimplicits env) of
+compileValue env pos e@(EVar pos1 v) = case Map.lookup v (gsconsumes env) of
     Just _ -> compileThunk env pos e
     Nothing -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
@@ -185,7 +185,7 @@ compileThunk env pos e = do
 compileArg :: Env -> Pos -> Expr -> Maybe Signature -> Maybe Category -> Compiler (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} s Nothing = compileExprToArg env pos e
 compileArg env pos e@EQLO{} s Nothing = compileExprToArg env pos e
-compileArg env pos (EVar pos1 v) s Nothing = case Map.lookup v (gsimplicits env) of
+compileArg env pos (EVar pos1 v) s Nothing = case Map.lookup v (gsconsumes env) of
     Nothing -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
             Nothing -> lift $ Left $ fmtPos pos1 $ v ++ " not in scope"
@@ -228,7 +228,7 @@ compileExpr env (EMissingCase pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
     HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` (HSLambda ["x"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "x")
   )
-compileExpr env (EVar pos v) = case Map.lookup v (gsimplicits env) of
+compileExpr env (EVar pos v) = case Map.lookup v (gsconsumes env) of
     Nothing -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
             Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
@@ -398,14 +398,14 @@ compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    -- To implement §hs{ImHere}, we need to find the call stack for the overall application
+    -- To implement §hs{ConHere}, we need to find the call stack for the overall application
     -- That means wrapping the whole appllication in a call to §hs{gsbcwithhere_w}
     -- Find out if we need to do that now
-    let needHere = case Map.lookup f (gsimplicits env) of
+    let needHere = case Map.lookup f (gsconsumes env) of
             Nothing -> False
-            Just ims -> any isImHere ims where
-                isImHere ImHere = True
-                isImHere _ = False
+            Just ims -> any isConHere ims where
+                isConHere ConHere = True
+                isConHere _ = False
     let (isctxt, ctxt) = if needHere then
                 (
                     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcwithhere_w", HSIType "GSI.Util" "Pos" ],
@@ -413,11 +413,11 @@ compileApp env (EVar pos f) as = do
                 )
             else
                 (Set.empty, id)
-    as0 <- case Map.lookup f (gsimplicits env) of
+    as0 <- case Map.lookup f (gsconsumes env) of
         Nothing -> return []
         Just ims -> forM ims $ \ im -> case im of
-            ImHere -> return (Set.fromList [ HSIType "GSI.Value" "GSArg" ], HSConstr "GSArgVar" `HSApp` HSVar "here")
-            _ -> $gsfatal $ "Compile implicit " ++ imCode im ++ " next"
+            ConHere -> return (Set.fromList [ HSIType "GSI.Value" "GSArg" ], HSConstr "GSArgVar" `HSApp` HSVar "here")
+            _ -> $gsfatal $ "Compile implicit " ++ conCode im ++ " next"
     sig <- case Map.lookup f (gssignatures env) of
         Nothing -> return []
         Just sigM -> sigM as
@@ -1112,10 +1112,10 @@ globalEnv = Env{
         ("∘", "GSI.StdLib", "gscompose"),
         ("≠", "GSI.Rune", "gsrune_neq")
     ],
-    gsimplicits = Map.fromList [
-        ("error", [ ImHere ]),
-        ("undefined", [ ImHere ]),
-        ("λ", [ ImHere ])
+    gsconsumes = Map.fromList [
+        ("error", [ ConHere ]),
+        ("undefined", [ ConHere ]),
+        ("λ", [ ConHere ])
     ],
     gsunaries = Map.fromList $ map (\ (gsn, hsm, hsn) -> (gsn, (Set.singleton $ HSIVar hsm hsn, HSVar hsn))) $ [
         ("*>", "GSI.Parser", "gsparser_unary_then"),
@@ -1272,7 +1272,7 @@ globalEnv = Env{
   }
 
 data Env = Env {
-    gsimplicits :: Map String [Implicit],
+    gsconsumes :: Map String [Consume],
     gssignatures :: Map String ([(Pos, Expr)] -> Compiler [Maybe Signature]),
     gscategories :: Map String ([(Pos, Expr)] -> Compiler [Maybe Category]),
     gsunaries :: Map String (Set HSImport, HSExpr),
@@ -1303,11 +1303,11 @@ genBoundVars (ExecGenerator _ _) = Set.empty
 genBoundVars (BindGenerator x _ _) = Set.singleton x
 genBoundVars g = $gsfatal $ "genBoundVars " ++ genCode g ++ " next"
 
-data Implicit
-  = ImHere
+data Consume
+  = ConHere
 
-imCode :: Implicit -> String
-imCode ImHere = "ImHere"
+conCode :: Consume -> String
+conCode ConHere = "ConHere"
 
 data Signature
   = SigOpen (Set String)
