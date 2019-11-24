@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Maybe (gsmaybe, gsmaybe_out, gsnothing, gsjust, gsnothing_view, gsjust_view) where
+module GSI.Maybe (gsmaybe, gsmaybe_out, gsmaybe_map, gsnothing, gsjust, gsnothing_view, gsjust_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
@@ -15,6 +15,11 @@ gsmaybe = [gs:value| λ 'ek. λ 'sk. λ 'mb. analyze mb.
 gsmaybe_out = [gs:value| λ 'x0. λ 'mb. analyze mb.
     case nothing. x0
     case just 'x. x
+|]
+
+gsmaybe_map = [gs:value| λ 'f. λ 'mb. analyze mb.
+    case nothing. nothing
+    case just 'x. just (f x)
 |]
 
 gsnothing = $gsconstr (gsvar "nothing") []

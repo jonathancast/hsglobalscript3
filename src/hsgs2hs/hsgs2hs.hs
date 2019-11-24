@@ -937,6 +937,7 @@ globalEnv = Env{
         ("matching", "GSI.Parser", "gsparser_matching"),
         ("max-many", "GSI.Parser", "gsmax_many"),
         ("maybe", "GSI.Maybe", "gsmaybe"),
+        ("maybe.map", "GSI.Maybe", "gsmaybe_map"),
         ("maybe.out", "GSI.Maybe", "gsmaybe_out"),
         ("monad.>>=", "GSI.Monad", "gsmonad_bind"),
         ("natural.<=>", "GSI.Natural", "gsnatural_cmp"),
