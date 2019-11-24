@@ -1,6 +1,10 @@
-module GSDL.Implicits (gsadd_implicits_expr) where
+module GSDL.Implicits (gsadd_implicits_document, gsadd_implicits_expr) where
 
 $gsimports
+
+gsadd_implicits_document = [gs:value| λ 'env. λ 'd. analyze d.
+    case document.in 'mbe 'mbg. document.in (maybe.map (add-implicits-expr env) mbe) (maybe.map (undefined env) mbg)
+|]
 
 $gsdeclare add-implicits-pat gsadd_implicits_pat
 $gsdeclare add-implicits-generator gsadd_implicits_generator
