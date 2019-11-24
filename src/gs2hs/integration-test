@@ -8,6 +8,7 @@
 
 echo '## hsgs2hs'
 
+PROG=gs2hs-hsgs2hs
 fn test_gsi_impl { ./test_hsgs_gsi $* }
 
 test_hsgs_empty_file
@@ -58,6 +59,7 @@ test_undefined_function_hsgs
 
 echo '## test-gsi'
 
+PROG=gs2hs-test-gsi
 fn test_gsi_impl { ./test-gsi $* }
 
 test_non_existent_file

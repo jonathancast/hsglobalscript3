@@ -60,3 +60,4 @@ src/gs2hs/test-gsi2hs$
 src/gs2hs/test-gsi2hs.hs$
 src/gsi/TestGSI/RunTime.hs$
 src/gsi/TestGSI/CompileTime.hs$
+src/gs2hs/gs2hs-test-gsi
