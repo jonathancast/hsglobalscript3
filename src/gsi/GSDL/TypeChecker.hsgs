@@ -4,7 +4,7 @@ module GSDL.TypeChecker (
     gstype_checker_instantiate, gstype_checker_subst,
     gs_type_checker_new_unifiable_var,
     gstype_checker_incorrect_type, gstype_checker_fmt_type,
-    gstype_checker_env_get_type, gstype_checker_env_get_implicit, gstype_checker_env_get_view_type,
+    gstype_checker_env_get_type, gstype_checker_env_get_view_type,
     gstype_checker_with_type_env,
     gstype_checker_get_var, gstype_checker_set_var,
     gstype_checker_for, gstype_checker_analyze, gstype_checker_foldM, gstype_checker_mapM, gstype_checker_zipWithM,
@@ -229,8 +229,6 @@ gstype_checker_env_get_view_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze t
     case nothing. impunit (left (pos.fmt pos qq{view §(gsvar.fmt-atom v) not in scope}))
     case just 'ty. impunit (right ty)
 |]
-
-gstype_checker_env_get_implicit = [gs:value| λ 'v. λ 'env. impunit (right (type.env.implicits.get v env)) |]
 
 gstype_checker_with_type_env = [gs:value| λ 'env1. λ 'a. λ 'env0. a (type.env.overlay env1 env0) |]
 

@@ -1,4 +1,4 @@
-module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gstype_checker_global_env) where
+module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gsimplicits_global_env, gstype_checker_global_env) where
 
 $gsimports
 
@@ -58,6 +58,12 @@ gsannotator_global_env = [gs:value|
     annotator.env.empty
 |]
 
+gsimplicits_global_env = [gs:value|
+    implicit.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
+    implicit.env.implicits.insert (gsvar qq{λ}) (implicit.here : nil) $
+    implicit.env.empty
+|]
+
 $gsdeclare type.pattern gstype_pattern
 $gsdeclare type.pattern.fallible gstype_pattern_fallible
 $gsdeclare type.generator gstype_generator
@@ -93,7 +99,6 @@ gstype_checker_global_env = [gs:value|
                     type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
                         type.function (type.consts qq{α}) (type.consts qq{β})
     ) $
-    type.env.implicits.insert (gsvar qq{λ}) (implicit.here : nil) $
     type.env.type.insert (gsvar qq{gsvar}) (
         type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{gsvar.t}
     ) $
@@ -228,7 +233,6 @@ gstype_checker_global_env = [gs:value|
         type.forall (gsvar qq{α}) kind.pointed $
             type.function (type.const (gsvar qq{stack-trace.t})) $ type.const (gsvar qq{α})
     ) $
-    type.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
     type.env.type.insert (gsvar qq{∘}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{γ}) kind.pointed $
             type.function (type.function (type.consts qq{β}) (type.consts qq{γ})) $

@@ -1,4 +1,4 @@
-module GSDL.Implicits (gsadd_implicits_document, gsadd_implicits_expr) where
+module GSDL.Implicits (gsadd_implicits_document, gsadd_implicits_expr, gsimplicit_env_implicits_get, gsimplicit_env_implicits_insert, gsimplicit_env_empty) where
 
 $gsimports
 
@@ -18,7 +18,7 @@ gsadd_implicits_expr = [gs:value| λ 'env. λ 'e. analyze e.
             case implicit.here. expr.app f arg.here
         )
         e
-        (type.env.implicits.get v env)
+        (implicit.env.implicits.get v env)
     case expr.unary 'v. expr.unary v
     case expr.structure-literal 'gs 'pos1. expr.structure-literal (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
     case expr.qlo 'v 'e 'x. expr.qlo v e (e #add-implicits env x)
@@ -52,3 +52,14 @@ gsadd_implicits_generator = [gs:value| λ 'env. λ 'g. analyze g.
     case generator.pattern 'p 'mb. generator.pattern (add-implicits-pat env p) mb
     case generator.expr 'e. generator.expr (add-implicits-expr env e)
 |]
+
+gsimplicit_env_implicits_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #implicits).
+    case nothing. nil
+    case just 'is. is
+|]
+
+gsimplicit_env_implicits_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
+    'implicits ∝ ordered-map.insert gsvar.compare v is (env #implicits);
+〉 |]
+
+gsimplicit_env_empty = [gs:value| 〈 'implicits ∝ ordered-map.empty; 〉 |]
