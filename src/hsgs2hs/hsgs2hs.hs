@@ -902,6 +902,8 @@ globalEnv = Env{
         ("ident-chars", "GSDL.Syntax", "ident_chars"),
         ("impanalyzeM", "GSI.StdLib", "gsimpanalyzeM"),
         ("impfor", "GSI.StdLib", "gsimpfor"),
+        ("implicit.env.consumes.get", "GSDL.Implicits", "gsimplicit_env_consumes_get"),
+        ("implicit.env.consumes.insert",  "GSDL.Implicits", "gsimplicit_env_consumes_insert"),
         ("implicit.env.empty",  "GSDL.Implicits", "gsimplicit_env_empty"),
         ("implicit.env.implicits.get", "GSDL.Implicits", "gsimplicit_env_implicits_get"),
         ("implicit.env.implicits.insert",  "GSDL.Implicits", "gsimplicit_env_implicits_insert"),
