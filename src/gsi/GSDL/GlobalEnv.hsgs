@@ -59,8 +59,8 @@ gsannotator_global_env = [gs:value|
 |]
 
 gsimplicits_global_env = [gs:value|
-    implicit.env.implicits.insert (gsvar qq{undefined}) (implicit.here : nil) $
-    implicit.env.implicits.insert (gsvar qq{λ}) (implicit.here : nil) $
+    implicit.env.consumes.insert (gsvar qq{undefined}) (consume.here : nil) $
+    implicit.env.consumes.insert (gsvar qq{λ}) (consume.here : nil) $
     implicit.env.empty
 |]
 
