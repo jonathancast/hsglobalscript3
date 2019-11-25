@@ -66,12 +66,6 @@ gsnew_env = [gs:value|
     type-checker.foldM (λ 'v. λ 'env1. type-checker.for 'tyv ← type-checker.new-unifiable-var;. type-checker.unit (type.env.type.insert v tyv env1)) type.env.empty
 |]
 
-gstype_check_implicit = [gs:value| λ 'pos. λ 'im. λ 'ty. analyze im.
-    case implicit.here. type-checker.for
-            _ ← type-checker.unify pos (type.const (gsvar qq{stack-trace.t})) ty;
-        . type-checker.unit arg.here
-|]
-
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
     case arg.expr 'pos1 'e. type-checker.map (arg.expr pos1) (type-check-expr pos1 e ty)
     case arg.explicit 'pos1 'e. type-checker.map (arg.explicit pos1) (type-check-expr pos1 e ty)
