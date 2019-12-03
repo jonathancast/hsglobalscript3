@@ -10,7 +10,7 @@ module GSDL.AST (
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
-    gsexpr_natural, gsexpr_var, gsexpr_unary, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_generators, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_unary_view, gsexpr_structure_literal_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_generators_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_value_var_view, gsexpr_missing_case_view,
+    gsexpr_natural, gsexpr_var, gsexpr_unary, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_generators, gsexpr_monadic_generators, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_unary_view, gsexpr_structure_literal_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_generators_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_value_var_view, gsexpr_missing_case_view,
     gsqloitem_char, gsqloitem_char_view,
     gsconsume_here, gsconsume_here_view,
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view, gsarg_app_view, gsarg_var_view, gsarg_var_name_view,
@@ -92,6 +92,7 @@ gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "ap
 gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
 gsexpr_fallible_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]
 gsexpr_generators = $gslambda_value $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "generators") [ $gsav gs, $gsav pos1 ]
+gsexpr_monadic_generators = $gslambda_value $ \ mbm -> $gsbcarg $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "monadic-generators") [ $gsav mbm, $gsav gs, $gsav pos1 ]
 gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "open-expr") [ $gsav e, $gsav mb ]
 gsexpr_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "pat") [ $gsav p, $gsav mb ]
 gsexpr_value_var = $gslambda_value $ \ i -> $gsbcconstr (gsvar "value-var") [ $gsav i ]

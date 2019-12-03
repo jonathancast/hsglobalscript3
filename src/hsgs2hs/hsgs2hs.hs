@@ -795,6 +795,7 @@ globalEnv = Env{
         ("expr.fallible-pat", "GSDL.AST", "gsexpr_fallible_pat"),
         ("expr.generators", "GSDL.AST", "gsexpr_generators"),
         ("expr.missing-case", "GSDL.AST", "gsexpr_missing_case"),
+        ("expr.monadic-generators", "GSDL.AST", "gsexpr_monadic_generators"),
         ("expr.natural", "GSDL.AST", "gsexpr_natural"),
         ("expr.open-expr", "GSDL.AST", "gsexpr_open_expr"),
         ("expr.pat", "GSDL.AST", "gsexpr_pat"),
