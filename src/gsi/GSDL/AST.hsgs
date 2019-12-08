@@ -10,7 +10,7 @@ module GSDL.AST (
     gstype_unifiable_var, gstype_const, gstype_signature, gstype_empty_signature, gstype_forall, gstype_app, gstype_function, gstype_consts,
     gstype_unifiable_var_view, gstype_const_view, gstype_signature_view, gstype_forall_view, gstype_app_view, gstype_function_view,
     gskind_pointed,
-    gsexpr_natural, gsexpr_var, gsexpr_unary, gsexpr_structure_literal, gsexpr_app, gsexpr_qlo, gsexpr_generators, gsexpr_monadic_generators, gsexpr_open_expr, gsexpr_pat, gsexpr_fallible_pat, gsexpr_value_var, gsexpr_missing_case, gsexpr_natural_view, gsexpr_var_view, gsexpr_unary_view, gsexpr_structure_literal_view, gsexpr_app_view, gsexpr_qlo_view, gsexpr_generators_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_fallible_pat_view, gsexpr_value_var_view, gsexpr_missing_case_view,
+    gsexpr_app, gsexpr_fallible_pat, gsexpr_generators, gsexpr_missing_case, gsexpr_monadic_generators, gsexpr_natural, gsexpr_open_expr, gsexpr_pat, gsexpr_qlo, gsexpr_structure_literal, gsexpr_unary, gsexpr_value_var, gsexpr_var, gsexpr_app_view, gsexpr_fallible_pat_view, gsexpr_generators_view, gsexpr_missing_case_view, gsexpr_natural_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_qlo_view, gsexpr_structure_literal_view, gsexpr_unary_view, gsexpr_value_var_view, gsexpr_var_view,
     gsqloitem_char, gsqloitem_char_view,
     gsconsume_here, gsconsume_here_view,
     gsarg_expr, gsarg_here, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view, gsarg_app_view, gsarg_var_view, gsarg_var_name_view,
@@ -84,32 +84,32 @@ gstype_forall_view = $gsbcconstr_view "forall"
 
 gskind_pointed = $gsconstr (gsvar "pointed") []
 
-gsexpr_natural = $gslambda_value $ \ n -> $gsbcconstr (gsvar "natural") [ $gsav n ]
-gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
-gsexpr_unary = $gslambda_value $ \ id -> $gsbcconstr (gsvar "unary") [ $gsav id ]
-gsexpr_structure_literal = $gslambda_value $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "structure-literal") [ $gsav gs, $gsav pos1 ]
 gsexpr_app = $gslambda_value $ \ fe -> $gsbcarg $ \ xe -> $gsbcconstr (gsvar "app") [ $gsav fe, $gsav xe ]
-gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
 gsexpr_fallible_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "fallible-pat") [ $gsav p, $gsav mb ]
 gsexpr_generators = $gslambda_value $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "generators") [ $gsav gs, $gsav pos1 ]
+gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
 gsexpr_monadic_generators = $gslambda_value $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "monadic-generators") [ $gsav gs, $gsav pos1 ]
+gsexpr_natural = $gslambda_value $ \ n -> $gsbcconstr (gsvar "natural") [ $gsav n ]
 gsexpr_open_expr = $gslambda_value $ \ e -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "open-expr") [ $gsav e, $gsav mb ]
 gsexpr_pat = $gslambda_value $ \ p -> $gsbcarg $ \ mb -> $gsbcconstr (gsvar "pat") [ $gsav p, $gsav mb ]
+gsexpr_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ e -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav e, $gsav x ]
+gsexpr_structure_literal = $gslambda_value $ \ gs -> $gsbcarg $ \ pos1 -> $gsbcconstr (gsvar "structure-literal") [ $gsav gs, $gsav pos1 ]
+gsexpr_unary = $gslambda_value $ \ id -> $gsbcconstr (gsvar "unary") [ $gsav id ]
 gsexpr_value_var = $gslambda_value $ \ i -> $gsbcconstr (gsvar "value-var") [ $gsav i ]
-gsexpr_missing_case = $gsconstr (gsvar "missing-case") []
+gsexpr_var = $gslambda_value $ \ id -> $gsbcconstr (gsvar "var") [ $gsav id ]
 
-gsexpr_natural_view = $gsbcconstr_view "natural"
-gsexpr_var_view = $gsbcconstr_view "var"
-gsexpr_unary_view = $gsbcconstr_view "unary"
-gsexpr_structure_literal_view = $gsbcconstr_view "structure-literal"
 gsexpr_app_view = $gsbcconstr_view "app"
-gsexpr_qlo_view = $gsbcconstr_view "qlo"
+gsexpr_fallible_pat_view = $gsbcconstr_view "fallible-pat"
 gsexpr_generators_view = $gsbcconstr_view "generators"
+gsexpr_missing_case_view = $gsbcconstr_view "missing-case"
+gsexpr_natural_view = $gsbcconstr_view "natural"
 gsexpr_open_expr_view = $gsbcconstr_view "open-expr"
 gsexpr_pat_view = $gsbcconstr_view "pat"
-gsexpr_fallible_pat_view = $gsbcconstr_view "fallible-pat"
+gsexpr_qlo_view = $gsbcconstr_view "qlo"
+gsexpr_structure_literal_view = $gsbcconstr_view "structure-literal"
+gsexpr_unary_view = $gsbcconstr_view "unary"
 gsexpr_value_var_view = $gsbcconstr_view "value-var"
-gsexpr_missing_case_view = $gsbcconstr_view "missing-case"
+gsexpr_var_view = $gsbcconstr_view "var"
 
 gsqloitem_char = $gslambda_value $ \ r -> $gsbcconstr (gsvar "char") [ $gsav r ]
 
