@@ -10,7 +10,7 @@ import Control.Concurrent (MVar, modifyMVar)
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Error (GSError(..))
+import GSI.Error (GSError(..), GSInvalidProgram(..))
 import GSI.RTS (newEvent, wakeup, await)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
 
@@ -99,6 +99,7 @@ gsapplyFunction c1 (GSClosure cs (GSLambda f)) (a:as) sk = case f a of
     bco@GSLambda{} -> gsapplyFunction c1 (GSClosure cs bco) as sk
     bco -> gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (result is " ++ bcoCode bco ++ ") next"
 gsapplyFunction c1 (GSClosure cs bco) as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (GSClosure cs " ++ bcoCode bco ++ ") next"
+gsapplyFunction c1 (GSConstr pos _ _) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSConstr " ++ fmtPos pos "") "closure"
 gsapplyFunction c1 f as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction " ++ gsvCode f ++ ") next"
 
 aceField :: StackTrace -> GSVar -> GSExprCont a -> GSExprCont a
