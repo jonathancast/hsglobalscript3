@@ -37,6 +37,7 @@ gsparser_global_env = [gs:value|
     〉 $
     parser.env.signature.insert (gsvar qq{#}) (order-of-being.var-name : nil) $
     parser.env.signature.insert (gsvar qq{case}) (order-of-being.pattern : order-of-being.open-expr : nil) $
+    parser.env.signature.insert (gsvar qq{either.for}) (order-of-being.generator : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{for}) (order-of-being.generator : order-of-being.open-expr : nil) $
     parser.env.signature.insert (gsvar qq{value}) (order-of-being.value-var : nil) $
     parser.env.signature.insert (gsvar qq{λ}) (order-of-being.pattern : order-of-being.open-expr : nil) $
@@ -44,6 +45,7 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{analyzeM}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{analyze}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{case}) syntactic-category.lambda-like $
+    parser.env.syntactic-category.insert (gsvar qq{either.for}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{for}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
@@ -56,6 +58,9 @@ gsparser_global_env = [gs:value|
 gsannotator_global_env = [gs:value|
     annotator.env.category.insert (gsvar qq{case}) (λ 'as. analyze as.
         case (arg.expr _ (expr.pat 'p0 _)):_. just category.fallible : nil
+    ) $
+    annotator.env.category.insert (gsvar qq{either.for}) (λ 'as. analyze as.
+        case (arg.expr _ (expr.generators 'p0 _)):_. just category.monadic : nil
     ) $
     annotator.env.empty
 |]
