@@ -56,6 +56,7 @@ gsannotate_expr_arg = [gs:value| λ 'env. λ 'c. λ 'e. analyze e.
     case expr.generators 'gs 'pos1. -- See pat case
         (analyze c.
             case nothing. expr.generators
+            case just category.monadic. expr.monadic-generators
         )
             (map
                 (λ 'p. for 'p1 ∝ annotate-generator env (p #gen);. 〈 'pos ∝ p #pos; 'gen ∝ p1 #0; 'bvs ∝ just (p1 #1); 〉 )
