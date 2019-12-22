@@ -1,4 +1,4 @@
-module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_unary_get, gshsgs_compiler_env_unary_modify, gshsgs_compiler_env_arg_var_insert, gshsgs_compiler_env_arg_var_get, gshsgs_compiler_env_empty) where
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_unary_get, gshsgs_compiler_env_unary_modify, gshsgs_compiler_env_arg_var_insert, gshsgs_compiler_env_arg_var_get, gshsgs_compiler_env_empty, gshsgs_compiler_supply_env_empty) where
 
 $gsimports
 
@@ -50,3 +50,5 @@ gshsgs_compiler_env_empty = [gs:value| 〈
     'arg-vars ∝ ordered-map.empty;
     'gen-sym ∝ 0;
 〉 |]
+
+gshsgs_compiler_supply_env_empty = [gs:value| 〈〉 |]
