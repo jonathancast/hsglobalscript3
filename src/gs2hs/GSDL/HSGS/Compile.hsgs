@@ -220,6 +220,13 @@ gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. ana
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hsimport.type qq{GSI.Value} qq{GSValue} : hspos-import : nil);
         '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (hsexpr.app (hsexpr.var qq{GSNatural}) (hsexpr.int n));
     〉
+    case generator.expr 'e. either.for 'p ← hsgs.compile-expr env pos e;. right 〈
+        '0 ∝ ordered-set.∪ hsimport.<=>
+            (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
+            (p #0)
+        ;
+        '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos pos : p #1 : nil);
+    〉
 |]
 
 gshsgs_compile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
