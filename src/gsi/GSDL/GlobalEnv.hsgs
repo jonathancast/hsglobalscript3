@@ -47,7 +47,9 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{for}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
+    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.generator.modify (parser.env.signature.insert (gsvar qq{∝}) (order-of-being.pattern : order-of-being.expr : nil)) $
+    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.empty
 |]
 
