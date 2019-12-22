@@ -74,7 +74,7 @@ gscompile_source = [gs:value| λ 'i. λ 'env. analyze i.
     case source-comp.expr 'ps 'pos 'e : 'i1. either.for
             'ea ← right $ annotate-expr annotator.global-env e;
             'ei ← right $ add-implicits-expr implicits.global-env ea;
-            'p ← hsgs.compile-expr (process-params ps env) pos ei;
+            'p ← hsgs.compile-expr (process-params ps env) hsgs.compiler.supply.env.empty pos ei;
             'o1 ← compile-source i1 env;.
         right (dest-comp.expr (p #0) (p #1) : o1)
     case nil. right nil

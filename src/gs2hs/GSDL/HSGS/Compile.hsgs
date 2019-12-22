@@ -6,7 +6,7 @@ gshsgs_compile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right p
     )
-    case _. either.for 'p ← hsgs.compile-expr env pos1 e;. right 〈
+    case _. either.for 'p ← hsgs.compile-expr env hsgs.compiler.supply.env.empty pos1 e;. right 〈
         '0 ∝ ordered-set.∪ hsimport.<=>
             (ordered-set.from-list hsimport.<=> (hsimport.var qq{System.IO.Unsafe} qq{unsafePerformIO} : hsimport.var qq{GSI.Value} qq{gsthunk_w} : hspos-import : nil))
             (p #0)
@@ -22,7 +22,7 @@ $gsdeclare hsgs.compile-pat gshsgs_compile_pat
 $gsdeclare hsgs.compile-fallible-pat gshsgs_compile_fallible_pat
 $gsdeclare hsgs.compile-open-expr gshsgs_compile_open_expr
 
-gshsgs_compile_expr = [gs:value| λ 'env. λ 'pos. λ 'e. analyze e.
+gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
     case expr.natural 'n. right 〈
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcnatural_w} : hspos-import : nil);
         '1 ∝ hsexpr.applyvar qq{gsbcnatural_w} (hspos pos : hsexpr.int n : nil);
@@ -119,7 +119,7 @@ gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
             '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
         〉
     )
-    case arg.expr 'pos 'e. either.for 'p ← hsgs.compile-expr env pos e;. right 〈
+    case arg.expr 'pos 'e. either.for 'p ← hsgs.compile-expr env hsgs.compiler.supply.env.empty pos e;. right 〈
         '0 ∝ ordered-set.∪ hsimport.<=>
             (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
             (p #0)
@@ -135,7 +135,7 @@ gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
 $gsdeclare hsgs.compile-local-env gshsgs_compile_local_env
 
 gshsgs_compile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. hsgs.compiler.env.gen-sym env $ λ 'envhs. λ 'env1. either.for
-        'p ← hsgs.compile-local-env env1 pos fvs envhs $ λ 'env2. hsgs.compile-expr env2 pos e;
+        'p ← hsgs.compile-local-env env1 pos fvs envhs $ λ 'env2. hsgs.compile-expr env2 hsgs.compiler.supply.env.empty pos e;
     . right 〈
         '0 ∝ ordered-set.∪ hsimport.<=>
             (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcarg_w} : hspos-import : nil))
