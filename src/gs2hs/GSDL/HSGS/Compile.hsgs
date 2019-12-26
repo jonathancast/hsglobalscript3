@@ -108,6 +108,7 @@ gshsgs_compile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. 
 |]
 
 $gsdeclare hsarg-var hsarg_var
+$gsdeclare hsarg-expr hsarg_expr
 
 gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
@@ -129,7 +130,7 @@ gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
             (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
             (p #0)
         ;
-        '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos pos : p #1 : nil);
+        '1 ∝ hsarg-expr pos (p #1);
     〉
     case arg.here. right 〈
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : nil);
@@ -175,7 +176,7 @@ gshsgs_compile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
                     p1 #0 :
                     nil
                 );
-                '1 ∝ hsexpr.applyvar qq{gsbccomposegen_w} (hspos (g #pos) : hsexpr.applyvar qq{GSArgExpr} (hspos (g #pos) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
+                '1 ∝ hsexpr.applyvar qq{gsbccomposegen_w} (hspos (g #pos) : hsarg-expr (g #pos) (p0 #1) : hsexpr.lambda envhs (p1 #1) : nil);
             〉
     case nil. right 〈
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcemptygen_w} : hspos-import : nil);
@@ -193,7 +194,7 @@ gshsgs_compile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'h
                     p1 #0 :
                     nil
                 );
-                '1 ∝ hsexpr.applyvar qq{gsbccomposemonadgen_w} (hspos (g #pos) : hsarg-var hsb : hsarg-var hsu : hsexpr.applyvar qq{GSArgExpr} (hspos (g #pos) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
+                '1 ∝ hsexpr.applyvar qq{gsbccomposemonadgen_w} (hspos (g #pos) : hsarg-var hsb : hsarg-var hsu : hsarg-expr (g #pos) (p0 #1) : hsexpr.lambda envhs (p1 #1) : nil);
             〉
 |]
 
@@ -227,7 +228,7 @@ gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. ana
             (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
             (r #0)
         ;
-        '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos pos : r #1 : nil);
+        '1 ∝ hsarg-expr pos (r #1);
     〉
     case generator.expr (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
         case just 'p. right 〈
@@ -244,7 +245,7 @@ gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. ana
             (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil))
             (p #0)
         ;
-        '1 ∝ hsexpr.applyvar qq{GSArgExpr} (hspos pos : p #1 : nil);
+        '1 ∝ hsarg-expr pos (p #1);
     〉
 |]
 
@@ -285,17 +286,18 @@ gshsgs_compile_fallible_pat_app = [gs:value| λ 'env. λ 'pos. λ 'p. λ 'as. an
                 r #0 :
                 map (λ 'ra. ra #is) ras
             );
-            '1 ∝ hsexpr.applyvar qq{gsbcviewpattern_w} (hspos pos : r #1 : hsexpr.list (map (λ 'ra. hsexpr.applyvar qq{GSArgExpr} (hspos (ra #pos) : ra #cp : nil)) ras) : nil);
+            '1 ∝ hsexpr.applyvar qq{gsbcviewpattern_w} (hspos pos : r #1 : hsexpr.list (map (λ 'ra. hsarg-expr (ra #pos) (ra #cp)) ras) : nil);
         〉
     )
 |]
 
 gshsgs_compile_infallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. either.for 'r ← hsgs.compile-pat env pos p;. right 〈
     '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hsimport.var qq{GSI.StdLib} qq{gsinfalliblepattern} : hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil) (r #0);
-    '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : hsexpr.var qq{gsinfalliblepattern} : hsexpr.list (hsexpr.applyvar qq{GSArgExpr} (hspos pos : r #1 : nil) : nil) : nil);
+    '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : hsexpr.var qq{gsinfalliblepattern} : hsexpr.list (hsarg-expr pos (r #1) : nil) : nil);
 〉 |]
 
 hsarg_var = [gs:value| hsexpr.app (hsexpr.var qq{GSArgVar}) |]
+hsarg_expr = [gs:value| λ 'pos. λ 'e. hsexpr.applyvar qq{GSArgExpr} (hspos pos : e : nil) |]
 
 hspos_import = [gs:value| hsimport.type qq{GSI.Util} qq{Pos} |]
 
