@@ -18,6 +18,7 @@ gshsgs_compile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
 $gsdeclare hsgs.compile-app gshsgs_compile_app
 $gsdeclare hsgs.compile-custom-app gshsgs_compile_custom_app
 $gsdeclare hsgs.compile-generators gshsgs_compile_generators
+$gsdeclare hsgs.compile-monadic-generators gshsgs_compile_monadic_generators
 $gsdeclare hsgs.compile-pat gshsgs_compile_pat
 $gsdeclare hsgs.compile-fallible-pat gshsgs_compile_fallible_pat
 $gsdeclare hsgs.compile-open-expr gshsgs_compile_open_expr
@@ -178,6 +179,20 @@ gshsgs_compile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
         '0 ∝ ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcemptygen_w} : hspos-import : nil);
         '1 ∝ hsexpr.app (hsexpr.var qq{gsbcemptygen_w}) (hspos pos1);
     〉
+|]
+
+gshsgs_compile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'hsu. λ 'gs. λ 'pos1. analyze gs.
+    case 'g:'gs1. either.for 'p0 ← hsgs.compile-generator env (g #pos) (g #gen);.
+        hsgs.compiler.env.gen-sym env $ λ 'envhs. λ 'env1.
+            either.for 'p1 ← hsgs.compile-monadic-generators env1 senv hsb hsu gs1 pos1;. right 〈
+                '0 ∝ ordered-set.unions hsimport.<=> (
+                    (ordered-set.from-list hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbccomposegen_w} : hspos-import : hsimport.type qq{GSI.Value} qq{GSArg} : nil)) :
+                    p0 #0 :
+                    p1 #0 :
+                    nil
+                );
+                '1 ∝ hsexpr.applyvar qq{gsbccomposemonadgen_w} (hspos (g #pos) : hsexpr.applyvar qq{GSArgVar} (hsb : nil) : hsexpr.applyvar qq{GSArgVar} (hsu : nil) : hsexpr.applyvar qq{GSArgExpr} (hspos (g #pos) : p0 #1 : nil) : hsexpr.lambda envhs (p1 #1) : nil);
+            〉
 |]
 
 $gsdeclare hsgs.compile-generator-app gshsgs_compile_generator_app
