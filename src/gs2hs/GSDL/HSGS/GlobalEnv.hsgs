@@ -37,5 +37,5 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.empty
 |]
 
-gshsgs_compiler_env_var_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hsgs.compiler.env.var.insert v 〈 '0 ∝ ordered-set.singleton (hsimport.var m hsv); '1 ∝ hsexpr.var hsv; 〉 |]
-gshsgs_compiler_env_view_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hsgs.compiler.env.view.insert v 〈 '0 ∝ ordered-set.singleton (hsimport.var m hsv); '1 ∝ hsexpr.var hsv; 〉 |]
+gshsgs_compiler_env_var_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hsgs.compiler.env.var.insert v (hsoutput.ivar m hsv) |]
+gshsgs_compiler_env_view_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hsgs.compiler.env.view.insert v (hsoutput.ivar m hsv) |]
