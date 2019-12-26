@@ -44,6 +44,8 @@ gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
         case arg.app 'af 'ax. hsgs.compile-custom-app env pos f af (ax : nil)
     )
     case expr.generators 'gs 'pos1. hsgs.compile-generators env gs pos1
+    case expr.monadic-generators 'gs 'pos1. (analyze hsgs.compiler.supply.env.monad.get senv.
+    )
     case expr.pat 'p _. hsgs.compile-pat env pos p
     case expr.fallible-pat 'p _. hsgs.compile-fallible-pat env pos p
     case expr.open-expr 'e (just 'fvs). hsgs.compile-open-expr env pos fvs e
