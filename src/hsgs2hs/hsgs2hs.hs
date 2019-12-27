@@ -903,6 +903,7 @@ globalEnv = Env{
         ("hsoutput.app", "GSDL.HSGS.AST", "gshsoutput_app"),
         ("hsoutput.apply", "GSDL.HSGS.AST", "gshsoutput_apply"),
         ("hsoutput.applyivar", "GSDL.HSGS.AST", "gshsoutput_applyivar"),
+        ("hsoutput.int", "GSDL.HSGS.AST", "gshsoutput_int"),
         ("hsoutput.ivar", "GSDL.HSGS.AST", "gshsoutput_ivar"),
         ("hsoutput.pos", "GSDL.HSGS.AST", "gshsoutput_pos"),
         ("hspos", "GSDL.HSGS.AST", "hspos"),
