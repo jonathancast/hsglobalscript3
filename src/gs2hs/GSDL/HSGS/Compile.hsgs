@@ -1,4 +1,4 @@
-module GSDL.HSGS.Compile (gshsgs_compile_value, gshsgs_compile_expr, gshsgs_compile_arg, hspos) where
+module GSDL.HSGS.Compile (gshsgs_compile_value, gshsgs_compile_expr, gshsgs_compile_arg) where
 
 $gsimports
 
@@ -298,5 +298,3 @@ gshsgs_compile_infallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. either.for '
 
 hsarg_var = [gs:value| hsexpr.app (hsexpr.var qq{GSArgVar}) |]
 hsarg_expr = [gs:value| λ 'pos. λ 'e. hsexpr.applyvar qq{GSArgExpr} (hspos pos : e : nil) |]
-
-hspos = [gs:value| λ 'pos. hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil) |]
