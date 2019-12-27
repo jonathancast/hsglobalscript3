@@ -5,7 +5,7 @@ module GSDL.HSGS.AST (
     gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_pos_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
     gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
     gshsexpr_fmt_atom,
-    gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list,
+    gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list, hspos_import,
     gshsoutput_apply, gshsoutput_applyivar, gshsoutput_app, gshsoutput_ivar
   ) where
 
@@ -109,6 +109,8 @@ gshsexpr_list_view = $gsbcconstr_view "list"
 gshsexpr_int_view = $gsbcconstr_view "int"
 gshsexpr_app_view = $gsbcconstr_view "app"
 gshsexpr_lambda_view = $gsbcconstr_view "lambda"
+
+hspos_import = [gs:value| hsimport.type qq{GSI.Util} qq{Pos} |]
 
 gshsoutput_apply = [gs:value| λ 'pf. λ 'pas. foldl hsoutput.app pf pas |]
 gshsoutput_applyivar = [gs:value| λ 'm. λ 'f. λ 'pas. hsoutput.apply (hsoutput.ivar m f) pas |]

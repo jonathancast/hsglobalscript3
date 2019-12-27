@@ -905,7 +905,7 @@ globalEnv = Env{
         ("hsoutput.apply", "GSDL.HSGS.AST", "gshsoutput_apply"),
         ("hsoutput.applyivar", "GSDL.HSGS.AST", "gshsoutput_applyivar"),
         ("hspos", "GSDL.HSGS.Compile", "hspos"),
-        ("hspos-import", "GSDL.HSGS.Compile", "hspos_import"),
+        ("hspos-import", "GSDL.HSGS.AST", "hspos_import"),
         ("ident", "GSDL.Syntax", "ident"),
         ("ident-chars", "GSDL.Syntax", "ident_chars"),
         ("impanalyzeM", "GSI.StdLib", "gsimpanalyzeM"),
