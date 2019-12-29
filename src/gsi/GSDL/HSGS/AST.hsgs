@@ -5,7 +5,7 @@ module GSDL.HSGS.AST (
     gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_pos_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
     gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
     gshsexpr_fmt_atom,
-    gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list, hsarg_var, hspos, hspos_import,
+    gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list, hsarg_var, hsarg_expr, hspos, hspos_import,
     gshsoutput_apply, gshsoutput_applyivar, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_var, gshsoutput_int, gshsoutput_pos
   ) where
 
@@ -111,6 +111,7 @@ gshsexpr_app_view = $gsbcconstr_view "app"
 gshsexpr_lambda_view = $gsbcconstr_view "lambda"
 
 hsarg_var = [gs:value| hsexpr.app (hsexpr.var qq{GSArgVar}) |]
+hsarg_expr = [gs:value| λ 'pos. λ 'e. hsexpr.applyvar qq{GSArgExpr} (hspos pos : e : nil) |]
 
 hspos = [gs:value| λ 'pos. hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil) |]
 

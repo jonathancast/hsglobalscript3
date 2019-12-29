@@ -107,8 +107,6 @@ gshsgs_compile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. 
     )
 |]
 
-$gsdeclare hsarg-expr hsarg_expr
-
 gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
@@ -294,5 +292,3 @@ gshsgs_compile_infallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. either.for '
     '0 ∝ ordered-set.inserts hsimport.<=> (hsimport.var qq{GSI.ByteCode} qq{gsbcapply_w} : hsimport.var qq{GSI.StdLib} qq{gsinfalliblepattern} : hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil) (r #0);
     '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : hsexpr.var qq{gsinfalliblepattern} : hsexpr.list (hsarg-expr pos (r #1) : nil) : nil);
 〉 |]
-
-hsarg_expr = [gs:value| λ 'pos. λ 'e. hsexpr.applyvar qq{GSArgExpr} (hspos pos : e : nil) |]
