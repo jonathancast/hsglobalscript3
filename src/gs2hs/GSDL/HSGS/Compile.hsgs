@@ -107,7 +107,6 @@ gshsgs_compile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. 
     )
 |]
 
-$gsdeclare hsarg-var hsarg_var
 $gsdeclare hsarg-expr hsarg_expr
 
 gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
@@ -296,5 +295,4 @@ gshsgs_compile_infallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. either.for '
     '1 ∝ hsexpr.applyvar qq{gsbcapply_w} (hspos pos : hsexpr.var qq{gsinfalliblepattern} : hsexpr.list (hsarg-expr pos (r #1) : nil) : nil);
 〉 |]
 
-hsarg_var = [gs:value| hsexpr.app (hsexpr.var qq{GSArgVar}) |]
 hsarg_expr = [gs:value| λ 'pos. λ 'e. hsexpr.applyvar qq{GSArgExpr} (hspos pos : e : nil) |]

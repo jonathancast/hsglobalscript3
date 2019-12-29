@@ -869,6 +869,7 @@ globalEnv = Env{
         ("gsvar.name", "GSI.GSI", "gsigsvar_name"),
         ("gsvar.≡", "GSI.GSI", "gsigsvar_eq"),
         ("gt", "GSI.OrderTotal", "gsord_gt"),
+        ("hsarg-var", "GSDL.HSGS.AST", "hsarg_var"),
         ("hsexpr.app", "GSDL.HSGS.AST", "gshsexpr_app"),
         ("hsexpr.applyvar", "GSDL.HSGS.AST", "gshsexpr_applyvar"),
         ("hsexpr.fmt", "GSDL.HSGS.AST", "gshsexpr_fmt"),
