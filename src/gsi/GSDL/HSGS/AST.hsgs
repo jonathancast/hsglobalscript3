@@ -6,7 +6,7 @@ module GSDL.HSGS.AST (
     gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
     gshsexpr_fmt_atom,
     gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list, hsarg_var, hsarg_expr, hspos, hspos_import,
-    gshsoutput_apply, gshsoutput_applyivar, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_var, gshsoutput_int, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
+    gshsoutput_apply, gshsoutput_applyivar, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
   ) where
 
 import GSI.Syn (gsvar)
@@ -128,6 +128,8 @@ gshsoutput_list = [gs:value| λ 'ps. 〈 '0 ∝ ordered-set.unions hsimport.<=> 
 gshsoutput_ivar = [gs:value| λ 'm. λ 'hsv. 〈 '0 ∝ ordered-set.singleton (hsimport.var m hsv); '1 ∝ hsexpr.var hsv; 〉 |]
 gshsoutput_var = [gs:value| λ 'hsv. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var hsv; 〉 |]
 gshsoutput_int = [gs:value| λ 'n. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.int n; 〉 |]
+gshsoutput_string = [gs:value| λ 's. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.string s; 〉 |]
+
 gshsoutput_arg_var = [gs:value| λ 'p. 〈
     '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.singleton (hsimport.type qq{GSI.Value} qq{GSArg})) (p #0);
     '1 ∝ hsarg-var (p #1);
