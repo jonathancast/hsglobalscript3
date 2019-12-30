@@ -110,13 +110,6 @@ gshsexpr_int_view = $gsbcconstr_view "int"
 gshsexpr_app_view = $gsbcconstr_view "app"
 gshsexpr_lambda_view = $gsbcconstr_view "lambda"
 
-$gsdeclare hspos hspos
-$gsdeclare hspos-import hspos_import
-
-hspos = [gs:value| λ 'pos. hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil) |]
-
-hspos_import = [gs:value| hsimport.type qq{GSI.Util} qq{Pos} |]
-
 gshsoutput_apply = [gs:value| λ 'pf. λ 'pas. foldl hsoutput.app pf pas |]
 gshsoutput_applyivar = [gs:value| λ 'm. λ 'f. λ 'pas. hsoutput.apply (hsoutput.ivar m f) pas |]
 gshsoutput_applyivarpos = [gs:value| λ 'm. λ 'f. λ 'pos. λ 'pas. hsoutput.apply (hsoutput.app (hsoutput.ivar m f) (hsoutput.pos pos)) pas |]
@@ -137,4 +130,7 @@ gshsoutput_arg_var = [gs:value| λ 'p. hsoutput.applyiconstr qq{GSI.Value} qq{GS
 
 gshsoutput_arg_expr = [gs:value| λ 'pos. λ 'p. hsoutput.applyiconstr qq{GSI.Value} qq{GSArg} qq{GSArgExpr} (hsoutput.pos pos : p : nil) |]
 
-gshsoutput_pos = [gs:value| λ 'pos. 〈 '0 ∝ ordered-set.singleton hspos-import; '1 ∝ hspos pos; 〉 |]
+gshsoutput_pos = [gs:value| λ 'pos. 〈
+    '0 ∝ ordered-set.singleton (hsimport.type qq{GSI.Util} qq{Pos});
+    '1 ∝ hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil);
+〉 |]
