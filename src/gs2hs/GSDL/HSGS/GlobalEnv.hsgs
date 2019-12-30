@@ -30,7 +30,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.view.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue_view} $
     hsgs.compiler.env.arg-var.insert (gsvar qq{#}) (λ 'env. λ 'pos. λ 'f. λ 'as. analyze as.
         case arg.var-name 'v : nil. either.for 'p ← hsgs.compile-arg nothing env (arg.expr pos f);. right $
-            hsoutput.applyivar qq{GSI.ByteCode} qq{gsbcfield_w} (hsoutput.pos pos : p : hsoutput.applyivar qq{GSI.Syn} qq{gsvar} (hsoutput.string (gsvar.name v) : nil) : nil)
+            hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcfield_w} pos (p : hsoutput.applyivar qq{GSI.Syn} qq{gsvar} (hsoutput.string (gsvar.name v) : nil) : nil)
     ) $
     hsgs.compiler.env.empty
 |]
