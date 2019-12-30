@@ -55,14 +55,14 @@ gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p. (analyze need-here as.
-            case false. hsgs.compile-args pos p as nothing env
+            case false. hsgs.compile-args pos p as hsgs.compiler.supply.env.empty env
             case true. supply-here env pos (hsgs.compile-args pos p as)
         )
     )
     case expr.unary 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.unary.get env).
         case nothing. left $ pos.fmt pos qq{unary §(gsvar.fmt-atom v) not in scope}
         case just 'p. (analyze need-here as.
-            case false. hsgs.compile-args pos p as nothing env
+            case false. hsgs.compile-args pos p as hsgs.compiler.supply.env.empty env
             case true. supply-here env pos (hsgs.compile-args pos p as)
         )
     )
@@ -74,11 +74,13 @@ gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
 
 gsneed_here = [gs:value| λ 'as. list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as |]
 
-gssupply_here = [gs:value|  λ 'env. λ 'pos. λ 'k. hsgs.compiler.env.gen-sym env $ λ 'herehs. λ 'env1. either.for 'p1 ← k (just herehs) env1;.
-    right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcwithhere_w} pos (hsoutput.lambda herehs p1 : nil)
+gssupply_here = [gs:value|  λ 'env. λ 'pos. λ 'k. hsgs.compiler.env.gen-sym env $ λ 'herehs. λ 'env1.
+    for 'senv1 ∝ hsgs.compiler.supply.env.here.insert herehs hsgs.compiler.supply.env.empty;.
+        either.for 'p1 ← k senv1 env1;.
+            right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcwithhere_w} pos (hsoutput.lambda herehs p1 : nil)
 |]
 
-gshsgs_compile_args = [gs:value| λ 'pos. λ 'p. λ 'as. λ 'mbhere. λ 'env1. either.for 'as1 ← either.mapM (hsgs.compile-arg mbhere env1) as;. right $
+gshsgs_compile_args = [gs:value| λ 'pos. λ 'p. λ 'as. λ 'senv. λ 'env1. either.for 'as1 ← either.mapM (hsgs.compile-arg senv env1) as;. right $
     hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapply_w} pos (p : hsoutput.list as1 : nil)
 |]
 
@@ -89,7 +91,7 @@ gshsgs_compile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. 
     )
 |]
 
-gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
+gshsgs_compile_arg = [gs:value| λ 'senv. λ 'env. λ 'a. analyze a.
     case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p. right $ hsoutput.arg-var p
@@ -98,8 +100,9 @@ gshsgs_compile_arg = [gs:value| λ 'mbhere. λ 'env. λ 'a. analyze a.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
         case just 'p. right $ hsoutput.arg-var p
     )
-    case arg.expr 'pos 'e. either.for 'p ← hsgs.compile-expr env hsgs.compiler.supply.env.empty pos e;. right $ hsoutput.arg-expr pos p
-    case arg.here. right $ hsoutput.arg-var $ hsoutput.var $ analyze mbhere. case just 'here. here
+    case arg.expr 'pos 'e. either.for 'p ← hsgs.compile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
+    case arg.here. analyze hsgs.compiler.supply.env.here.get senv.
+        case just 'here. right $ hsoutput.arg-var $ hsoutput.var here
 |]
 
 $gsdeclare hsgs.compile-local-env gshsgs_compile_local_env
