@@ -6,7 +6,7 @@ module GSDL.HSGS.AST (
     gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
     gshsexpr_fmt_atom,
     gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list, hsarg_var, hsarg_expr, hspos, hspos_import,
-    gshsoutput_apply, gshsoutput_applyivar, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
+    gshsoutput_apply, gshsoutput_applyivar, gshsoutput_applyivarpos, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
   ) where
 
 import GSI.Syn (gsvar)
@@ -119,6 +119,7 @@ hspos_import = [gs:value| hsimport.type qq{GSI.Util} qq{Pos} |]
 
 gshsoutput_apply = [gs:value| λ 'pf. λ 'pas. foldl hsoutput.app pf pas |]
 gshsoutput_applyivar = [gs:value| λ 'm. λ 'f. λ 'pas. hsoutput.apply (hsoutput.ivar m f) pas |]
+gshsoutput_applyivarpos = [gs:value| λ 'm. λ 'f. λ 'pos. λ 'pas. hsoutput.apply (hsoutput.app (hsoutput.ivar m f) (hsoutput.pos pos)) pas |]
 
 gshsoutput_app = [gs:value| λ 'pf. λ 'pa. 〈 '0 ∝ ordered-set.∪ hsimport.<=> (pf #0) (pa #0); '1 ∝ hsexpr.app (pf #1) (pa #1); 〉 |]
 
