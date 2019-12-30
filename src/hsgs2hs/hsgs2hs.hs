@@ -907,6 +907,7 @@ globalEnv = Env{
         ("hsoutput.applyivar", "GSDL.HSGS.AST", "gshsoutput_applyivar"),
         ("hsoutput.arg-expr", "GSDL.HSGS.AST", "gshsoutput_arg_expr"),
         ("hsoutput.arg-var", "GSDL.HSGS.AST", "gshsoutput_arg_var"),
+        ("hsoutput.iconstr", "GSDL.HSGS.AST", "gshsoutput_iconstr"),
         ("hsoutput.int", "GSDL.HSGS.AST", "gshsoutput_int"),
         ("hsoutput.ivar", "GSDL.HSGS.AST", "gshsoutput_ivar"),
         ("hsoutput.lambda", "GSDL.HSGS.AST", "gshsoutput_lambda"),
