@@ -133,10 +133,7 @@ gshsoutput_var = [gs:value| λ 'hsv. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr
 gshsoutput_int = [gs:value| λ 'n. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.int n; 〉 |]
 gshsoutput_string = [gs:value| λ 's. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.string s; 〉 |]
 
-gshsoutput_arg_var = [gs:value| λ 'p. 〈
-    '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.singleton (hsimport.type qq{GSI.Value} qq{GSArg})) (p #0);
-    '1 ∝ hsexpr.app (hsexpr.var qq{GSArgVar}) (p #1);
-〉 |]
+gshsoutput_arg_var = [gs:value| λ 'p. hsoutput.applyiconstr qq{GSI.Value} qq{GSArg} qq{GSArgVar} (p : nil) |]
 
 gshsoutput_arg_expr = [gs:value| λ 'pos. λ 'p. 〈
     '0 ∝ ordered-set.∪ hsimport.<=> (ordered-set.from-list hsimport.<=> (hsimport.type qq{GSI.Value} qq{GSArg} : hspos-import : nil)) (p #0);
