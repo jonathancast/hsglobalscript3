@@ -113,8 +113,7 @@ gshsgs_compile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ '
     case nil. k env
     case 'f0:'fvs1. hsgs.compiler.env.gen-sym env $ λ 'xhs. λ 'env1. either.for
             'p ← hsgs.compile-local-env (hsgs.compiler.env.var.insert f0 (hsoutput.var xhs) env1) pos fvs1 envhs k;
-        . right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos
-            (hsoutput.applyivar qq{GSI.Syn} qq{gsvar} (hsoutput.string (gsvar.name f0) : nil) : hsoutput.var envhs : hsoutput.lambda xhs p : nil)
+        . right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos (hsoutput.gsvar f0 : hsoutput.var envhs : hsoutput.lambda xhs p : nil)
 |]
 
 $gsdeclare hsgs.compile-generator gshsgs_compile_generator
@@ -164,8 +163,7 @@ gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. ana
 
 gshsgs_compile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
     case pat.discard. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcdiscardpattern_w} pos nil
-    case pat.var 'v. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcvarpattern_w} pos
-        (hsoutput.applyivar qq{GSI.Syn} qq{gsvar} (hsoutput.string (gsvar.name v) : nil) : nil)
+    case pat.var 'v. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcvarpattern_w} pos (hsoutput.gsvar v : nil)
 |]
 
 $gsdeclare hsgs.compile-fallible-pat-app gshsgs_compile_fallible_pat_app
