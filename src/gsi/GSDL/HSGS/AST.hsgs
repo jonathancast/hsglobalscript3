@@ -130,7 +130,4 @@ gshsoutput_arg_var = [gs:value| λ 'p. hsoutput.applyiconstr qq{GSI.Value} qq{GS
 
 gshsoutput_arg_expr = [gs:value| λ 'pos. λ 'p. hsoutput.applyiconstr qq{GSI.Value} qq{GSArg} qq{GSArgExpr} (hsoutput.pos pos : p : nil) |]
 
-gshsoutput_pos = [gs:value| λ 'pos. 〈
-    '0 ∝ ordered-set.singleton (hsimport.type qq{GSI.Util} qq{Pos});
-    '1 ∝ hsexpr.applyvar qq{Pos} (hsexpr.string (pos #filename) : hsexpr.int (pos #line) : hsexpr.int (pos #col) : nil);
-〉 |]
+gshsoutput_pos = [gs:value| λ 'pos. hsoutput.applyiconstr qq{GSI.Util} qq{Pos} qq{Pos} (hsoutput.string (pos #filename) : hsoutput.int (pos #line) : hsoutput.int (pos #col) : nil) |]
