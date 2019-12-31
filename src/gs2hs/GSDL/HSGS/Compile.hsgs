@@ -33,6 +33,7 @@ gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
     )
     case expr.generators 'gs 'pos1. hsgs.compile-generators env gs pos1
     case expr.monadic-generators 'gs 'pos1. (analyze hsgs.compiler.supply.env.monad.get senv.
+        case nothing. left $ pos.fmt pos qq{missing supply monad}
     )
     case expr.pat 'p _. hsgs.compile-pat env pos p
     case expr.fallible-pat 'p _. hsgs.compile-fallible-pat env pos p
