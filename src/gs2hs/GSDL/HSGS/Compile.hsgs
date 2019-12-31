@@ -55,16 +55,16 @@ $gsdeclare hsgs.compile-args gshsgs_compile_args
 gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-        case just 'p. (analyze need-here as.
-            case false. hsgs.compile-args pos p as hsgs.compiler.supply.env.empty env
-            case true. supply-here env hsgs.compiler.supply.env.empty pos (hsgs.compile-args pos p as)
+        case just 'p. (for 'senv ∝ hsgs.compiler.supply.env.empty;. analyze need-here as.
+            case false. hsgs.compile-args pos p as senv env
+            case true. supply-here env senv pos (hsgs.compile-args pos p as)
         )
     )
     case expr.unary 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.unary.get env).
         case nothing. left $ pos.fmt pos qq{unary §(gsvar.fmt-atom v) not in scope}
-        case just 'p. (analyze need-here as.
-            case false. hsgs.compile-args pos p as hsgs.compiler.supply.env.empty env
-            case true. supply-here env hsgs.compiler.supply.env.empty pos (hsgs.compile-args pos p as)
+        case just 'p. (for 'senv ∝ hsgs.compiler.supply.env.empty;. analyze need-here as.
+            case false. hsgs.compile-args pos p as senv env
+            case true. supply-here env senv pos (hsgs.compile-args pos p as)
         )
     )
     case expr.app 'f1 'a. hsgs.compile-app env pos f1 (a:as)
