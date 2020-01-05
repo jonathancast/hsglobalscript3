@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcwithhere, gsbcwithhere_w, gsbcrehere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -26,7 +26,7 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr, GSExprCont(..),
 import GSI.Functions (gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceEnterIntExpr, aceForce, aceArg, aceField)
+import ACE (aceEnter, aceEnterIntExpr, aceForce, aceArg, aceField, aceReHere)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined :: StackTrace -> GSExpr
@@ -39,6 +39,9 @@ gsbcwithhere = varE 'gsbcwithhere_w `appE` gshere
 
 gsbcwithhere_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
 gsbcwithhere_w pos k = GSExpr $ \ cs sk -> runGSExpr (k $ gsexternal $ StackTrace pos cs) cs sk
+
+gsbcrehere_w :: Pos -> GSExpr -> GSExpr
+gsbcrehere_w pos e = GSExpr $ \ cs sk -> runGSExpr e cs $ aceReHere pos cs sk
 
 gsbcat_w :: Pos -> [StackTrace] -> GSExpr -> GSExpr
 gsbcat_w pos cs k = GSExpr $ \ _ sk -> runGSExpr k cs sk

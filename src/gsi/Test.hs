@@ -9,7 +9,7 @@ import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSArg(..), GSExternal(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, whichExternal, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
-import GSI.ByteCode (gsbcwithhere_w, gsbcforce_w, gsbcundefined, gsbcenter_w, gsbcrecord_w, gsbcimpbody_w)
+import GSI.ByteCode (gsbcwithhere_w, gsbcrehere_w, gsbcforce_w, gsbcundefined, gsbcenter_w, gsbcrecord_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of
@@ -90,6 +90,14 @@ main = runTestTT $ TestList $ [
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
             GSClosure [StackTrace pos _] bco -> assertEqual "The returned closure has the right position" pos (Pos file 1 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++"; expected closure"
+    ,
+    TestCase $ do
+        let file = "test-file.gs"
+        v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcrehere_w (Pos file 3 1) $ gsbcundefined (StackTrace [] (Pos file 4 1)))) [gsundefined_value_w (Pos file 4 1)]
+        case v of
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
+            GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
+            _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
     -- §section Threads
     TestCase $ do
