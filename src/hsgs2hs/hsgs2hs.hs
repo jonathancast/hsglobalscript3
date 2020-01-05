@@ -163,9 +163,9 @@ processFVS :: [Param] -> Set String
 processFVS ps = Set.fromList [ v | FVSParam vs <- ps, v <- vs ]
 
 compileValue :: Env -> Pos -> Expr -> Compiler (Set HSImport, HSExpr)
-compileValue env pos e@(EVar pos1 v) = case Map.lookup v (gsconsumes env) of
-    Just _ -> compileThunk env pos e
-    Nothing -> do
+compileValue env pos e@(EVar pos1 v) = case v `Map.member` gsconsumes env || v `Set.member` gsconstrs env of
+    True -> compileThunk env pos e
+    False -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
             Nothing -> compileError pos1 $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
@@ -185,8 +185,8 @@ compileThunk env pos e = do
 compileArg :: Env -> Pos -> Expr -> Maybe Signature -> Maybe Category -> Compiler (Set HSImport, HSExpr)
 compileArg env pos e@EMissingCase{} s Nothing = compileExprToArg env pos e
 compileArg env pos e@EQLO{} s Nothing = compileExprToArg env pos e
-compileArg env pos (EVar pos1 v) s Nothing = case Map.lookup v (gsconsumes env) of
-    Nothing -> do
+compileArg env pos (EVar pos1 v) s Nothing = case v `Map.member` gsconsumes env || v `Set.member` gsconstrs env of
+    False -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
             Nothing -> lift $ Left $ fmtPos pos1 $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
@@ -194,7 +194,7 @@ compileArg env pos (EVar pos1 v) s Nothing = case Map.lookup v (gsconsumes env) 
             Set.singleton (HSIType "GSI.Value" "GSArg") `Set.union` isv,
             HSConstr "GSArgVar" `HSApp` ev
           )
-    Just _ -> compileExprToArg env pos (EVar pos1 v)
+    True -> compileExprToArg env pos (EVar pos1 v)
 compileArg env pos (ENumber _ n) s Nothing = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
     HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
@@ -228,8 +228,8 @@ compileExpr env (EMissingCase pos) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcarg_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcprim_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.CalculusPrims" "gspriminsufficientcases" ],
     HSVar "gsbcarg_w" `HSApp` hspos pos `HSApp` (HSLambda ["x"] $HSVar "gsbcprim_w" `HSApp` hspos pos `HSApp` HSVar "gspriminsufficientcases" `HSApp` HSVar "x")
   )
-compileExpr env (EVar pos v) = case Map.lookup v (gsconsumes env) of
-    Nothing -> do
+compileExpr env (EVar pos v) = case v `Map.member` gsconsumes env || v `Set.member` gsconstrs env of
+    False -> do
         (isv, ev) <- case Map.lookup v (gsvars env) of
             Nothing -> lift $ Left $ fmtPos pos $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
@@ -237,7 +237,7 @@ compileExpr env (EVar pos v) = case Map.lookup v (gsconsumes env) of
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcenter_w", HSIType "GSI.Util" "Pos" ] `Set.union` isv,
             HSVar "gsbcenter_w" `HSApp` (hspos pos) `HSApp` ev
           )
-    Just _ -> compileApp env (EVar pos v) []
+    True -> compileApp env (EVar pos v) []
 compileExpr env (ENumber pos n) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcnatural_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcnatural_w" `HSApp` hspos pos `HSApp` HSInteger n
@@ -406,12 +406,24 @@ compileApp env (EVar pos f) as = do
             Just ims -> any isConHere ims where
                 isConHere ConHere = True
                 isConHere _ = False
-    let (isctxt, ctxt) = if needHere then
-                (
-                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcwithhere_w", HSIType "GSI.Util" "Pos" ],
-                    \ hse -> HSVar "gsbcwithhere_w" `HSApp` hspos pos `HSApp` (HSLambda ["here"] hse)
+    let isConstr = f `Set.member` gsconstrs env
+    let (isctxt, ctxt) =
+            (if needHere then
+                \ (is, f) -> (
+                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcwithhere_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+                    \ hse -> HSVar "gsbcwithhere_w" `HSApp` hspos pos `HSApp` (HSLambda ["here"] (f hse))
                 )
             else
+                id
+            ) $
+            (if isConstr then
+                \ (is, f) -> (
+                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrehere_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
+                    \ hse -> HSVar "gsbcrehere_w" `HSApp` hspos pos `HSApp` (f hse)
+                )
+            else
+                id
+            ) $
                 (Set.empty, id)
     as0 <- case Map.lookup f (gsconsumes env) of
         Nothing -> return []
@@ -1292,6 +1304,8 @@ globalEnv = Env{
             (_, EPat p) : (_, EOpen b) : _ -> return [ Just Fallible, Nothing ]
             _ -> return []
         )
+    ],
+    gsconstrs = Set.fromList [
     ]
   }
 
@@ -1301,7 +1315,8 @@ data Env = Env {
     gscategories :: Map String ([(Pos, Expr)] -> Compiler [Maybe Category]),
     gsunaries :: Map String (Set HSImport, HSExpr),
     gsvars :: Map String (Set HSImport, HSExpr),
-    gsviews :: Map String (Set HSImport, HSExpr)
+    gsviews :: Map String (Set HSImport, HSExpr),
+    gsconstrs :: Set String
   }
 
 boundVars :: Pattern -> Set String
