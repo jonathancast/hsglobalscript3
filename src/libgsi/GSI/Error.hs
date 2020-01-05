@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtInvalidProgram, fmtError, fmtErrorShort) where
+module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtInvalidProgram, fmtError, fmtErrorShort, errCode) where
 
 import Data.Typeable (Typeable)
 
@@ -47,3 +47,9 @@ fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = fmtPos pos "Undefined"
 fmtErrorShort (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
 fmtErrorShort (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
 fmtErrorShort (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
+
+errCode :: GSError -> String
+errCode GSErrUnimpl{} = "GSErrUnimpl"
+errCode GSErrUnimplField{} = "GSErrUnimplField"
+errCode GSErrInsufficientCases{} = "GSErrInsufficientCases"
+errCode GSErrError{} = "GSErrError"
