@@ -35,7 +35,7 @@ main = runTestTT $ TestList $ [
         let col = 1
         v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file line col) (gsundefined_value_w (Pos file line col)) []
         case v of
-            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file line col)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
@@ -71,7 +71,7 @@ main = runTestTT $ TestList $ [
         fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
         case v of
-            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
@@ -79,7 +79,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         v <- evalSync [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
         case v of
-            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ ": " ++ msg
+            GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
             _ -> assertFailure $ "Got " ++ gsvCode v ++ "; expected error"
     ,
