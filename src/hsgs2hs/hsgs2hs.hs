@@ -776,6 +776,7 @@ globalEnv = Env{
         ("category.monadic", "GSDL.AST", "gscategory_monadic"),
         ("char", "GSI.Parser", "gsparser_char"),
         ("compile-document", "GSDL.Compile", "gscompile_document"),
+        ("compiler.env.constr.get", "GSDL.Compiler", "gscompiler_env_constr_get"),
         ("compiler.env.empty", "GSDL.Compiler", "gscompiler_env_empty"),
         ("compiler.env.value.get", "GSDL.Compiler", "gscompiler_env_value_get"),
         ("compiler.env.value.insert", "GSDL.Compiler", "gscompiler_env_value_insert"),
