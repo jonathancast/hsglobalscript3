@@ -931,6 +931,7 @@ globalEnv = Env{
         ("hsoutput.pos", "GSDL.HSGS.AST", "gshsoutput_pos"),
         ("hsoutput.string", "GSDL.HSGS.AST", "gshsoutput_string"),
         ("hsoutput.var", "GSDL.HSGS.AST", "gshsoutput_var"),
+        ("id", "GSI.StdLib", "gsid"),
         ("ident", "GSDL.Syntax", "ident"),
         ("ident-chars", "GSDL.Syntax", "ident_chars"),
         ("impanalyzeM", "GSI.StdLib", "gsimpanalyzeM"),
