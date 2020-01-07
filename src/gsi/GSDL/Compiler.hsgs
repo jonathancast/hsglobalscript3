@@ -1,4 +1,4 @@
-module GSDL.Compiler (gscompiler_env_value_get, gscompiler_env_value_insert, gscompiler_env_view_get, gscompiler_env_view_insert, gscompiler_env_constr_get, gscompiler_env_empty) where
+module GSDL.Compiler (gscompiler_env_value_get, gscompiler_env_value_insert, gscompiler_env_view_get, gscompiler_env_view_insert, gscompiler_env_constr_get, gscompiler_env_constr_insert, gscompiler_env_empty) where
 
 $gsimports
 
@@ -11,6 +11,8 @@ gscompiler_env_view_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compa
 gscompiler_env_view_insert = [gs:value| λ 'v. λ 'x. λ 'env. record.∧ 〈 'views ∝ ordered-map.insert gsvar.compare v x (env #views); 〉 env |]
 
 gscompiler_env_constr_get = [gs:value| λ 'v. λ 'env. ordered-set.∈ gsvar.compare v (env #constrs) |]
+
+gscompiler_env_constr_insert = [gs:value| λ 'v. λ 'env. record.∧ 〈 'constrs ∝ ordered-set.insert gsvar.compare v (env #constrs); 〉 env  |]
 
 gscompiler_env_empty = [gs:value| 〈
     'values ∝ ordered-map.empty;
