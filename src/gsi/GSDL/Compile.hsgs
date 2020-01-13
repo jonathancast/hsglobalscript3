@@ -25,10 +25,15 @@ $gsdeclare compile-fallible-pat gscompile_fallible_pat
 
 gscompile_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
     case expr.natural 'n. gsbcnatural pos n
-    case expr.var 'v. (analyze compiler.env.value.get v env.
-        case nothing. error log{§(log.dstr (pos.fmt pos))Variable §(log.str (gsvar.fmt-atom v)) not in scope}
-        case just 'gsv. gsbcenter pos gsv
-    )
+    case expr.var 'v.
+        (analyze compiler.env.constr.get v env.
+            case false. id
+            case true. gsbcrehere pos
+        ) $
+            (analyze compiler.env.value.get v env.
+                case nothing. error log{§(log.dstr (pos.fmt pos))Variable §(log.str (gsvar.fmt-atom v)) not in scope}
+                case just 'gsv. gsbcenter pos gsv
+            )
     case expr.qlo 'v 'e 'x. e #compile pos env x
     case expr.open-expr 'e1 'mblvs. (analyze mblvs.
         case just 'lvs. compile-open-expr pos env e1 lvs
@@ -46,10 +51,15 @@ gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
 |]
 
 gscompile_function = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
-    case expr.var 'v. (analyze compiler.env.value.get v env.
-        case just 'gsv. gsbcapply pos gsv cas
-        case nothing. error log{§(log.dstr (pos.fmt pos))Function §(log.str (gsvar.fmt-atom v)) not in scope}
-    )
+    case expr.var 'v.
+        (analyze compiler.env.constr.get v env.
+            case false. id
+            case true. gsbcrehere pos
+        ) $
+            (analyze compiler.env.value.get v env.
+                case just 'gsv. gsbcapply pos gsv cas
+                case nothing. error log{§(log.dstr (pos.fmt pos))Function §(log.str (gsvar.fmt-atom v)) not in scope}
+            )
     case expr.app 'f 'a. compile-arg pos env a (compile-function pos env f) cas
 |]
 
