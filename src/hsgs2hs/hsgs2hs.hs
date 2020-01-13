@@ -847,6 +847,7 @@ globalEnv = Env{
         ("gsbcinsufficientcases", "GSI.GSI", "gsigsbcinsufficientcases"),
         ("gsbclfield", "GSI.GSI", "gsigsbclfield"),
         ("gsbcnatural", "GSI.GSI", "gsigsbcnatural"),
+        ("gsbcrehere", "GSI.GSI", "gsigsbcrehere"),
         ("gsbcundefined", "GSI.GSI", "gsigsbcundefined"),
         ("gsbcvarpattern", "GSI.GSI", "gsigsbcvarpattern"),
         ("gsbcviewpattern", "GSI.GSI", "gsigsbcviewpattern"),

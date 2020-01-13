@@ -2,7 +2,7 @@
 module GSI.GSI (
     gsi_monad,
     gsigsinject, gsigsthunk, gsigsintthunk, gsigsapply, gsigsundefined, gsigsav, gsigsae,
-    gsigsbcarg, gsigsbcwithhere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
+    gsigsbcarg, gsigsbcwithhere, gsigsbcrehere, gsigsbclfield, gsigsbcapply, gsigsbcundefined, gsigsbcnatural, gsigsbcenter, gsigsbcinsufficientcases, gsigsbcdiscardpattern, gsigsbcvarpattern, gsigsbcviewpattern,
     gsigsintbcwithhere, gsigsintbcopenexpr, gsigsintbcgenter, gsigsintbcfenter, gsigsintbcgapply, gsigsintbceapply, gsigsintbcnatural, gsigsintbcundefined, gsigsintbcinsufficientcases,
     gsigsintbcvarpattern, gsigsintbcdiscardpattern,
     gsigsiae, gsigsiagv,
@@ -29,7 +29,7 @@ import API (apiImplementationFailure)
 import GSI.Eval (evalSync)
 import GSI.Functions (gslist, gsstring, gsapiEval, gsapiEvalPos, gsapiEvalExternal, gsapiEvalList)
 import GSI.CalculusPrims (gspriminsufficientcases)
-import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcevalnatural, gsbcwithhere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcenter_w, gsbcexternal, gsbcconstr, gsbcconstr_view, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
+import GSI.ByteCode (gsbcarg, gsbcarg_w, gsbclfield_w, gsbcforce, gsbcevalexternal, gsbcevalnatural, gsbcwithhere_w, gsbcrehere_w, gsbcapply, gsbcapply_w, gsbcnatural_w, gsbcenter, gsbcenter_w, gsbcexternal, gsbcconstr, gsbcconstr_view, gsbcundefined_w, gsbcruntimetypeerror, gsbcimplementationfailure, gsbcprim_w, gsbcimpprim, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcdiscardpattern_w, gsbcvarpattern_w, gsbcviewpattern_w)
 import GSI.BCFunctions (gsbcevalpos, gsbcevallist, gsbcevalstring, gsbcevalmap)
 import GSI.String (gsbcstringlit)
 
@@ -126,6 +126,10 @@ gsigsbcwithhere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcevalpos ($
     $gsbcexternal (gsbcwithhere_w pos $ \ here ->
         $gsbcevalexternal ($gsae $ $gsbcapply kv [ $gsav $ gsexternal here ]) $ \ e -> e
     )
+
+gsigsbcrehere = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcevalpos ($gsav posv) $ \ pos ->
+    $gsbcevalexternal ($gsav kv) $ \ k ->
+        $gsbcexternal (gsbcrehere_w pos k)
 
 gsigsbclfield = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ rv -> $gsbcarg $ \ kv ->
     $gsbcevalpos ($gsav posv) $ \ pos ->
