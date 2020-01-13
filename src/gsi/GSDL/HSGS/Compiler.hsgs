@@ -1,4 +1,4 @@
-module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_unary_get, gshsgs_compiler_env_unary_modify, gshsgs_compiler_env_arg_var_insert, gshsgs_compiler_env_arg_var_get, gshsgs_compiler_env_empty, gshsgs_compiler_supply_env_here_insert, gshsgs_compiler_supply_env_here_get, gshsgs_compiler_supply_env_monad_get, gshsgs_compiler_supply_env_empty) where
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_constr_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_unary_get, gshsgs_compiler_env_unary_modify, gshsgs_compiler_env_arg_var_insert, gshsgs_compiler_env_arg_var_get, gshsgs_compiler_env_empty, gshsgs_compiler_supply_env_here_insert, gshsgs_compiler_supply_env_here_get, gshsgs_compiler_supply_env_monad_get, gshsgs_compiler_supply_env_empty) where
 
 $gsimports
 
@@ -13,6 +13,7 @@ gshsgs_compiler_env_view_insert = [gs:value| λ 'v. λ 'a. λ 'env. record.∧ �
 gshsgs_compiler_env_arg_var_insert = [gs:value| λ 'v. λ 'f. λ 'env. record.∧ 〈 'arg-vars ∝ ordered-map.insert gsvar.compare v f (env #arg-vars); 〉 env |]
 
 gshsgs_compiler_env_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #vars) |]
+gshsgs_compiler_env_constr_get = [gs:value| λ 'v. λ 'env. ordered-set.∈ gsvar.compare v (env #constrs) |]
 gshsgs_compiler_env_view_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #views) |]
 gshsgs_compiler_env_arg_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #arg-vars) |]
 
@@ -44,6 +45,7 @@ gshsgs_compiler_env_unary_modify = [gs:value| λ 'f. λ 'env. for
 
 gshsgs_compiler_env_empty = [gs:value| 〈
     'vars ∝ ordered-map.empty;
+    'constrs ∝ ordered-set.empty;
     'unaries ∝ ordered-map.empty;
     'views ∝ ordered-map.empty;
     'generators ∝ ordered-map.empty;
