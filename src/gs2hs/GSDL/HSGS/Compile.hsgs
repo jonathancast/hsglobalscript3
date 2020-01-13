@@ -3,8 +3,10 @@ module GSDL.HSGS.Compile (gshsgs_compile_value, gshsgs_compile_expr, gshsgs_comp
 $gsimports
 
 gshsgs_compile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
-    case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
-        case just 'p. right p
+    case expr.var 'v. (analyze hsgs.compiler.env.constr.get v env.
+        case false. (analyze hsgs.compiler.env.var.get v env.
+            case just 'p. right p
+        )
     )
     case _. either.for 'p ← hsgs.compile-expr env hsgs.compiler.supply.env.empty pos1 e;. right $
         hsoutput.app (hsoutput.ivar qq{System.IO.Unsafe} qq{unsafePerformIO}) $
@@ -21,9 +23,11 @@ $gsdeclare hsgs.compile-open-expr gshsgs_compile_open_expr
 
 gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
     case expr.natural 'n. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcnatural_w} pos (hsoutput.int n : nil)
-    case expr.var 'v. (analyze hsgs.compiler.env.var.get v env.
-        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-        case just 'p. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcenter_w} pos (p : nil)
+    case expr.var 'v. (analyze hsgs.compiler.env.constr.get v env.
+        case false. (analyze hsgs.compiler.env.var.get v env.
+            case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+            case just 'p. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcenter_w} pos (p : nil)
+        )
     )
     case expr.structure-literal 'gs 'pos1. hsgs.compile-generators env gs pos1
     case expr.app 'f 'x. (analyze x.
@@ -53,15 +57,17 @@ $gsdeclare supply-here gssupply_here
 $gsdeclare hsgs.compile-args gshsgs_compile_args
 
 gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
-    case expr.var 'v. (either.for
-            'senv ← right $ hsgs.compiler.supply.env.empty;
-            'p ← analyze hsgs.compiler.env.var.get v env.
-                case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-                case just 'p. right p
-            ;
-        . analyze need-here as.
-            case false. hsgs.compile-args pos p as senv env
-            case true. supply-here env senv pos (hsgs.compile-args pos p as)
+    case expr.var 'v. (analyze hsgs.compiler.env.constr.get v env.
+        case false. (either.for
+                'senv ← right $ hsgs.compiler.supply.env.empty;
+                'p ← analyze hsgs.compiler.env.var.get v env.
+                    case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+                    case just 'p. right p
+                ;
+            . analyze need-here as.
+                case false. hsgs.compile-args pos p as senv env
+                case true. supply-here env senv pos (hsgs.compile-args pos p as)
+        )
     )
     case expr.unary 'v. (either.for
             'senv ← right $ hsgs.compiler.supply.env.empty;
@@ -99,9 +105,11 @@ gshsgs_compile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. 
 |]
 
 gshsgs_compile_arg = [gs:value| λ 'senv. λ 'env. λ 'a. analyze a.
-    case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
-        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-        case just 'p. right $ hsoutput.arg-var p
+    case arg.expr 'pos (expr.var 'v). (analyze hsgs.compiler.env.constr.get v env.
+        case false. (analyze hsgs.compiler.env.var.get v env.
+            case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+            case just 'p. right $ hsoutput.arg-var p
+        )
     )
     case arg.expr 'pos (expr.value-var 'v). (analyze hsgs.compiler.env.var.get v env.
         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
@@ -163,8 +171,10 @@ gshsgs_compile_generator_app = [gs:value| λ 'env. λ 'pos. λ 'g. λ 'as. analy
 
 gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. analyze a #1.
     case generator.pattern 'p _. either.for 'r ← hsgs.compile-pat env pos p;. right $ hsoutput.arg-expr pos r
-    case generator.expr (expr.var 'v). (analyze hsgs.compiler.env.var.get v env.
-        case just 'p. right $ hsoutput.arg-var p
+    case generator.expr (expr.var 'v). (analyze hsgs.compiler.env.constr.get v env.
+        case false. (analyze hsgs.compiler.env.var.get v env.
+            case just 'p. right $ hsoutput.arg-var p
+        )
     )
     case generator.expr (expr.natural 'n). right $
         hsoutput.arg-var $ hsoutput.app (hsoutput.iconstr qq{GSI.Value} qq{GSValue} qq{GSNatural}) (hsoutput.int n)
