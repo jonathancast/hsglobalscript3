@@ -1,4 +1,4 @@
-module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_constr_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_unary_get, gshsgs_compiler_env_unary_modify, gshsgs_compiler_env_arg_var_insert, gshsgs_compiler_env_arg_var_get, gshsgs_compiler_env_empty, gshsgs_compiler_supply_env_here_insert, gshsgs_compiler_supply_env_here_get, gshsgs_compiler_supply_env_monad_get, gshsgs_compiler_supply_env_empty) where
+module GSDL.HSGS.Compiler (gshsgs_compiler_env_var_insert, gshsgs_compiler_env_var_get, gshsgs_compiler_env_constr_insert, gshsgs_compiler_env_constr_get, gshsgs_compiler_env_view_insert, gshsgs_compiler_env_view_get, gshsgs_compiler_env_gen_sym, gshsgs_compiler_env_generator_get, gshsgs_compiler_env_generator_modify, gshsgs_compiler_env_unary_get, gshsgs_compiler_env_unary_modify, gshsgs_compiler_env_arg_var_insert, gshsgs_compiler_env_arg_var_get, gshsgs_compiler_env_empty, gshsgs_compiler_supply_env_here_insert, gshsgs_compiler_supply_env_here_get, gshsgs_compiler_supply_env_monad_get, gshsgs_compiler_supply_env_empty) where
 
 $gsimports
 
@@ -7,6 +7,8 @@ gshsgs_compiler_env_gen_sym = [gs:value| λ 'env. λ 'k. k qq{x§(natural.fmt-de
 |]
 
 gshsgs_compiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env.  record.∧ 〈 'vars ∝ ordered-map.insert gsvar.compare v a (env #vars); 〉 env |]
+
+gshsgs_compiler_env_constr_insert = [gs:value| λ 'v. λ 'env. record.∧ 〈 'constrs ∝ ordered-set.insert gsvar.compare v (env #constrs); 〉 env |]
 
 gshsgs_compiler_env_view_insert = [gs:value| λ 'v. λ 'a. λ 'env. record.∧ 〈 'views ∝ ordered-map.insert gsvar.compare v a (env #views); 〉 env |]
 
