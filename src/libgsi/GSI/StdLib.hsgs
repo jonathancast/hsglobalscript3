@@ -3,8 +3,8 @@ module GSI.StdLib (gsvalue, gsmatch, gslambda, gscompose, gsid, gsapply_fn, gsan
 
 import GSI.Util (StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), gslambda_value, gsvenvUnion, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcat_w, gsbcarg, gsbcapply, gsbcforce, gsbcenter, gsbcconstr, gsbcerror, gsbcundefined, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsvenvUnion, gsav, gsae, gsvCode)
+import GSI.ByteCode (gsbcat_w, gsbcarg, gsbcapply, gsbcforce, gsbcenter, gsbcconstr, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 import GSI.BCFunctions (gsbcevalstacktrace)
 $gsimports
 
@@ -57,8 +57,7 @@ gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
     $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
     gsbcerror st_hs msg_s
 
-gsundefined = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ st_hs ->
-    gsbcundefined st_hs
+gsundefined = $gsundefined_value
 
 gsinfalliblepattern = $gslambda_value $ \ p -> $gsbcarg $ \ x ->
     $gsbcforce ($gsae ($gsbcapply p [ $gsav x ])) $ \ r -> $gsbcconstr (gsvar "1") [$gsav r]

@@ -933,6 +933,7 @@ globalEnv = Env{
         ("hsoutput.lambda", "GSDL.HSGS.AST", "gshsoutput_lambda"),
         ("hsoutput.list", "GSDL.HSGS.AST", "gshsoutput_list"),
         ("hsoutput.pos", "GSDL.HSGS.AST", "gshsoutput_pos"),
+        ("hsoutput.rehere", "GSDL.HSGS.AST", "gshsoutput_rehere"),
         ("hsoutput.string", "GSDL.HSGS.AST", "gshsoutput_string"),
         ("hsoutput.var", "GSDL.HSGS.AST", "gshsoutput_var"),
         ("id", "GSI.StdLib", "gsid"),
@@ -1154,7 +1155,6 @@ globalEnv = Env{
     ],
     gsconsumes = Map.fromList [
         ("error", [ ConHere ]),
-        ("undefined", [ ConHere ]),
         ("λ", [ ConHere ])
     ],
     gsunaries = Map.fromList $ map (\ (gsn, hsm, hsn) -> (gsn, (Set.singleton $ HSIVar hsm hsn, HSVar hsn))) $ [
@@ -1312,6 +1312,7 @@ globalEnv = Env{
         )
     ],
     gsconstrs = Set.fromList [
+        "undefined"
     ]
   }
 
