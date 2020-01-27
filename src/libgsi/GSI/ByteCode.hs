@@ -85,8 +85,10 @@ gsbcexternal_w pos e = GSExpr $ \ cs sk -> gsreturn sk $ GSExternal (toExternal 
 gsbcchar_w :: Pos -> Char -> GSExpr
 gsbcchar_w pos ch = GSExpr $ \ cs sk -> gsreturn sk $ GSRune ch
 
-gsbcerror :: StackTrace -> String -> GSExpr
-gsbcerror (StackTrace pos _) msg = GSExpr $ \ _ sk -> gsthrow sk $ GSError (GSErrError pos msg)
+gsbcerror = varE 'gsbcerror_w `appE` gshere
+
+gsbcerror_w :: Pos -> String -> GSExpr
+gsbcerror_w pos msg = GSExpr $ \ _ sk -> gsthrow sk $ GSError (GSErrError pos msg)
 
 gsbcruntimetypeerror = varE 'gsbcruntimetypeerror_w `appE` gshere
 gsbcruntimetypeerror_w :: Pos -> String -> String -> String -> GSExpr

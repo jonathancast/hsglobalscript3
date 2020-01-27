@@ -1154,7 +1154,6 @@ globalEnv = Env{
         ("≠", "GSI.Rune", "gsrune_neq")
     ],
     gsconsumes = Map.fromList [
-        ("error", [ ConHere ]),
         ("λ", [ ConHere ])
     ],
     gsunaries = Map.fromList $ map (\ (gsn, hsm, hsn) -> (gsn, (Set.singleton $ HSIVar hsm hsn, HSVar hsn))) $ [
@@ -1312,6 +1311,7 @@ globalEnv = Env{
         )
     ],
     gsconstrs = Set.fromList [
+        "error",
         "undefined"
     ]
   }

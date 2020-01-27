@@ -61,6 +61,7 @@ gsvalidator_global_env = [gs:value|
 $gsdeclare load-document gsload_document
 
 gscompiler_global_env = [gs:value|
+    compiler.env.constr.insert (gsvar qq{error}) $
     compiler.env.constr.insert (gsvar qq{undefined}) $
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{>>=}) (gsinject monad.>>=) $

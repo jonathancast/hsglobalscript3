@@ -6,6 +6,7 @@ $gsdeclare hsgs.compiler.env.var.simple-insert gshsgs_compiler_env_var_simple_in
 $gsdeclare hsgs.compiler.env.view.simple-insert gshsgs_compiler_env_view_simple_insert
 
 gshsgs_compiler_global_env = [gs:value|
+    hsgs.compiler.env.constr.insert (gsvar qq{error}) $
     hsgs.compiler.env.constr.insert (gsvar qq{undefined}) $
     hsgs.compiler.env.generator.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{←}) qq{GSI.StdLib} qq{gsfrom}) $
     hsgs.compiler.env.generator.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{∝}) qq{GSI.StdLib} qq{gsmatch}) $

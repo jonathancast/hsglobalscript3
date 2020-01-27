@@ -52,10 +52,7 @@ gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
 
 gsimpunit = $gslambda_value $ \ x -> $gsbcimpfor $ do $gsbcimpunit $ $gsav x
 
-gserror = $gslambda_value $ \ stv -> $gsbcarg $ \ msgv ->
-    $gsbcevalstacktrace ($gsav stv) $ \ st_hs ->
-    $gsbcfmterrormsg ($gsav msgv) $ \ msg_s ->
-    gsbcerror st_hs msg_s
+gserror = $gslambda_value $ \ msgv -> $gsbcfmterrormsg ($gsav msgv) $ \ msg_s -> $gsbcerror msg_s
 
 gsundefined = $gsundefined_value
 
