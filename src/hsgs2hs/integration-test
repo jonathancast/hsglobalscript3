@@ -72,7 +72,7 @@ test_qq_pattern_interpolation_hsgs_syntax
 test_undefined_function_hsgs
 ok_diff_compiled '-- undefined argument --' hsgs2hs undefined-argument.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- undefined value --' hsgs2hs undefined-value.hsgs .hs runghc `{./test-ghcoptions}
-ok_diff_compiler '-- error function --' hsgs2hs error-call.hsgs .hs
+ok_diff_compiled '-- error function --' hsgs2hs error-call.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiler '-- print-error function --' hsgs2hs print-error.hsgs .hs
 ok_diff_compiled '-- lambdas --' hsgs2hs lambdas.hsgs .hs runghc `{./test-ghcoptions}
 ok_fuzzy_diff_regex_compiled '-- lambda stack traces --' hsgs2hs lambda-stack-trace.hsgs .hs runghc `{./test-ghcoptions}

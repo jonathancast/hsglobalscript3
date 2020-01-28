@@ -1,2 +1,4 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:expr hsvs=msg,| error msg |]
+
+main = printTestExpr [gs:expr| error log{Oops} |]

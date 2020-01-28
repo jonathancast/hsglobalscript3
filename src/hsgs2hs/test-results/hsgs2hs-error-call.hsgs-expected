@@ -1,11 +1,1 @@
-{-# LINE 1 "./test-fixtures/error-call.hsgs" #-}
-import GSI.Util (Pos(..))
-import GSI.Value (GSArg(..))
-import GSI.ByteCode (gsbcapply_w)
-import GSI.ByteCode (gsbcrehere_w)
-import GSI.StdLib (gserror)
-
-{-# LINE 2 "./test-fixtures/error-call.hsgs" #-}
-(gsbcrehere_w (Pos "./test-fixtures/error-call.hsgs" 2 21) (gsbcapply_w (Pos "./test-fixtures/error-call.hsgs" 2 21) gserror [ GSArgVar msg ]))
-{-# LINE 2 "./test-fixtures/error-call.hsgs" #-}
-
+<./test-fixtures/error-call.hsgs:4:32: Error: Oops>
