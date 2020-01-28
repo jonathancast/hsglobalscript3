@@ -126,6 +126,7 @@ aceReHere pos cs sk = GSExprCont{
       ,
     gsthrow = \ e -> case e of
         GSError (GSErrUnimpl st) -> gsthrow sk $ GSError (GSErrUnimpl (StackTrace pos cs))
+        GSError (GSErrError _ msg) -> gsthrow sk $ GSError (GSErrError pos msg)
         GSError err -> gsthrow sk $ $gsimplementationfailure $ "aceReHere GSError (" ++ errCode err ++ ") next"
         _ -> gsthrow sk $ $gsimplementationfailure $ "aceReHere " ++ gsvCode e ++ " next"
   }
