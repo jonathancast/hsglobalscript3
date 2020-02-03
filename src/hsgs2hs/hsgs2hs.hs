@@ -407,7 +407,22 @@ compileApp env (EVar pos f) as = do
                 isConHere ConHere = True
                 isConHere _ = False
     let isConstr = f `Set.member` gsconstrs env
+    let constrarity = Map.lookup f (gsconstrarities env)
+    let inas = case constrarity of
+            Nothing -> as
+            Just n -> take n as
+    let outas = case constrarity of
+            Nothing -> []
+            Just n -> drop n as
+    outas' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing Nothing) outas
     let (isctxt, ctxt) =
+            (case outas' of
+                [] -> id
+                _ -> \ (is, f) -> (
+                    Set.unions $ Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapp_w", HSIType "GSI.Util" "Pos" ] : is : map (\ (isa, _) -> isa) outas',
+                    \ hse -> HSVar "gsbcapp_w" `HSApp` hspos pos `HSApp` f hse `HSApp` HSList (map (\ (_, a) -> a) outas')
+                  )
+            ) $
             (if needHere then
                 \ (is, f) -> (
                     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcwithhere_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
@@ -436,16 +451,16 @@ compileApp env (EVar pos f) as = do
     cats <- case Map.lookup f (gscategories env) of
         Nothing -> return []
         Just catsM -> catsM as
-    as' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 as (sig ++ repeat Nothing) (cats ++ repeat Nothing))
+    inas' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 inas (sig ++ repeat Nothing) (cats ++ repeat Nothing))
     return (
         Set.unions $
             isctxt :
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
             isf :
             map (\ (is, _) -> is) as0 ++
-            map (\ (is, _) -> is) as'
+            map (\ (is, _) -> is) inas'
         ,
-        ctxt (HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) as'))
+        ctxt (HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) inas'))
       )
 compileApp env (EUnary pos f) as = do
     (isf, ef) <- case Map.lookup f (gsunaries env) of
@@ -1313,6 +1328,8 @@ globalEnv = Env{
     gsconstrs = Set.fromList [
         "error",
         "undefined"
+    ],
+    gsconstrarities = Map.fromList [
     ]
   }
 
@@ -1323,7 +1340,8 @@ data Env = Env {
     gsunaries :: Map String (Set HSImport, HSExpr),
     gsvars :: Map String (Set HSImport, HSExpr),
     gsviews :: Map String (Set HSImport, HSExpr),
-    gsconstrs :: Set String
+    gsconstrs :: Set String,
+    gsconstrarities :: Map String Int
   }
 
 boundVars :: Pattern -> Set String
