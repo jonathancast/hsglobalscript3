@@ -12,7 +12,7 @@ module GSDL.AST (
     gskind_pointed,
     gsexpr_app, gsexpr_fallible_pat, gsexpr_generators, gsexpr_missing_case, gsexpr_monadic_generators, gsexpr_natural, gsexpr_open_expr, gsexpr_pat, gsexpr_qlo, gsexpr_structure_literal, gsexpr_unary, gsexpr_value_var, gsexpr_var, gsexpr_app_view, gsexpr_fallible_pat_view, gsexpr_generators_view, gsexpr_missing_case_view, gsexpr_monadic_generators_view, gsexpr_natural_view, gsexpr_open_expr_view, gsexpr_pat_view, gsexpr_qlo_view, gsexpr_structure_literal_view, gsexpr_unary_view, gsexpr_value_var_view, gsexpr_var_view,
     gsqloitem_char, gsqloitem_char_view,
-    gsarg_expr, gsarg_here, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_here_view, gsarg_explicit_view, gsarg_app_view, gsarg_var_view, gsarg_var_name_view,
+    gsarg_expr, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_explicit_view, gsarg_app_view, gsarg_var_view, gsarg_var_name_view,
     gsgenerator_var, gsgenerator_app, gsgenerator_expr, gsgenerator_pattern, gsgenerator_var_view, gsgenerator_app_view, gsgenerator_expr_view, gsgenerator_pattern_view,
     gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsorder_of_being_eq, gsorder_of_being_cmp,
@@ -116,14 +116,12 @@ gsqloitem_char = $gslambda_value $ \ r -> $gsbcconstr (gsvar "char") [ $gsav r ]
 gsqloitem_char_view = $gsbcconstr_view "char"
 
 gsarg_expr = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav pos, $gsav e ]
-gsarg_here = $gsconstr (gsvar "here") []
 gsarg_explicit = $gslambda_value $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "explicit") [ $gsav pos, $gsav e ]
 gsarg_app = $gslambda_value $ \ a0 -> $gsbcarg $ \ a1 -> $gsbcconstr (gsvar "app") [ $gsav a0, $gsav a1 ]
 gsarg_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gsarg_var_name = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var-name") [ $gsav v ]
 
 gsarg_expr_view = $gsbcconstr_view "expr"
-gsarg_here_view = $gsbcconstr_view "here"
 gsarg_explicit_view = $gsbcconstr_view "explicit"
 gsarg_app_view = $gsbcconstr_view "app"
 gsarg_var_view = $gsbcconstr_view "var"

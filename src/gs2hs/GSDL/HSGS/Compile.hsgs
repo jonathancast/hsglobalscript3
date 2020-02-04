@@ -34,7 +34,6 @@ gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
                 )
     case expr.structure-literal 'gs 'pos1. hsgs.compile-generators env gs pos1
     case expr.app 'f 'x. (analyze x.
-        case arg.here. hsgs.compile-app env pos f (x : nil)
         case arg.expr _ _. hsgs.compile-app env pos f (x : nil)
         case arg.app 'af 'ax. hsgs.compile-custom-app env pos f af (ax : nil)
     )
@@ -55,8 +54,6 @@ gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
         )
 |]
 
-$gsdeclare need-here gsneed_here
-$gsdeclare supply-here gssupply_here
 $gsdeclare hsgs.compile-args gshsgs_compile_args
 
 gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
@@ -71,9 +68,7 @@ gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
                         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
                         case just 'p. right p
                     ;
-                . analyze need-here as.
-                    case false. hsgs.compile-args pos p as senv env
-                    case true. supply-here env senv pos (hsgs.compile-args pos p as)
+                . hsgs.compile-args pos p as senv env
             )
     case expr.unary 'v. (either.for
             'senv ← right $ hsgs.compiler.supply.env.empty;
@@ -81,22 +76,9 @@ gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
                 case nothing. left $ pos.fmt pos qq{unary §(gsvar.fmt-atom v) not in scope}
                 case just 'p. right p
             ;
-        . analyze need-here as.
-            case false. hsgs.compile-args pos p as senv env
-            case true. supply-here env senv pos (hsgs.compile-args pos p as)
+        . hsgs.compile-args pos p as senv env
     )
     case expr.app 'f1 'a. hsgs.compile-app env pos f1 (a:as)
-|]
-
--- To implement §gs{here}, we need to find the call stack for the whole application.
--- Check if that's needed and, if so, wrap the application in §hs{gsbcwithhere_w} and pass the call stack into §gs{hsgs.compile-arg}
-
-gsneed_here = [gs:value| λ 'as. list.∃ (λ 'a. analyze a. case arg.here. true case _. false) as |]
-
-gssupply_here = [gs:value|  λ 'env. λ 'senv. λ 'pos. λ 'k. hsgs.compiler.env.gen-sym env $ λ 'herehs. λ 'env1.
-    for 'senv1 ∝ hsgs.compiler.supply.env.here.insert herehs senv;.
-        either.for 'p1 ← k senv1 env1;.
-            right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcwithhere_w} pos (hsoutput.lambda herehs p1 : nil)
 |]
 
 gshsgs_compile_args = [gs:value| λ 'pos. λ 'p. λ 'as. λ 'senv. λ 'env1. either.for 'as1 ← either.mapM (hsgs.compile-arg senv env1) as;. right $
@@ -122,8 +104,6 @@ gshsgs_compile_arg = [gs:value| λ 'senv. λ 'env. λ 'a. analyze a.
         case just 'p. right $ hsoutput.arg-var p
     )
     case arg.expr 'pos 'e. either.for 'p ← hsgs.compile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
-    case arg.here. analyze hsgs.compiler.supply.env.here.get senv.
-        case just 'here. right $ hsoutput.arg-var $ hsoutput.var here
 |]
 
 $gsdeclare hsgs.compile-local-env gshsgs_compile_local_env

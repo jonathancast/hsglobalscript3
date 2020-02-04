@@ -47,7 +47,6 @@ gscompile_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
 gscompile_arg = [gs:value| λ 'pos. λ 'env. λ 'a. λ 'k. λ 'cas. analyze a.
     case arg.expr 'pos1 'e. k (gsae pos1 (compile-expr pos1 env e) : cas)
     case arg.explicit 'pos1 'e. k (gsae pos1 (compile-expr pos1 env e) : cas)
-    case arg.here. gsbcwithhere pos (λ 'here. k (gsav here : cas))
 |]
 
 gscompile_function = [gs:value| λ 'pos. λ 'env. λ 'f. λ 'cas. analyze f.
