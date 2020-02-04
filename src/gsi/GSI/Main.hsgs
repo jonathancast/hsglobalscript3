@@ -63,6 +63,7 @@ $gsdeclare load-document gsload_document
 gscompiler_global_env = [gs:value|
     compiler.env.constr.insert (gsvar qq{error}) $
     compiler.env.constr.insert (gsvar qq{undefined}) $
+    compiler.env.constr.insert (gsvar qq{λ}) $
     compiler.env.value.insert (gsvar qq{+}) (gsinject addition.+) $
     compiler.env.value.insert (gsvar qq{>>=}) (gsinject monad.>>=) $
     compiler.env.value.insert (gsvar qq{@}) (gsinject (:)) $

@@ -66,7 +66,6 @@ gsannotator_global_env = [gs:value|
 |]
 
 gsimplicits_global_env = [gs:value|
-    implicit.env.consumes.insert (gsvar qq{λ}) (consume.here : nil) $
     implicit.env.empty
 |]
 
@@ -100,10 +99,9 @@ gstype_checker_global_env = [gs:value|
     ) $
     type.env.type.insert (gsvar qq{λ}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $ type.forall (gsvar qq{σ}) kind.pointed $
-            type.function (type.const (gsvar qq{stack-trace.t})) $
-                type.function (type.pattern (type.consts qq{α}) (type.consts qq{σ})) $
-                    type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
-                        type.function (type.consts qq{α}) (type.consts qq{β})
+            type.function (type.pattern (type.consts qq{α}) (type.consts qq{σ})) $
+                type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
+                    type.function (type.consts qq{α}) (type.consts qq{β})
     ) $
     type.env.type.insert (gsvar qq{gsvar}) (
         type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{gsvar.t}

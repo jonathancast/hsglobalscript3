@@ -12,8 +12,7 @@ gsvalue = $gslambda_value $ \ v -> $gsbcenter v
 
 gsmatch = $gslambda_value $ \ p -> $gsbcarg $ \ e -> $gsbcapply p [ $gsav e ]
 
-gslambda = $gslambda_value $ \ stv -> $gsbcevalstacktrace ($gsav stv) $ \ (StackTrace pos cs) ->
-    $gsbcarg $ \ p -> $gsbcarg $ \ b -> gsbcat_w pos cs $ gsbcarg_w pos $ \ x ->
+gslambda = $gslambda_value $ \ p -> $gsbcarg $ \ b -> $gsbcarg $ \ x ->
         $gsbcforce ($gsae $ $gsbcapply p [$gsav x]) $ \ r -> $gsbcapply b [$gsav r]
 
 gscompose :: GSValue
