@@ -15,7 +15,6 @@ gsadd_implicits_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.natural 'n. e
     case expr.var 'v. foldl
         (λ 'f. λ 'c. analyze c.
-            case consume.here. expr.app f arg.here
         )
         e
         (implicit.env.consumes.get v env)
