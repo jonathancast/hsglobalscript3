@@ -398,14 +398,6 @@ compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    -- To implement §hs{ConHere}, we need to find the call stack for the overall application
-    -- That means wrapping the whole appllication in a call to §hs{gsbcwithhere_w}
-    -- Find out if we need to do that now
-    let needHere = case Map.lookup f (gsconsumes env) of
-            Nothing -> False
-            Just ims -> any isConHere ims where
-                isConHere ConHere = True
-                isConHere _ = False
     let isConstr = f `Set.member` gsconstrs env
     let constrarity = Map.lookup f (gsconstrarities env)
     let inas = case constrarity of
@@ -423,14 +415,6 @@ compileApp env (EVar pos f) as = do
                     \ hse -> HSVar "gsbcapp_w" `HSApp` hspos pos `HSApp` f hse `HSApp` HSList (map (\ (_, a) -> a) outas')
                   )
             ) $
-            (if needHere then
-                \ (is, f) -> (
-                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcwithhere_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
-                    \ hse -> HSVar "gsbcwithhere_w" `HSApp` hspos pos `HSApp` (HSLambda ["here"] (f hse))
-                )
-            else
-                id
-            ) $
             (if isConstr then
                 \ (is, f) -> (
                     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrehere_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
@@ -443,7 +427,6 @@ compileApp env (EVar pos f) as = do
     as0 <- case Map.lookup f (gsconsumes env) of
         Nothing -> return []
         Just ims -> forM ims $ \ im -> case im of
-            ConHere -> return (Set.fromList [ HSIType "GSI.Value" "GSArg" ], HSConstr "GSArgVar" `HSApp` HSVar "here")
             _ -> $gsfatal $ "Compile implicit " ++ conCode im ++ " next"
     sig <- case Map.lookup f (gssignatures env) of
         Nothing -> return []
@@ -1368,11 +1351,10 @@ genBoundVars (ExecGenerator _ _) = Set.empty
 genBoundVars (BindGenerator x _ _) = Set.singleton x
 genBoundVars g = $gsfatal $ "genBoundVars " ++ genCode g ++ " next"
 
-data Consume
-  = ConHere
+data Consume = Consume
 
 conCode :: Consume -> String
-conCode ConHere = "ConHere"
+conCode Consume = "Consume"
 
 data Signature
   = SigOpen (Set String)
