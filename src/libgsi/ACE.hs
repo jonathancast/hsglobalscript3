@@ -122,6 +122,7 @@ aceField c1 f sk = GSExprCont{
 aceReHere :: Pos -> [StackTrace] -> GSExprCont a -> GSExprCont a
 aceReHere pos cs sk = GSExprCont{
     gsreturn = \ r -> case r of
+        GSClosure _ b -> gsreturn sk $ GSClosure [StackTrace pos cs] b
         _ -> gsthrow sk $ $gsimplementationfailure $ "aceReHere " ++ gsvCode r ++ " next"
       ,
     gsthrow = \ e -> case e of
