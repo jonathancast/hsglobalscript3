@@ -847,7 +847,6 @@ globalEnv = Env{
         ("gsbcundefined", "GSI.GSI", "gsigsbcundefined"),
         ("gsbcvarpattern", "GSI.GSI", "gsigsbcvarpattern"),
         ("gsbcviewpattern", "GSI.GSI", "gsigsbcviewpattern"),
-        ("gsbcwithhere", "GSI.GSI", "gsigsbcwithhere"),
         ("gsfmt-error", "GSI.GSI", "gsigsfmtError"),
         ("gsi.monad", "GSI.GSI", "gsi_monad"),
         ("gsiae", "GSI.GSI", "gsigsiae"),

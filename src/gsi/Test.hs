@@ -9,7 +9,7 @@ import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.Error (GSError(..), GSException(..))
 import GSI.Value (GSValue(..), GSArg(..), GSExternal(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, whichExternal, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
-import GSI.ByteCode (gsbcwithhere_w, gsbcrehere_w, gsbcforce_w, gsbcundefined_w, gsbcenter_w, gsbcrecord_w, gsbcimpbody_w)
+import GSI.ByteCode (gsbcrehere_w, gsbcforce_w, gsbcundefined_w, gsbcenter_w, gsbcrecord_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)
 
 getThunk v = case v of
@@ -116,41 +116,4 @@ main = runTestTT $ TestList $ [
             Left e -> case fromException e of
                 Just (GSExcError (GSErrUnimpl (StackTrace pos _))) -> assertEqual "execMainThread should and exception with the right source location" pos (Pos file line 1)
                 _ -> assertFailure $ "execMainThread should throw a GSExcUndefined error, but instead threw " ++ displayException e
-    ,
-    TestCase $ do
-        let file = "test-file.gs"
-        t <- gsthunk_w (Pos file 2 1) $ gsbcwithhere_w (Pos file 3 5) (\ posv -> gsbcenter_w (Pos file 3 5) posv)
-        v <- evalSync [StackTrace (Pos file 1 1) []] =<< getThunk t
-        case v of
-            GSExternal e -> case fromExternal e of
-                Just st -> assertEqual "The stack trace should include the gsthunk_w" (StackTrace (Pos file 3 5) [StackTrace (Pos file 2 1) [], StackTrace (Pos file 1 1) []]) st
-                _ -> assertFailure $ "We should have gotten a stack tracce, but got " ++ whichExternal e
-            _ -> assertFailure $ "We should have gotten a stack tracce, but got " ++ gsvCode v
-    ,
-    TestCase $ do
-        let file = "test-file.gs"
-        t <- gsthunk_w (Pos file 2 1) $
-            gsbcforce_w (Pos file 3 1)
-                (GSArgExpr (Pos file 3 5) (gsbcwithhere_w (Pos file 3 5) (\ posv -> gsbcenter_w (Pos file 3 5) posv)))
-                (\ posv -> gsbcenter_w (Pos file 3 10) posv)
-        v <- evalSync [StackTrace (Pos file 1 1) []] =<< getThunk t
-        case v of
-            GSExternal e -> case fromExternal e of
-                Just st -> assertEqual "The stack trace should include the force call" st $
-                    StackTrace (Pos file 3 5) [StackTrace (Pos file 3 1) [StackTrace (Pos file 2 1) [], StackTrace (Pos file 1 1) []]]
-                _ -> assertFailure $ "We should have gotten a stack tracce, but got " ++ whichExternal e
-            _ -> assertFailure $ "We should have gotten a stack tracce, but got " ++ gsvCode v
-    ,
-    TestCase $ do
-        let file = "test-file.gs"
-        t <- gsthunk_w (Pos file 2 1) $
-            gsbcforce_w (Pos file 3 1)
-                (GSArgExpr (Pos file 3 5) (gsbcrecord_w (Pos file 3 5) []))
-                (\ _ -> gsbcwithhere_w (Pos file 3 10) (\ posv -> gsbcenter_w (Pos file 3 10) posv))
-        v <- evalSync [StackTrace (Pos file 1 1) []] =<< getThunk t
-        case v of
-            GSExternal e -> case fromExternal e of
-                Just st -> assertEqual "The stack trace should not include the force call" (StackTrace (Pos file 3 10) [StackTrace (Pos file 2 1) [], StackTrace (Pos file 1 1) []]) st
-                _ -> assertFailure $ "We should have gotten a stack tracce, but got " ++ whichExternal e
-            _ -> assertFailure $ "We should have gotten a stack tracce, but got " ++ gsvCode v
   ]
