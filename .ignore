@@ -62,3 +62,6 @@ src/gsi/TestGSI/RunTime.hs
 src/gsi/TestGSI/CompileTime.hs
 src/gs2hs/gs2hs-test-gsi
 src/gsi/GSDL/Implicit.hs
+bin/gsioc
+src/gs2hs/gsioc
+src/gs2hs/gsioc.hs

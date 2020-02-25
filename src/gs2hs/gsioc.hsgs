@@ -1,0 +1,9 @@
+import GSI.Env (runGSProgram)
+$gsimports
+
+$gsdeclare process-args gsprocess_args
+
+main = runGSProgram $ [gs:value| λ 'as. process-args as |]
+
+gsprocess_args = [gs:value| λ 'as. analyze as.
+|]
