@@ -6,4 +6,7 @@ $gsdeclare process-args gsprocess_args
 main = runGSProgram $ [gs:value| λ 'as. process-args as |]
 
 gsprocess_args = [gs:value| λ 'as. analyze as.
+    case 'a:nil. (impanalyzeM file.stat a.
+        case left (ENOENT _). impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{enoent}
+    )
 |]
