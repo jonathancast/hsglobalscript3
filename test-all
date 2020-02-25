@@ -14,6 +14,7 @@ cd ../gsio &&
 echo '# Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full Global Script programs' &&
 cd ../gs2hs &&
     ./integration-test &&
+    ./install-all &&
 echo '# write a string to stdout' &&
 cd ../gscat &&
     ./integration-test &&
