@@ -64,4 +64,10 @@ fn test_gsi_impl { ./test-gsi $* }
 
 test_non_existent_file
 
+echo '## gsioc'
+
+PROG=gsioc
+fn test_gsi_impl { ./test_gsioc $* }
+
+
 true

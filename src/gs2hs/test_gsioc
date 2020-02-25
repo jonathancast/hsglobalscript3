@@ -1,0 +1,13 @@
+#! /usr/local/plan9/bin/rc
+
+. 9.rc
+
+while ([ -d $1 ]) shift
+
+GS_FILE=$1
+
+FILE=`{echo $GS_FILE | sed -e 's/(\.gsio)?\.gs$//'}
+
+./gsioc $GS_FILE || exit $status
+
+exec $FILE
