@@ -1,4 +1,4 @@
-module GS.FileName (gsfile_name_extension_get, gsfile_name_extensions_get, gsfile_name_extension_set) where
+module GS.FileName (gsfile_name_extension_get, gsfile_name_extensions_get, gsfile_name_extension_set, gsfile_name_extensions_set) where
 
 $gsimports
 
@@ -30,3 +30,5 @@ gsfile_name_extension_set_w = [gs:value| λ 'bd. λ 'exd. λ 'ex. λ 'fn. analyz
     )
     case nil. bd (r{.} : ex)
 |]
+
+gsfile_name_extensions_set = [gs:value| λ 'exs. (tokens.modify rune.≡ r{/} ∘ last.modify ∘ tokens.modify rune.≡ r{.} ∘ tail.modify) (const exs) |]
