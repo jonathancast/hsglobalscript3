@@ -78,6 +78,9 @@ gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
 |]
 
 gssplit_on = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
+    case 'x0:('x1:'xn1). (analyze eq x x0.
+        case true. split-on eq x (x1:xn1)
+    )
 |]
 
 gslist_eq = [gs:value| λ 'eq. λ 'xn. λ 'ys. analyze xn.
