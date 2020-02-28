@@ -1098,6 +1098,7 @@ globalEnv = Env{
         ("tail.modify", "GSI.List", "gstail_modify"),
         ("test-gsi.gsrun", "TestGSI.RunTime", "gstest_gsi_gsrun"),
         ("test-gsi.gstyc", "TestGSI.CompileTime", "gstest_gsi_gstyc"),
+        ("tokens.modify", "GSI.List", "gstokens_modify"),
         ("true", "GSI.Bool", "gstrue"),
         ("type-check-arg", "GSDL.TypeCheck", "gstype_check_arg"),
         ("type-check-document", "GSDL.TypeCheck", "gstype_check_document"),
