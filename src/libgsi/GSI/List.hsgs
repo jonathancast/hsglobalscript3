@@ -79,6 +79,7 @@ gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
 
 $gsdeclare split-on-w gssplit_on_w
 
+-- Returns a possibly-empty list of non-empty lists
 gssplit_on = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
     case 'x0:('x1:'xn1). (analyze eq x x0.
         case true. split-on eq x (x1:xn1)
@@ -86,6 +87,8 @@ gssplit_on = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
     )
 |]
 
+-- Returns a non-empty list of lists, all but the first of which are non-empty
+-- Returns an empty initial list when starting at the end of a group
 gssplit_on_w = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
 |]
 
