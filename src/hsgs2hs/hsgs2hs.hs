@@ -781,6 +781,7 @@ globalEnv = Env{
         ("compiler.env.view.get", "GSDL.Compiler", "gscompiler_env_view_get"),
         ("compiler.env.view.insert", "GSDL.Compiler", "gscompiler_env_view_insert"),
         ("concat", "GSI.List", "gsconcat"),
+        ("const", "GSI.StdLib", "gsconst"),
         ("create-thread", "GSI.GSI", "gsicreateThread"),
         ("dest-comp.char", "GSDL.HSGS.AST", "gsdest_comp_char"),
         ("dest-comp.expr", "GSDL.HSGS.AST", "gsdest_comp_expr"),
