@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gslast_strict, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -118,6 +118,9 @@ gslist_not_member = [gs:value| λ 'eq. λ 'x. λ 'xn. not (list.∈ eq x xn) |]
 gslist_member = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
     case 'x1:'xn1. eq x x1 || list.∈ eq x xn1
     case nil. false
+|]
+
+gslast_strict = [gs:value| λ 'xn. analyze xn.
 |]
 
 gscons :: GSValue
