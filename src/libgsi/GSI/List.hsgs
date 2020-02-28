@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gslast_strict, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gslast_strict, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -75,6 +75,9 @@ gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
         case nil. nil
         case _ : 'xn1. drop n1 xn1
     )
+|]
+
+gssplit_on = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
 |]
 
 gslist_eq = [gs:value| λ 'eq. λ 'xn. λ 'ys. analyze xn.

@@ -1079,6 +1079,7 @@ globalEnv = Env{
         ("source-comp.imports", "GSDL.HSGS.AST", "gssource_comp_imports"),
         ("source-comp.pos", "GSDL.HSGS.AST", "gssource_comp_pos"),
         ("source-comp.value", "GSDL.HSGS.AST", "gssource_comp_value"),
+        ("split-on", "GSI.List", "gssplit_on"),
         ("st.get-var", "GSI.ST", "gsstgetvar"),
         ("st.ref.new", "GSI.ST", "gsstrefnew"),
         ("st.ref.≡", "GSI.ST", "gsstrefeq"),
