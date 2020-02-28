@@ -83,13 +83,18 @@ $gsdeclare split-on-w gssplit_on_w
 gssplit_on = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
     case 'x0:('x1:'xn1). (analyze eq x x0.
         case true. split-on eq x (x1:xn1)
-        case false. head.modify-strict ((:) x0) (split-on-w eq x (x1:xn))
+        case false. head.modify-strict ((:) x0) (split-on-w eq x (x1:xn1))
     )
 |]
 
 -- Returns a non-empty list of lists, all but the first of which are non-empty
 -- Returns an empty initial list when starting at the end of a group
 gssplit_on_w = [gs:value| λ 'eq. λ 'x. λ 'xn. analyze xn.
+    case 'x0:'xn1. (analyze eq x x0.
+        case true. nil : split-on eq x xn1
+        case false. head.modify-strict ((:) x0) (split-on-w eq x xn1)
+    )
+    case nil. nil : nil
 |]
 
 gslist_eq = [gs:value| λ 'eq. λ 'xn. λ 'ys. analyze xn.
