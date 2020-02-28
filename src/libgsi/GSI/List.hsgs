@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gslast_strict, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gslast_strict, gslast_modify, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -145,6 +145,9 @@ gshead_modify_strict = [gs:value| λ 'f. λ 'xn. (analyze xn. case 'x:_. f x) : 
 gslast_strict = [gs:value| λ 'xn. analyze xn.
     case 'x1:nil. x1
     case 'x1:'xn1. last-strict xn1
+|]
+
+gslast_modify = [gs:value| λ 'f. λ 'xn. analyze xn.
 |]
 
 gscons :: GSValue

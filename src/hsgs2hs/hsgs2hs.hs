@@ -954,6 +954,7 @@ globalEnv = Env{
         ("just", "GSI.Maybe", "gsjust"),
         ("kind.pointed", "GSDL.AST", "gskind_pointed"),
         ("last-strict", "GSI.List", "gslast_strict"),
+        ("last.modify", "GSI.List", "gslast_modify"),
         ("left", "GSI.Either", "gsleft"),
         ("lexeme", "GSDL.Syntax", "lexeme"),
         ("list.<=>", "GSI.List", "gslist_compare"),
