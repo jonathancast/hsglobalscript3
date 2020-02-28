@@ -1,8 +1,10 @@
-module GS.FileName (gsfile_name_extension_get, gsfile_name_extension_set) where
+module GS.FileName (gsfile_name_extension_get, gsfile_name_extensions_get, gsfile_name_extension_set) where
 
 $gsimports
 
 $gsdeclare file.name.extension.get-w gsfile_name_extension_get_w
+
+gsfile_name_extensions_get = [gs:value| drop 1 ∘ split-on rune.≡ r{.} ∘ last-strict ∘ split-on rune.≡ r{/} |]
 
 gsfile_name_extension_get = [gs:value| λ 'fn. file.name.extension.get-w (λ 'e. e) fn |]
 

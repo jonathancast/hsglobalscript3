@@ -819,6 +819,7 @@ globalEnv = Env{
         ("file.document", "GSDL.AST", "gsfile_document"),
         ("file.name.extension.get", "GS.FileName", "gsfile_name_extension_get"),
         ("file.name.extension.set", "GS.FileName", "gsfile_name_extension_set"),
+        ("file.name.extensions.get", "GS.FileName", "gsfile_name_extensions_get"),
         ("file.read", "GSI.Env", "gsfile_read"),
         ("file.stat", "GSI.Env", "gsfile_stat"),
         ("file.write", "GSI.Env", "gsfile_write"),
