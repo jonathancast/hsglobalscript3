@@ -154,6 +154,8 @@ gslast_strict = [gs:value| λ 'xn. analyze xn.
 |]
 
 gslast_modify = [gs:value| λ 'f. λ 'xn. analyze xn.
+    case 'x:nil. f x : nil
+    case 'x:'xn1. x : last.modify f xn1
 |]
 
 gscons :: GSValue
