@@ -5,10 +5,19 @@ $gsdeclare process-args gsprocess_args
 
 main = runGSProgram $ [gs:value| λ 'as. process-args as |]
 
+$gsdeclare need-to-recompile gsneed_to_recompile
+$gsdeclare mk-hs-file gsmk_hs_file
+
 gsprocess_args = [gs:value| λ 'as. analyze as.
     case 'a:nil. (impanalyzeM file.stat a.
         case left (ENOENT _). impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{enoent}
-        case right 'st. for 'hsfile ∝ file.name.extensions.set (qq{hs} : nil) a;. (impanalyzeM file.stat hsfile.
+        case right 'st. (impanalyzeM need-to-recompile a.
         )
     )
 |]
+
+gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat (mk-hs-file a).
+    case left (ENOENT _). impunit true
+|]
+
+gsmk_hs_file = [gs:value| file.name.extensions.set (qq{hs} : nil) |]
