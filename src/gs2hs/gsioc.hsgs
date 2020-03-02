@@ -6,6 +6,7 @@ $gsdeclare process-args gsprocess_args
 main = runGSProgram $ [gs:value| λ 'as. process-args as |]
 
 $gsdeclare need-to-recompile gsneed_to_recompile
+$gsdeclare mk-exec-file gsmk_exec_file
 $gsdeclare mk-hs-file gsmk_hs_file
 
 gsprocess_args = [gs:value| λ 'as. analyze as.
@@ -16,8 +17,9 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
     )
 |]
 
-gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat (mk-hs-file a).
+gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat (mk-exec-file a).
     case left (ENOENT _). impunit true
 |]
 
+gsmk_exec_file = [gs:value| file.name.extensions.set nil |]
 gsmk_hs_file = [gs:value| file.name.extensions.set (qq{hs} : nil) |]
