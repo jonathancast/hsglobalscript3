@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Main (gsmain) where
+module GSI.Main (gsmain, gsload_document) where
 
 $gsimports
 
@@ -57,8 +57,6 @@ gsvalidator_global_env = [gs:value|
         validator.env.empty
         (type.env.vars type-checker.global-env)
 |]
-
-$gsdeclare load-document gsload_document
 
 gscompiler_global_env = [gs:value|
     compiler.env.constr.insert (gsvar qq{error}) $

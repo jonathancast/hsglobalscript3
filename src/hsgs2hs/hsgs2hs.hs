@@ -964,6 +964,7 @@ globalEnv = Env{
         ("list.∈", "GSI.List", "gslist_member"),
         ("list.∉", "GSI.List", "gslist_not_member"),
         ("list.≡", "GSI.List", "gslist_eq"),
+        ("load-document", "GSI.Main", "gsload_document"),
         ("log.<>", "GSI.StdLib", "gscompose"),
         ("log.char", "GSI.Log", "gslogchar"),
         ("log.dstr", "GSI.Log", "gslog_dstr"),
