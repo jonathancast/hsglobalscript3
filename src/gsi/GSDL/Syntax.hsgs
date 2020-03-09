@@ -1,9 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSDL.Syntax (file, pragmas, pragmawhitespace, expr, ident, ident_chars, op_chars, lexeme, whitespace) where
+module GSDL.Syntax (file, pragmas, document, pragmawhitespace, expr, ident, ident_chars, op_chars, lexeme, whitespace) where
 
 $gsimports
-
-$gsdeclare document document
 
 file = [gs:value| λ 'env.
     <|> parser.for

@@ -788,6 +788,7 @@ globalEnv = Env{
         ("dest-comp.imports", "GSDL.HSGS.AST", "gsdest_comp_imports"),
         ("dest-comp.pos", "GSDL.HSGS.AST", "gsdest_comp_pos"),
         ("dir.read", "GSI.Env", "gsdir_read"),
+        ("document", "GSDL.Syntax", "document"),
         ("document.in", "GSDL.AST", "gsdocument_in"),
         ("drop", "GSI.List", "gsdrop"),
         ("either.>>=", "GSI.Either", "gseither_bind"),
