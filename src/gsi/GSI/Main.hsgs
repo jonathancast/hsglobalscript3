@@ -35,6 +35,7 @@ gsprocessargs = [gs:value| λ 'args. λ 'gstyc. λ 'gsrun. analyze args.
 gsload_document = [gs:value| λ 'fn. λ 'gstyc. λ 'k. impanalyzeM gsio.file.read fn.
     case right 's. (analyze parse advance-rune print-rune (document parser.global-env) (pos.init fn) s.
         case right 'd. (analyze process-document (pos.init fn) gstyc d.
+            case right 'dty. k dty
         )
     )
 |]
