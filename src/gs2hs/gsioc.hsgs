@@ -17,7 +17,7 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
                 (λ 'pos1. λ 'ty. type-checker.unify pos1 ty $
                     type.function (type.list $ type.list $ type.consts qq{rune.t}) $ type.app (type.consts qq{gsio.m}) type.empty-signature
                 )
-                (λ 'd. undefined)
+                (λ 'pos1. λ 'd. undefined)
         )
     )
 |]
