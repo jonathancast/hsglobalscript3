@@ -894,6 +894,7 @@ globalEnv = Env{
         ("hsexpr.string", "GSDL.HSGS.AST", "gshsexpr_string"),
         ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var"),
         ("hsgs.compile-arg", "GSDL.HSGS.Compile", "gshsgs_compile_arg"),
+        ("hsgs.compile-document", "GSDL.HSGS.Compile", "gshsgs_compile_document"),
         ("hsgs.compile-expr", "GSDL.HSGS.Compile", "gshsgs_compile_expr"),
         ("hsgs.compile-value", "GSDL.HSGS.Compile", "gshsgs_compile_value"),
         ("hsgs.compiler.env.arg-var.get", "GSDL.HSGS.Compiler", "gshsgs_compiler_env_arg_var_get"),

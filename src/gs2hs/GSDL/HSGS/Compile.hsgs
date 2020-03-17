@@ -1,6 +1,9 @@
-module GSDL.HSGS.Compile (gshsgs_compile_value, gshsgs_compile_expr, gshsgs_compile_arg) where
+module GSDL.HSGS.Compile (gshsgs_compile_document, gshsgs_compile_value, gshsgs_compile_expr, gshsgs_compile_arg) where
 
 $gsimports
+
+gshsgs_compile_document = [gs:value| λ 'pos0. λ 'env. λ 'd. analyze d.
+|]
 
 gshsgs_compile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
     case expr.var 'v. (analyze hsgs.compiler.env.constr.get v env.
