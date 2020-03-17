@@ -14,7 +14,9 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
         case left (ENOENT _). impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{enoent}
         case right 'st. (impanalyzeM need-to-recompile a.
             case true. load-document a
-                (λ 'pos1. λ 'ty. undefined)
+                (λ 'pos1. λ 'ty. type-checker.unify pos1 ty $
+                    type.function (type.list $ type.list $ type.consts qq{rune.t}) $ type.app (type.consts qq{gsio.m}) type.empty-signature
+                )
                 (λ 'd. undefined)
         )
     )
