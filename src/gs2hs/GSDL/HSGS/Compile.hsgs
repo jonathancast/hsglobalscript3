@@ -3,6 +3,9 @@ module GSDL.HSGS.Compile (gshsgs_compile_document, gshsgs_compile_value, gshsgs_
 $gsimports
 
 gshsgs_compile_document = [gs:value| λ 'pos0. λ 'env. λ 'd. analyze d.
+    case document.in 'mbe 'mbg. (analyze mbe.
+        case nothing. right $ hsoutput.applyivarpos qq{GSI.Value} qq{gsundefined_value_w} pos0 nil
+    )
 |]
 
 gshsgs_compile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
