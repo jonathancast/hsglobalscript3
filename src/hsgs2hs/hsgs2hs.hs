@@ -1142,6 +1142,7 @@ globalEnv = Env{
         ("type.env.views",  "GSDL.AST", "gstype_env_views"),
         ("type.forall", "GSDL.AST", "gstype_forall"),
         ("type.function", "GSDL.AST", "gstype_function"),
+        ("type.list", "GSDL.AST", "gstype_list"),
         ("type.signature", "GSDL.AST", "gstype_signature"),
         ("type.unifiable-var", "GSDL.AST", "gstype_unifiable_var"),
         ("undefined", "GSI.StdLib", "gsundefined"),
