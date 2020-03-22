@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsbigcompose, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -14,6 +14,8 @@ gsappend = [gs:value| λ 'xn. λ 'ys. analyze xn.
 |]
 
 gsconcat = [gs:value| foldr (<>) nil |]
+
+gsbigcompose = [gs:value| foldr (∘) id |]
 
 gsfoldl = [gs:value| λ 'f. λ 'z. λ 'xn. analyze xn.
     case nil. z
