@@ -101,6 +101,10 @@ gshsexpr_fmt = [gs:value| λ 'e. analyze e.
     case hsexpr.list _. hsexpr.fmt-atom e
 |]
 
+gshsmodule_in = $gslambda_value $ \ m -> $gsbcarg $ \ is -> $gsbcarg $ \ ds -> $gsbcconstr (gsvar "in") [ $gsav m, $gsav is, $gsav ds ]
+
+gshsmodule_in_view = $gsbcconstr_view "in"
+
 gshsexpr_applyvar = [gs:value| λ 'f. λ 'as. foldl hsexpr.app (hsexpr.var f) as |]
 
 gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
