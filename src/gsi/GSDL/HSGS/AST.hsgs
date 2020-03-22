@@ -112,6 +112,8 @@ gshsmain_module = [gs:value| λ 'ps.
         (map (λ 'p. p #1) ps)
 |]
 
+gshsfunction_in = $gslambda_value $ \ nm -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "in") [ $gsav nm, $gsav e ]
+
 gshsexpr_applyvar = [gs:value| λ 'f. λ 'as. foldl hsexpr.app (hsexpr.var f) as |]
 
 gshsexpr_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
