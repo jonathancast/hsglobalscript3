@@ -3,6 +3,7 @@ module GSDL.HSGS.AST (
     gssource_comp_char, gssource_comp_pos, gssource_comp_imports, gssource_comp_declare, gssource_comp_value, gssource_comp_expr, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_imports_view, gssource_comp_declare_view, gssource_comp_value_view, gssource_comp_expr_view,
     gsquote_param_hsvs, gsquote_param_hsvs_view,
     gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_pos_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
+    gshsmodule_fmt,
     gshsimport_fmt, gshsimport_cmp, gshsimport_var, gshsimport_type,
     gshsexpr_fmt_atom,
     gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list,
@@ -41,6 +42,9 @@ gsdest_comp_char_view = $gsbcconstr_view "char"
 gsdest_comp_pos_view = $gsbcconstr_view "pos"
 gsdest_comp_imports_view = $gsbcconstr_view "imports"
 gsdest_comp_expr_view = $gsbcconstr_view "expr"
+
+gshsmodule_fmt = [gs:value| λ 'm. analyze m.
+|]
 
 gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
     case hsimport.var 'm 'f. qq{import §(m) (§(f))\n§(s)}
