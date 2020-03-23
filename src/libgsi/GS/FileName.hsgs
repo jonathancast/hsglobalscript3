@@ -31,4 +31,9 @@ gsfile_name_extension_set_w = [gs:value| λ 'bd. λ 'exd. λ 'ex. λ 'fn. analyz
     case nil. bd (r{.} : ex)
 |]
 
-gsfile_name_extensions_set = [gs:value| λ 'exs. (tokens.modify rune.≡ r{/} ∘ last.modify ∘ tokens.modify rune.≡ r{.} ∘ tail.modify) (const exs) |]
+gsfile_name_extensions_set = [gs:value| λ 'exs. (file.name.path-components.modify ∘ last.modify ∘ tokens.modify rune.≡ r{.} ∘ tail.modify) (const exs) |]
+
+gsfile_name_path_components_modify = [gs:value| λ 'f. λ 'fn. analyze fn.
+    case r{/}:'fn1. (:) r{/} $ tokens.modify rune.≡ r{/} f fn1
+    case _. tokens.modify rune.≡ r{/} f fn
+|]
