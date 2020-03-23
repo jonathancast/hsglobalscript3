@@ -48,6 +48,7 @@ gsdest_comp_expr_view = $gsbcconstr_view "expr"
 gshsmodule_fmt = [gs:value| λ 'm. analyze m.
     case hsmodule.in 'mbnm 'is 'ds.
         (analyze mbnm.
+            case nothing. id
         ) $
         compose (map hsimport.fmt is) $
         compose (map hsfunction.fmt ds) $
