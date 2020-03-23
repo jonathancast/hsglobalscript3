@@ -60,7 +60,8 @@ gshsimport_fmt = [gs:value| λ 'i. λ 's. analyze i.
     case hsimport.type 'm 'ty. qq{import §(m) (§(ty)(..))\n§(s)}
 |]
 
-gshsfunction_fmt = [gs:value| λ 'fn. λ 's. analyze fn.
+gshsfunction_fmt = [gs:value| λ 'fn. analyze fn.
+    case hsfunction.in 'nm 'e. (<>) nm ∘ (<>) qq{ = } ∘ hsexpr.fmt e ∘ (:) r{\n}
 |]
 
 gshsimport_cmp = [gs:value| λ 'i0. λ 'i1. analyze i0.
