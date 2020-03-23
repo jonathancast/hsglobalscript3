@@ -1219,6 +1219,7 @@ globalEnv = Env{
         ("hsexpr.list", "GSDL.HSGS.AST", "gshsexpr_list_view"),
         ("hsexpr.string", "GSDL.HSGS.AST", "gshsexpr_string_view"),
         ("hsexpr.var", "GSDL.HSGS.AST", "gshsexpr_var_view"),
+        ("hsfunction.in", "GSDL.HSGS.AST", "gshsfunction_in_view"),
         ("hsimport.type", "GSDL.HSGS.AST", "gshsimport_type_view"),
         ("hsimport.var", "GSDL.HSGS.AST", "gshsimport_var_view"),
         ("hsmodule.in", "GSDL.HSGS.AST", "gshsmodule_in_view"),
