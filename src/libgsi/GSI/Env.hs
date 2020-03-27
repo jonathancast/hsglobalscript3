@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
-module GSI.Env (runGSProgram, gsabend, gsfile_stat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gsENOENT_view) where
+{-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
+module GSI.Env (runGSProgram, gsabend, gsfile_stat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gssystem, gsENOENT_view) where
 
 import qualified Data.Map as Map
 
@@ -13,6 +14,8 @@ import System.Exit (ExitCode(..), exitWith)
 
 import System.Posix.Files (getFileStatus, isDirectory, modificationTime)
 
+import System.Process (withCreateProcess, proc, waitForProcess)
+
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtInvalidProgram, fmtError)
@@ -23,7 +26,7 @@ import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
-import GSI.Functions (gslazylist, gslazystring, gsapiEvalString)
+import GSI.Functions (gslazylist, gslazystring, gsapiEvalList, gsapiEvalString)
 
 runGSProgram a = do
     as <- $gslist . map $gsstring <$> getArgs
@@ -105,5 +108,17 @@ gsprimprint h pos t (GSConstr pos1 c as) =
     $apiImplementationFailure $ "gsprimprint " ++ fmtVarAtom c " next"
 gsprimprint h pos t msg =
     $apiImplementationFailure $ "gsprimprint " ++ gsvCode msg ++ " next"
+
+gssystem = $gsimpprim $ \ pos t args -> do
+    argshs0 <- gsapiEvalList pos args
+    argshs <- mapM (gsapiEvalString pos) argshs0
+    case argshs of
+        cmd:argshs' -> do
+            mb <- try $ withCreateProcess (proc cmd argshs') $ \ _ _ _ ph -> waitForProcess ph
+            case mb of
+                Right ExitSuccess   -> return $ $gsundefined_value
+                Right (ExitFailure r) -> throwIO (GSExcAbend pos $ cmd ++ ": exit " ++ show r) :: IO GSValue
+                Left (e::SomeException) -> $apiImplementationFailure $ "gssystem: withCreateProcess / waitForProcess threw " ++ displayException e ++ " next"
+        _ -> $apiImplementationFailure $ "gssystem " ++ show argshs ++ " next"
 
 gsENOENT_view = $gsbcconstr_view "ENOENT"
