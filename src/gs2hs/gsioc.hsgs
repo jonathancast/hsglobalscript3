@@ -20,7 +20,8 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
                 (λ 'pos1. λ 'd. analyze hsgs.compile-document pos1 hsgs.compiler.global-env d.
                     case right 'out. impfor
                             _ ← file.write (mk-hs-file a) $ hsmodule.fmt $ hsmain-module (hsoutput.function qq{main} out : nil);
-                            _ ← system (qq{ghc} : qq{--make} : qq{-o} : mk-exec-file a : mk-hs-file a : nil);
+                            'hsglobalscript ← env.var.get qq{HSGLOBALSCRIPT};
+                            _ ← system (qq{ghc} : qq{--make} : qq{-i§(hsglobalscript)/src/libgsi} : qq{-o} : mk-exec-file a : mk-hs-file a : nil);
                         . undefined
                 )
         )
