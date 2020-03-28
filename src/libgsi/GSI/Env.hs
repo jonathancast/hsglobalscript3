@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ImplicitParams, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Env (runGSProgram, gsabend, gsfile_stat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gssystem, gsENOENT_view) where
+module GSI.Env (runGSProgram, gsabend, gsfile_stat, gsfile_read, gsfile_write, gsdir_read, gsprint, gsprintError, gsenv_var_get, gssystem, gsENOENT_view) where
 
 import qualified Data.Map as Map
 
@@ -9,7 +9,7 @@ import Control.Exception (SomeException, try, catch, throwIO, fromException, dis
 import System.IO (Handle, IOMode(..), withFile, hPutStrLn, hPutChar, stdout, stderr)
 import System.IO.Error (isDoesNotExistError)
 import System.Directory (getDirectoryContents)
-import System.Environment (getArgs)
+import System.Environment (getArgs, getEnv)
 import System.Exit (ExitCode(..), exitWith)
 
 import System.Posix.Files (getFileStatus, isDirectory, modificationTime)
@@ -108,6 +108,13 @@ gsprimprint h pos t (GSConstr pos1 c as) =
     $apiImplementationFailure $ "gsprimprint " ++ fmtVarAtom c " next"
 gsprimprint h pos t msg =
     $apiImplementationFailure $ "gsprimprint " ++ gsvCode msg ++ " next"
+
+gsenv_var_get = $gsimpprim $ \ pos t nm -> do
+    nmhs <- gsapiEvalString pos nm
+    mb <- try $ getEnv nmhs
+    case mb of
+        Right valhs -> return $ $gsstring valhs
+        Left (e::SomeException) -> $apiImplementationFailure $ "gsenv_var_get: getEnv threw " ++ displayException e ++ " next"
 
 gssystem = $gsimpprim $ \ pos t args -> do
     argshs0 <- gsapiEvalList pos args

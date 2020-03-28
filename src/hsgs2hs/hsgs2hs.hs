@@ -802,6 +802,7 @@ globalEnv = Env{
         ("error", "GSI.StdLib", "gserror"),
         ("eval-sync", "GSI.GSI", "gsieval_sync"),
         ("exec-main-thread", "GSI.GSI", "gsiexecMainThread"),
+        ("env.var.get", "GSI.Env", "gsenv_var_get"),
         ("expr", "GSDL.Syntax", "expr"),
         ("expr.app", "GSDL.AST", "gsexpr_app"),
         ("expr.atom", "GSDL.Syntax", "gsexpr_atom"),
