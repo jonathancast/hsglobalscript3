@@ -70,5 +70,6 @@ PROG=gsioc
 fn test_gsi_impl { ./test_gsioc $* }
 
 test_non_existent_file
+test_empty_file
 
 true
