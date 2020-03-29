@@ -12,24 +12,29 @@ $gsdeclare mk-hs-file gsmk_hs_file
 gsprocess_args = [gs:value| λ 'as. analyze as.
     case 'a:nil. (impanalyzeM file.stat a.
         case left (ENOENT _). impfor _ ← print-error qq{§(a): Could not load: no such file or directory\n};. abend qq{enoent}
-        case right 'st. (impanalyzeM need-to-recompile a.
+        case right 'st. (impanalyzeM need-to-recompile st a.
+            case false. impunit 〈〉
             case true. load-document a
                 (λ 'pos1. λ 'ty. type-checker.unify pos1 ty $
                     type.function (type.list $ type.list $ type.consts qq{rune.t}) $ type.app (type.consts qq{gsio.m}) type.empty-signature
                 )
                 (λ 'pos1. λ 'd. analyze hsgs.compile-document pos1 hsgs.compiler.global-env d.
                     case right 'out. impfor
-                            _ ← file.write (mk-hs-file a) $ hsmodule.fmt $ hsmain-module (hsoutput.function qq{main} out : nil);
+                            _ ← file.write (mk-hs-file a) $ hsmodule.fmt $ hsmain-module (
+                                hsoutput.function qq{main} (hsoutput.applyivar qq{GSI.Env} qq{runGSProgram} (out : nil)) :
+                                nil
+                            );
                             'hsglobalscript ← env.var.get qq{HSGLOBALSCRIPT};
                             _ ← system (qq{ghc} : qq{--make} : qq{-i§(hsglobalscript)/src/libgsi} : qq{-o} : mk-exec-file a : mk-hs-file a : nil);
-                        . undefined
+                        . impunit 〈〉
                 )
         )
     )
 |]
 
-gsneed_to_recompile = [gs:value| λ 'a. impanalyzeM file.stat (mk-exec-file a).
+gsneed_to_recompile = [gs:value| λ 'st.gs. λ 'a. impanalyzeM file.stat (mk-exec-file a).
     case left (ENOENT _). impunit true
+    case right 'st. impunit (rational.> (st.gs #mod.time) (st #mod.time))
 |]
 
 gsmk_exec_file = [gs:value| file.name.extensions.set nil |]
