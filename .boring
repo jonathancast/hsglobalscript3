@@ -65,3 +65,5 @@ src/gsi/GSDL/Implicit.hs$
 bin/gsioc$
 src/gs2hs/gsioc$
 src/gs2hs/gsioc.hs$
+src/mdl/mdlc$
+src/mdl/mdlc.hs$
