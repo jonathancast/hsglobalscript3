@@ -41,6 +41,7 @@ SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/hsgs2hs/test-ghcoptions"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/hsgs2hs/test_gsi_impl.rc"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/mdl/build"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/mdl/integration-test"
+SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/mdl/install-all"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/src/setup-stage1"
 SCRIPTS="$SCRIPTS $HSGLOBALSCRIPT/test-all"
 

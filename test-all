@@ -18,6 +18,7 @@ cd ../gs2hs &&
 echo '# Memory Description Language (for writing RTS)
 cd ../mdl &&
     ./integration-test &&
+    ./install-all &&
 echo '# write a string to stdout' &&
 cd ../gscat &&
     ./integration-test &&
