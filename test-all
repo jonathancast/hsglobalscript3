@@ -15,7 +15,7 @@ echo '# Re-write hsghs2hs in gsio, and add "gs2hs" for compiling full Global Scr
 cd ../gs2hs &&
     ./integration-test &&
     ./install-all &&
-echo '# Memory Description Language (for writing RTS)
+echo '# Memory Description Language (for writing RTS)' &&
 cd ../mdl &&
     ./integration-test &&
     ./install-all &&
