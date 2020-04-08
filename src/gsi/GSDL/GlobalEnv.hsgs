@@ -75,6 +75,8 @@ $gsdeclare type.generator gstype_generator
 $gsdeclare type.generator.fallible gstype_generator_fallible
 $gsdeclare type.open-expr gstype_open_expr
 
+$gsdeclare type.either gstype_either
+
 $gsdeclare type.addition gstype_addition
 
 $gsdeclare type.monad gstype_monad
@@ -324,6 +326,8 @@ gstype_pattern_fallible = [gs:value| λ 'α. λ 'σ. type.function α $ type.gen
 gstype_generator = [gs:value| λ 'σ. σ |]
 gstype_generator_fallible = [gs:value| λ 'σ. type.app (type.consts qq{generator.fallible.t}) σ |]
 gstype_open_expr = [gs:value| λ 'σ. λ 'α. type.function σ α |]
+
+gstype_either = [gs:value| λ 'e. λ 'α. type.apply (type.consts qq{either.t}) (e : α : nil) |]
 
 gstype_addition = [gs:value| λ 'α. type.signature (
     type.env.type.insert (gsvar qq{0}) α (
