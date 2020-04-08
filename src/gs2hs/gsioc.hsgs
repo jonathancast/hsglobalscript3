@@ -19,6 +19,7 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
                     type.function (type.list $ type.list $ type.consts qq{rune.t}) $ type.app (type.consts qq{gsio.m}) type.empty-signature
                 )
                 (λ 'pos1. λ 'd. analyze hsgs.compile-document pos1 hsgs.compiler.global-env d.
+                    case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{compile-error}
                     case right 'out. impfor
                             _ ← file.write (mk-hs-file a) $ hsmodule.fmt $ hsmain-module (
                                 hsoutput.function qq{main} (hsoutput.applyivar qq{GSI.Env} qq{runGSProgram} (out : nil)) :
