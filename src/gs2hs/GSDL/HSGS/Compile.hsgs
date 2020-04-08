@@ -114,6 +114,17 @@ gshsgs_compile_arg = [gs:value| λ 'senv. λ 'env. λ 'a. analyze a.
         case just 'p. right $ hsoutput.arg-var p
     )
     case arg.expr 'pos 'e. either.for 'p ← hsgs.compile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
+    case arg.explicit 'pos (expr.var 'v).
+        (analyze hsgs.compiler.env.constr.get v env.
+            case false. id
+        ) $
+            (analyze hsgs.compiler.env.var.get v env.
+                case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+                case just 'p. right $ hsoutput.arg-var p
+            )
+    case arg.explicit 'pos (expr.value-var 'v). (analyze hsgs.compiler.env.var.get v env.
+    )
+    case arg.explicit 'pos 'e. either.for 'p ← hsgs.compile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
 |]
 
 $gsdeclare hsgs.compile-local-env gshsgs_compile_local_env
