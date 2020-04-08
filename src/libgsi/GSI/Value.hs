@@ -6,6 +6,7 @@ module GSI.Value (
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
+    gsrehere_w,
     gsvenvUnion,
     fmtExternal,
     gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, whichExternal
@@ -22,7 +23,7 @@ import Control.Concurrent (MVar, newMVar)
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
-import GSI.Error (GSError(..), GSInvalidProgram(..))
+import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
 import GSI.RTS (Event)
 import GSI.Syn (GSVar, fmtVarAtom)
 import GSI.ThreadType (Thread)
@@ -170,6 +171,13 @@ gsintprepare :: GSIntArg -> IO GSValue
 gsintprepare (GSIArgExpr pos e) = gsintthunk_w pos e
 gsintprepare (GSIArgGVar v) = return v
 gsintprepare a = return $ GSImplementationFailure $gshere $ "gsintprepare " ++ iargCode a ++ " next"
+
+gsrehere_w :: Pos -> [StackTrace] -> GSValue -> GSValue
+gsrehere_w pos cs (GSClosure _ b) = GSClosure [StackTrace pos cs] b
+gsrehere_w pos cs (GSError (GSErrUnimpl st)) = GSError (GSErrUnimpl (StackTrace pos cs))
+gsrehere_w pos cs (GSError (GSErrError _ msg)) = GSError (GSErrError pos msg)
+gsrehere_w pos cs (GSError err) = GSImplementationFailure $gshere $ "gsrehere_w GSError (" ++ errCode err ++ ") next"
+gsrehere_w pos cs v = GSImplementationFailure $gshere $ "gsrehere_w " ++ gsvCode v ++ " next"
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 

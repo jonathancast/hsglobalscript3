@@ -12,7 +12,7 @@ import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
 import GSI.RTS (newEvent, wakeup, await)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsrehere_w, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
 
 aceEnter :: [StackTrace] -> GSValue -> GSExprCont a -> IO a
 aceEnter cs v@GSInvalidProgram{} sk = gsthrow sk v
@@ -121,15 +121,8 @@ aceField c1 f sk = GSExprCont{
 
 aceReHere :: Pos -> [StackTrace] -> GSExprCont a -> GSExprCont a
 aceReHere pos cs sk = GSExprCont{
-    gsreturn = \ r -> case r of
-        GSClosure _ b -> gsreturn sk $ GSClosure [StackTrace pos cs] b
-        _ -> gsthrow sk $ $gsimplementationfailure $ "aceReHere " ++ gsvCode r ++ " next"
-      ,
-    gsthrow = \ e -> case e of
-        GSError (GSErrUnimpl st) -> gsthrow sk $ GSError (GSErrUnimpl (StackTrace pos cs))
-        GSError (GSErrError _ msg) -> gsthrow sk $ GSError (GSErrError pos msg)
-        GSError err -> gsthrow sk $ $gsimplementationfailure $ "aceReHere GSError (" ++ errCode err ++ ") next"
-        _ -> gsthrow sk $ $gsimplementationfailure $ "aceReHere " ++ gsvCode e ++ " next"
+    gsreturn = \ r -> gsreturn sk $ gsrehere_w pos cs r,
+    gsthrow = \ e -> gsthrow sk $ gsrehere_w pos cs e
   }
 
 aceEmptyStack :: GSExprCont ()
