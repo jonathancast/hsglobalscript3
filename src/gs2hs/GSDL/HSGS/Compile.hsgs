@@ -13,6 +13,7 @@ gshsgs_compile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
     case expr.var 'v.
         (analyze hsgs.compiler.env.constr.get v env.
             case false. id
+            case true. either.map (hsoutput.rehere-value pos1 (hsoutput.list nil))
         ) $
             (analyze hsgs.compiler.env.var.get v env.
                 case just 'p. right p
