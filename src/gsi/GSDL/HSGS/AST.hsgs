@@ -9,7 +9,7 @@ module GSDL.HSGS.AST (
     gshsmain_module,
     gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list,
     gshsoutput_function,
-    gshsoutput_gsvar, gshsoutput_rehere, gshsoutput_apply, gshsoutput_applyivar, gshsoutput_applyivarpos, gshsoutput_applyiconstr, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
+    gshsoutput_gsvar, gshsoutput_rehere, gshsoutput_rehere_value, gshsoutput_apply, gshsoutput_applyivar, gshsoutput_applyivarpos, gshsoutput_applyiconstr, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
   ) where
 
 import GSI.Syn (gsvar)
@@ -146,6 +146,7 @@ gshsoutput_function = [gs:value| λ 'nm. λ 'e. 〈 '0 ∝ e #0; '1 ∝ hsfuncti
 gshsoutput_gsvar = [gs:value| λ 'v. hsoutput.applyivar qq{GSI.Syn} qq{gsvar} (hsoutput.string (gsvar.name v) : nil) |]
 
 gshsoutput_rehere = [gs:value| λ 'pos. λ 'a. hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcrehere_w} pos (a : nil) |]
+gshsoutput_rehere_value = [gs:value| λ 'pos. λ 'cs. λ 'a. hsoutput.applyivarpos qq{GSI.Value} qq{gsrehere_w} pos (cs : a : nil) |]
 
 gshsoutput_apply = [gs:value| λ 'pf. λ 'pas. foldl hsoutput.app pf pas |]
 gshsoutput_applyivar = [gs:value| λ 'm. λ 'f. λ 'pas. hsoutput.apply (hsoutput.ivar m f) pas |]

@@ -942,6 +942,7 @@ globalEnv = Env{
         ("hsoutput.list", "GSDL.HSGS.AST", "gshsoutput_list"),
         ("hsoutput.pos", "GSDL.HSGS.AST", "gshsoutput_pos"),
         ("hsoutput.rehere", "GSDL.HSGS.AST", "gshsoutput_rehere"),
+        ("hsoutput.rehere-value", "GSDL.HSGS.AST", "gshsoutput_rehere_value"),
         ("hsoutput.string", "GSDL.HSGS.AST", "gshsoutput_string"),
         ("hsoutput.var", "GSDL.HSGS.AST", "gshsoutput_var"),
         ("id", "GSI.StdLib", "gsid"),
