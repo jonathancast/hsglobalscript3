@@ -1,8 +1,11 @@
-module TestGSI.RunTime (gstest_gsi_gsrun) where
+module TestGSI.RunTime (runTestGSIProgram, gstest_gsi_gsrun) where
 
+import GSI.Env (runGSProgram)
 $gsimports
 
 $gsdeclare gsprintstr gsprintstr
+
+runTestGSIProgram prog = runGSProgram [gs:value hsvs=prog,| test-gsi.gsrun (gsinject prog) |]
 
 gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. impanalyzeM eval-sync x.
     case eval-state.error 'e. print qq{<Error: §(gsfmt-error e)>\n}
