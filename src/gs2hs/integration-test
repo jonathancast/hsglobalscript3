@@ -63,6 +63,7 @@ PROG=gs2hs-test-gsi
 fn test_gsi_impl { ./test-gsi $* }
 
 test_non_existent_file
+test_gscalc_empty_file
 
 echo '## gsioc'
 
