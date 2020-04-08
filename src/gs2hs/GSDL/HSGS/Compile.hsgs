@@ -5,6 +5,7 @@ $gsimports
 gshsgs_compile_document = [gs:value| λ 'pos0. λ 'env. λ 'd. analyze d.
     case document.in 'mbe 'mbg. (analyze mbe.
         case nothing. right $ hsoutput.applyivarpos qq{GSI.Value} qq{gsundefined_value_w} pos0 nil
+        case just 'e. hsgs.compile-value pos0 env pos0 e
     )
 |]
 
