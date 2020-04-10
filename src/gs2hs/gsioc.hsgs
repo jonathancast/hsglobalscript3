@@ -26,7 +26,7 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
                                 nil
                             );
                             'hsglobalscript ← env.var.get qq{HSGLOBALSCRIPT};
-                            _ ← system (qq{ghc} : qq{--make} : qq{-i§(hsglobalscript)/src/libgsi} : qq{-o} : mk-exec-file a : mk-hs-file a : nil);
+                            _ ← system (qq{ghc} : qq{--make} : qq{-i§(hsglobalscript)/src/libgsi} : qq{-i§(hsglobalscript)/src/gsi} : qq{-o} : mk-exec-file a : mk-hs-file a : nil);
                         . impunit 〈〉
                 )
         )
