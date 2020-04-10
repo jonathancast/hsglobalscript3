@@ -20,6 +20,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.var.simple-insert (gsvar qq{either.for}) qq{GSI.Either} qq{gseither_for} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{file.name.in}) qq{GS.FileName} qq{gsfile_name_in} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{for}) qq{GSI.StdLib} qq{gsfor} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{gsio.file.stat}) qq{GSI.Env} qq{gsfile_stat} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{mapM0}) qq{GSI.Monad} qq{gsmonad_mapM0} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{map}) qq{GSI.List} qq{gsmap} $
