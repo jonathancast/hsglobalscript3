@@ -8,7 +8,7 @@ import Control.Monad (join)
 
 import Control.Concurrent (MVar, modifyMVar)
 
-import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
+import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
 import GSI.RTS (newEvent, wakeup, await)
@@ -114,6 +114,7 @@ aceField c1 f sk = GSExprCont{
             _ | f == gsvar "col" -> gsreturn sk $ GSNatural c
             _ -> gsthrow sk $ $gsimplementationfailure $ "aceField pos " ++ fmtVarAtom f " next"
         GSExternal e -> gsthrow sk $ $gsimplementationfailure $ "aceField " ++ whichExternal e ++ " next"
+        GSClosure cs bco -> gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 ("aceField" ++ ' ' : fmtVarAtom f "") ("GSClosure at " ++ fmtCallers cs "") "record"
         _ -> gsthrow sk $ $gsimplementationfailure $ "aceField " ++ gsvCode r ++ " next"
       ,
     gsthrow = gsthrow sk
