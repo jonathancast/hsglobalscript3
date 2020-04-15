@@ -25,6 +25,7 @@ gsparand pos x (GSThunk ys) = do
     yv <- evalSync [StackTrace pos []] ys
     gsparand pos x yv
 gsparand pos x@GSImplementationFailure{} _ = return x
+gsparand pos x@GSError{} _ = return x
 gsparand pos _ y@GSImplementationFailure{} = return y
 gsparand pos _ y@GSInvalidProgram{} = return y
 gsparand pos _ y@GSError{} = return y
