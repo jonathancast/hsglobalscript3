@@ -108,6 +108,8 @@ $gsdeclare annotate-set-name-set gsannotate_set_name_set
 gsannotate_set_name_set_arg = [gs:value| λ 'ns. λ 'a. analyze a.
     case arg.expr 'pos 'e. arg.expr pos (annotate-set-name-set ns e)
     case arg.explicit 'pos 'e. arg.explicit pos (annotate-set-name-set ns e)
+    case arg.app 'af 'ax. arg.app af (annotate-set-name-set-arg ns ax)
+    case arg.var-name 'v. arg.var-name v
 |]
 
 gsannotate_set_name_set = [gs:value| λ 'ns. λ 'e. analyze e.
