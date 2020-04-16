@@ -48,7 +48,7 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
     either.for
             'dspec ← right (annotate-document annotator.global-env d);
             'di ← right (add-implicits-document implicits.global-env dspec);
-            _ ← validate-document pos validator.global-env dspec;
+            _ ← validate-document pos validator.global-env di;
             'dty ← type-checker.run (type-check-document pos gstyc di) type-checker.global-env;
         . right dty
 |]
