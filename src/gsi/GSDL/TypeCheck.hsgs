@@ -17,6 +17,7 @@ gstype_check_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd. analyze d.
         . type-checker.unit (document.in mbe1 mbg1)
 |]
 
+$gsdeclare type-check-generator gstype_check_generator
 $gsdeclare type-check-pat gstype_check_pat
 $gsdeclare new-env gsnew_env
 
@@ -69,6 +70,9 @@ gsnew_env = [gs:value|
 gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
     case arg.expr 'pos1 'e. type-checker.map (arg.expr pos1) (type-check-expr pos1 e ty)
     case arg.explicit 'pos1 'e. type-checker.map (arg.explicit pos1) (type-check-expr pos1 e ty)
+|]
+
+gstype_check_generator = [gs:value| λ 'pos. λ 'g. λ 'env. analyze g.
 |]
 
 gstype_check_pat = [gs:value| λ 'pos. λ 'p. λ 'typ. λ 'env. analyze p.
