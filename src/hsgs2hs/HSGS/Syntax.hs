@@ -84,7 +84,7 @@ expr env = empty
                     return $ EVar pos1 op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos2 e1
         <|> lambdalike env Nothing
     exprLeftList = do
-        ((pos0, op, pos1, e1):os) <- parseOps $ leftops env
+        ~((pos0, op, pos1, e1):os) <- parseOps $ leftops env
         return $ foldl (eleftop pos0) (EUnary pos0 op `EApp` ArgExpr pos1 e1) os
     parseOps ops = do
         pos0 <- getPos
