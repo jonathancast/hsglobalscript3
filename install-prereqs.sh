@@ -3,5 +3,5 @@
 if [ -x /usr/bin/apt ]; then
     sudo apt install ghc cabal-install
 fi
-cabal update
+cabal new-update
 cabal install HUnit process
