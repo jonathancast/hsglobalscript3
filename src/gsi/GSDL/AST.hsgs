@@ -61,7 +61,7 @@ gstype_env_view_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
 gstype_env_views = [gs:value| λ 'env. ordered-map.keys (env #view-types) |]
 
 gstype_env_filter = [gs:value| λ 'vs. λ 'env. 〈
-    'types ∝ foldr (λ 'v. λ 'tys. 〈 '0 ∝ v; '1 ∝ analyze ordered-map.get gsvar.compare v (env #types). ; 〉) vs ordered-map.empty;
+    'types ∝ foldr (λ 'v. λ 'tys. analyze ordered-map.get gsvar.compare v (env #types). case just 'ty. ordered-map.insert gsvar.compare v ty tys) ordered-map.empty vs;
     'generator-types ∝ ordered-map.empty;
     'view-types ∝ ordered-map.empty;
 〉 |]
