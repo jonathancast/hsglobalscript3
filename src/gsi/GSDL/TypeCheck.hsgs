@@ -78,6 +78,11 @@ gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
 |]
 
 gstype_check_generator = [gs:value| λ 'pos. λ 'g. λ 'tye. analyze g.
+    case generator.var 'v. type-checker.for
+            'tya ← type-checker.env.get-generator-type pos v;
+            'tyai ← instantiate tya;
+            _ ← type-checker.unify pos tyai tye;
+        . type-checker.unit (generator.var v)
     case generator.app 'gf 'pos1 'gx. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
             'gfty ← type-check-generator pos gf (type.function tyx tye);
