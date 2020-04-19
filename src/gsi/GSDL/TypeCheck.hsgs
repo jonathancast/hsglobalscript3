@@ -83,6 +83,12 @@ gstype_check_generator = [gs:value| λ 'pos. λ 'g. λ 'tye. analyze g.
             'tyai ← instantiate tya;
             _ ← type-checker.unify pos tyai tye;
         . type-checker.unit (generator.var v)
+    case generator.pattern 'p (just 'bvs). type-checker.for
+            'Γ1 ← new-env bvs;
+            'τ0 ← type-checker.new-unifiable-var;
+            _ ← type-checker.unify pos (type.function τ0 (type.signature Γ1)) tye;
+            'pty ← type-check-pat pos p τ0 Γ1;
+        . type-checker.unit (generator.pattern pty (just bvs))
     case generator.app 'gf 'pos1 'gx. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
             'gfty ← type-check-generator pos gf (type.function tyx tye);
