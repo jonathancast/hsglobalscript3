@@ -1146,6 +1146,7 @@ globalEnv = Env{
         ("type.env.empty",  "GSDL.AST", "gstype_env_empty"),
         ("type.env.filter",  "GSDL.AST", "gstype_env_filter"),
         ("type.env.generator-type.get", "GSDL.AST", "gstype_env_generator_type_get"),
+        ("type.env.generator-type.insert", "GSDL.AST", "gstype_env_generator_type_insert"),
         ("type.env.overlay",  "GSDL.AST", "gstype_env_overlay"),
         ("type.env.type.get", "GSDL.AST", "gstype_env_type_get"),
         ("type.env.type.insert",  "GSDL.AST", "gstype_env_type_insert"),
