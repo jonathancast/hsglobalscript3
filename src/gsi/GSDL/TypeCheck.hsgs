@@ -36,7 +36,7 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
     case expr.structure-literal 'gs 'pos1. type-checker.for
             'Γ1 ← new-env $ concat $ map (λ 'g. analyze g #bvs. case just 'vs. vs) gs;
             _ ← type-checker.unify pos (type.signature Γ1) tye;
-            'tygs ← type-checker.mapM (λ 'g. type-check-generator (g #pos) (g #gen) (type.env.filter (analyze g #bvs.) Γ1)) gs;
+            'tygs ← type-checker.mapM (λ 'g. type-check-generator (g #pos) (g #gen) (type.signature (type.env.filter (analyze g #bvs.) Γ1))) gs;
         . type-checker.unit (expr.structure-literal tygs) pos1
     case expr.app 'ef 'ex. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
@@ -77,7 +77,7 @@ gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
     case arg.explicit 'pos1 'e. type-checker.map (arg.explicit pos1) (type-check-expr pos1 e ty)
 |]
 
-gstype_check_generator = [gs:value| λ 'pos. λ 'g. λ 'env. analyze g.
+gstype_check_generator = [gs:value| λ 'pos. λ 'g. λ 'tye. analyze g.
 |]
 
 gstype_check_pat = [gs:value| λ 'pos. λ 'p. λ 'typ. λ 'env. analyze p.
