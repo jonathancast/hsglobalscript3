@@ -11,7 +11,7 @@ module GSI.GSI (
     gsicreateThread, gsiexecMainThread,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
     gseval_state_error_view, gseval_state_implementation_failure_view, gseval_state_whnf_view,
-    gswhnf_natural_view, gswhnf_rune_view, gswhnf_constr_view, gswhnf_function_view,
+    gswhnf_natural_view, gswhnf_rune_view, gswhnf_constr_view, gswhnf_record_view, gswhnf_function_view,
     gsvalue_constr
   ) where
 
@@ -22,7 +22,7 @@ import qualified Data.Map as Map
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSExpr, GSIntArg(..), GSIntExpr(..), GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsimpprim, gsthunk_w, gsintthunk_w, gsapply_w, gsfield_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSExpr, GSIntArg(..), GSIntExpr(..), GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsrecord, gsimpprim, gsthunk_w, gsintthunk_w, gsapply_w, gsfield_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
@@ -276,6 +276,12 @@ gswhnf_constr_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v
         $gsav $ $gslist $ map gsexternal as
       ]
     _ -> $gsbcenter ek
+
+gswhnf_record_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
+    GSExternal e | Just (GSRecord pos fs) <- fromExternal e -> $gsbcapply sk [
+        $gsav $ gsexternal pos,
+        $gsav $ $gslist $ map (\ (f, v) -> $gsrecord [ (gsvar "0", gsexternal f), (gsvar "1", gsexternal v) ]) $ Map.toList fs
+      ]
 
 gswhnf_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
     GSExternal e | Just (GSClosure _ GSLambda{}) <- fromExternal e -> $gsbcapply sk [ $gsav v ]

@@ -1271,6 +1271,7 @@ globalEnv = Env{
         ("whnf.constr", "GSI.GSI", "gswhnf_constr_view"),
         ("whnf.function", "GSI.GSI", "gswhnf_function_view"),
         ("whnf.natural", "GSI.GSI", "gswhnf_natural_view"),
+        ("whnf.record", "GSI.GSI", "gswhnf_record_view"),
         ("whnf.rune", "GSI.GSI", "gswhnf_rune_view")
     ],
     gssignatures = Map.fromList [
