@@ -44,6 +44,7 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
                 gs
             ;
         . type-checker.unit (expr.structure-literal gsty pos1)
+    case expr.app 'ef (arg.app 'af 'ax). type-check-custom-app pos ef af (ax : nil) tye
     case expr.app 'ef 'ex. type-checker.for
             'tyx ← type-checker.new-unifiable-var;
             'ef1 ← type-check-expr pos ef (type.function tyx tye);
