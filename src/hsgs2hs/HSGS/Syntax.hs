@@ -379,7 +379,7 @@ globalEnv = Env{
                 <|> expr env,
             Nothing
         )),
-        ("analyze-type-checker-M", \ env -> (
+        ("type-checker.analyzeM", \ env -> (
             expr env,
             empty
                 <|> EMissingCase <$> getPos
