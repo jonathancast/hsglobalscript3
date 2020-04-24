@@ -184,6 +184,7 @@ gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: 
     w _ v@GSNatural{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
     w _ v@GSRune{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
     w _ v@GSConstr{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ v@GSRecord{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
     w _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
     w pos (GSThunk ts) = do
         v' <- evalSync [StackTrace pos []] ts
