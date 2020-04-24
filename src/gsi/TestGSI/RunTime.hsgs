@@ -3,11 +3,14 @@ module TestGSI.RunTime (runTestGSIProgram, gstest_gsi_gsrun) where
 import GSI.Env (runGSProgram)
 $gsimports
 
+$gsdeclare gsprintv gsprintv
 $gsdeclare gsprintstr gsprintstr
 
 runTestGSIProgram prog = runGSProgram [gs:value hsvs=prog,| test-gsi.gsrun (gsinject prog) |]
 
-gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. impanalyzeM eval-sync x.
+gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. gsprintv x |]
+
+gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
     case eval-state.error 'e. print qq{<Error: §(gsfmt-error e)>\n}
     case eval-state.whnf 'v. (analyze v.
         case whnf.natural 'n. print qq{§(natural.fmt-decimal n)\n}
