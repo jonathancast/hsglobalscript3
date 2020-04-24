@@ -282,6 +282,7 @@ gswhnf_record_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v
         $gsav $ gsexternal pos,
         $gsav $ $gslist $ map (\ (f, v) -> $gsrecord [ (gsvar "0", gsexternal f), (gsvar "1", gsexternal v) ]) $ Map.toList fs
       ]
+    _ -> $gsbcenter ek
 
 gswhnf_function_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
     GSExternal e | Just (GSClosure _ GSLambda{}) <- fromExternal e -> $gsbcapply sk [ $gsav v ]
