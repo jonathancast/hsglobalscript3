@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
     GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
-    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
+    gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsrecord, gsrecord_w, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
     gsimpprim, gsimpprim_w, gsimpfor_w,
@@ -143,6 +143,10 @@ gsfield_w pos0 f v@GSImplementationFailure{} = return v
 gsfield_w pos0 f r = return $ GSImplementationFailure $gshere $ "gsfield " ++ gsvCode r ++ " next"
 
 gsconstr = conE 'GSConstr `appE` gshere
+
+gsrecord = varE 'gsrecord_w `appE` gshere
+
+gsrecord_w pos fs = GSRecord pos (Map.fromList fs)
 
 gsav = varE 'gsargvar_w `appE` gshere
 
