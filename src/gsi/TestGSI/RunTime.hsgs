@@ -16,7 +16,18 @@ gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. impanalyzeM eval-sync x.
         )
         case whnf.record 'pos 'fs. impfor
                 _ ← print qq{\〈};
-                _ ← impmapM (λ 'f. undefined) fs;
+                _ ← impmapM
+                    (λ 'f. impfor
+                            _ ← print qq{ };
+                            _ ← print qq{'};
+                            _ ← print $ gsvar.fmt-atom (f #0);
+                            _ ← print qq{ ∝ };
+                            _ ← undefined;
+                            _ ← print qq{;};
+                        . impunit 〈〉
+                    )
+                    fs
+                ;
                 _ ← print qq{\〉};
             . impunit 〈〉
         case whnf.function 'f. print qq{<function>\n}
