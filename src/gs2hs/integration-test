@@ -67,6 +67,7 @@ test_non_existent_file
 test_gscalc_empty_file
 test_infix_with_explicit
 test_empty_structure_literal
+test_record_literal_field
 
 echo '## gsioc'
 
