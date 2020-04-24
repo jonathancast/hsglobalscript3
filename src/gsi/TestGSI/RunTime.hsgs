@@ -24,13 +24,14 @@ gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
                             _ ← print qq{ };
                             _ ← print qq{'};
                             _ ← print $ gsvar.fmt-atom (f #0);
-                            _ ← print qq{ ∝ };
-                            _ ← undefined;
+                            _ ← print qq{ = };
+                            _ ← gsprintv (f #1);
                             _ ← print qq{;};
                         . impunit 〈〉
                     )
                     fs
                 ;
+                _ ← print $ analyze fs. case nil. qq{} case _:_. qq{ };
                 _ ← print qq{\〉};
             . impunit 〈〉
         case whnf.function 'f. print qq{<function>}
