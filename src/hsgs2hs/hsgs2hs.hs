@@ -261,7 +261,7 @@ compileExpr env (EQLO pos "qq" s) = do
     w_ch pos ds [] = return (string_imports, [ string_expr pos (ds "") ])
     w_ch pos ds (QChar _ ch:qis) = w_ch pos (ds . (ch:)) qis
     w_ch pos ds (QQChar _ 'n':qis) = w_ch pos (ds . ('\n':)) qis
-    w_ch pos ds (QQChar _ ch:qis) | ch `elem` "§\\{}[]" = w_ch pos (ds . (ch:)) qis
+    w_ch pos ds (QQChar _ ch:qis) | ch `elem` "§\\{}[]〈〉" = w_ch pos (ds . (ch:)) qis
     w_ch pos ds (QQChar _ ch:qis) = $gsfatal $ "w_ch pos ds (QQChar _ " ++ show ch ++ ":qis) next"
     w_ch pos ds qis@(QInterpExpr{}:_) = do
         (ist, hst) <- w qis
