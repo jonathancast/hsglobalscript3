@@ -8,12 +8,12 @@ $gsdeclare gsprintstr gsprintstr
 
 runTestGSIProgram prog = runGSProgram [gs:value hsvs=prog,| test-gsi.gsrun (gsinject prog) |]
 
-gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. gsprintv x |]
+gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. impfor _ ← gsprintv x;. print qq{\n} |]
 
 gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
-    case eval-state.error 'e. print qq{<Error: §(gsfmt-error e)>\n}
+    case eval-state.error 'e. print qq{<Error: §(gsfmt-error e)>}
     case eval-state.whnf 'v. (analyze v.
-        case whnf.natural 'n. print qq{§(natural.fmt-decimal n)\n}
+        case whnf.natural 'n. print (natural.fmt-decimal n)
         case whnf.constr 'pos 'v ('r : ('s : nil)). (analyze gsvar.≡ v (gsvar qq{:}).
             case true. impfor _ ← print qq{qq\{}; _ ← gsprintstr x;. print qq{\}}
         )
@@ -33,9 +33,9 @@ gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
                 ;
                 _ ← print qq{\〉};
             . impunit 〈〉
-        case whnf.function 'f. print qq{<function>\n}
+        case whnf.function 'f. print qq{<function>}
     )
-    case eval-state.implementation-failure 'pos 'e. print qq{<Implementation failure: §(pos.fmt pos qq{§(e)})>\n}
+    case eval-state.implementation-failure 'pos 'e. print qq{<Implementation failure: §(pos.fmt pos qq{§(e)})>}
 |]
 
 gsprintstr = [gs:value| λ 's. impanalyzeM eval-sync s.
@@ -52,5 +52,5 @@ gsprintstr = [gs:value| λ 's. impanalyzeM eval-sync s.
             case true. impunit 〈〉
         )
     )
-    case eval-state.implementation-failure 'pos 'e. print qq{<Implementation failure: §(pos.fmt pos qq{§(e)})\n}
+    case eval-state.implementation-failure 'pos 'e. print qq{<Implementation failure: §(pos.fmt pos qq{§(e)})}
 |]
