@@ -3,6 +3,7 @@ module GSDL.AST (
     gstype_env_type_get, gstype_env_type_insert, gstype_env_vars, gstype_env_var_types,
     gstype_env_generator_type_get, gstype_env_generator_type_insert,
     gstype_env_view_type_get, gstype_env_view_type_insert, gstype_env_views,
+    gstype_env_arg_var_type_get,
     gstype_env_types,
     gstype_env_filter,
     gstype_env_overlay, gstype_env_empty,
@@ -62,6 +63,8 @@ gstype_env_view_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
 〉 |]
 
 gstype_env_views = [gs:value| λ 'env. ordered-map.keys (env #view-types) |]
+
+gstype_env_arg_var_type_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #arg-var-types) |]
 
 gstype_env_filter = [gs:value| λ 'vs. λ 'env. 〈
     'types ∝ foldr (λ 'v. λ 'tys. analyze ordered-map.get gsvar.compare v (env #types). case just 'ty. ordered-map.insert gsvar.compare v ty tys) ordered-map.empty vs;
