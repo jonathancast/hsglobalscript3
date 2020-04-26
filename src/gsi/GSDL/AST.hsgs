@@ -34,6 +34,7 @@ gstype_env_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'types ∝ ordered-map.insert gsvar.compare v ty (env #types);
     'generator-types ∝ env #generator-types;
     'view-types ∝ env #view-types;
+    'arg-var-types ∝ env #arg-var-types;
 〉 |]
 
 gstype_env_types = [gs:value| λ 'env. ordered-map.values (env #types) <> ordered-map.values (env #view-types) |]
@@ -48,6 +49,7 @@ gstype_env_generator_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'types ∝ env #types;
     'generator-types ∝ ordered-map.insert gsvar.compare v ty (env #generator-types);
     'view-types ∝ env #view-types;
+    'arg-var-types ∝ env #arg-var-types;
 〉 |]
 
 gstype_env_view_type_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #view-types) |]
@@ -56,6 +58,7 @@ gstype_env_view_type_insert = [gs:value| λ 'v. λ 'ty. λ 'env. 〈
     'types ∝ env #types;
     'generator-types ∝ env #generator-types;
     'view-types ∝ ordered-map.insert gsvar.compare v ty (env #view-types);
+    'arg-var-types ∝ env #arg-var-types;
 〉 |]
 
 gstype_env_views = [gs:value| λ 'env. ordered-map.keys (env #view-types) |]
@@ -64,15 +67,17 @@ gstype_env_filter = [gs:value| λ 'vs. λ 'env. 〈
     'types ∝ foldr (λ 'v. λ 'tys. analyze ordered-map.get gsvar.compare v (env #types). case just 'ty. ordered-map.insert gsvar.compare v ty tys) ordered-map.empty vs;
     'generator-types ∝ ordered-map.empty;
     'view-types ∝ ordered-map.empty;
+    'arg-var-types ∝ ordered-map.empty;
 〉 |]
 
 gstype_env_overlay = [gs:value| λ 'env0. λ 'env1. 〈
     'types ∝ ordered-map.∪ gsvar.compare (env0 #types) (env1 #types);
     'generator-types ∝ ordered-map.∪ gsvar.compare (env0 #generator-types) (env1 #generator-types);
     'view-types ∝ ordered-map.∪ gsvar.compare (env0 #view-types) (env1 #view-types);
+    'arg-var-types ∝ ordered-map.∪ gsvar.compare (env0 #arg-var-types) (env1 #arg-var-types);
 〉 |]
 
-gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'generator-types ∝ ordered-map.empty; 'view-types ∝ ordered-map.empty; 〉 |]
+gstype_env_empty = [gs:value| 〈 'types ∝ ordered-map.empty; 'generator-types ∝ ordered-map.empty; 'view-types ∝ ordered-map.empty; 'arg-var-types ∝ ordered-map.empty; 〉 |]
 
 gsfile_document = $gslambda_value $ \ pos -> $gsbcarg $ \ d -> $gsbcconstr (gsvar "document") [ $gsav pos, $gsav d ]
 
