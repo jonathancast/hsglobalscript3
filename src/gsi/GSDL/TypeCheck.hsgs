@@ -86,6 +86,10 @@ gstype_check_arg = [gs:value| λ 'pos. λ 'a. λ 'ty. analyze a.
 |]
 
 gstype_check_custom_app = [gs:value| λ 'pos. λ 'f. λ 'af. λ 'as. λ 'tye. analyze af.
+    case arg.var 'v. type-checker.for
+            'vty ← type-checker.env.get-arg-var-type pos v;
+            _ ← vty pos f as tye;
+        . type-checker.unit (expr.app f (foldl arg.app af as))
 |]
 
 gstype_check_generator = [gs:value| λ 'pos. λ 'g. λ 'tye. analyze g.
