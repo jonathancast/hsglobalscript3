@@ -70,6 +70,7 @@ test_empty_structure_literal
 test_record_literal_field
 test_field_extraction
 test_field_extraction_variable
+test_field_extraction_empty_record
 
 echo '## gsioc'
 

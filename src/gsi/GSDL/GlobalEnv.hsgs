@@ -323,6 +323,8 @@ gstype_checker_global_env = [gs:value|
                 _ ← type-checker.analyzeM type-checker.hnormalize tyr.
                     case type.signature 'env. (analyze type.env.type.get v env.
                         case just 'tyv. type-checker.unify pos tyv tye
+                        case nothing. type-checker.for 's ← type-checker.fmt-type tyr;.
+                            type-checker.fail pos qq{Missing field §(gsvar.fmt-atom v) in §(s)}
                     )
                 ;
             . type-checker.unit 〈 '0 ∝ rty; '1 ∝ as; 〉
