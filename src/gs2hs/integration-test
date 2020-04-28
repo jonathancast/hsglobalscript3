@@ -69,6 +69,7 @@ test_infix_with_explicit
 test_empty_structure_literal
 test_record_literal_field
 test_field_extraction
+test_field_extraction_variable
 
 echo '## gsioc'
 
