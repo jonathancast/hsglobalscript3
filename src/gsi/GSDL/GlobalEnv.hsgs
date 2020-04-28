@@ -86,6 +86,11 @@ $gsdeclare type-checker.gsrun.type gstype_checker_gsrun_type
 $gsdeclare type-checker.args.type gstype_checker_args_type
 
 gstype_checker_global_env = [gs:value|
+    type.env.type.insert (gsvar qq{for}) (
+        type.forall (gsvar qq{σ}) kind.pointed $ type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.generator (type.consts qq{σ})) $ type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{α})) $
+                type.consts qq{α}
+    ) $
     type.env.type.insert (gsvar qq{analyze}) (
         type.forall (gsvar qq{α}) kind.pointed $ type.forall (gsvar qq{β}) kind.pointed $
             type.function (type.consts qq{α}) $
