@@ -9,7 +9,7 @@ module GSDL.TypeChecker (
     gstype_checker_hnormalize,
     gstype_checker_get_var, gstype_checker_set_var,
     gstype_checker_for, gstype_checker_analyzeM, gstype_checker_foldM, gstype_checker_mapM, gstype_checker_zipWithM,
-    gstype_checker_run, gstype_checker_unit, gstype_checker_bind, gstype_checker_map
+    gstype_checker_run, gstype_checker_unit, gstype_checker_bind, gstype_checker_map, gstype_checker_fail
   ) where
 
 import GSI.Value (gslambda_value, gsav)
@@ -287,6 +287,8 @@ gstype_checker_map = [gs:value| λ 'f. λ 'a. λ 'env. impanalyzeM a env.
     case left 'err. impunit (left err)
     case right 'x. impunit (right (f x))
 |]
+
+gstype_checker_fail = [gs:value| λ 'pos. λ 's. λ 'env. impunit (left (pos.fmt pos s)) |]
 
 gstype_var_unifiable_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "unifiable-var") [ $gsav v ]
 gstype_var_const = $gslambda_value $ \ v -> $gsbcconstr (gsvar "const") [ $gsav v ]

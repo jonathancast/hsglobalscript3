@@ -1123,6 +1123,7 @@ globalEnv = Env{
         ("type-checker.env.get-generator-type", "GSDL.TypeChecker", "gstype_checker_env_get_generator_type"),
         ("type-checker.env.get-type", "GSDL.TypeChecker", "gstype_checker_env_get_type"),
         ("type-checker.env.get-view-type", "GSDL.TypeChecker", "gstype_checker_env_get_view_type"),
+        ("type-checker.fail", "GSDL.TypeChecker", "gstype_checker_fail"),
         ("type-checker.fmt-type", "GSDL.TypeChecker", "gstype_checker_fmt_type"),
         ("type-checker.foldM", "GSDL.TypeChecker", "gstype_checker_foldM"),
         ("type-checker.for", "GSDL.TypeChecker", "gstype_checker_for"),
