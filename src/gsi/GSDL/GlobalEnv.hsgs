@@ -311,6 +311,17 @@ gstype_checker_global_env = [gs:value|
         type.function (type.consts qq{gsdl.parser.env.t}) $
             type.apply (type.consts qq{parser.t}) (type.consts qq{rune.t} : type.consts qq{gsdl.file.t} : nil)
     ) $
+    type.env.arg-var-type.insert (gsvar qq{#}) (λ 'pos. λ 'r. λ 'as. λ 'tye. analyze as.
+        case arg.var-name 'v : nil. type-checker.for
+                'tyr ← type-checker.new-unifiable-var;
+                'rty ← type-check-expr pos r tyr;
+                _ ← type-checker.analyzeM type-checker.hnormalize tyr.
+                    case type.signature 'env. (analyze type.env.type.get v env.
+                        case just 'tyv. type-checker.unify pos tyv tye
+                    )
+                ;
+            . type-checker.unit 〈 '0 ∝ rty; '1 ∝ as; 〉
+    ) $
     type.env.empty
 |]
 
