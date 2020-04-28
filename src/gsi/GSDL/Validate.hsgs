@@ -39,6 +39,7 @@ gsvalidate_expr = [gs:value| λ 'pos. λ 'env. λ 'e. analyze e.
         . validate-expr pos env1 e1
     case expr.missing-case. right 〈〉
     case expr.structure-literal 'gs _. either.mapM (λ 'p. validate-generator (p #pos) env (p #gen)) gs
+    case expr.generators 'gs _. either.mapM (λ 'p. validate-generator (p #pos) env (p #gen)) gs
 |]
 
 gsvalidate_arg = [gs:value| λ 'pos. λ 'env. λ 'a. analyze a.
