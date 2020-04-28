@@ -197,7 +197,7 @@ gstype_checker_is_free_in = [gs:value| λ 'v. λ 'ty. analyze ty.
 gstype_checker_incorrect_type = [gs:value| λ 'pos. λ 'ty0. λ 'ty1. type-checker.for
         's0 ← type-checker.fmt-type ty0;
         's1 ← type-checker.fmt-type ty1;
-    . λ 'env. impunit (left (pos.fmt pos qq{Incorrect type: §(s0) is not §(s1)}))
+    . type-checker.fail pos qq{Incorrect type: §(s0) is not §(s1)}
 |]
 
 gstype_checker_fmt_type = [gs:value| λ 'ty. analyze ty.
