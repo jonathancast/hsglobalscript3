@@ -118,6 +118,7 @@ gslist_compare = [gs:value| λ 'cmp. λ 'xn. λ 'ys. analyze xn.
     )
     case 'x:'xn1. (analyze ys.
         case 'y:'ys1. ord.<|> (cmp x y) (list.<=> cmp xn1 ys1)
+        case nil. gt
     )
 |]
 
