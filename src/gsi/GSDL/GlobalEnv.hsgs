@@ -291,6 +291,7 @@ gstype_checker_global_env = [gs:value|
     ) $
     type.env.type.insert (gsvar qq{gsio.file.stat}) (type.function (type.consts qq{file.name.t}) $
         type.app (type.consts qq{gsio.m}) $ type.either (type.consts qq{file.error.t}) $ type.signature $
+            type.env.type.insert (gsvar qq{is.dir}) (type.consts qq{bool.t}) $
             type.env.empty
     ) $
     type.env.type.insert (gsvar qq{parse}) (
