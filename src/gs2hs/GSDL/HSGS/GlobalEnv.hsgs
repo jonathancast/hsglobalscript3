@@ -37,6 +37,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.view.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust_view} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil_view} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{nothing}) qq{GSI.Maybe} qq{gsnothing_view} $
+    hsgs.compiler.env.view.simple-insert (gsvar qq{right}) qq{GSI.Either} qq{gsright_view} $
     hsgs.compiler.env.view.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue_view} $
     hsgs.compiler.env.arg-var.insert (gsvar qq{#}) (λ 'env. λ 'pos. λ 'f. λ 'as. analyze as.
         case arg.var-name 'v : nil. either.for 'p ← hsgs.compile-arg nothing env (arg.expr pos f);. right $
