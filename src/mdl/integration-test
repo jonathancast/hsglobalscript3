@@ -5,3 +5,4 @@
 . $GS_SPEC/bin/test-fns
 . $GS_SPEC/bin/mdl-spec
 
+test_mdl_empty_directory
