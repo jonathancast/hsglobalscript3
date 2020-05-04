@@ -14,6 +14,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.unary.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_unary_plus}) $
     hsgs.compiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Addition} qq{gsaddition_plus} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
+    hsgs.compiler.env.var.simple-insert (gsvar qq{>>=}) qq{GSI.Monad} qq{gsmonad_bind} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{analyzeM}) qq{GSI.StdLib} qq{gsanalyzeM} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{analyze}) qq{GSI.StdLib} qq{gsanalyze} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{case}) qq{GSI.StdLib} qq{gscase} $
