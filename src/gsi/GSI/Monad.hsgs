@@ -6,4 +6,5 @@ gsmonad_bind = [gs:value| λ 'm. m #(>>=) |]
 
 gsmonad_mapM0 = [gs:value| λ 'm. λ 'f. λ 'xn. analyze xn.
     case 'x : 'xn1. m #(>>=) (f x) (λ _. mapM0 m f xn1)
+    case nil. m #unit 〈〉
 |]
