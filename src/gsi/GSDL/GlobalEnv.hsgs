@@ -281,6 +281,7 @@ gstype_checker_global_env = [gs:value|
                     type.function (type.function (type.consts qq{α}) (type.app (type.consts qq{m}) (type.consts qq{β}))) $
                         type.app (type.consts qq{m}) (type.consts qq{β})
     ) $
+    type.env.type.insert (gsvar qq{file.name.extension.get}) (type.function (type.consts qq{file.name.t}) (type.app (type.consts qq{list.t}) (type.consts qq{rune.t}))) $
     type.env.type.insert (gsvar qq{file.name.in}) (type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) (type.consts qq{file.name.t})) $
     type.env.type.insert (gsvar qq{gsi.monad}) (type.monad (type.consts qq{gsi.m})) $
     type.env.type.insert (gsvar qq{gsio.monad}) (type.monad (type.consts qq{gsio.m})) $
