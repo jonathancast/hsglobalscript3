@@ -1,3 +1,7 @@
+This is *alpha quality* software.
+It works for me on my machine; it hasn't been tested on anything else.
+Use at your own risk.
+
 This is pretty self-explanatory to me, but if it isn't to you:
 
 You will need Plan 9 from User Space, here: https://9fans.github.io/plan9port/ .
