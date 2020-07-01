@@ -52,6 +52,7 @@ gshsgs_compiler_env_empty = [gs:value| 〈
     'views ∝ ordered-map.empty;
     'generators ∝ ordered-map.empty;
     'arg-vars ∝ ordered-map.empty;
+    'supplies ∝ ordered-map.empty;
     'gen-sym ∝ 0;
 〉 |]
 
