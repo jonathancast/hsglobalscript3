@@ -12,6 +12,7 @@ gshsgs_compiler_global_env = [gs:value|
     hsgs.compiler.env.constr.insert (gsvar qq{λ}) $
     hsgs.compiler.env.generator.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{←}) qq{GSI.StdLib} qq{gsfrom}) $
     hsgs.compiler.env.generator.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{∝}) qq{GSI.StdLib} qq{gsmatch}) $
+    hsgs.compiler.env.supply.monad.simple-insert (gsvar qq{either.for}) qq{GSI.Either} qq{gseither_monad} $
     hsgs.compiler.env.unary.modify (hsgs.compiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_unary_plus}) $
     hsgs.compiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Addition} qq{gsaddition_plus} $
     hsgs.compiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
