@@ -49,6 +49,8 @@ gshsgs_compiler_env_supply_modify = [gs:value| λ 'v. λ 'f. λ 'env. for 'senv0
     record.∧ 〈 'supplies ∝ ordered-map.insert v (f senv0) (env #supplies); 〉 env
 |]
 
+gshsgs_compiler_env_supply_monad_insert = [gs:value| λ 'f. λ 'a. λ 'env. hsgs.compiler.env.supply.modify f (hsgs.compiler.supply.env.monad.insert a) env |]
+
 gshsgs_compiler_env_empty = [gs:value| 〈
     'vars ∝ ordered-map.empty;
     'constrs ∝ ordered-set.empty;
