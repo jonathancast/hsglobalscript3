@@ -58,4 +58,6 @@ gshsgs_compiler_env_empty = [gs:value| 〈
 
 gshsgs_compiler_supply_env_monad_get = [gs:value| λ 'env. env #monad |]
 
+gshsgs_compiler_supply_env_monad_insert = [gs:value| λ 'm. λ 'env. record.∧ 〈 'monad ∝ just m; 〉 env |]
+
 gshsgs_compiler_supply_env_empty = [gs:value| 〈 'monad ∝ nothing; 〉 |]
