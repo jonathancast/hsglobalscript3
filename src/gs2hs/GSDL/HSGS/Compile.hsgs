@@ -73,7 +73,7 @@ gshsgs_compile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
             case true. either.map (hsoutput.rehere pos)
         ) $
             (either.for
-                    'senv ← right $ hsgs.compiler.supply.env.empty;
+                    'senv ← right $ hsgs.compiler.env.supply.get v env;
                     'p ← analyze hsgs.compiler.env.var.get v env.
                         case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
                         case just 'p. right p
