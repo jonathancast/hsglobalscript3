@@ -228,8 +228,8 @@ gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gs
             EQ -> $gsbcconstr (gsvar "eq") []
             GT -> $gsbcconstr (gsvar "gt") []
         | otherwise -> $gsbcimplementationfailure $ "gsigsvar_compare " ++ whichExternal v0e ++ ' ' : whichExternal v1e ++ " next"
-    (GSExternal _, _) -> $gsbcruntimetypeerror "gsvar.compare _ •" (gsvFmt v1v "") "(GSExternal GSVar)"
-    (_, _) -> $gsbcruntimetypeerror "gsvar.compare • _" (gsvFmt v0v "") "(GSExternal GSVar)"
+    (GSExternal _, _) -> $gsbcruntimetypeerror "gsvar.<=> _ •" (gsvFmt v1v "") "(GSExternal GSVar)"
+    (_, _) -> $gsbcruntimetypeerror "gsvar.<=> • _" (gsvFmt v0v "") "(GSExternal GSVar)"
 
 gsigsvar_eq = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)

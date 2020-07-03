@@ -6,20 +6,20 @@ gshsgs_compiler_env_gen_sym = [gs:value| λ 'env. λ 'k. k qq{x§(natural.fmt-de
     record.∧ 〈 'gen-sym ∝ env #gen-sym + 1; 〉 env
 |]
 
-gshsgs_compiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env.  record.∧ 〈 'vars ∝ ordered-map.insert gsvar.compare v a (env #vars); 〉 env |]
+gshsgs_compiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env.  record.∧ 〈 'vars ∝ ordered-map.insert gsvar.<=> v a (env #vars); 〉 env |]
 
-gshsgs_compiler_env_constr_insert = [gs:value| λ 'v. λ 'env. record.∧ 〈 'constrs ∝ ordered-set.insert gsvar.compare v (env #constrs); 〉 env |]
+gshsgs_compiler_env_constr_insert = [gs:value| λ 'v. λ 'env. record.∧ 〈 'constrs ∝ ordered-set.insert gsvar.<=> v (env #constrs); 〉 env |]
 
-gshsgs_compiler_env_view_insert = [gs:value| λ 'v. λ 'a. λ 'env. record.∧ 〈 'views ∝ ordered-map.insert gsvar.compare v a (env #views); 〉 env |]
+gshsgs_compiler_env_view_insert = [gs:value| λ 'v. λ 'a. λ 'env. record.∧ 〈 'views ∝ ordered-map.insert gsvar.<=> v a (env #views); 〉 env |]
 
-gshsgs_compiler_env_arg_var_insert = [gs:value| λ 'v. λ 'f. λ 'env. record.∧ 〈 'arg-vars ∝ ordered-map.insert gsvar.compare v f (env #arg-vars); 〉 env |]
+gshsgs_compiler_env_arg_var_insert = [gs:value| λ 'v. λ 'f. λ 'env. record.∧ 〈 'arg-vars ∝ ordered-map.insert gsvar.<=> v f (env #arg-vars); 〉 env |]
 
-gshsgs_compiler_env_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #vars) |]
-gshsgs_compiler_env_constr_get = [gs:value| λ 'v. λ 'env. ordered-set.∈ gsvar.compare v (env #constrs) |]
-gshsgs_compiler_env_view_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #views) |]
-gshsgs_compiler_env_arg_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #arg-vars) |]
+gshsgs_compiler_env_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #vars) |]
+gshsgs_compiler_env_constr_get = [gs:value| λ 'v. λ 'env. ordered-set.∈ gsvar.<=> v (env #constrs) |]
+gshsgs_compiler_env_view_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #views) |]
+gshsgs_compiler_env_arg_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #arg-vars) |]
 
-gshsgs_compiler_env_supply_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.compare v (env #supplies). |]
+gshsgs_compiler_env_supply_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.<=> v (env #supplies). |]
 
 gshsgs_compiler_env_generator_get = [gs:value| λ 'env. 〈
     'vars ∝ env #generators;
@@ -47,8 +47,8 @@ gshsgs_compiler_env_unary_modify = [gs:value| λ 'f. λ 'env. for
     . record.∧ env2 env
 |]
 
-gshsgs_compiler_env_supply_modify = [gs:value| λ 'v. λ 'f. λ 'env. for 'senv0 ∝ analyze ordered-map.get gsvar.compare v (env #supplies).;.
-    record.∧ 〈 'supplies ∝ ordered-map.insert gsvar.compare v (f senv0) (env #supplies); 〉 env
+gshsgs_compiler_env_supply_modify = [gs:value| λ 'v. λ 'f. λ 'env. for 'senv0 ∝ analyze ordered-map.get gsvar.<=> v (env #supplies).;.
+    record.∧ 〈 'supplies ∝ ordered-map.insert gsvar.<=> v (f senv0) (env #supplies); 〉 env
 |]
 
 gshsgs_compiler_env_supply_monad_insert = [gs:value| λ 'f. λ 'a. λ 'env. hsgs.compiler.env.supply.modify f (hsgs.compiler.supply.env.monad.insert a) env |]

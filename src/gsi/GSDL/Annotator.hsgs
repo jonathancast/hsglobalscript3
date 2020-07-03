@@ -3,10 +3,10 @@ module GSDL.Annotator (gsannotator_env_category_insert, gsannotator_env_category
 $gsimports
 
 gsannotator_env_category_insert = [gs:value| λ 'v. λ 'c. λ 'env.
-    〈 'category ∝ ordered-map.insert gsvar.compare v c (env #category); 〉
+    〈 'category ∝ ordered-map.insert gsvar.<=> v c (env #category); 〉
 |]
 
-gsannotator_env_category_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.compare v (env #category) |]
+gsannotator_env_category_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #category) |]
 
 gsannotator_env_empty = [gs:value| 〈 'category ∝ ordered-map.empty; 〉 |]
 

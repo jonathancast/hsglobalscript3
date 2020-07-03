@@ -879,7 +879,7 @@ globalEnv = Env{
         ("gsv", "GSI.Log", "gsloggsv"),
         ("gsvalue.constr", "GSI.GSI", "gsvalue_constr"),
         ("gsvar", "GSI.GSI", "gsigsvar"),
-        ("gsvar.compare", "GSI.GSI", "gsigsvar_compare"),
+        ("gsvar.<=>", "GSI.GSI", "gsigsvar_compare"),
         ("gsvar.fmt-atom", "GSI.GSI", "gsigsvar_fmtAtom"),
         ("gsvar.fmt-bind-atom", "GSI.GSI", "gsigsvar_fmtBindAtom"),
         ("gsvar.name", "GSI.GSI", "gsigsvar_name"),
