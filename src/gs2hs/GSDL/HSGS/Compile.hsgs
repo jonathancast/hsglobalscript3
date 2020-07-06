@@ -157,6 +157,7 @@ gshsgs_compile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'h
             either.for 'p1 ← hsgs.compile-monadic-generators env1 senv hsb hsu gs1 pos1;. right $
                 hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbccomposemonadgen_w} (g #pos)
                     (hsoutput.arg-var hsb : hsoutput.arg-var hsu : hsoutput.arg-expr (g #pos) p0 : hsoutput.lambda envhs p1 : nil)
+    case nil. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcemptymonadgen_w} pos1 (hsoutput.arg-var hsu : nil)
 |]
 
 $gsdeclare hsgs.compile-generator-app gshsgs_compile_generator_app
