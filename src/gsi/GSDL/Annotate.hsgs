@@ -100,7 +100,6 @@ gsannotate_get_name_set = [gs:value| λ 'as. analyze as.
     case arg.expr _ (expr.pat _ (just 'ns)) : _. ns
     case arg.expr _ (expr.fallible-pat _ (just 'ns)) : _. ns
     case arg.expr _ (expr.generators 'gs _) : _. concat (map (λ 'p. analyze p #bvs. case just 'ns. ns) gs)
-    case _ : 'as1. annotate-get-name-set as1
 |]
 
 $gsdeclare annotate-set-name-set gsannotate_set_name_set
