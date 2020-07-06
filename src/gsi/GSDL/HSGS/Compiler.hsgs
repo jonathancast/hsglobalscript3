@@ -19,7 +19,7 @@ gshsgs_compiler_env_constr_get = [gs:value| λ 'v. λ 'env. ordered-set.∈ gsva
 gshsgs_compiler_env_view_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #views) |]
 gshsgs_compiler_env_arg_var_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #arg-vars) |]
 
-gshsgs_compiler_env_supply_get = [gs:value| λ 'v. λ 'env. analyze ordered-map.get gsvar.<=> v (env #supplies). |]
+gshsgs_compiler_env_supply_get = [gs:value| λ 'v. λ 'env. maybe.out hsgs.compiler.supply.env.empty (ordered-map.get gsvar.<=> v (env #supplies)) |]
 
 gshsgs_compiler_env_generator_get = [gs:value| λ 'env. 〈
     'vars ∝ env #generators;
@@ -47,7 +47,7 @@ gshsgs_compiler_env_unary_modify = [gs:value| λ 'f. λ 'env. for
     . record.∧ env2 env
 |]
 
-gshsgs_compiler_env_supply_modify = [gs:value| λ 'v. λ 'f. λ 'env. for 'senv0 ∝ analyze ordered-map.get gsvar.<=> v (env #supplies).;.
+gshsgs_compiler_env_supply_modify = [gs:value| λ 'v. λ 'f. λ 'env. for 'senv0 ∝ maybe.out hsgs.compiler.supply.env.empty (ordered-map.get gsvar.<=> v (env #supplies));.
     record.∧ 〈 'supplies ∝ ordered-map.insert gsvar.<=> v (f senv0) (env #supplies); 〉 env
 |]
 
