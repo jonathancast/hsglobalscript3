@@ -156,6 +156,7 @@ pattern env = empty
         <|> parens (pattern env)
         <|> PView <$> getPos <*> ident
         <|> PVar <$> getPos <*> (lexeme (char '\'') *> ident)
+        <|> PVar <$> getPos <*> parens (lexeme (char '\'') *> operator env)
         <|> PDiscard <$> (getPos <* underscoreTerm)
         <|> do
             pos0 <- getPos
