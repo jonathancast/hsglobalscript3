@@ -50,6 +50,12 @@ gshsgs_compile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
     case expr.generators 'gs 'pos1. hsgs.compile-generators env gs pos1
     case expr.monadic-generators 'gs 'pos1. (analyze hsgs.compiler.supply.env.monad.get senv.
         case nothing. left $ pos.fmt pos qq{missing supply monad}
+        case just 'p. hsgs.compiler.env.gen-sym env $ λ 'hsu. λ 'env1. hsgs.compiler.env.gen-sym env1 $ λ 'hsb. λ 'env2. either.for
+                'gshs ← hsgs.compile-monadic-generators env senv (hsoutput.var hsu) (hsoutput.var hsb) gs pos1;
+            . right $
+                hsoutput.app (hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos (hsoutput.gsvar (gsvar qq{unit}) : p : nil)) $ hsoutput.lambda hsu $
+                    hsoutput.app (hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos (hsoutput.gsvar (gsvar qq{>>=}) : p : nil)) $ hsoutput.lambda hsb $
+                        gshs
     )
     case expr.pat 'p _. hsgs.compile-pat env pos p
     case expr.fallible-pat 'p _. hsgs.compile-fallible-pat env pos p
