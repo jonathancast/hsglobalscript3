@@ -298,8 +298,8 @@ identName = nameOf alphaNumComp
 
 nameOf :: Parser Char String -> Parser Char String
 nameOf init = (++) <$> init <*> (concat <$> many cont <* notFollowedBy cont) where
-    cont =
-            (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
+    cont = empty
+        <|> (:) <$> matching "separator" (`elem` "-.") <*> alphaNumComp
         <|> (:) <$> matching "separator" (`elem` ".") <*> operatorComp
 
 numComp :: Parser Char String
