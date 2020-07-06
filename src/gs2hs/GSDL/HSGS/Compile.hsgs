@@ -150,7 +150,7 @@ gshsgs_compile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ '
 $gsdeclare hsgs.compile-generator gshsgs_compile_generator
 
 gshsgs_compile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
-    case 'g:'gs1. either.for 'p0 ← hsgs.compile-generator env (g #pos) (g #gen);.
+    case 'g:'gs1. either.for 'p0 ← hsgs.compile-generator env hsgs.compiler.supply.env.empty (g #pos) (g #gen);.
         hsgs.compiler.env.gen-sym env $ λ 'envhs. λ 'env1.
             either.for 'p1 ← hsgs.compile-generators env1 gs1 pos1;. right $
                 hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbccomposegen_w} (g #pos) (hsoutput.arg-expr (g #pos) p0 : hsoutput.lambda envhs p1 : nil)
@@ -158,7 +158,7 @@ gshsgs_compile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
 |]
 
 gshsgs_compile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'hsu. λ 'gs. λ 'pos1. analyze gs.
-    case 'g:'gs1. either.for 'p0 ← hsgs.compile-generator env (g #pos) (g #gen);.
+    case 'g:'gs1. either.for 'p0 ← hsgs.compile-generator env senv (g #pos) (g #gen);.
         hsgs.compiler.env.gen-sym env $ λ 'envhs. λ 'env1.
             either.for 'p1 ← hsgs.compile-monadic-generators env1 senv hsb hsu gs1 pos1;. right $
                 hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbccomposemonadgen_w} (g #pos)
@@ -168,8 +168,8 @@ gshsgs_compile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'h
 
 $gsdeclare hsgs.compile-generator-app gshsgs_compile_generator_app
 
-gshsgs_compile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
-    case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env hsgs.compiler.supply.env.empty pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : nil)
+gshsgs_compile_generator = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'g. analyze g.
+    case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env senv pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : nil)
 |]
 
 $gsdeclare hsgs.compile-generator-arg gshsgs_compile_generator_arg
