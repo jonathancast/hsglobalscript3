@@ -169,18 +169,18 @@ gshsgs_compile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'h
 $gsdeclare hsgs.compile-generator-app gshsgs_compile_generator_app
 
 gshsgs_compile_generator = [gs:value| λ 'env. λ 'pos. λ 'g. analyze g.
-    case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : nil)
+    case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env hsgs.compiler.supply.env.empty pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : nil)
 |]
 
 $gsdeclare hsgs.compile-generator-arg gshsgs_compile_generator_arg
 
-gshsgs_compile_generator_app = [gs:value| λ 'env. λ 'pos. λ 'g. λ 'as. analyze g.
+gshsgs_compile_generator_app = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'g. λ 'as. analyze g.
     case generator.var 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.generator.get env).
         case nothing. left $ pos.fmt pos qq{generator §(gsvar.fmt-atom v) not in scope}
         case just 'p. either.for 'as1 ← either.mapM (hsgs.compile-generator-arg env) as;. right $
             hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapply_w} pos (p : hsoutput.list as1 : nil)
     )
-    case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : as)
+    case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env senv pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : as)
 |]
 
 gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. analyze a #1.
