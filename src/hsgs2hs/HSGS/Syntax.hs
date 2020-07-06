@@ -288,7 +288,9 @@ field = empty
     <|> parens (lexeme $ nameOf operatorComp)
 
 boundName :: Parser Char String
-boundName = lexeme (char '\'') *> lexeme (nameOf alphaNumComp <|> nameOf numComp)
+boundName = empty
+    <|> lexeme (char '\'') *> lexeme (nameOf alphaNumComp <|> nameOf numComp)
+    <|> parens (lexeme (char '\'') *> lexeme (nameOf operatorComp))
 
 ident :: Parser Char String
 ident = lexeme identName
