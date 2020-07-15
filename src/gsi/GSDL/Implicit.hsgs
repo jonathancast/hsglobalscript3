@@ -19,13 +19,13 @@ gsadd_implicits_expr = [gs:value| λ 'env. λ 'e. analyze e.
         e
         (implicit.env.consumes.get v env)
     case expr.unary 'v. expr.unary v
-    case expr.structure-literal 'gs 'pos1. expr.structure-literal (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
+    case expr.structure-literal 'gs 'pos1. expr.structure-literal (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator (p #pos) env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
     case expr.qlo 'v 'e 'x. expr.qlo v e (e #add-implicits env x)
     case expr.app 'f 'x. expr.app (add-implicits-expr env f) (add-implicits-arg env x)
     case expr.pat 'p 'mb. expr.pat (add-implicits-pat env p) mb
     case expr.fallible-pat 'p 'mb. expr.fallible-pat (add-implicits-pat env p) mb
-    case expr.monadic-generators 'gs 'pos1. expr.monadic-generators (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
-    case expr.generators 'gs 'pos1. expr.generators (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
+    case expr.monadic-generators 'gs 'pos1. expr.monadic-generators (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator (p #pos) env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
+    case expr.generators 'gs 'pos1. expr.generators (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator (p #pos) env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
     case expr.open-expr 'e 'mb. expr.open-expr (add-implicits-expr env e) mb
     case expr.value-var 'v. expr.value-var v
     case expr.missing-case. expr.missing-case
@@ -46,9 +46,9 @@ gsadd_implicits_pat = [gs:value| λ 'env. λ 'p. analyze p.
     case pat.app 'p0 'pos1 'p1. pat.app (add-implicits-pat env p0) pos1 (add-implicits-pat env p1)
 |]
 
-gsadd_implicits_generator = [gs:value| λ 'env. λ 'g. analyze g.
+gsadd_implicits_generator = [gs:value| λ 'pos. λ 'env. λ 'g. analyze g.
     case generator.var 'v. generator.var v
-    case generator.app 'g0 'pos 'g1. generator.app (add-implicits-generator env g0) pos (add-implicits-generator env g1)
+    case generator.app 'g0 'pos1 'g1. generator.app (add-implicits-generator pos env g0) pos (add-implicits-generator pos1 env g1)
     case generator.pattern 'p 'mb. generator.pattern (add-implicits-pat env p) mb
     case generator.expr 'e. generator.expr (add-implicits-expr env e)
 |]
