@@ -11,8 +11,6 @@ gsimplicit_env_generators_get = [gs:value| λ 'env. 〈
     'consumes ∝ ordered-map.empty;
 〉 |]
 
-gsimplicit_env_consumes_insert = [gs:value| λ 'v. λ 'is. λ 'env. 〈
-    'consumes ∝ ordered-map.insert gsvar.<=> v is (env #consumes);
-〉 |]
+gsimplicit_env_consumes_insert = [gs:value| λ 'v. λ 'is. λ 'env. record.∧ 〈 'consumes ∝ ordered-map.insert gsvar.<=> v is (env #consumes); 〉 env |]
 
 gsimplicit_env_empty = [gs:value| 〈 'consumes ∝ ordered-map.empty; 〉 |]
