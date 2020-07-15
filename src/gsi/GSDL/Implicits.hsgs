@@ -1,4 +1,4 @@
-module GSDL.Implicits (gsimplicit_env_consumes_get, gsimplicit_env_consumes_insert, gsimplicit_env_generators_get, gsimplicit_env_empty) where
+module GSDL.Implicits (gsimplicit_env_consumes_get, gsimplicit_env_consumes_insert, gsimplicit_env_generators_get, gsimplicit_env_generators_modify, gsimplicit_env_empty) where
 
 $gsimports
 
@@ -12,5 +12,9 @@ gsimplicit_env_generators_get = [gs:value| λ 'env. 〈
 〉 |]
 
 gsimplicit_env_consumes_insert = [gs:value| λ 'v. λ 'is. λ 'env. record.∧ 〈 'consumes ∝ ordered-map.insert gsvar.<=> v is (env #consumes); 〉 env |]
+
+gsimplicit_env_generators_modify = [gs:value| λ 'f. λ 'env. for 'env1 ∝ f (implicit.env.generators.get env);.
+    record.∧ 〈 'generator.consumes ∝ env1 #consumes; 〉 env
+|]
 
 gsimplicit_env_empty = [gs:value| 〈 'consumes ∝ ordered-map.empty; 'generator.consumes ∝ ordered-map.empty; 〉 |]

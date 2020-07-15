@@ -957,6 +957,7 @@ globalEnv = Env{
         ("implicit.env.consumes.insert",  "GSDL.Implicits", "gsimplicit_env_consumes_insert"),
         ("implicit.env.empty",  "GSDL.Implicits", "gsimplicit_env_empty"),
         ("implicit.env.generators.get", "GSDL.Implicits", "gsimplicit_env_generators_get"),
+        ("implicit.env.generators.modify", "GSDL.Implicits", "gsimplicit_env_generators_modify"),
         ("implicits.global-env", "GSDL.GlobalEnv", "gsimplicits_global_env"),
         ("impmapM", "GS.Util", "gsimpmapM"),
         ("impunit", "GSI.StdLib", "gsimpunit"),
