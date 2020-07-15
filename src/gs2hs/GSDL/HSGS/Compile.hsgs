@@ -177,13 +177,13 @@ $gsdeclare hsgs.compile-generator-arg gshsgs_compile_generator_arg
 gshsgs_compile_generator_app = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'g. λ 'as. analyze g.
     case generator.var 'v. (analyze hsgs.compiler.env.var.get v (hsgs.compiler.env.generator.get env).
         case nothing. left $ pos.fmt pos qq{generator §(gsvar.fmt-atom v) not in scope}
-        case just 'p. either.for 'as1 ← either.mapM (hsgs.compile-generator-arg env) as;. right $
+        case just 'p. either.for 'as1 ← either.mapM (hsgs.compile-generator-arg env senv) as;. right $
             hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapply_w} pos (p : hsoutput.list as1 : nil)
     )
     case generator.app 'g0 'pos1 'g1. hsgs.compile-generator-app env senv pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : as)
 |]
 
-gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. analyze a #1.
+gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'senv. λ 'a. for 'pos ∝ a#0;. analyze a #1.
     case generator.pattern 'p _. either.for 'r ← hsgs.compile-pat env pos p;. right $ hsoutput.arg-expr pos r
     case generator.expr (expr.var 'v). (analyze hsgs.compiler.env.constr.get v env.
         case false. (analyze hsgs.compiler.env.var.get v env.
@@ -192,7 +192,7 @@ gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'a. for 'pos ∝ a#0;. ana
     )
     case generator.expr (expr.natural 'n). right $
         hsoutput.arg-var $ hsoutput.app (hsoutput.iconstr qq{GSI.Value} qq{GSValue} qq{GSNatural}) (hsoutput.int n)
-    case generator.expr 'e. either.for 'p ← hsgs.compile-expr env hsgs.compiler.supply.env.empty pos e;. right $ hsoutput.arg-expr pos p
+    case generator.expr 'e. either.for 'p ← hsgs.compile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
 |]
 
 gshsgs_compile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
