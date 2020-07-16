@@ -66,6 +66,7 @@ gsannotator_global_env = [gs:value|
 |]
 
 gsimplicits_global_env = [gs:value|
+    implicit.env.generators.modify (implicit.env.consumes.insert (gsvar qq{←}) (consume.monad : nil)) $
     implicit.env.empty
 |]
 
