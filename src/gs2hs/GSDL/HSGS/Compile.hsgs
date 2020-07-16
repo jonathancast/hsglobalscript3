@@ -190,6 +190,9 @@ gshsgs_compile_generator_arg = [gs:value| λ 'env. λ 'senv. λ 'a. for 'pos ∝
             case just 'p. right $ hsoutput.arg-var p
         )
     )
+    case generator.expr expr.monad. (analyze hsgs.compiler.supply.env.monad.get senv.
+        case just 'p. right $ hsoutput.arg-var p
+    )
     case generator.expr (expr.natural 'n). right $
         hsoutput.arg-var $ hsoutput.app (hsoutput.iconstr qq{GSI.Value} qq{GSValue} qq{GSNatural}) (hsoutput.int n)
     case generator.expr 'e. either.for 'p ← hsgs.compile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
