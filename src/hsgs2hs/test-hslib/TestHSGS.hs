@@ -5,7 +5,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (fmtErrorShort)
+import GSI.Error (fmtErrorShort, fmtInvalidProgram, fmtInvalidProgramShort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 
@@ -18,6 +18,7 @@ printTestValue v = formatTestValue v (putStrLn . ($ ""))
 formatTestValue :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValue v@GSImplementationFailure{} k = formatTestValueAtom v k
 formatTestValue v@GSError{} k = formatTestValueAtom v k
+formatTestValue v@GSInvalidProgram{} k = formatTestValueAtom v k
 formatTestValue (GSThunk ts) k = do
     v <- evalSync [StackTrace $gshere []] ts
     formatTestValue v k
@@ -35,6 +36,7 @@ formatTestValue v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "+
 formatTestValueAtom :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValueAtom (GSImplementationFailure pos msg) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msg++) . ('>':)
 formatTestValueAtom (GSError err) k = k $ ('<':) . (fmtErrorShort err++) . ('>':)
+formatTestValueAtom (GSInvalidProgram err) k = k $ ('<':) . (fmtInvalidProgram err++) . ('>':)
 formatTestValueAtom (GSThunk ts) k = do
     v <- evalSync [StackTrace $gshere []] ts
     formatTestValueAtom v k
