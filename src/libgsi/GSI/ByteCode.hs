@@ -230,7 +230,8 @@ gsbccomposemonadgen_w :: Pos -> GSArg -> GSArg -> GSArg -> (GSValue -> GSExpr) -
 gsbccomposemonadgen_w pos gsbind gsunit gen0 gen1 = gsbcapparg_w pos gsbind [ gen0, $gsae $ gsbcarg_w $gshere $ \ env0 ->
     gsbcapparg_w pos gsbind [ $gsae $ gen1 env0, $gsae $ gsbcarg_w $gshere $ \ env1 ->
         gsbcapparg_w pos gsunit [ $gsae $ gsbcprim_w $gshere gsmergeenv env0 env1 ]
-  ]]
+    ]
+  ]
 
 gsbcexecgen_w :: Pos -> GSArg -> GSArg -> GSExpr
 gsbcexecgen_w pos gsmap e = gsbcapparg_w pos gsmap [ $gsae $ gsbcarg_w $gshere $ \ _ -> gsbcrecord_w pos [], e ]
