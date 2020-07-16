@@ -52,7 +52,7 @@ test_record_literal_field
 test_field_extraction
 test_field_extraction_variable
 test_prefix_operators
-TODO=todo test_monadic_generators
+test_monadic_generators
 
 echo '### Different functions'
 
