@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtInvalidProgram, fmtError, fmtErrorShort, errCode) where
+module GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtInvalidProgram, fmtInvalidProgramShort, fmtError, fmtErrorShort, errCode) where
 
 import Data.Typeable (Typeable)
 
@@ -35,6 +35,9 @@ data GSInvalidProgram
 
 fmtInvalidProgram :: GSInvalidProgram -> String
 fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
+
+fmtInvalidProgramShort :: GSInvalidProgram -> String
+fmtInvalidProgramShort (GSIPRuntimeTypeError (StackTrace pos _) ctxt act exp) = fmtPos pos $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
 
 fmtError :: GSError -> String
 fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
