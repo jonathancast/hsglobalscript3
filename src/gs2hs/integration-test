@@ -37,11 +37,6 @@ test_function_variable
 test_function_literal
 test_variable_function_body
 test_parameter_function_body
-test_discard_pattern_hsgs_syntax
-test_variable_pattern_hsgs_syntax
-test_view_pattern_hsgs_syntax
-test_view_pattern_arg_hsgs_syntax
-test_view_pattern_operator_hsgs_syntax
 test_expression_application_syntax
 test_value_function
 test_case_hsgs_syntax
@@ -55,6 +50,14 @@ test_prefix_operators
 test_monadic_generators
 test_monadic_bind_generators
 test_natural_number_addition
+
+echo '### Different kinds of patterns'
+
+test_discard_pattern_hsgs_syntax
+test_variable_pattern_hsgs_syntax
+test_view_pattern_hsgs_syntax
+test_view_pattern_arg_hsgs_syntax
+test_view_pattern_operator_hsgs_syntax
 
 echo '### Different functions'
 
