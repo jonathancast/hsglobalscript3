@@ -18,7 +18,7 @@ gsprocess_arg = [gs:value| λ 'a. impanalyzeM file.stat a.
                 case false. impunit 〈〉
                 case true. load-document a
                     (λ 'pos. λ 'ty. type-checker.unit 〈〉)
-                    (λ 'pos. λ 'd. analyze hsgs.compile-document pos hsgs.compiler.global-env d.
+                    (λ 'pos. λ 'd. analyze hscompile-document pos hscompiler.global-env d.
                         case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{compile-error}
                         case right 'out. file.write (mk-hs-file a) $ hsmodule.fmt $ hsmain-module (
                             hsoutput.function qq{main} (hsoutput.applyivar qq{TestGSI.RunTime} qq{runTestGSIProgram} (out : nil)) :

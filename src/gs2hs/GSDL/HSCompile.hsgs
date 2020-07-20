@@ -1,0 +1,231 @@
+module GSDL.HSCompile (gshscompile_document, gshscompile_value, gshscompile_expr, gshscompile_arg) where
+
+$gsimports
+
+gshscompile_document = [gs:value| λ 'pos0. λ 'env. λ 'd. analyze d.
+    case document.in 'mbe 'mbg. (analyze mbe.
+        case nothing. right $ hsoutput.applyivarpos qq{GSI.Value} qq{gsundefined_value_w} pos0 nil
+        case just 'e. hscompile-value pos0 env pos0 e
+    )
+|]
+
+gshscompile_value = [gs:value| λ 'pos0. λ 'env. λ 'pos1. λ 'e. analyze e.
+    case expr.var 'v.
+        (analyze hscompiler.env.constr.get v env.
+            case false. id
+            case true. either.map (hsoutput.rehere-value pos1 (hsoutput.list nil))
+        ) $
+            (analyze hscompiler.env.var.get v env.
+                case just 'p. right p
+            )
+    case _. either.for 'p ← hscompile-expr env hscompiler.supply.env.empty pos1 e;. right $
+        hsoutput.app (hsoutput.ivar qq{System.IO.Unsafe} qq{unsafePerformIO}) $
+            hsoutput.applyivarpos qq{GSI.Value} qq{gsthunk_w} pos0 (p : nil)
+|]
+
+$gsdeclare hscompile-app gshscompile_app
+$gsdeclare hscompile-custom-app gshscompile_custom_app
+$gsdeclare hscompile-generators gshscompile_generators
+$gsdeclare hscompile-monadic-generators gshscompile_monadic_generators
+$gsdeclare hscompile-pat gshscompile_pat
+$gsdeclare hscompile-fallible-pat gshscompile_fallible_pat
+$gsdeclare hscompile-open-expr gshscompile_open_expr
+
+gshscompile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
+    case expr.natural 'n. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcnatural_w} pos (hsoutput.int n : nil)
+    case expr.var 'v.
+        (analyze hscompiler.env.constr.get v env.
+            case false. id
+            case true. either.map (hsoutput.rehere pos)
+        ) $
+            (analyze hscompiler.env.var.get v env.
+                    case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+                    case just 'p. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcenter_w} pos (p : nil)
+                )
+    case expr.structure-literal 'gs 'pos1. hscompile-generators env gs pos1
+    case expr.app 'f 'x. (analyze x.
+        case arg.expr _ _. hscompile-app env pos f (x : nil)
+        case arg.app 'af 'ax. hscompile-custom-app env pos f af (ax : nil)
+    )
+    case expr.generators 'gs 'pos1. hscompile-generators env gs pos1
+    case expr.monadic-generators 'gs 'pos1. (analyze hscompiler.supply.env.monad.get senv.
+        case nothing. left $ pos.fmt pos qq{missing supply monad}
+        case just 'p. hscompiler.env.gen-sym env $ λ 'hsu. λ 'env1. hscompiler.env.gen-sym env1 $ λ 'hsb. λ 'env2. either.for
+                'gshs ← hscompile-monadic-generators env2 senv (hsoutput.var hsb) (hsoutput.var hsu) gs pos1;
+            . right $
+                hsoutput.app (hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos (hsoutput.gsvar (gsvar qq{unit}) : p : nil)) $ hsoutput.lambda hsu $
+                    hsoutput.app (hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos (hsoutput.gsvar (gsvar qq{>>=}) : p : nil)) $ hsoutput.lambda hsb $
+                        gshs
+    )
+    case expr.pat 'p _. hscompile-pat env pos p
+    case expr.fallible-pat 'p _. hscompile-fallible-pat env pos p
+    case expr.open-expr 'e (just 'fvs). hscompile-open-expr env pos fvs e
+    case expr.missing-case. hscompiler.env.gen-sym env $ λ 'xhs. λ 'env1. right $
+        hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcarg_w} pos (
+            hsoutput.lambda xhs (
+                hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcprim_w} pos
+                    (hsoutput.ivar qq{GSI.CalculusPrims} qq{gspriminsufficientcases} : hsoutput.var xhs : nil)
+            ) :
+            nil
+        )
+|]
+
+$gsdeclare hscompile-args gshscompile_args
+
+gshscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
+    case expr.var 'v.
+        (analyze hscompiler.env.constr.get v env.
+            case false. id
+            case true. either.map (hsoutput.rehere pos)
+        ) $
+            (either.for
+                    'senv ← right $ hscompiler.env.supply.get v env;
+                    'p ← analyze hscompiler.env.var.get v env.
+                        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+                        case just 'p. right p
+                    ;
+                . hscompile-args pos p as senv env
+            )
+    case expr.unary 'v. (either.for
+            'senv ← right $ hscompiler.supply.env.empty;
+            'p ← analyze hscompiler.env.var.get v (hscompiler.env.unary.get env).
+                case nothing. left $ pos.fmt pos qq{unary §(gsvar.fmt-atom v) not in scope}
+                case just 'p. right p
+            ;
+        . hscompile-args pos p as senv env
+    )
+    case expr.app 'f1 'a. hscompile-app env pos f1 (a:as)
+|]
+
+gshscompile_args = [gs:value| λ 'pos. λ 'p. λ 'as. λ 'senv. λ 'env1. either.for 'as1 ← either.mapM (hscompile-arg senv env1) as;. right $
+    hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapply_w} pos (p : hsoutput.list as1 : nil)
+|]
+
+gshscompile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. analyze af.
+    case arg.var 'v. (analyze hscompiler.env.arg-var.get v env.
+        case nothing. left $ pos.fmt pos qq{argument §(gsvar.fmt-atom v) not in scope}
+        case just 'c. c env pos f as
+    )
+|]
+
+gshscompile_arg = [gs:value| λ 'senv. λ 'env. λ 'a. analyze a.
+    case arg.expr 'pos (expr.var 'v). (analyze hscompiler.env.constr.get v env.
+        case false. (analyze hscompiler.env.var.get v env.
+            case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+            case just 'p. right $ hsoutput.arg-var p
+        )
+    )
+    case arg.expr 'pos (expr.value-var 'v). (analyze hscompiler.env.var.get v env.
+        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+        case just 'p. right $ hsoutput.arg-var p
+    )
+    case arg.expr 'pos 'e. either.for 'p ← hscompile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
+    case arg.explicit 'pos (expr.var 'v).
+        (analyze hscompiler.env.constr.get v env.
+            case false. id
+        ) $
+            (analyze hscompiler.env.var.get v env.
+                case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+                case just 'p. right $ hsoutput.arg-var p
+            )
+    case arg.explicit 'pos (expr.value-var 'v). (analyze hscompiler.env.var.get v env.
+    )
+    case arg.explicit 'pos 'e. either.for 'p ← hscompile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
+|]
+
+$gsdeclare hscompile-local-env gshscompile_local_env
+
+gshscompile_open_expr = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'e. hscompiler.env.gen-sym env $ λ 'envhs. λ 'env1. either.for
+        'p ← hscompile-local-env env1 pos fvs envhs $ λ 'env2. hscompile-expr env2 hscompiler.supply.env.empty pos e;
+    . right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcarg_w} pos (hsoutput.lambda envhs p : nil)
+|]
+
+gshscompile_local_env = [gs:value| λ 'env. λ 'pos. λ 'fvs. λ 'envhs. λ 'k. analyze fvs.
+    case nil. k env
+    case 'f0:'fvs1. hscompiler.env.gen-sym env $ λ 'xhs. λ 'env1. either.for
+            'p ← hscompile-local-env (hscompiler.env.var.insert f0 (hsoutput.var xhs) env1) pos fvs1 envhs k;
+        . right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbclfield_w} pos (hsoutput.gsvar f0 : hsoutput.var envhs : hsoutput.lambda xhs p : nil)
+|]
+
+$gsdeclare hscompile-generator gshscompile_generator
+
+gshscompile_generators = [gs:value| λ 'env. λ 'gs. λ 'pos1. analyze gs.
+    case 'g:'gs1. either.for 'p0 ← hscompile-generator env hscompiler.supply.env.empty (g #pos) (g #gen);.
+        hscompiler.env.gen-sym env $ λ 'envhs. λ 'env1.
+            either.for 'p1 ← hscompile-generators env1 gs1 pos1;. right $
+                hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbccomposegen_w} (g #pos) (hsoutput.arg-expr (g #pos) p0 : hsoutput.lambda envhs p1 : nil)
+    case nil. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcemptygen_w} pos1 nil
+|]
+
+gshscompile_monadic_generators = [gs:value| λ 'env. λ 'senv. λ 'hsb. λ 'hsu. λ 'gs. λ 'pos1. analyze gs.
+    case 'g:'gs1. either.for 'p0 ← hscompile-generator env senv (g #pos) (g #gen);.
+        hscompiler.env.gen-sym env $ λ 'envhs. λ 'env1.
+            either.for 'p1 ← hscompile-monadic-generators env1 senv hsb hsu gs1 pos1;. right $
+                hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbccomposemonadgen_w} (g #pos)
+                    (hsoutput.arg-var hsb : hsoutput.arg-var hsu : hsoutput.arg-expr (g #pos) p0 : hsoutput.lambda envhs p1 : nil)
+    case nil. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcemptymonadgen_w} pos1 (hsoutput.arg-var hsu : nil)
+|]
+
+$gsdeclare hscompile-generator-app gshscompile_generator_app
+
+gshscompile_generator = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'g. analyze g.
+    case generator.app 'g0 'pos1 'g1. hscompile-generator-app env senv pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : nil)
+|]
+
+$gsdeclare hscompile-generator-arg gshscompile_generator_arg
+
+gshscompile_generator_app = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'g. λ 'as. analyze g.
+    case generator.var 'v. (analyze hscompiler.env.var.get v (hscompiler.env.generator.get env).
+        case nothing. left $ pos.fmt pos qq{generator §(gsvar.fmt-atom v) not in scope}
+        case just 'p. either.for 'as1 ← either.mapM (hscompile-generator-arg env senv) as;. right $
+            hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapply_w} pos (p : hsoutput.list as1 : nil)
+    )
+    case generator.app 'g0 'pos1 'g1. hscompile-generator-app env senv pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : as)
+|]
+
+gshscompile_generator_arg = [gs:value| λ 'env. λ 'senv. λ 'a. for 'pos ∝ a#0;. analyze a #1.
+    case generator.pattern 'p _. either.for 'r ← hscompile-pat env pos p;. right $ hsoutput.arg-expr pos r
+    case generator.expr (expr.var 'v). (analyze hscompiler.env.constr.get v env.
+        case false. (analyze hscompiler.env.var.get v env.
+            case just 'p. right $ hsoutput.arg-var p
+        )
+    )
+    case generator.expr expr.monad. (analyze hscompiler.supply.env.monad.get senv.
+        case just 'p. right $ hsoutput.arg-var p
+    )
+    case generator.expr (expr.natural 'n). right $
+        hsoutput.arg-var $ hsoutput.app (hsoutput.iconstr qq{GSI.Value} qq{GSValue} qq{GSNatural}) (hsoutput.int n)
+    case generator.expr 'e. either.for 'p ← hscompile-expr env senv pos e;. right $ hsoutput.arg-expr pos p
+|]
+
+gshscompile_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
+    case pat.discard. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcdiscardpattern_w} pos nil
+    case pat.var 'v. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcvarpattern_w} pos (hsoutput.gsvar v : nil)
+|]
+
+$gsdeclare hscompile-fallible-pat-app gshscompile_fallible_pat_app
+$gsdeclare hscompile-infallible-pat gshscompile_infallible_pat
+
+gshscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
+    case pat.discard. hscompile-infallible-pat env pos p
+    case pat.var _. hscompile-infallible-pat env pos p
+    case pat.view 'v. (analyze hscompiler.env.view.get v env.
+        case nothing. left $ pos.fmt pos qq{view §(gsvar.fmt-atom v) not in scope}
+        case just 'r. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcviewpattern_w} pos (r : hsoutput.list nil : nil)
+    )
+    case pat.app 'p0 'pos1 'p1. hscompile-fallible-pat-app env pos p0 (〈 '0 ∝ pos1; '1 ∝ p1; 〉 : nil)
+|]
+
+gshscompile_fallible_pat_app = [gs:value| λ 'env. λ 'pos. λ 'p. λ 'as. analyze p.
+    case pat.app 'p0 'pos1 'p1. hscompile-fallible-pat-app env pos p0 (〈 '0 ∝ pos1; '1 ∝ p1; 〉 : as)
+    case pat.view 'v. (analyze hscompiler.env.view.get v env.
+        case nothing. left $ pos.fmt pos qq{view §(gsvar.fmt-atom v) not in scope}
+        case just 'r. either.for 'ras ← either.mapM (λ 'a. either.for 'ra ← hscompile-fallible-pat env (a #0) (a #1);. right 〈 'pos ∝ a #0; 'is ∝ ra #0; 'cp ∝ ra #1; 〉) as;. right $
+            hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcviewpattern_w} pos (r : hsoutput.list (map (λ 'ra. hsoutput.arg-expr (ra #pos) 〈 '0 ∝ ra #is; '1 ∝ ra #cp; 〉) ras) : nil)
+    )
+|]
+
+gshscompile_infallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. either.for 'r ← hscompile-pat env pos p;. right $
+    hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapply_w} pos
+        (hsoutput.ivar qq{GSI.StdLib} qq{gsinfalliblepattern} : hsoutput.list (hsoutput.arg-expr pos r : nil) : nil)
+|]

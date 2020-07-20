@@ -18,7 +18,7 @@ gsprocess_args = [gs:value| λ 'as. analyze as.
                 (λ 'pos1. λ 'ty. type-checker.unify pos1 ty $
                     type.function (type.list $ type.list $ type.consts qq{rune.t}) $ type.app (type.consts qq{gsio.m}) type.empty-signature
                 )
-                (λ 'pos1. λ 'd. analyze hsgs.compile-document pos1 hsgs.compiler.global-env d.
+                (λ 'pos1. λ 'd. analyze hscompile-document pos1 hscompiler.global-env d.
                     case left 'err. impfor _ ← print-error qq{§(err)\n};. abend qq{compile-error}
                     case right 'out. impfor
                             _ ← file.write (mk-hs-file a) $ hsmodule.fmt $ hsmain-module (
