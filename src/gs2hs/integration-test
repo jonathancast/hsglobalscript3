@@ -54,6 +54,7 @@ test_field_extraction_variable
 test_prefix_operators
 test_monadic_generators
 test_monadic_bind_generators
+test_natural_number_addition
 
 echo '### Different functions'
 
