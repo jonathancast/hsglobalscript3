@@ -53,6 +53,7 @@ test_field_extraction
 test_field_extraction_variable
 test_prefix_operators
 test_monadic_generators
+test_monadic_bind_generators
 
 echo '### Different functions'
 
