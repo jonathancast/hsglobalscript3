@@ -43,7 +43,7 @@ $gsdeclare hsstring hsstring
 
 gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
         'i ← split-input (pos.init fn) s;
-        'c ← compile-source i hscompiler.global-env;
+        'c ← compile-source i hscompiler.hsgs.global-env;
     . right qq{{-# LINE 1 §(hsstring fn) #-}\n§(format-output c)}
 |]
 
