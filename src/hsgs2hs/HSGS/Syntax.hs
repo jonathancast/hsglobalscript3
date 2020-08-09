@@ -81,7 +81,9 @@ expr env = empty
                     op <- foldr (<|>) empty $ map (\ op -> keywordOp op *> return op) $ Map.keys $ nonops env
                     pos2 <- getPos
                     e1 <- exprApp <|> lambdalike env Nothing
-                    return $ EVar pos1 op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos2 e1
+                    empty
+                        <|> do pfail $ op ++ " is non-associative"
+                        <|> do return $ EVar pos1 op `EApp` ArgExpr pos0 e0 `EApp` ArgExpr pos2 e1
         <|> lambdalike env Nothing
     exprLeftList = do
         ~((pos0, op, pos1, e1):os) <- parseOps $ leftops env
