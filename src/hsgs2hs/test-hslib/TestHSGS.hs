@@ -26,6 +26,7 @@ formatTestValue (GSClosure _ GSLambda{}) k = k $ ("<function>"++)
 formatTestValue (GSClosure _ bco) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue (GSClosure _ "++) . (bcoCode bco++) . (") next>"++)
 formatTestValue v@GSRecord{} k = formatTestValueAtom v k
 formatTestValue v@GSNatural{} k = formatTestValueAtom v k
+formatTestValue v@GSRune{} k = formatTestValueAtom v k
 formatTestValue v@(GSConstr pos c [ GSThunk chts, s ]) k | c == gsvar ":" = do
     chv <- evalSync [StackTrace $gshere []] chts
     formatTestValue (GSConstr pos (gsvar ":") [ chv, s ]) k
