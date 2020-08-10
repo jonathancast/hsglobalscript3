@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsbigcompose, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsbigcompose, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gslist_singleton, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -160,6 +160,8 @@ gslast_modify = [gs:value| λ 'f. λ 'xn. analyze xn.
     case 'x:nil. f x : nil
     case 'x:'xn1. x : last.modify f xn1
 |]
+
+gslist_singleton = [gs:value| λ 'x. x : nil |]
 
 gscons :: GSValue
 gscons = $gslambda_value $ \ x -> $gsbcarg $ \ xn -> $gsbcconstr (gsvar ":") [ $gsav x, $gsav xn ]
