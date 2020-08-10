@@ -238,6 +238,7 @@ gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
         <|> (parser.for 'q ← qloitem env cl;. analyze sk q.
             case right 'p1. idmc-w env p1 cl
         )
+    case parser.prim.fail nil nil. empty
 |]
 
 gsqloitem = [gs:value| λ 'env. λ 'cl.
