@@ -23,7 +23,7 @@ $gsdeclare annotate-app gsannotate_app
 gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
-    case expr.qlo 'v 'e 'x. expr.qlo v e (maybe.out undefined (annotator.env.qlo.get v env) env x)
+    case expr.qlo 'v 'x. expr.qlo v (maybe.out undefined (annotator.env.qlo.get v env) env x)
     case expr.structure-literal 'gs 'pos1. expr.structure-literal
         (map
             (λ 'p. for 'p1 ∝ annotate-generator env (p #gen);. 〈 'pos ∝ p #pos; 'gen ∝ p1 #0; 'bvs ∝ just (p1 #1); 〉 )
@@ -44,7 +44,7 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
 gsannotate_expr_arg = [gs:value| λ 'env. λ 'c. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
-    case expr.qlo 'v 'e 'x. expr.qlo v e (maybe.out undefined (annotator.env.qlo.get v env) env x)
+    case expr.qlo 'v 'x. expr.qlo v (maybe.out undefined (annotator.env.qlo.get v env) env x)
     case expr.pat 'p 'mb.
         for 'p ∝ annotate-pat env p;.
             (analyze c.

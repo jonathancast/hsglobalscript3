@@ -203,7 +203,7 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
             ;
             'x ← idmc env (e #parse) r{\}};
             _ ← lexeme $ char r{\}};
-        . parser.unit 〈 '0 ∝ expr.qlo v e x; '1 ∝ nil; 〉
+        . parser.unit 〈 '0 ∝ expr.qlo v x; '1 ∝ nil; 〉
     )
     <|> (parser.for 'n ← natural;. parser.unit 〈 '0 ∝ expr.natural n; '1 ∝ nil; 〉)
     <|> (parser.for

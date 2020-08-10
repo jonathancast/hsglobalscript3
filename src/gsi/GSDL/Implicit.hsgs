@@ -20,7 +20,7 @@ gsadd_implicits_expr = [gs:value| λ 'env. λ 'e. analyze e.
         (implicit.env.consumes.get v env)
     case expr.unary 'v. expr.unary v
     case expr.structure-literal 'gs 'pos1. expr.structure-literal (map (λ 'p. 〈 'pos ∝ p #pos; 'gen ∝ add-implicits-generator (p #pos) env (p #gen); 'bvs ∝ p #bvs; 〉) gs) pos1
-    case expr.qlo 'v 'e 'x. expr.qlo v e (maybe.out undefined (implicit.env.qlo.get v env) env x)
+    case expr.qlo 'v 'x. expr.qlo v (maybe.out undefined (implicit.env.qlo.get v env) env x)
     case expr.app 'f 'x. expr.app (add-implicits-expr env f) (add-implicits-arg env x)
     case expr.pat 'p 'mb. expr.pat (add-implicits-pat env p) mb
     case expr.fallible-pat 'p 'mb. expr.fallible-pat (add-implicits-pat env p) mb
