@@ -13,9 +13,7 @@ gstest_gsi_gsrun = [gs:value| λ 'x. λ 'as. impfor _ ← gsprintv x;. print qq{
 gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
     case eval-state.error 'e. print qq{<Error: §(gsfmt-error e)>}
     case eval-state.whnf (whnf.natural 'n). print (natural.fmt-decimal n)
-    case eval-state.whnf (whnf.constr 'pos 'v ('r : ('s : nil))). (analyze gsvar.≡ v (gsvar qq{:}).
-        case true. impfor _ ← print qq{qq\{}; _ ← gsprintstr x;. print qq{\}}
-    )
+    case eval-state.whnf (whnf.constr 'pos (gsvar qq{:}) ('r : ('s : nil))). impfor _ ← print qq{qq\{}; _ ← gsprintstr x;. print qq{\}}
     case eval-state.whnf (whnf.record 'pos 'fs). impfor
             _ ← print qq{\〈};
             _ ← impmapM
@@ -39,13 +37,9 @@ gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
 |]
 
 gsprintstr = [gs:value| λ 's. impanalyzeM eval-sync s.
-    case eval-state.whnf (whnf.constr 'pos 'v ('r : ('s1 : nil))). (analyze gsvar.≡ v (gsvar qq{:}).
-        case true. (impanalyzeM eval-sync r.
-            case eval-state.whnf 'rv. (analyze rv.
-                case whnf.rune 'r0. impfor _ ← print (r0 : nil);. gsprintstr s1
-            )
-            case eval-state.implementation-failure 'pos 'e. impfor _ ← print qq{<Implementation failure: §(pos.fmt pos e)>};. gsprintstr s1
-        )
+    case eval-state.whnf (whnf.constr 'pos (gsvar qq{:}) ('r : ('s1 : nil))). (impanalyzeM eval-sync r.
+        case eval-state.whnf (whnf.rune 'r0). impfor _ ← print (r0 : nil);. gsprintstr s1
+        case eval-state.implementation-failure 'pos 'e. impfor _ ← print qq{<Implementation failure: §(pos.fmt pos e)>};. gsprintstr s1
     )
     case eval-state.whnf (whnf.constr 'pos 'v nil). (analyze gsvar.≡ v (gsvar qq{nil}).
         case true. impunit 〈〉
