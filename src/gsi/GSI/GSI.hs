@@ -6,7 +6,7 @@ module GSI.GSI (
     gsigsintbcwithhere, gsigsintbcopenexpr, gsigsintbcgenter, gsigsintbcfenter, gsigsintbcgapply, gsigsintbceapply, gsigsintbcnatural, gsigsintbcundefined, gsigsintbcinsufficientcases,
     gsigsintbcvarpattern, gsigsintbcdiscardpattern,
     gsigsiae, gsigsiagv,
-    gsigsvar,
+    gsigsvar, gsigsvar_view,
     gsieval_sync, gsigsfmtError,
     gsicreateThread, gsiexecMainThread,
     gsigsvar_eq, gsigsvar_compare, gsigsvar_name, gsigsvar_fmtAtom, gsigsvar_fmtBindAtom,
@@ -176,6 +176,9 @@ gsigsae = $gslambda_value $ \ posv -> $gsbcarg $ \ ev ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalexternal ($gsav ev) $ \ e -> $gsbcexternal (gsargexpr_w pos e)
 
 gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcexternal (gsvar v_s)
+
+gsigsvar_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ v ->
+    $gsbcapply sk [ $gsav ($gsstring (varName v)) ]
 
 gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: GSValue) -> $gsbcimpprim $ \ pos t -> w pos v where
     w :: Pos -> GSValue -> IO GSValue

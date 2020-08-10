@@ -1236,6 +1236,7 @@ globalEnv = Env{
         ("generator.expr", "GSDL.AST", "gsgenerator_expr_view"),
         ("generator.pattern", "GSDL.AST", "gsgenerator_pattern_view"),
         ("generator.var", "GSDL.AST", "gsgenerator_var_view"),
+        ("gsvar", "GSI.GSI", "gsigsvar_view"),
         ("gt", "GSI.OrderTotal", "gsord_gt_view"),
         ("hsexpr.app", "GSDL.HSGS.AST", "gshsexpr_app_view"),
         ("hsexpr.int", "GSDL.HSGS.AST", "gshsexpr_int_view"),
