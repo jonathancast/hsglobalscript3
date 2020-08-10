@@ -42,8 +42,6 @@ gsload_document = [gs:value| λ 'fn. λ 'gstyc. λ 'k. impanalyzeM gsio.file.rea
     )
 |]
 
-$gsdeclare validator.global-env gsvalidator_global_env
-
 gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
     either.for
             'dspec ← right (annotate-document annotator.global-env d);
@@ -51,12 +49,6 @@ gsprocess_document = [gs:value| λ 'pos. λ 'gstyc. λ 'd.
             _ ← validate-document pos validator.global-env di;
             'dty ← type-checker.run (type-check-document pos gstyc di) type-checker.global-env;
         . right dty
-|]
-
-gsvalidator_global_env = [gs:value|
-    foldr (λ 'v. λ 'env. validator.env.in-scope.insert v env)
-        validator.env.empty
-        (type.env.vars type-checker.global-env)
 |]
 
 gscompiler_global_env = [gs:value|

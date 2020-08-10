@@ -1,4 +1,4 @@
-module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gsimplicits_global_env, gstype_checker_global_env) where
+module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gsimplicits_global_env, gsvalidator_global_env, gstype_checker_global_env) where
 
 $gsimports
 
@@ -86,6 +86,12 @@ gsimplicits_global_env = [gs:value|
         qs
     ) $
     implicit.env.empty
+|]
+
+gsvalidator_global_env = [gs:value|
+    foldr (λ 'v. λ 'env. validator.env.in-scope.insert v env)
+        validator.env.empty
+        (type.env.vars type-checker.global-env)
 |]
 
 $gsdeclare type.pattern gstype_pattern
