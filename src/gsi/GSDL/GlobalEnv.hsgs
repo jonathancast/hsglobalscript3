@@ -7,6 +7,30 @@ gsparser_global_env = [gs:value|
     parser.env.missing-body.insert (gsvar qq{analyzeM}) expr.missing-case $
     parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
+    parser.env.qlo.insert (gsvar qq{r}) 〈
+        'parse ∝ λ 'env. parser.map list.singleton symbol;
+        'annotate ∝ λ 'env. λ 'qs. map (annotate-qloitem env) qs;
+        'add-implicits ∝ λ 'env. λ 'qs. map
+            (λ 'qi. analyze qi.
+                case qloitem.char 'ch. qloitem.char ch
+            )
+            qs
+        ;
+        'validate ∝ λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉;
+        'type-check ∝ λ 'pos. λ 'qs. λ 'tye. type-checker.for
+                _ ← type-checker.unify pos (type.consts qq{rune.t}) tye;
+                'qsa ← type-checker.mapM
+                    (λ 'qi. analyze qi.
+                        case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
+                    )
+                    qs
+                ;
+            . type-checker.unit qsa
+        ;
+        'compile ∝ λ 'pos. λ 'env. λ 'qs. analyze qs.
+            case qloitem.char 'ch : nil. gsbcenter pos (gsinject ch)
+        ;
+    〉 $
     parser.env.qlo.insert (gsvar qq{qq}) 〈
         'parse ∝ λ 'env. many symbol;
         'annotate ∝ λ 'env. λ 'qs. map (annotate-qloitem env) qs;

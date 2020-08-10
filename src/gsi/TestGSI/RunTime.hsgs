@@ -35,6 +35,7 @@ gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
                 _ ← print qq{\〉};
             . impunit 〈〉
         case whnf.function 'f. print qq{<function>}
+        case whnf.rune 'r. print qq{r/§(r : nil)/}
     )
     case eval-state.implementation-failure 'pos 'e. print qq{<Implementation failure: §(pos.fmt pos qq{§(e)})>}
 |]

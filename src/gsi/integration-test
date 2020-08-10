@@ -34,6 +34,7 @@ test_gscalc_analyze_undefined
 test_discard_pattern
 test_view_pattern
 test_view_pattern_arg
+test_r_literal
 echo `{echo `{9 date -n} '-' $start | hoc}^s
 
 echo '## gsi'
