@@ -1,14 +1,16 @@
-module GSDL.Annotator (gsannotator_env_category_insert, gsannotator_env_category_get, gsannotator_env_empty, gspat_bound_vars) where
+module GSDL.Annotator (gsannotator_env_category_insert, gsannotator_env_category_get, gsannotator_env_qlo_insert, gsannotator_env_qlo_get, gsannotator_env_empty, gspat_bound_vars) where
 
 $gsimports
 
-gsannotator_env_category_insert = [gs:value| λ 'v. λ 'c. λ 'env.
-    〈 'category ∝ ordered-map.insert gsvar.<=> v c (env #category); 〉
-|]
+gsannotator_env_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. record.∧  〈 'category ∝ ordered-map.insert gsvar.<=> v c (env #category); 〉 env |]
+
+gsannotator_env_qlo_insert = [gs:value| λ 'v. λ 'f. λ 'env. record.∧  〈 'qlo ∝ ordered-map.insert gsvar.<=> v f (env #qlo); 〉 env |]
 
 gsannotator_env_category_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #category) |]
 
-gsannotator_env_empty = [gs:value| 〈 'category ∝ ordered-map.empty; 〉 |]
+gsannotator_env_qlo_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #qlo) |]
+
+gsannotator_env_empty = [gs:value| 〈 'category ∝ ordered-map.empty; 'qlo ∝ ordered-map.empty; 〉 |]
 
 gspat_bound_vars = [gs:value| λ 'p. analyze p.
     case pat.discard. nil
