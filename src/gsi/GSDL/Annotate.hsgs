@@ -44,7 +44,7 @@ gsannotate_expr = [gs:value| λ 'env. λ 'e. analyze e.
 gsannotate_expr_arg = [gs:value| λ 'env. λ 'c. λ 'e. analyze e.
     case expr.var 'v. expr.var v
     case expr.natural 'n. expr.natural n
-    case expr.qlo 'v 'e 'x. expr.qlo v e (e #annotate env x)
+    case expr.qlo 'v 'e 'x. expr.qlo v e (maybe.out undefined (annotator.env.qlo.get v env) env x)
     case expr.pat 'p 'mb.
         for 'p ∝ annotate-pat env p;.
             (analyze c.
