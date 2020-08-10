@@ -32,7 +32,8 @@ gstype_check_expr = [gs:value| λ 'pos. λ 'e. λ 'tye. analyze e.
             _ ← type-checker.unify pos tyai tye;
         . type-checker.unit (expr.var v)
     case expr.qlo 'v 'e 'x. type-checker.for
-            'x1 ← e #type-check pos x tye;
+            'f ← type-checker.env.get-qlo pos v;
+            'x1 ← f pos x tye;
         . type-checker.unit (expr.qlo v e x1)
     case expr.structure-literal 'gs 'pos1. type-checker.for
             'Γ1 ← new-env $ concat $ map (λ 'g. analyze g #bvs. case just 'vs. vs) gs;

@@ -4,7 +4,7 @@ module GSDL.TypeChecker (
     gstype_checker_instantiate, gstype_checker_subst,
     gs_type_checker_new_unifiable_var,
     gstype_checker_incorrect_type, gstype_checker_fmt_type,
-    gstype_checker_env_get_type, gstype_checker_env_get_generator_type, gstype_checker_env_get_view_type, gstype_checker_env_get_arg_var_type,
+    gstype_checker_env_get_type, gstype_checker_env_get_generator_type, gstype_checker_env_get_view_type, gstype_checker_env_get_arg_var_type, gstype_checker_env_get_qlo,
     gstype_checker_with_type_env,
     gstype_checker_hnormalize,
     gstype_checker_get_var, gstype_checker_set_var,
@@ -247,6 +247,11 @@ gstype_checker_env_get_view_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze t
 gstype_checker_env_get_arg_var_type = [gs:value| λ 'pos. λ 'v. λ 'env. analyze type.env.arg-var-type.get v env.
     case nothing. impunit (left (pos.fmt pos qq{argument variable §(gsvar.fmt-atom v) not in scope}))
     case just 'c. impunit (right c)
+|]
+
+gstype_checker_env_get_qlo = [gs:value| λ 'pos. λ 'v. λ 'env. analyze type.env.qlo.get v env.
+    case nothing. impunit (left (pos.fmt pos qq{qlo §(gsvar.fmt-atom v) not in scope}))
+    case just 'f. impunit (right f)
 |]
 
 gstype_checker_with_type_env = [gs:value| λ 'env1. λ 'a. λ 'env0. a (type.env.overlay env1 env0) |]

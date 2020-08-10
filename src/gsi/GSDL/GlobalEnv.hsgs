@@ -9,29 +9,12 @@ gsparser_global_env = [gs:value|
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.qlo.insert (gsvar qq{r}) 〈
         'parse ∝ λ 'env. symbol;
-        'type-check ∝ λ 'pos. λ 'qi. λ 'tye. type-checker.for
-                _ ← type-checker.unify pos (type.consts qq{rune.t}) tye;
-                'qa ← analyze qi.
-                    case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
-                ;
-            . type-checker.unit qa
-        ;
         'compile ∝ λ 'pos. λ 'env. λ 'qi. analyze qi.
             case qloitem.char 'ch. gsbcenter pos (gsinject ch)
         ;
     〉 $
     parser.env.qlo.insert (gsvar qq{qq}) 〈
         'parse ∝ λ 'env. many symbol;
-        'type-check ∝ λ 'pos. λ 'qs. λ 'tye. type-checker.for
-                _ ← type-checker.unify pos (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) tye;
-                'qsa ← type-checker.mapM
-                    (λ 'qi. analyze qi.
-                        case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
-                    )
-                    qs
-                ;
-            . type-checker.unit qsa
-        ;
         'compile ∝ λ 'pos. λ 'env. λ 'qs. foldr
             (λ 'qi. λ 's. analyze qi.
                 case qloitem.char 'ch. gsbcapply pos (gsinject (:)) (gsav (gsinject ch) : gsae pos s : nil)
@@ -359,6 +342,23 @@ gstype_checker_global_env = [gs:value|
                     )
                 ;
             . type-checker.unit 〈 '0 ∝ rty; '1 ∝ as; 〉
+    ) $
+    type.env.qlo.insert (gsvar qq{r}) (λ 'pos. λ 'qi. λ 'tye. type-checker.for
+            _ ← type-checker.unify pos (type.consts qq{rune.t}) tye;
+            'qa ← analyze qi.
+                case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
+            ;
+        . type-checker.unit qa
+    ) $
+    type.env.qlo.insert (gsvar qq{qq}) (λ 'pos. λ 'qs. λ 'tye. type-checker.for
+            _ ← type-checker.unify pos (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) tye;
+            'qsa ← type-checker.mapM
+                (λ 'qi. analyze qi.
+                    case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
+                )
+                qs
+            ;
+        . type-checker.unit qsa
     ) $
     type.env.empty
 |]
