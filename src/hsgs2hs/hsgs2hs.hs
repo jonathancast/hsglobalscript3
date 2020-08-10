@@ -777,6 +777,8 @@ globalEnv = Env{
         ("compiler.env.constr.get", "GSDL.Compiler", "gscompiler_env_constr_get"),
         ("compiler.env.constr.insert", "GSDL.Compiler", "gscompiler_env_constr_insert"),
         ("compiler.env.empty", "GSDL.Compiler", "gscompiler_env_empty"),
+        ("compiler.env.qlo.get", "GSDL.Compiler", "gscompiler_env_qlo_get"),
+        ("compiler.env.qlo.insert", "GSDL.Compiler", "gscompiler_env_qlo_insert"),
         ("compiler.env.value.get", "GSDL.Compiler", "gscompiler_env_value_get"),
         ("compiler.env.value.insert", "GSDL.Compiler", "gscompiler_env_value_insert"),
         ("compiler.env.view.get", "GSDL.Compiler", "gscompiler_env_view_get"),
