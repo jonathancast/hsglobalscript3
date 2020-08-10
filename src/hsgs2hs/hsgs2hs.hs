@@ -1186,6 +1186,8 @@ globalEnv = Env{
         ("validator.env.empty", "GSDL.Validator", "gsvalidator_env_empty"),
         ("validator.env.in-scope", "GSDL.Validator", "gsvalidator_env_in_scope"),
         ("validator.env.in-scope.insert", "GSDL.Validator", "gsvalidator_env_in_scope_insert"),
+        ("validator.env.qlo.get", "GSDL.Validator", "gsvalidator_env_qlo_get"),
+        ("validator.env.qlo.insert", "GSDL.Validator", "gsvalidator_env_qlo_insert"),
         ("validator.global-env", "GSDL.GlobalEnv", "gsvalidator_global_env"),
         ("whitespace", "GSDL.Syntax", "whitespace"),
         ("zip", "GSI.List", "gszip"),

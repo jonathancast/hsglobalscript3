@@ -9,7 +9,6 @@ gsparser_global_env = [gs:value|
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.qlo.insert (gsvar qq{r}) 〈
         'parse ∝ λ 'env. symbol;
-        'validate ∝ λ 'env. λ 'pos. λ 'qi. validate-qloitem env pos qi;
         'type-check ∝ λ 'pos. λ 'qi. λ 'tye. type-checker.for
                 _ ← type-checker.unify pos (type.consts qq{rune.t}) tye;
                 'qa ← analyze qi.
@@ -23,7 +22,6 @@ gsparser_global_env = [gs:value|
     〉 $
     parser.env.qlo.insert (gsvar qq{qq}) 〈
         'parse ∝ λ 'env. many symbol;
-        'validate ∝ λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉;
         'type-check ∝ λ 'pos. λ 'qs. λ 'tye. type-checker.for
                 _ ← type-checker.unify pos (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) tye;
                 'qsa ← type-checker.mapM
@@ -89,9 +87,10 @@ gsimplicits_global_env = [gs:value|
 |]
 
 gsvalidator_global_env = [gs:value|
-    foldr (λ 'v. λ 'env. validator.env.in-scope.insert v env)
-        validator.env.empty
-        (type.env.vars type-checker.global-env)
+    foldr (λ 'v. λ 'f. validator.env.in-scope.insert v ∘ f) id (type.env.vars type-checker.global-env) $
+    validator.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'pos. λ 'qi. validate-qloitem env pos qi) $
+    validator.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉) $
+    validator.env.empty
 |]
 
 $gsdeclare type.pattern gstype_pattern
