@@ -2,6 +2,8 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazylist, gslazylist_w, gslazystring, gslazystring_w, gsbool, gsapiEval, gsapiEvalPos, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
 
+import Data.Proxy (Proxy(..))
+
 import Control.Exception (Exception(..), throwIO, try)
 
 import Language.Haskell.TH.Lib (appE, varE)
@@ -11,7 +13,7 @@ import qualified Data.Map as Map
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtError)
-import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -104,14 +106,14 @@ gsevalString pos v = gsevalString_w pos id v where
     gsevalString_w pos ds v =
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
-gsevalExternal :: GSExternal a => Pos -> GSValue -> IO a
+gsevalExternal :: forall a. GSExternal a => Pos -> GSValue -> IO a
 gsevalExternal pos (GSThunk ts) = do
     v <- evalSync [StackTrace pos []] ts
     gsevalExternal pos v
 gsevalExternal pos (GSError err) = throwIO $ GSExcError err
 gsevalExternal pos (GSInvalidProgram ip) = throwIO $ GSExcInvalidProgram ip
 gsevalExternal pos (GSExternal e) = case fromExternal e of
-    Nothing -> throwIO $ GSExcImplementationFailure $gshere $ "Got the wrong type of external"
+    Nothing -> throwIO $ GSExcInvalidProgram $ GSIPRuntimeTypeError (StackTrace pos []) "gsevalExternal" (whichExternal e) (externalType (Proxy :: Proxy a))
     Just x -> return x
 gsevalExternal _ (GSImplementationFailure pos1 err) = throwIO $ GSExcImplementationFailure pos1 err
 gsevalExternal pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
