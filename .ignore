@@ -49,7 +49,7 @@ src/libgsi/GSI/StdLib.hs
 src/libgsi/GS/Util.hs
 src/libgsi/GS/FileName.hs
 src/gsi/GSDL/GlobalEnv.hs
-src/gsi/GSDL/HSCompiler.hs
+src/gs2hs/GSDL/HSCompiler.hs
 src/gsi/GSDL/HSGS/AST.hs
 src/libgsi/GSI/Rational.hs
 src/gsi/GSDL/HSGS/Syntax.hs
