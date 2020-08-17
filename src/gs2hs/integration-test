@@ -65,6 +65,10 @@ echo '### Different functions'
 
 test_undefined_function_hsgs
 
+echo '### r{} literals'
+
+test_r_literal
+
 echo '## test-gsi'
 
 PROG=gs2hs-test-gsi
