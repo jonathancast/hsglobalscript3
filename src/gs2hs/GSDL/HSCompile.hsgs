@@ -39,9 +39,9 @@ gshscompile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
             case true. either.map (hsoutput.rehere pos)
         ) $
             (analyze hscompiler.env.var.get v env.
-                    case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-                    case just 'p. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcenter_w} pos (p : nil)
-                )
+                case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+                case just 'p. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcenter_w} pos (p : nil)
+            )
     case expr.structure-literal 'gs 'pos1. hscompile-generators env gs pos1
     case expr.app 'f 'x. (analyze x.
         case arg.expr _ _. hscompile-app env pos f (x : nil)
