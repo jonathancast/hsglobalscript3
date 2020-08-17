@@ -95,6 +95,9 @@ gshscompiler_hsgs_global_env = [gs:value|
         case arg.var-name 'v : nil. either.for 'p ← hscompile-arg nothing env (arg.expr pos f);. right $
             hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcfield_w} pos (p : hsoutput.gsvar v : nil)
     ) $
+    hscompiler.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'pos. λ 'qi. analyze qi.
+        case qloitem.char 'r. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcchar_w} pos (hsoutput.char r : nil)
+    ) $
     hscompiler.env.empty
 |]
 
