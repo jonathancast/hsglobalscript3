@@ -47,6 +47,10 @@ gshscompile_expr = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'e. analyze e.
         case arg.expr _ _. hscompile-app env pos f (x : nil)
         case arg.app 'af 'ax. hscompile-custom-app env pos f af (ax : nil)
     )
+    case expr.qlo 'q 'x. (analyze hscompiler.env.qlo.get q env.
+        case nothing. left $ pos.fmt pos qq{No hscompiler for qlo §(gsvar.fmt-atom q)}
+        case just 'f. f env pos x
+    )
     case expr.generators 'gs 'pos1. hscompile-generators env gs pos1
     case expr.monadic-generators 'gs 'pos1. (analyze hscompiler.supply.env.monad.get senv.
         case nothing. left $ pos.fmt pos qq{missing supply monad}
