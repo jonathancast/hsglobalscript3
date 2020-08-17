@@ -9,7 +9,7 @@ module GSDL.HSGS.AST (
     gshsmain_module,
     gshsexpr_applyvar, gshsexpr_var, gshsexpr_app, gshsexpr_lambda, gshsexpr_int, gshsexpr_string, gshsexpr_list,
     gshsoutput_function,
-    gshsoutput_gsvar, gshsoutput_rehere, gshsoutput_rehere_value, gshsoutput_apply, gshsoutput_applyivar, gshsoutput_applyivarpos, gshsoutput_applyiconstr, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
+    gshsoutput_gsvar, gshsoutput_rehere, gshsoutput_rehere_value, gshsoutput_apply, gshsoutput_applyivar, gshsoutput_applyivarpos, gshsoutput_applyiconstr, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_char, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
   ) where
 
 import GSI.Syn (gsvar)
@@ -86,6 +86,7 @@ $gsdeclare fmt-list gsfmt_list
 gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
     case hsexpr.string 's. (:) r{"} ∘ (<>) s ∘ (:) r{"}
+    case hsexpr.char 'r. (:) r{'} ∘ (:) r ∘ (:) r{'}
     case hsexpr.list 'es. (:) r{\[} ∘ fmt-list es ∘ (:) r{\]}
     case hsexpr.int 'n. (<>) (fmt-decimal n)
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
@@ -132,10 +133,12 @@ gshsexpr_app = $gslambda_value $ \ f -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "ap
 gshsexpr_lambda = $gslambda_value $ \ x -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "lambda") [ $gsav x, $gsav e ]
 gshsexpr_int = $gslambda_value $ \ n -> $gsbcconstr (gsvar "int") [ $gsav n ]
 gshsexpr_string = $gslambda_value $ \ s -> $gsbcconstr (gsvar "string") [ $gsav s ]
+gshsexpr_char = $gslambda_value $ \ r -> $gsbcconstr (gsvar "char") [ $gsav r ]
 gshsexpr_list = $gslambda_value $ \ es -> $gsbcconstr (gsvar "list") [ $gsav es ]
 
 gshsexpr_var_view = $gsbcconstr_view "var"
 gshsexpr_string_view = $gsbcconstr_view "string"
+gshsexpr_char_view = $gsbcconstr_view "char"
 gshsexpr_list_view = $gsbcconstr_view "list"
 gshsexpr_int_view = $gsbcconstr_view "int"
 gshsexpr_app_view = $gsbcconstr_view "app"
@@ -163,6 +166,7 @@ gshsoutput_iconstr = [gs:value| λ 'm. λ 'ty. λ 'c. 〈 '0 ∝ ordered-set.sin
 gshsoutput_var = [gs:value| λ 'hsv. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var hsv; 〉 |]
 gshsoutput_int = [gs:value| λ 'n. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.int n; 〉 |]
 gshsoutput_string = [gs:value| λ 's. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.string s; 〉 |]
+gshsoutput_char = [gs:value| λ 'r. 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.char r; 〉 |]
 
 gshsoutput_arg_var = [gs:value| λ 'p. hsoutput.applyiconstr qq{GSI.Value} qq{GSArg} qq{GSArgVar} (p : nil) |]
 
