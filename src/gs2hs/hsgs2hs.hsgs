@@ -48,11 +48,11 @@ gscompile_hsgs_source = [gs:value| λ 'fn. λ 's. either.for
 |]
 
 gssplit_input = [gs:value| λ 'pos. λ 's. analyze s.
-    case r{$}:'s1. (analyze parse-partial advance-rune print-rune (interpolation (parser.env.else-needs-comma.set false parser.global-env)) (advance-rune r{$} pos) s1.
+    case r{$}:'s1. (analyze parse-partial advance-rune print-rune (interpolation hsgs.parser.global-env) (advance-rune r{$} pos) s1.
         case left _. either.map ((:) (source-comp.char r{$})) (split-input (advance-rune r{$} pos) s1)
         case right 'r. either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
     )
-    case qq{\[gs:§('s1)}. either.for 'r ← parse-partial advance-rune print-rune (quote (parser.env.else-needs-comma.set false parser.global-env) pos <* string qq{|\]}) (advance-string qq{\[gs:} pos) s1;.
+    case qq{\[gs:§('s1)}. either.for 'r ← parse-partial advance-rune print-rune (quote hsgs.parser.global-env pos <* string qq{|\]}) (advance-string qq{\[gs:} pos) s1;.
         either.map ((:) (r #0) ∘ (:) (source-comp.pos (r #1))) (split-input (r #1) (r #2))
     case 'c:'s1. either.map ((:) (source-comp.char c)) (split-input (advance-rune c pos) s1)
     case nil. right nil

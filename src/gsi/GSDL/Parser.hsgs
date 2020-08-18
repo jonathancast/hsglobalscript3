@@ -3,6 +3,7 @@
 module GSDL.Parser (
     gsdl_parser_env_signatures_get, gsdl_parser_env_signature_get, gsdl_parser_env_signature_insert,
     gsdl_parser_env_syntactic_category_get, gsdl_parser_env_syntactic_category_insert,
+    gsdl_parser_env_assoc_get, gsdl_parser_env_assoc_insert,
     gsdl_parser_env_qlo_get, gsdl_parser_env_qlo_insert,
     gsdl_parser_env_missing_body_get, gsdl_parser_env_missing_body_insert,
     gsdl_parser_env_else_get, gsdl_parser_env_else_insert,
@@ -20,6 +21,7 @@ gsdl_parser_env_syntactic_category_get = [gs:value| λ 'v. λ 'env. analyze orde
     case just 'c. c
     case nothing. syntactic-category.variable
 |]
+gsdl_parser_env_assoc_get = [gs:value| λ 'v. λ 'env. maybe.out assoc.non-assoc (ordered-map.get gsvar.<=> v (env #assoc)) |]
 gsdl_parser_env_qlo_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #qlo) |]
 gsdl_parser_env_missing_body_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #missing-body) |]
 gsdl_parser_env_else_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v (env #else) |]
@@ -43,6 +45,7 @@ gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (
 
 gsdl_parser_env_signature_insert = [gs:value| λ 'v. λ 's. λ 'env. record.∧ 〈 'signature ∝ ordered-map.insert gsvar.<=> v s (env #signature); 〉 env |]
 gsdl_parser_env_syntactic_category_insert = [gs:value| λ 'v. λ 'c. λ 'env. record.∧ 〈 'syntactic-category ∝ ordered-map.insert gsvar.<=> v c (env #syntactic-category); 〉 env |]
+gsdl_parser_env_assoc_insert = [gs:value| λ 'v. λ 'a. λ 'env. record.∧ 〈 'assoc ∝ ordered-map.insert gsvar.<=> v a (env #assoc); 〉 env |]
 gsdl_parser_env_qlo_insert = [gs:value| λ 'v. λ 'e. λ 'env. record.∧ 〈 'qlo ∝ ordered-map.insert gsvar.<=> v e (env #qlo); 〉 env |]
 gsdl_parser_env_missing_body_insert = [gs:value| λ 'v. λ 'm. λ 'env. record.∧ 〈 'missing-body ∝ ordered-map.insert gsvar.<=> v m (env #missing-body); 〉 env |]
 gsdl_parser_env_else_insert = [gs:value| λ 'v. λ 'e. λ 'env. record.∧ 〈 'else ∝ ordered-map.insert gsvar.<=> v e (env #else); 〉 env |]
@@ -52,6 +55,7 @@ gsdl_parser_env_else_needs_comma_set = [gs:value| λ 'b. λ 'env. record.∧ 〈
 gsdl_parser_env_empty = [gs:value| 〈
     'signature ∝ ordered-map.empty;
     'syntactic-category ∝ ordered-map.empty;
+    'assoc ∝ ordered-map.empty;
     'qlo ∝ ordered-map.empty;
     'missing-body ∝ ordered-map.empty;
     'else ∝ ordered-map.empty;

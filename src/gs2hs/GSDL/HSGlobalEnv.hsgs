@@ -1,6 +1,12 @@
-module GSDL.HSGlobalEnv (gshscompiler_global_env, gshscompiler_hsgs_global_env) where
+module GSDL.HSGlobalEnv (gshsgs_parser_global_env, gshscompiler_global_env, gshscompiler_hsgs_global_env) where
 
 $gsimports
+
+gshsgs_parser_global_env = [gs:value|
+    parser.env.assoc.insert (gsvar qq{:}) assoc.right $
+    parser.env.else-needs-comma.set false $
+    parser.global-env
+|]
 
 $gsdeclare hscompiler.env.supply.monad.simple-insert gshscompiler_env_supply_monad_simple_insert
 $gsdeclare hscompiler.env.var.simple-insert gshscompiler_env_var_simple_insert
