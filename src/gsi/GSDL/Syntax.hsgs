@@ -74,22 +74,15 @@ expr = [gs:value| λ 'env.
     <|> expr.lambda-like env
 |]
 
+$gsdeclare parse-op-apply gsparse_op_apply
+
 gsexpr_left_ops = [gs:value| λ 'env. λ 'pos0. λ 'p0.
     <|> parser.for
-            'pop ← parser.for
-                    'op ← operator env;
-                    _ ← analyze parser.env.assoc.get op env.
-                        case assoc.non-assoc. parser.fail log{§(log.str (gsvar.fmt-atom op)) is non-associative}
-                        case assoc.left. parser.unit 〈〉
-                        case assoc.right. parser.fail log{§(log.str (gsvar.fmt-atom op)) is right-associative}
-                    ;
-                    'es ← many $ explicit-arg env;
-                . parser.unit 〈 '0 ∝ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es; '1 ∝ parser.env.signature.get op env; 〉
+            'popp0 ← parse-op-apply env pos0 p0 $ λ 'op. analyze parser.env.assoc.get op env.
+                case assoc.non-assoc. parser.fail log{§(log.str (gsvar.fmt-atom op)) is non-associative}
+                case assoc.left. parser.unit 〈〉
+                case assoc.right. parser.fail log{§(log.str (gsvar.fmt-atom op)) is right-associative}
             ;
-            's1 ← analyze pop #1.
-                case nil. parser.unit nil
-            ;
-            'popp0 ← parser.unit 〈 '0 ∝ expr.app (pop #0) (arg.expr pos0 (p0 #0)); '1 ∝ s1; 〉;
         .
             <|> (parser.for
                     'pos1 ← get-pos;
@@ -112,20 +105,11 @@ gsexpr_left_ops = [gs:value| λ 'env. λ 'pos0. λ 'p0.
 
 gsexpr_right_ops = [gs:value| λ 'env. λ 'pos0. λ 'p0.
     <|> parser.for
-            'pop ← parser.for
-                    'op ← operator env;
-                    _ ← analyze parser.env.assoc.get op env.
-                        case assoc.non-assoc. parser.fail log{§(log.str (gsvar.fmt-atom op)) is non-associative}
-                        case assoc.left. parser.fail log{§(log.str (gsvar.fmt-atom op)) is left-associative}
-                        case assoc.right. parser.unit 〈〉
-                    ;
-                    'es ← many $ explicit-arg env;
-                . parser.unit 〈 '0 ∝ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es; '1 ∝ parser.env.signature.get op env; 〉
+            'popp0 ← parse-op-apply env pos0 p0 $ λ 'op. analyze parser.env.assoc.get op env.
+                case assoc.non-assoc. parser.fail log{§(log.str (gsvar.fmt-atom op)) is non-associative}
+                case assoc.left. parser.fail log{§(log.str (gsvar.fmt-atom op)) is left-associative}
+                case assoc.right. parser.unit 〈〉
             ;
-            's1 ← analyze pop #1.
-                case nil. parser.unit nil
-            ;
-            'popp0 ← parser.unit 〈 '0 ∝ expr.app (pop #0) (arg.expr pos0 (p0 #0)); '1 ∝ s1; 〉;
         .
             <|> (parser.for
                     'pos1 ← get-pos;
@@ -143,6 +127,19 @@ gsexpr_right_ops = [gs:value| λ 'env. λ 'pos0. λ 'p0.
                     ;
                 . parser.unit 〈 '0 ∝ expr.app (popp0 #0) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
             )
+|]
+
+gsparse_op_apply = [gs:value| λ 'env. λ 'pos0. λ 'p0. λ 'k. parser.for
+        'pop ← parser.for
+                'op ← operator env;
+                _ ← k op;
+                'es ← many $ explicit-arg env;
+            . parser.unit 〈 '0 ∝ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es; '1 ∝ parser.env.signature.get op env; 〉
+        ;
+        's1 ← analyze pop #1.
+            case nil. parser.unit nil
+        ;
+    . parser.unit 〈 '0 ∝ expr.app (pop #0) (arg.expr pos0 (p0 #0)); '1 ∝ s1; 〉
 |]
 
 $gsdeclare expr.function.w gsexpr_function_w
