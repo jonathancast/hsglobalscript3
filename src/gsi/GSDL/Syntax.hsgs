@@ -46,6 +46,7 @@ $gsdeclare operator operator
 
 $gsdeclare explicit-arg gsexplicit_arg
 
+$gsdeclare expr.non-op gsexpr_non_op
 $gsdeclare expr.left-ops gsexpr_left_ops
 $gsdeclare expr.right-ops gsexpr_right_ops
 $gsdeclare expr.function gsexpr_function
@@ -68,6 +69,7 @@ expr = [gs:value| λ 'env.
             ;
         .
             <|> parser.unit p0
+            <|> expr.non-op env pos0 p0
             <|> expr.left-ops env pos0 p0
             <|> expr.right-ops env pos0 p0
     )
@@ -75,6 +77,33 @@ expr = [gs:value| λ 'env.
 |]
 
 $gsdeclare parse-op-apply gsparse_op_apply
+
+gsexpr_non_op = [gs:value| λ 'env. λ 'pos0. λ 'p0.
+    <|> parser.for
+            'popp0 ← parse-op-apply env pos0 p0 $ λ 'op. analyze parser.env.assoc.get op env.
+                case assoc.non-assoc. parser.unit 〈〉
+                case assoc.left. parser.fail log{§(log.str (gsvar.fmt-atom op)) is left-associative}
+                case assoc.right. parser.fail log{§(log.str (gsvar.fmt-atom op)) is right-associative}
+            ;
+        .
+            <|> (parser.for
+                    'pos1 ← get-pos;
+                    'p1 ← expr.function env;
+                    _ ← parser.unit 〈〉 <|> (operator env *> parser.fail log{illegal operator; §(log.str (gsvar.fmt-atom (popp0 #op))) is non-associative});
+                    's2 ← analyze popp0 #1.
+                        case nil. parser.unit nil
+                    ;
+                . parser.unit 〈 '0 ∝ expr.app (popp0 #0) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
+            )
+            <|> (parser.for
+                    'pos1 ← get-pos;
+                    'p1 ← expr.lambda-like env;
+                    's2 ← analyze popp0 #1.
+                        case nil. parser.unit nil
+                    ;
+                . parser.unit 〈 '0 ∝ expr.app (popp0 #0) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
+            )
+|]
 
 gsexpr_left_ops = [gs:value| λ 'env. λ 'pos0. λ 'p0.
     <|> parser.for
@@ -134,12 +163,12 @@ gsparse_op_apply = [gs:value| λ 'env. λ 'pos0. λ 'p0. λ 'k. parser.for
                 'op ← operator env;
                 _ ← k op;
                 'es ← many $ explicit-arg env;
-            . parser.unit 〈 '0 ∝ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es; '1 ∝ parser.env.signature.get op env; 〉
+            . parser.unit 〈 '0 ∝ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es; '1 ∝ parser.env.signature.get op env; 'op ∝ op; 〉
         ;
         's1 ← analyze pop #1.
             case nil. parser.unit nil
         ;
-    . parser.unit 〈 '0 ∝ expr.app (pop #0) (arg.expr pos0 (p0 #0)); '1 ∝ s1; 〉
+    . parser.unit 〈 '0 ∝ expr.app (pop #0) (arg.expr pos0 (p0 #0)); '1 ∝ s1; 'op ∝ pop #op; 〉
 |]
 
 $gsdeclare expr.function.w gsexpr_function_w

@@ -64,6 +64,7 @@ gshscompiler_hsgs_global_env = [gs:value|
     hscompiler.env.unary.modify (hscompiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_unary_plus}) $
     hscompiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_add} $
     hscompiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
+    hscompiler.env.var.simple-insert (gsvar qq{≠}) qq{GSI.Rune} qq{gsrune_neq} $
     hscompiler.global-env
 |]
 

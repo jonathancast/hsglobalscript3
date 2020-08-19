@@ -53,6 +53,7 @@ test_monadic_bind_generators
 test_natural_number_addition
 test_list_addition
 test_multiple_non_associative_operators
+test_non_associative_operators
 
 echo '### Different kinds of patterns'
 
