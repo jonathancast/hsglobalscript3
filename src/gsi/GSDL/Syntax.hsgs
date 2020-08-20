@@ -146,7 +146,8 @@ gsexpr_right_ops = [gs:value| λ 'env. λ 'pos0. λ 'p0.
                     's2 ← analyze popp0 #1.
                         case nil. parser.unit nil
                     ;
-                . parser.unit 〈 '0 ∝ expr.app (popp0 #0) (arg.expr pos1 (p1 #0)); '1 ∝ s2; 〉
+                    'p2 ← parser.unit p1 <|> expr.right-ops env pos1 p1;
+                . parser.unit 〈 '0 ∝ expr.app (popp0 #0) (arg.expr pos1 (p2 #0)); '1 ∝ s2; 〉
             )
             <|> (parser.for
                     'pos1 ← get-pos;
