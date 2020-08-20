@@ -55,6 +55,7 @@ test_list_addition
 test_multiple_non_associative_operators
 test_non_associative_operators
 test_right_associative_operators
+test_parenthesized_operators
 
 echo '### Different kinds of patterns'
 

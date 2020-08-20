@@ -288,6 +288,19 @@ gsexpr_atom = [gs:value| λ 'a. λ 'env.
             '1 ∝ parser.env.signature.get v env;
         〉
     )
+    <|> parens (parser.for
+            'op ← operator env;
+            'es ← analyze a.
+                case true. many $ explicit-arg env
+                case false. parser.unit nil
+            ;
+            'opes ← parser.unit $ foldl expr.app (expr.var op) $ map (λ 'p. arg.explicit (p #0) (p #1)) es;
+        . parser.unit 〈
+            '0 ∝ opes;
+            '1 ∝ parser.env.signature.get op env;
+        〉
+    )
+
 |]
 
 gsexplicit_arg = [gs:value| λ 'env. parser.for
