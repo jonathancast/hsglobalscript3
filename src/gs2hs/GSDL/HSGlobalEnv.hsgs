@@ -57,6 +57,14 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'pos. λ 'qi. analyze qi.
         case qloitem.char 'r. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcchar_w} pos (hsoutput.char r : nil)
     ) $
+    hscompiler.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'pos. λ 'qs.
+        either.map (hsoutput.applyivarpos qq{GSI.String} qq{gsbcstring_w} pos) $ either.map list.singleton $ either.map hsoutput.list $
+            either.map (map (hsoutput.arg-expr pos)) $ either.mapM
+                (λ 'qi. analyze qi.
+                    case qloitem.char 'r. right $ hsoutput.applyivarpos qq{GSI.String} qq{gsbcstringlit_w} pos (hsoutput.string (r : nil) : nil)
+                )
+                qs
+    ) $
     hscompiler.env.empty
 |]
 
