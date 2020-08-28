@@ -72,6 +72,7 @@ test_r_literal
 # qq{} literals
 
 test_qq_literal
+test_qq_newline
 
 echo '### Different functions'
 

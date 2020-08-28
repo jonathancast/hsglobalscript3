@@ -306,7 +306,7 @@ compileExpr env (EQLO pos0 "r" [QQChar pos1 'n']) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '\n'
   )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "()[]{}" = return (
+compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "()[]{}\\" = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar ch
   )
@@ -481,6 +481,10 @@ compileFalliblePat env p@PView{} = compileFalliblePatApp env p []
 compileFalliblePat env (PQLO pos "r" [PQChar pos1 ch]) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar ch
+  )
+compileFalliblePat env (PQLO pos "r" [PQQChar pos1 'n']) = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar '\n'
   )
 compileFalliblePat env (PQLO pos "r" [qi]) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" [" ++ pqloiCode qi ++ "]) next"
 compileFalliblePat env (PQLO pos "r" []) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" []) next"
@@ -1104,6 +1108,7 @@ globalEnv = Env{
         ("print-error", "GSI.Env", "gsprintError"),
         ("print-rune", "GSI.Parser", "gsparser_print_rune"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char"),
+        ("qloitem.qchar", "GSDL.AST", "gsqloitem_qchar"),
         ("quote", "GSDL.HSGS.Syntax", "quote"),
         ("quote-param.hsvs", "GSDL.HSGS.AST", "gsquote_param_hsvs"),
         ("rational.>", "GSI.Rational", "gsrational_gt"),
@@ -1294,6 +1299,7 @@ globalEnv = Env{
         ("pat.var", "GSDL.AST", "gspat_var_view"),
         ("pat.view", "GSDL.AST", "gspat_view_view"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char_view"),
+        ("qloitem.qchar", "GSDL.AST", "gsqloitem_qchar_view"),
         ("quote-param.hsvs", "GSDL.HSGS.AST", "gsquote_param_hsvs_view"),
         ("right", "GSI.Either", "gsright_view"),
         ("source-comp.char", "GSDL.HSGS.AST", "gssource_comp_char_view"),

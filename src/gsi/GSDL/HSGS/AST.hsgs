@@ -81,16 +81,22 @@ gshsimport_type = $gslambda_value $ \ m -> $gsbcarg $ \ ty -> $gsbcconstr (gsvar
 gshsimport_var_view = $gsbcconstr_view "var"
 gshsimport_type_view = $gsbcconstr_view "type"
 
+$gsdeclare quote-if-needed gsquote_if_needed
 $gsdeclare fmt-list gsfmt_list
 
 gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
-    case hsexpr.string 's. (:) r{"} ∘ (<>) s ∘ (:) r{"}
+    case hsexpr.string 's. (:) r{"} ∘ compose (map quote-if-needed s) ∘ (:) r{"}
     case hsexpr.char 'r. (:) r{'} ∘ (:) r ∘ (:) r{'}
     case hsexpr.list 'es. (:) r{\[} ∘ fmt-list es ∘ (:) r{\]}
     case hsexpr.int 'n. (<>) (fmt-decimal n)
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
     case hsexpr.lambda _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
+|]
+
+gsquote_if_needed = [gs:value| λ 'r. analyze r.
+    case r{\n}. (<>) qq{\\n}
+    case _. (:) r
 |]
 
 $gsdeclare fmt-list-w gsfmt_list_w

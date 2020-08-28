@@ -76,6 +76,7 @@ gspriminsufficientcases pos (GSThunk th) = do
 gspriminsufficientcases pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
 gspriminsufficientcases pos v@GSRecord{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
 gspriminsufficientcases pos (GSExternal e) = GSError . GSErrInsufficientCases pos . ($ "") . (\ ds -> ('<':) . ds . ('>':)) <$> fmtExternal e
+gspriminsufficientcases pos (GSRune ch) = return $ GSError $ GSErrInsufficientCases pos $ ("r/" ++ ch : "/")
 gspriminsufficientcases pos e = return $ $gsimplementationfailure $ "gspriminsufficientcases " ++ gsvCode e ++ " next"
 
 -- §begin§itemize

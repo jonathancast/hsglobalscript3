@@ -51,6 +51,7 @@ gsimplicits_global_env = [gs:value|
     implicit.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'qs. map
         (λ 'qi. analyze qi.
             case qloitem.char 'ch. qloitem.char ch
+            case qloitem.qchar 'ch. qloitem.qchar ch
         )
         qs
     ) $

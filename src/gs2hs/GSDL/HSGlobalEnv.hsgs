@@ -11,6 +11,7 @@ gshsgs_parser_global_env = [gs:value|
 $gsdeclare hscompiler.env.supply.monad.simple-insert gshscompiler_env_supply_monad_simple_insert
 $gsdeclare hscompiler.env.var.simple-insert gshscompiler_env_var_simple_insert
 $gsdeclare hscompiler.env.view.simple-insert gshscompiler_env_view_simple_insert
+$gsdeclare hscompile-qchar gshscompile_qchar
 
 gshscompiler_global_env = [gs:value|
     hscompiler.env.constr.insert (gsvar qq{error}) $
@@ -62,6 +63,8 @@ gshscompiler_global_env = [gs:value|
             either.map (map (hsoutput.arg-expr pos)) $ either.mapM
                 (λ 'qi. analyze qi.
                     case qloitem.char 'r. right $ hsoutput.applyivarpos qq{GSI.String} qq{gsbcstringlit_w} pos (hsoutput.string (r : nil) : nil)
+                    case qloitem.qchar 'r. either.for 'r1 ← hscompile-qchar r;.
+                        right $ hsoutput.applyivarpos qq{GSI.String} qq{gsbcstringlit_w} pos (hsoutput.string (r1 : nil) : nil)
                 )
                 qs
     ) $
@@ -79,3 +82,7 @@ gshscompiler_hsgs_global_env = [gs:value|
 gshscompiler_env_supply_monad_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hscompiler.env.supply.monad.insert v (hsoutput.ivar m hsv) |]
 gshscompiler_env_var_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hscompiler.env.var.insert v (hsoutput.ivar m hsv) |]
 gshscompiler_env_view_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hscompiler.env.view.insert v (hsoutput.ivar m hsv) |]
+
+gshscompile_qchar = [gs:value| λ 'r. analyze r.
+    case r{n}. right r{\n}
+|]
