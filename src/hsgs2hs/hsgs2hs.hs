@@ -306,7 +306,7 @@ compileExpr env (EQLO pos0 "r" [QQChar pos1 'n']) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar '\n'
   )
-compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "()[]{}\\" = return (
+compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) | ch `elem` "()[]{}\\§" = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcchar_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcchar_w" `HSApp` hspos pos1 `HSApp` HSChar ch
   )
@@ -1108,6 +1108,7 @@ globalEnv = Env{
         ("print-error", "GSI.Env", "gsprintError"),
         ("print-rune", "GSI.Parser", "gsparser_print_rune"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char"),
+        ("qloitem.interp", "GSDL.AST", "gsqloitem_interp"),
         ("qloitem.qchar", "GSDL.AST", "gsqloitem_qchar"),
         ("quote", "GSDL.HSGS.Syntax", "quote"),
         ("quote-param.hsvs", "GSDL.HSGS.AST", "gsquote_param_hsvs"),
@@ -1299,6 +1300,7 @@ globalEnv = Env{
         ("pat.var", "GSDL.AST", "gspat_var_view"),
         ("pat.view", "GSDL.AST", "gspat_view_view"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char_view"),
+        ("qloitem.interp", "GSDL.AST", "gsqloitem_interp_view"),
         ("qloitem.qchar", "GSDL.AST", "gsqloitem_qchar_view"),
         ("quote-param.hsvs", "GSDL.HSGS.AST", "gsquote_param_hsvs_view"),
         ("right", "GSI.Either", "gsright_view"),

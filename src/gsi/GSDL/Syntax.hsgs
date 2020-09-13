@@ -327,6 +327,7 @@ gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
 gsqloitem = [gs:value| λ 'env. λ 'cl.
     <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl);. parser.unit (qloitem.char r))
     <|> (parser.for 'r ← char r{\\} *> matching log{any character} (λ 'r. true);. parser.unit (qloitem.qchar r))
+    <|> (parser.for _ ← char r{\§} *> char r{\(} *> whitespace; 'pos ← get-pos; 'p ← expr env; _ ← char r{\)};. parser.unit (qloitem.interp pos (p #0)))
 |]
 
 $gsdeclare pat.function gspat_function

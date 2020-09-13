@@ -52,6 +52,7 @@ gsimplicits_global_env = [gs:value|
         (λ 'qi. analyze qi.
             case qloitem.char 'ch. qloitem.char ch
             case qloitem.qchar 'ch. qloitem.qchar ch
+            case qloitem.interp 'pos 'e. qloitem.interp pos (add-implicits-expr env e)
         )
         qs
     ) $

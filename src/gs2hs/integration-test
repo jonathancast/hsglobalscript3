@@ -73,6 +73,7 @@ test_r_literal
 
 test_qq_literal
 test_qq_newline
+test_qq_interpolation
 
 echo '### Different functions'
 
