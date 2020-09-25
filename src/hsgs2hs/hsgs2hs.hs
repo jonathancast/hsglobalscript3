@@ -554,6 +554,7 @@ compilePat env (PDiscard pos) = return (
     HSVar "gsbcdiscardpattern_w" `HSApp` hspos pos
   )
 compilePat env (PApp p0 p1) = compilePatApp env p0 [p1]
+compilePat env (PView pos v) = Left $ fmtPos pos $ "Illegal view " ++ v ++ " in infallible pattern"
 compilePat env p = $gsfatal $ "compilePat " ++ patCode p ++ " next"
 
 compilePatApp :: Env -> Pattern -> [Pattern] -> Either String (Set HSImport, HSExpr)
