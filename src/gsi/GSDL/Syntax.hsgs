@@ -254,7 +254,6 @@ $gsdeclare natural natural
 
 $gsdeclare var var
 $gsdeclare idmc gsidmc
-$gsdeclare qloitem gsqloitem
 
 gsexpr_atom = [gs:value| λ 'a. λ 'env.
     <|> parens (expr env)
@@ -313,6 +312,8 @@ gsexplicit_arg = [gs:value| λ 'env. parser.for
 $gsdeclare idmc-w gsidmc_w
 
 gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run (p env)) cl |]
+
+$gsdeclare qloitem gsqloitem
 
 gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
     case parser.prim.unit-plus 'x 'p1. parser.unit x <|> idmc-w env p1 cl
@@ -399,6 +400,8 @@ gspat_function_w = [gs:value| λ 'env. λ 'p.
     <|> parser.for 'pos ← get-pos; 'p1 ← pat.atom env;. pat.function-w env (pat.app p pos p1)
 |]
 
+$gsdeclare idmc-pat gsidmc_pat
+
 $gsdeclare opname opname
 
 gspat_atom = [gs:value| λ 'env.
@@ -406,6 +409,39 @@ gspat_atom = [gs:value| λ 'env.
     <|> (parser.for 'v ← var env;. parser.unit (pat.view v))
     <|> (parser.for 'v ← char r{'} *> ident;. parser.unit (pat.var v))
     <|> (parser.for 'v ← parens (char r{'} *> opname);. parser.unit (pat.var v))
+    <|> (lexeme $ parser.for
+            'v ← parser.map gsvar ident-chars;
+            'p ← analyze parser.env.qlo.get v (parser.env.pattern.get env).
+                case nothing. parser.fail log{pattern qlo §(log.str (gsvar.fmt-atom v)) not in scope}
+                case just 'p. parser.unit p
+            ;
+            _ ← char r{\{};
+            'x ← idmc-pat env p r{\}};
+            _ ← char r{\}};
+        . parser.unit (pat.qlo v x)
+    )
+|]
+
+$gsdeclare idmc-pat-w gsidmc_pat_w
+
+gsidmc_pat = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-pat-w env (parser-run (p env)) cl |]
+
+$gsdeclare qloitem-pat gsqloitem_pat
+
+gsidmc_pat_w = [gs:value| λ 'env. λ 'p. λ 'cl. analyze p.
+    case parser.prim.unit-plus 'x 'p1. parser.unit x <|> idmc-pat-w env p1 cl
+    case parser.prim.symbol-or-eof 'ek 'sk.
+        <|> (parser.eof *> idmc-w env ek cl)
+        <|> (parser.for 'q ← qloitem-pat env cl;. analyze sk q.
+            case right 'p1. idmc-pat-w env p1 cl
+        )
+    case parser.prim.fail nil nil. empty
+|]
+
+gsqloitem_pat = [gs:value| λ 'env. λ 'cl.
+    <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl);. parser.unit (qloitem.char r))
+    <|> (parser.for 'r ← char r{\\} *> matching log{any character} (λ 'r. true);. parser.unit (qloitem.qchar r))
+    <|> (parser.for _ ← char r{\§} *> char r{\(} *> whitespace; 'pos ← get-pos; 'p ← pat env; _ ← char r{\)};. parser.unit (qloitem.interp pos p))
 |]
 
 parens = [gs:value| λ 'p. lexeme (matching log{open parenthesis} (rune.≡ r{\(})) *> p <* lexeme (matching log{close parenthesis} (rune.≡ r{\)})) |]

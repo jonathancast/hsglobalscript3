@@ -178,7 +178,7 @@ gsparser_difference_w = [gs:value| λ 'p0. λ 'p1. analyze p0.
     case prim.get-pos 'k. get-pos (λ 'pos. difference-w (k pos) p1)
     case prim.lookahead 'pp0. prim.lookahead (difference-w pp0 p1)
     case prim.symbol-or-eof 'ek0 'sk0. (analyze p1.
-        case prim.unit-plus _ _. prim.fail undefined undefined
+        case prim.unit-plus _ _. prim.fail nil nil
         case prim.lookahead 'pp1. prim.lookahead (difference1-w p0 pp1)
         case prim.symbol-or-eof 'ek1 'sk1. prim.symbol-or-eof (difference-w ek0 ek1) (λ 'r. analyze sk0 r.
             case right 'p01. (analyze sk1 r.
