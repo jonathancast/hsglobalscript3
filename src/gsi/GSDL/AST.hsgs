@@ -18,7 +18,7 @@ module GSDL.AST (
     gsqloitem_char, gsqloitem_qchar, gsqloitem_interp, gsqloitem_char_view, gsqloitem_interp_view, gsqloitem_qchar_view,
     gsarg_expr, gsarg_explicit, gsarg_app, gsarg_var, gsarg_var_name, gsarg_expr_view, gsarg_explicit_view, gsarg_app_view, gsarg_var_view, gsarg_var_name_view,
     gsgenerator_var, gsgenerator_app, gsgenerator_expr, gsgenerator_pattern, gsgenerator_var_view, gsgenerator_app_view, gsgenerator_expr_view, gsgenerator_pattern_view,
-    gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
+    gspat_discard, gspat_discard_view, gspat_var, gspat_view, gspat_qlo, gspat_var_view, gspat_view_view, gspat_app, gspat_app_view,
     gsconsume_monad, gsconsume_monad_view,
     gsorder_of_being_eq, gsorder_of_being_cmp,
     gsorder_of_being_expr, gsorder_of_being_generator, gsorder_of_being_open_expr, gsorder_of_being_value_var, gsorder_of_being_var_name, gsorder_of_being_pattern, gsorder_of_being_expr_view, gsorder_of_being_generator_view, gsorder_of_being_open_expr_view, gsorder_of_being_pattern_view, gsorder_of_being_value_var_view, gsorder_of_being_var_name_view,
@@ -170,6 +170,7 @@ gsgenerator_pattern_view = $gsbcconstr_view "pattern"
 gspat_discard = $gsconstr (gsvar "discard") []
 gspat_var = $gslambda_value $ \ v -> $gsbcconstr (gsvar "var") [ $gsav v ]
 gspat_view = $gslambda_value $ \ v -> $gsbcconstr (gsvar "view") [ $gsav v ]
+gspat_qlo = $gslambda_value $ \ v -> $gsbcarg $ \ x -> $gsbcconstr (gsvar "qlo") [ $gsav v, $gsav x ]
 gspat_app = $gslambda_value $ \ p0 -> $gsbcarg $ \ pos -> $gsbcarg $ \ p1 -> $gsbcconstr (gsvar "app") [ $gsav p0, $gsav pos, $gsav p1 ]
 
 gspat_discard_view = $gsbcconstr_view "discard"

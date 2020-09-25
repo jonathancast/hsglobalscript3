@@ -1098,6 +1098,7 @@ globalEnv = Env{
         ("pat.app", "GSDL.AST", "gspat_app"),
         ("pat.bound-vars", "GSDL.Annotator", "gspat_bound_vars"),
         ("pat.discard", "GSDL.AST", "gspat_discard"),
+        ("pat.qlo", "GSDL.AST", "gspat_qlo"),
         ("pat.var", "GSDL.AST", "gspat_var"),
         ("pat.view", "GSDL.AST", "gspat_view"),
         ("pos.fmt", "GSI.Parser", "gsposFmt"),
