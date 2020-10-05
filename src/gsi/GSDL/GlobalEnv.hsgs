@@ -8,6 +8,9 @@ gsparser_global_env = [gs:value|
     parser.env.else.insert (gsvar qq{case}) 〈〉 $
     parser.env.missing-body.insert (gsvar qq{analyzeM}) expr.missing-case $
     parser.env.missing-body.insert (gsvar qq{analyze}) expr.missing-case $
+    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
+    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
+    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{∝}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.qlo.insert (gsvar qq{qq}) (λ 'env. many symbol) $
     parser.env.qlo.insert (gsvar qq{r}) (λ 'env. symbol) $
@@ -25,9 +28,6 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{for}) syntactic-category.lambda-like $
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
-    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
-    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{∝}) (order-of-being.pattern : order-of-being.expr : nil)) $
-    parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.empty
 |]
 
