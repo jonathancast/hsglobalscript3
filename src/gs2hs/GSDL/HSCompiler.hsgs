@@ -1,4 +1,4 @@
-module GSDL.HSCompiler (gshscompiler_env_var_insert, gshscompiler_env_var_get, gshscompiler_env_constr_insert, gshscompiler_env_constr_get, gshscompiler_env_view_insert, gshscompiler_env_view_get, gshscompiler_env_gen_sym, gshscompiler_env_generator_get, gshscompiler_env_generator_modify, gshscompiler_env_unary_get, gshscompiler_env_unary_modify, gshscompiler_env_arg_var_insert, gshscompiler_env_arg_var_get, gshscompiler_env_supply_get, gshscompiler_env_supply_monad_insert, gshscompiler_env_qlo_get, gshscompiler_env_qlo_insert, gshscompiler_env_empty, gshscompiler_supply_env_monad_get, gshscompiler_supply_env_empty) where
+module GSDL.HSCompiler (gshscompiler_env_var_insert, gshscompiler_env_var_get, gshscompiler_env_constr_insert, gshscompiler_env_constr_get, gshscompiler_env_view_insert, gshscompiler_env_view_get, gshscompiler_env_gen_sym, gshscompiler_env_generator_get, gshscompiler_env_generator_modify, gshscompiler_env_pattern_get, gshscompiler_env_unary_get, gshscompiler_env_unary_modify, gshscompiler_env_arg_var_insert, gshscompiler_env_arg_var_get, gshscompiler_env_supply_get, gshscompiler_env_supply_monad_insert, gshscompiler_env_qlo_get, gshscompiler_env_qlo_insert, gshscompiler_env_empty, gshscompiler_supply_env_monad_get, gshscompiler_supply_env_empty) where
 
 $gsimports
 
@@ -27,6 +27,11 @@ gshscompiler_env_qlo_get = [gs:value| λ 'q. λ 'env. ordered-map.get gsvar.<=> 
 
 gshscompiler_env_generator_get = [gs:value| λ 'env. 〈
     'vars ∝ env #generators;
+    'gen-sym ∝ env #gen-sym;
+〉 |]
+
+gshscompiler_env_pattern_get = [gs:value| λ 'env. 〈
+    'qlo ∝ env #pat.qlo;
     'gen-sym ∝ env #gen-sym;
 〉 |]
 
@@ -63,6 +68,7 @@ gshscompiler_env_empty = [gs:value| 〈
     'unaries ∝ ordered-map.empty;
     'views ∝ ordered-map.empty;
     'generators ∝ ordered-map.empty;
+    'pat.qlo ∝ ordered-map.empty;
     'arg-vars ∝ ordered-map.empty;
     'supplies ∝ ordered-map.empty;
     'qlo ∝ ordered-map.empty;
