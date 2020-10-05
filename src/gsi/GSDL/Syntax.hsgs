@@ -412,7 +412,7 @@ gspat_atom = [gs:value| λ 'env.
     <|> (lexeme $ parser.for
             'v ← parser.map gsvar ident-chars;
             'p ← analyze parser.env.qlo.get v (parser.env.pattern.get env).
-                case nothing. parser.fail log{pattern qlo §(log.str (gsvar.fmt-atom v)) not in scope}
+                case nothing. parser.fail log{parser for pattern qlo §(log.str (gsvar.fmt-atom v)) not in scope}
                 case just 'p. parser.unit p
             ;
             _ ← char r{\{};
