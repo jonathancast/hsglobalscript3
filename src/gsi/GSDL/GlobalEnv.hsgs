@@ -2,6 +2,8 @@ module GSDL.GlobalEnv (gsparser_global_env, gsannotator_global_env, gsimplicits_
 
 $gsimports
 
+$gsdeclare parse-qq-pattern gsparse_qq_pattern
+
 gsparser_global_env = [gs:value|
     parser.env.assoc.insert (gsvar qq{+}) assoc.left $
     parser.env.assoc.insert (gsvar qq{∘}) assoc.left $
@@ -12,6 +14,7 @@ gsparser_global_env = [gs:value|
     parser.env.generator.modify (parser.env.signature.insert (gsvar qq{←}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.generator.modify (parser.env.signature.insert (gsvar qq{∝}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
+    parser.env.pattern.modify (parser.env.qlo.insert (gsvar qq{qq}) (λ 'env. parse-qq-pattern env)) $
     parser.env.qlo.insert (gsvar qq{qq}) (λ 'env. many symbol) $
     parser.env.qlo.insert (gsvar qq{r}) (λ 'env. symbol) $
     parser.env.signature.insert (gsvar qq{#}) (order-of-being.var-name : nil) $
@@ -29,6 +32,15 @@ gsparser_global_env = [gs:value|
     parser.env.syntactic-category.insert (gsvar qq{where}) syntactic-category.where $
     parser.env.syntactic-category.insert (gsvar qq{λ}) syntactic-category.lambda-like $
     parser.env.empty
+|]
+
+gsparse_qq_pattern = [gs:value| λ 'env. parser.for
+        'qs ← many (
+            <|> matching log{normal character} (λ 'q. analyze q. case qloitem.char _. true case _. false)
+            <|> matching log{quoted character} (λ 'q. analyze q. case qloitem.qchar _. true case _. false)
+        );
+        'mb ← optional (matching log{interpolation} (λ 'q. analyze q. case qloitem.interp _ _. true case _. false));
+    . parser.unit 〈 '0 ∝ qs; '1 ∝ mb; 〉
 |]
 
 gsannotator_global_env = [gs:value|
