@@ -1300,6 +1300,7 @@ globalEnv = Env{
         ("parser.prim.unit-plus", "GSI.Parser", "gsprim_unit_plus_view"),
         ("pat.app", "GSDL.AST", "gspat_app_view"),
         ("pat.discard", "GSDL.AST", "gspat_discard_view"),
+        ("pat.qlo", "GSDL.AST", "gspat_qlo_view"),
         ("pat.var", "GSDL.AST", "gspat_var_view"),
         ("pat.view", "GSDL.AST", "gspat_view_view"),
         ("qloitem.char", "GSDL.AST", "gsqloitem_char_view"),
