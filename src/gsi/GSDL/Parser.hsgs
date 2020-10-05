@@ -10,7 +10,7 @@ module GSDL.Parser (
     gsdl_parser_env_missing_else_get, gsdl_parser_env_missing_else_insert,
     gsdl_parser_env_else_needs_comma_get, gsdl_parser_env_else_needs_comma_set,
     gsdl_parser_env_generator_get, gsdl_parser_env_generator_modify,
-    gsdl_parser_env_pattern_get,
+    gsdl_parser_env_pattern_get, gsdl_parser_env_pattern_modify,
     gsdl_parser_env_empty
   ) where
 
@@ -39,9 +39,18 @@ gsdl_parser_env_generator_set = [gs:value| λ 'env1. λ 'env. record.∧
 |]
 gsdl_parser_env_generator_modify = [gs:value| λ 'f. λ 'env. parser.env.generator.set (f (parser.env.generator.get env)) env |]
 
+$gsdeclare parser.env.pattern.set gsdl_parser_env_pattern_set
+
 gsdl_parser_env_pattern_get = [gs:value| λ 'env. 〈
     'qlo ∝ env #pattern.qlo;
 〉 |]
+gsdl_parser_env_pattern_set = [gs:value| λ 'env1. λ 'env. record.∧
+    〈
+        'pattern.qlo ∝ env1 #qlo;
+    〉
+    env
+|]
+gsdl_parser_env_pattern_modify = [gs:value| λ 'f. λ 'env. parser.env.pattern.set (f (parser.env.pattern.get env)) env |]
 
 gsdl_parser_env_syntactic_categories = [gs:value| λ 'env. ordered-map.to-list (env #syntactic-category) |]
 
