@@ -52,6 +52,9 @@ gsannotator_global_env = [gs:value|
     ) $
     annotator.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'qi. annotate-qloitem env qi) $
     annotator.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'qs. map (annotate-qloitem env) qs) $
+    annotator.env.pattern.modify (annotator.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'p.
+        〈 '0 ∝ map (annotate-pat-qloitem env) (p #0); '1 ∝ maybe.map (annotate-pat-qloitem env) (p #1); 〉
+    )) $
     annotator.env.empty
 |]
 
