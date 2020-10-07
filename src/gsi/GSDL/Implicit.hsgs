@@ -43,7 +43,9 @@ gsadd_implicits_pat = [gs:value| λ 'env. λ 'p. analyze p.
     case pat.discard. pat.discard
     case pat.var 'v. pat.var v
     case pat.view 'v. pat.view v
-    case pat.qlo 'v 'x. pat.qlo v (maybe.out undefined (implicit.env.qlo.get v (implicit.env.pattern.get env)) env x)
+    case pat.qlo 'v 'x. analyze implicit.env.qlo.get v (implicit.env.pattern.get env).
+        case nothing. error log{add-implicits for pattern qlo §(log.str (gsvar.fmt-atom v))}
+        case just 'f. pat.qlo v (f env x)
     case pat.app 'p0 'pos1 'p1. pat.app (add-implicits-pat env p0) pos1 (add-implicits-pat env p1)
 |]
 
