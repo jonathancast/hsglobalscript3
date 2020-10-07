@@ -26,6 +26,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{analyze}) qq{GSI.StdLib} qq{gsanalyze} $
     hscompiler.env.var.simple-insert (gsvar qq{case}) qq{GSI.StdLib} qq{gscase} $
     hscompiler.env.var.simple-insert (gsvar qq{either.for}) qq{GSI.Either} qq{gseither_for} $
+    hscompiler.env.var.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse} $
     hscompiler.env.var.simple-insert (gsvar qq{file.name.extension.get}) qq{GS.FileName} qq{gsfile_name_extension_get} $
     hscompiler.env.var.simple-insert (gsvar qq{file.name.in}) qq{GS.FileName} qq{gsfile_name_in} $
     hscompiler.env.var.simple-insert (gsvar qq{foldr}) qq{GSI.List} qq{gsfoldr} $
