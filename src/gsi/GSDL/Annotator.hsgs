@@ -1,4 +1,4 @@
-module GSDL.Annotator (gsannotator_env_category_insert, gsannotator_env_category_get, gsannotator_env_qlo_insert, gsannotator_env_qlo_get, gsannotator_env_empty, gsannotator_env_pattern_get, gspat_bound_vars) where
+module GSDL.Annotator (gsannotator_env_category_insert, gsannotator_env_category_get, gsannotator_env_qlo_insert, gsannotator_env_qlo_get, gsannotator_env_pattern_get, gsannotator_env_pattern_modify, gsannotator_env_empty, gspat_bound_vars) where
 
 $gsimports
 
@@ -13,6 +13,12 @@ gsannotator_env_qlo_get = [gs:value| λ 'v. λ 'env. ordered-map.get gsvar.<=> v
 gsannotator_env_pattern_get = [gs:value| λ 'env. 〈
     'qlo ∝ env #pat.qlo;
 〉 |]
+
+gsannotator_env_pattern_set = [gs:value| λ 'env1. λ 'env. record.∧ 〈 'pat.qlo ∝ env1 #qlo; 〉 env |]
+
+$gsdeclare annotator.env.pattern.set gsannotator_env_pattern_set
+
+gsannotator_env_pattern_modify = [gs:value| λ 'f. λ 'env. annotator.env.pattern.set (f (annotator.env.pattern.get env)) env |]
 
 gsannotator_env_empty = [gs:value| 〈 'category ∝ ordered-map.empty; 'qlo ∝ ordered-map.empty; 'pat.qlo ∝ ordered-map.empty; 〉 |]
 
