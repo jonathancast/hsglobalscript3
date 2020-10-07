@@ -217,6 +217,10 @@ gshscompile_fallible_pat = [gs:value| λ 'env. λ 'pos. λ 'p. analyze p.
         case nothing. left $ pos.fmt pos qq{view §(gsvar.fmt-atom v) not in scope}
         case just 'r. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcviewpattern_w} pos (r : hsoutput.list nil : nil)
     )
+    case pat.qlo 'v 'x. (analyze hscompiler.env.qlo.get v (hscompiler.env.pattern.get env).
+        case nothing. left $ pos.fmt pos qq{compiler for pattern qlo §(gsvar.fmt-atom v) not in scope}
+        case just 'f. f env pos x
+    )
     case pat.app 'p0 'pos1 'p1. hscompile-fallible-pat-app env pos p0 (〈 '0 ∝ pos1; '1 ∝ p1; 〉 : nil)
 |]
 
