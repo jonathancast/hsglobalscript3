@@ -160,7 +160,7 @@ gsannotate_pat = [gs:value| λ 'env. λ 'p. analyze p.
     case pat.discard. 〈 '0 ∝ pat.discard; '1 ∝ nil; 〉
     case pat.var 'v. 〈 '0 ∝ pat.var v; '1 ∝ v : nil; 〉
     case pat.view 'v. 〈 '0 ∝ pat.view v; '1 ∝ nil; 〉
-    case pat.qlo 'v 'x. 〈 '0 ∝ pat.qlo v (maybe.out undefined (annotator.env.qlo.get v (annotator.env.pattern.get env) env x)); '1 ∝ nil; 〉
+    case pat.qlo 'v 'x. 〈 '0 ∝ pat.qlo v (maybe.out undefined (annotator.env.qlo.get v (annotator.env.pattern.get env)) env x); '1 ∝ nil; 〉
     case pat.app 'p0 'pos1 'p1. for
             'p0a ∝ annotate-pat env p0;
             'p1a ∝ annotate-pat env p1;
