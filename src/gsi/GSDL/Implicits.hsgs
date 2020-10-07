@@ -1,4 +1,4 @@
-module GSDL.Implicits (gsimplicit_env_consumes_get, gsimplicit_env_consumes_insert, gsimplicit_env_generators_get, gsimplicit_env_generators_modify, gsimplicit_env_pattern_get, gsimplicit_env_qlo_get, gsimplicit_env_qlo_insert, gsimplicit_env_empty) where
+module GSDL.Implicits (gsimplicit_env_consumes_get, gsimplicit_env_consumes_insert, gsimplicit_env_generators_get, gsimplicit_env_generators_modify, gsimplicit_env_pattern_get, gsimplicit_env_pattern_modify, gsimplicit_env_qlo_get, gsimplicit_env_qlo_insert, gsimplicit_env_empty) where
 
 $gsimports
 
@@ -22,6 +22,12 @@ gsimplicit_env_consumes_insert = [gs:value| λ 'v. λ 'is. λ 'env. record.∧ �
 gsimplicit_env_generators_modify = [gs:value| λ 'f. λ 'env. for 'env1 ∝ f (implicit.env.generators.get env);.
     record.∧ 〈 'generator.consumes ∝ env1 #consumes; 〉 env
 |]
+
+gsimplicit_env_pattern_set = [gs:value| λ 'env1. λ 'env. record.∧ 〈 'pat.qlo ∝ env1 #qlo; 〉 env |]
+
+$gsdeclare implicit.env.pattern.set gsimplicit_env_pattern_set
+
+gsimplicit_env_pattern_modify = [gs:value| λ 'f. λ 'env. implicit.env.pattern.set (f (implicit.env.pattern.get env)) env |]
 
 gsimplicit_env_qlo_insert = [gs:value| λ 'v. λ 'f. λ 'env. record.∧ 〈 'qlo ∝ ordered-map.insert gsvar.<=> v f (env #qlo); 〉 env |]
 
