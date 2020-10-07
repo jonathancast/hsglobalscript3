@@ -1,4 +1,4 @@
-module GSDL.HSCompiler (gshscompiler_env_var_insert, gshscompiler_env_var_get, gshscompiler_env_constr_insert, gshscompiler_env_constr_get, gshscompiler_env_view_insert, gshscompiler_env_view_get, gshscompiler_env_gen_sym, gshscompiler_env_generator_get, gshscompiler_env_generator_modify, gshscompiler_env_pattern_get, gshscompiler_env_unary_get, gshscompiler_env_unary_modify, gshscompiler_env_arg_var_insert, gshscompiler_env_arg_var_get, gshscompiler_env_supply_get, gshscompiler_env_supply_monad_insert, gshscompiler_env_qlo_get, gshscompiler_env_qlo_insert, gshscompiler_env_empty, gshscompiler_supply_env_monad_get, gshscompiler_supply_env_empty) where
+module GSDL.HSCompiler (gshscompiler_env_var_insert, gshscompiler_env_var_get, gshscompiler_env_constr_insert, gshscompiler_env_constr_get, gshscompiler_env_view_insert, gshscompiler_env_view_get, gshscompiler_env_gen_sym, gshscompiler_env_generator_get, gshscompiler_env_generator_modify, gshscompiler_env_pattern_modify, gshscompiler_env_pattern_get, gshscompiler_env_unary_get, gshscompiler_env_unary_modify, gshscompiler_env_arg_var_insert, gshscompiler_env_arg_var_get, gshscompiler_env_supply_get, gshscompiler_env_supply_monad_insert, gshscompiler_env_qlo_get, gshscompiler_env_qlo_insert, gshscompiler_env_empty, gshscompiler_supply_env_monad_get, gshscompiler_supply_env_empty) where
 
 $gsimports
 
@@ -40,6 +40,8 @@ gshscompiler_env_unary_get = [gs:value| λ 'env. 〈
     'gen-sym ∝ env #gen-sym;
 〉 |]
 
+gshscompiler_env_pattern_set = [gs:value| λ 'env1. λ 'env. record.∧ 〈 'pat.qlo ∝ env1 #qlo; 'gen-sym ∝ env1 #gen-sym; 〉 env |]
+
 gshscompiler_env_generator_modify = [gs:value| λ 'f. λ 'env. for
         'env2 ∝ for 'env1 ∝ f (hscompiler.env.generator.get env);. 〈
             'generators ∝ env1 #vars;
@@ -47,6 +49,10 @@ gshscompiler_env_generator_modify = [gs:value| λ 'f. λ 'env. for
         〉;
     . record.∧ env2 env
 |]
+
+$gsdeclare hscompiler.env.pattern.set gshscompiler_env_pattern_set
+
+gshscompiler_env_pattern_modify = [gs:value| λ 'f. λ 'env. hscompiler.env.pattern.set (f (hscompiler.env.pattern.get env)) env |]
 
 gshscompiler_env_unary_modify = [gs:value| λ 'f. λ 'env. for
         'env2 ∝ for 'env1 ∝ f (hscompiler.env.unary.get env);. 〈
