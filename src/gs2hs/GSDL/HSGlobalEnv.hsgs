@@ -70,6 +70,27 @@ gshscompiler_global_env = [gs:value|
                 )
                 qs
     ) $
+    hscompiler.env.pattern.modify (hscompiler.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'pos. λ 'p. foldr
+        (λ 'qi. λ 'k. analyze qi.
+            case qloitem.char 'ch. either.for 'p1 ← k;. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcviewpattern_w} pos (
+                hsoutput.ivar qq{GSI.List} qq{gscons_view} :
+                hsoutput.list (
+                    hsoutput.arg-expr pos (hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcrunepattern_w} pos (hsoutput.char ch : nil)) :
+                    hsoutput.arg-expr pos p1 :
+                    nil
+                ) :
+                nil
+            )
+        )
+        (analyze p #1.
+            case nothing. right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcviewpattern_w} pos (
+                hsoutput.ivar qq{GSI.List} qq{gsnil_view} :
+                hsoutput.list nil :
+                nil
+            )
+        )
+        (p #0)
+    )) $
     hscompiler.env.empty
 |]
 
