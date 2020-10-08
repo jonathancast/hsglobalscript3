@@ -108,4 +108,5 @@ gshscompiler_env_view_simple_insert = [gs:value| λ 'v. λ 'm. λ 'hsv. hscompil
 
 gshscompile_qchar = [gs:value| λ 'r. analyze r.
     case r{n}. right r{\n}
+    case r{\[}. right r{\[}
 |]
