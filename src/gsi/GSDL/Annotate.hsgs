@@ -125,6 +125,7 @@ gsannotate_qloitem = [gs:value| λ 'env. λ 'q. analyze q.
 
 gsannotate_pat_qloitem = [gs:value| λ 'env. λ 'q. analyze q.
     case qloitem.char 'ch. qloitem.char ch
+    case qloitem.qchar 'ch. qloitem.qchar ch
 |]
 
 $gsdeclare annotate-generator-app gsannotate_generator_app
