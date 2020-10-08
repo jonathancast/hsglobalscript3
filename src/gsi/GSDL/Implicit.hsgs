@@ -1,4 +1,4 @@
-module GSDL.Implicit (gsadd_implicits_document, gsadd_implicits_expr) where
+module GSDL.Implicit (gsadd_implicits_document, gsadd_implicits_expr, gsadd_implicits_pat) where
 
 $gsimports
 
