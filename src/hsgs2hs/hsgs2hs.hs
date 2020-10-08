@@ -486,6 +486,10 @@ compileFalliblePat env (PQLO pos "r" [PQQChar pos1 'n']) = return (
     Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
     HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar '\n'
   )
+compileFalliblePat env (PQLO pos "r" [PQQChar pos1 c]) | c `elem` "[]" = return (
+    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrunepattern_w", HSIType "GSI.Util" "Pos" ],
+    HSVar "gsbcrunepattern_w" `HSApp` hspos pos1 `HSApp` HSChar c
+  )
 compileFalliblePat env (PQLO pos "r" [qi]) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" [" ++ pqloiCode qi ++ "]) next"
 compileFalliblePat env (PQLO pos "r" []) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" []) next"
 compileFalliblePat env (PQLO pos "r" qs) = $gsfatal $ "compileFalliblePat (PQLO pos \"r\" qs) next"
