@@ -75,6 +75,7 @@ test_qq_literal
 test_qq_newline
 test_qq_interpolation
 test_qq_pattern_hsgs_syntax
+test_qq_pattern_quoted_bracket_hsgs_syntax
 
 echo '### Different functions'
 
