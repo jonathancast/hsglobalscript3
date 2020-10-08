@@ -910,6 +910,7 @@ globalEnv = Env{
         ("hscompile-arg", "GSDL.HSCompile", "gshscompile_arg"),
         ("hscompile-document", "GSDL.HSCompile", "gshscompile_document"),
         ("hscompile-expr", "GSDL.HSCompile", "gshscompile_expr"),
+        ("hscompile-pat", "GSDL.HSCompile", "gshscompile_pat"),
         ("hscompile-value", "GSDL.HSCompile", "gshscompile_value"),
         ("hscompiler.env.arg-var.get", "GSDL.HSCompiler", "gshscompiler_env_arg_var_get"),
         ("hscompiler.env.arg-var.insert", "GSDL.HSCompiler", "gshscompiler_env_arg_var_insert"),

@@ -1,4 +1,4 @@
-module GSDL.HSCompile (gshscompile_document, gshscompile_value, gshscompile_expr, gshscompile_arg) where
+module GSDL.HSCompile (gshscompile_document, gshscompile_value, gshscompile_expr, gshscompile_arg, gshscompile_pat) where
 
 $gsimports
 
