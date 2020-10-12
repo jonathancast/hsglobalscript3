@@ -760,6 +760,7 @@ globalEnv = Env{
         ("add-implicits-document", "GSDL.Implicit", "gsadd_implicits_document"),
         ("add-implicits-expr", "GSDL.Implicit", "gsadd_implicits_expr"),
         ("add-implicits-pat", "GSDL.Implicit", "gsadd_implicits_pat"),
+        ("add-implicits-pat-qloitem", "GSDL.Implicit", "gsadd_implicits_pat_qloitem"),
         ("addition.+", "GSI.Addition", "gsaddition_plus"),
         ("advance-rune", "GSI.Parser", "gsparser_advance_rune"),
         ("advance-string", "GSI.Parser", "gsparser_advance_string"),
