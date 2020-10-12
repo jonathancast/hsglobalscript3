@@ -173,4 +173,5 @@ gsannotate_pat = [gs:value| λ 'env. λ 'p. analyze p.
 gsannotate_pat_qloitem = [gs:value| λ 'env. λ 'q. analyze q.
     case qloitem.char 'ch. 〈 '0 ∝ qloitem.char ch; '1 ∝ nil; 〉
     case qloitem.qchar 'ch. 〈 '0 ∝ qloitem.qchar ch; '1 ∝ nil; 〉
+    case qloitem.interp 'pos 'p. for 'pa ∝ annotate-pat env p;. 〈 '0 ∝ qloitem.interp pos (pa #0); '1 ∝ pa #1; 〉
 |]
