@@ -93,6 +93,7 @@ gshscompiler_global_env = [gs:value|
                 hsoutput.list nil :
                 nil
             )
+            case just (qloitem.interp 'pos1 'p). hscompile-fallible-pat env pos1 p
         )
         (p #0)
     )) $
