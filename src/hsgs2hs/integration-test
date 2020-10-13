@@ -10,6 +10,8 @@
 
 fn test_gsi_impl { ./test_gsi_impl.rc $* }
 
+echo '## hsgs2hs'
+
 test_hsgs_empty_file
 test_hsgs_non_existent_directory
 test_hsgs_empty_directory
@@ -18,17 +20,17 @@ test_hsgs_haskell_interpolation
 test_hsgs_normal_bracket
 test_hsgs_comments
 
-# Different kinds of interpolations
+echo '### Different kinds of interpolations'
 
 test_hsgs_variable_expressions
 test_hsgs_variable_values
 test_hsgs_application_values
 
-# Different kinds of declarations
+echo '### Different kinds of declarations'
 
 test_hsgs_variable_declarations
 
-# Different kinds of expressions
+echo '### Different kinds of expressions'
 
 test_number
 test_unbound_variable
@@ -56,7 +58,7 @@ test_non_associative_operators
 test_right_associative_operators
 test_parenthesized_operators
 
-# Different kinds of patterns
+echo '### Different kinds of patterns'
 
 test_discard_pattern_hsgs_syntax
 test_variable_pattern_hsgs_syntax
@@ -65,11 +67,11 @@ test_view_pattern_hsgs_syntax
 test_view_pattern_arg_hsgs_syntax
 test_view_pattern_operator_hsgs_syntax
 
-# r{} literals
+echo '### r{} literals'
 
 test_r_literal
 
-# qq{} literals
+echo '### qq{} literals'
 
 test_qq_literal
 test_qq_newline
@@ -78,7 +80,7 @@ test_qq_pattern_hsgs_syntax
 test_qq_pattern_quoted_bracket_hsgs_syntax
 test_qq_pattern_interpolation_hsgs_syntax
 
-# Different functions
+echo '### Different functions'
 
 test_undefined_function_hsgs
 ok_diff_compiled '-- undefined argument --' hsgs2hs undefined-argument.hsgs .hs runghc `{./test-ghcoptions}
@@ -88,7 +90,7 @@ ok_diff_compiler '-- print-error function --' hsgs2hs print-error.hsgs .hs
 ok_diff_compiled '-- lambdas --' hsgs2hs lambdas.hsgs .hs runghc `{./test-ghcoptions}
 ok_fuzzy_diff_regex_compiled '-- lambda stack traces --' hsgs2hs lambda-stack-trace.hsgs .hs runghc `{./test-ghcoptions}
 
-# Different kinds of generators
+echo '### Different kinds of generators'
 
 test_hsgs_exec_binds
 ok_diff_compiler '-- variable definition binds --' hsgs2hs bound-variable-bind-impfor.hsgs bound-variable-bind-impfor.hs
@@ -96,15 +98,15 @@ ok_diff_compiled '-- variable definition matches --' hsgs2hs bound-variable-matc
 ok_diff_compiled '-- variable binds are in scope in subsequent generators --' hsgs2hs bound-variable-bind-in-generator.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- variable binds are in scope in subsequent monadic generators --' hsgs2hs bound-variable-bind-in-monadic-generator.hsgs .hs runghc `{./test-ghcoptions}
 
-# Different monads
+echo '### Different monads'
 
 ok_diff_compiler '-- either-for --' hsgs2hs either-for.hsgs either-for.hs
 
-# Imperative programs
+echo '### Imperative programs'
 
 ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
 
-# log{} literals
+echo '### log{} literals'
 
 ok_diff_compiler '-- log literals --' hsgs2hs log-literal.hsgs log-literal.hs
 ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
