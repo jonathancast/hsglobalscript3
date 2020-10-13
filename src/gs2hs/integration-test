@@ -61,6 +61,7 @@ echo '### Different kinds of patterns'
 
 test_discard_pattern_hsgs_syntax
 test_variable_pattern_hsgs_syntax
+test_operator_variable_pattern_hsgs_syntax
 test_view_pattern_hsgs_syntax
 test_view_pattern_arg_hsgs_syntax
 test_view_pattern_operator_hsgs_syntax
