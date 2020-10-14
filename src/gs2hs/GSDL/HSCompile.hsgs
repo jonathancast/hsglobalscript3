@@ -79,17 +79,21 @@ $gsdeclare hscompile-args gshscompile_args
 gshscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     case expr.var 'v.
         for
-                'inas ∝ analyze hscompiler.env.constrarity.get v env. case nothing. as;
-                'outas ∝ analyze hscompiler.env.constrarity.get v env. case nothing. nil;
+                'senv ∝ hscompiler.env.supply.get v env;
+                'inas ∝ analyze hscompiler.env.constrarity.get v env. case nothing. as case just 'n. take n as;
+                'outas ∝ analyze hscompiler.env.constrarity.get v env. case nothing. nil case just 'n. drop n as;
             . (analyze outas.
                 case nil. id
+                case _. λ 'ep. either.for
+                        'p ← ep;
+                        'outas1 ← either.mapM (hscompile-arg senv env) outas;
+                    . right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcapp_w} pos (p : hsoutput.list outas1 : nil)
             ) $
                 (analyze hscompiler.env.constr.get v env.
                     case false. id
                     case true. either.map (hsoutput.rehere pos)
                 ) $
                     (either.for
-                            'senv ← right $ hscompiler.env.supply.get v env;
                             'p ← analyze hscompiler.env.var.get v env.
                                 case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
                                 case just 'p. right p
