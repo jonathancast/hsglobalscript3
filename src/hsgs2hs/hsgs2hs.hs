@@ -920,6 +920,7 @@ globalEnv = Env{
         ("hscompiler.env.constr.get", "GSDL.HSCompiler", "gshscompiler_env_constr_get"),
         ("hscompiler.env.constr.insert", "GSDL.HSCompiler", "gshscompiler_env_constr_insert"),
         ("hscompiler.env.constrarity.get", "GSDL.HSCompiler", "gshscompiler_env_constrarity_get"),
+        ("hscompiler.env.constrarity.insert", "GSDL.HSCompiler", "gshscompiler_env_constrarity_insert"),
         ("hscompiler.env.empty", "GSDL.HSCompiler", "gshscompiler_env_empty"),
         ("hscompiler.env.gen-sym", "GSDL.HSCompiler", "gshscompiler_env_gen_sym"),
         ("hscompiler.env.generator.get", "GSDL.HSCompiler", "gshscompiler_env_generator_get"),

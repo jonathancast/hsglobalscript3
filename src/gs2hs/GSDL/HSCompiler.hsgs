@@ -1,4 +1,4 @@
-module GSDL.HSCompiler (gshscompiler_env_var_insert, gshscompiler_env_var_get, gshscompiler_env_constr_insert, gshscompiler_env_constr_get, gshscompiler_env_constrarity_get, gshscompiler_env_view_insert, gshscompiler_env_view_get, gshscompiler_env_gen_sym, gshscompiler_env_generator_get, gshscompiler_env_generator_modify, gshscompiler_env_pattern_modify, gshscompiler_env_pattern_get, gshscompiler_env_unary_get, gshscompiler_env_unary_modify, gshscompiler_env_arg_var_insert, gshscompiler_env_arg_var_get, gshscompiler_env_supply_get, gshscompiler_env_supply_monad_insert, gshscompiler_env_qlo_get, gshscompiler_env_qlo_insert, gshscompiler_env_empty, gshscompiler_supply_env_monad_get, gshscompiler_supply_env_empty) where
+module GSDL.HSCompiler (gshscompiler_env_var_insert, gshscompiler_env_var_get, gshscompiler_env_constr_insert, gshscompiler_env_constr_get, gshscompiler_env_constrarity_insert, gshscompiler_env_constrarity_get, gshscompiler_env_view_insert, gshscompiler_env_view_get, gshscompiler_env_gen_sym, gshscompiler_env_generator_get, gshscompiler_env_generator_modify, gshscompiler_env_pattern_modify, gshscompiler_env_pattern_get, gshscompiler_env_unary_get, gshscompiler_env_unary_modify, gshscompiler_env_arg_var_insert, gshscompiler_env_arg_var_get, gshscompiler_env_supply_get, gshscompiler_env_supply_monad_insert, gshscompiler_env_qlo_get, gshscompiler_env_qlo_insert, gshscompiler_env_empty, gshscompiler_supply_env_monad_get, gshscompiler_supply_env_empty) where
 
 $gsimports
 
@@ -9,6 +9,8 @@ gshscompiler_env_gen_sym = [gs:value| λ 'env. λ 'k. k qq{x§(natural.fmt-decim
 gshscompiler_env_var_insert = [gs:value| λ 'v. λ 'a. λ 'env.  record.∧ 〈 'vars ∝ ordered-map.insert gsvar.<=> v a (env #vars); 〉 env |]
 
 gshscompiler_env_constr_insert = [gs:value| λ 'v. λ 'env. record.∧ 〈 'constrs ∝ ordered-set.insert gsvar.<=> v (env #constrs); 〉 env |]
+
+gshscompiler_env_constrarity_insert = [gs:value| λ 'v. λ 'n. λ 'env. record.∧ 〈 'constrarities ∝ ordered-map.insert gsvar.<=> v n (env #constrarities); 〉 env |]
 
 gshscompiler_env_view_insert = [gs:value| λ 'v. λ 'a. λ 'env. record.∧ 〈 'views ∝ ordered-map.insert gsvar.<=> v a (env #views); 〉 env |]
 
