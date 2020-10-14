@@ -82,6 +82,7 @@ test_qq_pattern_interpolation_hsgs_syntax
 echo '### Different functions'
 
 test_undefined_function_hsgs
+test_undefined_argument_hsgs
 
 echo '## test-gsi'
 
