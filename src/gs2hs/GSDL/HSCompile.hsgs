@@ -113,10 +113,11 @@ gshscompile_custom_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'af. λ 'as. ana
 |]
 
 gshscompile_arg = [gs:value| λ 'senv. λ 'env. λ 'a. analyze a.
-    case arg.expr 'pos (expr.var 'v). (analyze hscompiler.env.constr.get v env.
-        case false. (analyze hscompiler.env.var.get v env.
-            case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
-            case just 'p. right $ hsoutput.arg-var p
+    case arg.expr 'pos (expr.var 'v). (analyze hscompiler.env.var.get v env.
+        case nothing. left $ pos.fmt pos qq{§(gsvar.fmt-atom v) not in scope}
+        case just 'p. right $ hsoutput.arg-var $ (analyze hscompiler.env.constr.get v env.
+            case false. p
+            case true. hsoutput.rehere-value pos (hsoutput.list nil) p
         )
     )
     case arg.expr 'pos (expr.value-var 'v). (analyze hscompiler.env.var.get v env.
