@@ -1163,6 +1163,7 @@ globalEnv = Env{
         ("syntactic-category.where", "GSDL.AST", "gssyntactic_category_where"),
         ("system", "GSI.Env", "gssystem"),
         ("tail.modify", "GSI.List", "gstail_modify"),
+        ("take", "GSI.List", "gstake"),
         ("test-gsi.gsrun", "TestGSI.RunTime", "gstest_gsi_gsrun"),
         ("test-gsi.gstyc", "TestGSI.CompileTime", "gstest_gsi_gstyc"),
         ("tokens.modify", "GSI.List", "gstokens_modify"),

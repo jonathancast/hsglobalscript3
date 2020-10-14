@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.List (gsappend, gsconcat, gsbigcompose, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gslist_singleton, gscons, gsnil, gscons_view, gsnil_view) where
+module GSI.List (gsappend, gsconcat, gsbigcompose, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gstake, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gslist_singleton, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
@@ -71,6 +71,18 @@ gsmap3 = [gs:value| λ 'f. λ 'xn. λ 'ys. λ 'zs. analyze xn.
     case nil. nil
 |]
 
+-- §gs{length (take n xn) = n `min` length xn}
+-- §gs{∀ 'i < length (take n xn). take n xn !! i = xn !! i}
+gstake = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
+    case nothing. nil
+    case just 'n1. (analyze xn.
+        case nil. nil
+        case 'x : 'xn1. x : take n1 xn1
+    )
+|]
+
+-- §gs{length (drop n xn) = length xn ∸ n}
+-- §gs{∀ 'i < length (drop n xn). drop n xn !! i = xn !! (n + i)}
 gsdrop = [gs:value| λ 'n. λ 'xn. analyze n -? 1.
     case nothing. xn
     case just 'n1. (analyze xn.
