@@ -17,6 +17,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.constr.insert (gsvar qq{error}) $
     hscompiler.env.constr.insert (gsvar qq{undefined}) $
     hscompiler.env.constr.insert (gsvar qq{λ}) $
+    hscompiler.env.constrarity.insert (gsvar qq{λ}) 2 $
     hscompiler.env.generator.modify (hscompiler.env.var.simple-insert (gsvar qq{←}) qq{GSI.StdLib} qq{gsfrom}) $
     hscompiler.env.generator.modify (hscompiler.env.var.simple-insert (gsvar qq{∝}) qq{GSI.StdLib} qq{gsmatch}) $
     hscompiler.env.supply.monad.simple-insert (gsvar qq{either.for}) qq{GSI.Either} qq{gseither_monad} $
