@@ -83,6 +83,7 @@ echo '### Different functions'
 
 test_undefined_function_hsgs
 test_undefined_argument_hsgs
+test_undefined_value_hsgs
 
 echo '## test-gsi'
 
