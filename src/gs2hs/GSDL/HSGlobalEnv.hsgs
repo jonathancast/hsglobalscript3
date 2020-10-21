@@ -41,6 +41,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{natural.addition}) qq{GSI.Natural} qq{gsnatural_addition} $
     hscompiler.env.var.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil} $
     hscompiler.env.var.simple-insert (gsvar qq{not}) qq{GSI.Bool} qq{gsnot} $
+    hscompiler.env.var.simple-insert (gsvar qq{print-error}) qq{GSI.Env} qq{gsprintError} $
     hscompiler.env.var.simple-insert (gsvar qq{right}) qq{GSI.Either} qq{gsright} $
     hscompiler.env.var.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue} $
     hscompiler.env.var.simple-insert (gsvar qq{undefined}) qq{GSI.StdLib} qq{gsundefined} $
