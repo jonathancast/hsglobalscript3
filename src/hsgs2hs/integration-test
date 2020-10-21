@@ -87,7 +87,7 @@ test_undefined_argument_hsgs
 test_undefined_value_hsgs
 test_error_function_hsgs
 test_print_error_function_hsgs
-ok_diff_compiled '-- lambdas --' hsgs2hs lambdas.hsgs .hs runghc `{./test-ghcoptions}
+test_lambdas_hsgs
 ok_fuzzy_diff_regex_compiled '-- lambda stack traces --' hsgs2hs lambda-stack-trace.hsgs .hs runghc `{./test-ghcoptions}
 
 echo '### Different kinds of generators'
