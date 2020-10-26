@@ -1,4 +1,0 @@
-
-./test-fixtures/lambda-stack-trace.hsgs:4:35
-    \(called from ./test-fixtures/lambda-stack-trace.hsgs:4:24\)
-./test-hslib/TestHSGS.hs:\d+:\d+
