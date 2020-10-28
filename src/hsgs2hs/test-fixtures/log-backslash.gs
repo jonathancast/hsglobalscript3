@@ -1,0 +1,1 @@
+log.fmt log{\\}

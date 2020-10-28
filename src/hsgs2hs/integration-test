@@ -109,7 +109,7 @@ ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variabl
 echo '### log{} literals'
 
 ok_diff '-- log literals --' test_gsi_impl log-literal.gs
-ok_diff_compiler '-- backslash escapes --' hsgs2hs log-backslash.hsgs log-backslash.hs
+ok_diff '-- backslash escapes --' test_gsi_impl log-backslash.gs
 ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
 ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
 
