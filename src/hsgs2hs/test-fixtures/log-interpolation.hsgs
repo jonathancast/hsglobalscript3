@@ -1,2 +1,0 @@
-$gsimports
-[gs:expr hsvs=x,| log{§(gsv x)} |]

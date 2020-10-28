@@ -110,7 +110,7 @@ echo '### log{} literals'
 
 ok_diff '-- log literals --' test_gsi_impl log-literal.gs
 ok_diff '-- backslash escapes --' test_gsi_impl log-backslash.gs
-ok_diff_compiler '-- interpolations --' hsgs2hs log-interpolation.hsgs log-interpolation.hs
+ok_diff '-- interpolations --' test_gsi_impl log-interpolation.gs
 ok_diff_compiler '-- parentheses (in log{})--' hsgs2hs log-parens.hsgs log-parens.hs
 
 # ok_diff_compiled:  runghc `{./test-ghcoptions}
