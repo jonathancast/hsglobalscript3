@@ -111,7 +111,7 @@ echo '### log{} literals'
 test_log_literal
 test_log_backslash
 test_log_interpolation
-ok_diff '-- parentheses (in log{})--' test_gsi_impl log-parens.gs
+test_log_parens
 
 # ok_diff_compiled:  runghc `{./test-ghcoptions}
 # import TestHSGS (printTestExpr)
