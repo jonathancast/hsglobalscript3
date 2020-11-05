@@ -88,6 +88,10 @@ TODO=todo test_error_function_hsgs
 test_print_error_function_hsgs
 test_lambdas_hsgs
 
+echo '### log{} literals'
+
+test_log_literal
+
 echo '## test-gsi'
 
 PROG=gs2hs-test-gsi
