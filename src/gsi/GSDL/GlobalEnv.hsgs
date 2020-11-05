@@ -78,6 +78,14 @@ gsimplicits_global_env = [gs:value|
         )
         qs
     ) $
+    implicit.env.qlo.insert (gsvar qq{log}) (λ 'env. λ 'qs. map
+        (λ 'qi. analyze qi.
+            case qloitem.char 'ch. qloitem.char ch
+            case qloitem.qchar 'ch. qloitem.qchar ch
+            case qloitem.interp 'pos 'e. qloitem.interp pos (add-implicits-expr env e)
+        )
+        qs
+    ) $
     implicit.env.pattern.modify (implicit.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'p. 〈
         '0 ∝ map (add-implicits-pat-qloitem env) (p #0);
         '1 ∝ maybe.map (add-implicits-pat-qloitem env) (p #1);
