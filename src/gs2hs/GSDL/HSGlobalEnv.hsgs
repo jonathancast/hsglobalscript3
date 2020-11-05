@@ -73,6 +73,13 @@ gshscompiler_global_env = [gs:value|
                 )
                 qs
     ) $
+    hscompiler.env.qlo.insert (gsvar qq{log}) (λ 'env. λ 'pos. λ 'qs.
+        either.map (hsoutput.applyivarpos qq{GSI.Log} qq{gsbclog_w} pos) $ either.map list.singleton $ either.map hsoutput.list $ either.mapM
+            (λ 'qi. analyze qi.
+                case qloitem.char 'ch. right $ hsoutput.arg-expr pos $ hsoutput.applyivarpos qq{GSI.Log} qq{gsbclogstring_w} pos (hsoutput.string (ch : nil) : nil)
+            )
+            qs
+    ) $
     hscompiler.env.pattern.modify (hscompiler.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'pos. λ 'p. foldr
         (λ 'qi. λ 'k. either.for
                 'ch1 ← analyze qi.
