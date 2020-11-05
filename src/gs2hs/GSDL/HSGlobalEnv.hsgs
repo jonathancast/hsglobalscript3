@@ -36,6 +36,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{gsio.file.stat}) qq{GSI.Env} qq{gsfile_stat} $
     hscompiler.env.var.simple-insert (gsvar qq{gsio.monad}) qq{GSI.GSIO} qq{gsio_monad} $
     hscompiler.env.var.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust} $
+    hscompiler.env.var.simple-insert (gsvar qq{log.fmt}) qq{GSI.Log} qq{gslog_fmt} $
     hscompiler.env.var.simple-insert (gsvar qq{mapM0}) qq{GSI.Monad} qq{gsmonad_mapM0} $
     hscompiler.env.var.simple-insert (gsvar qq{map}) qq{GSI.List} qq{gsmap} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.addition}) qq{GSI.Natural} qq{gsnatural_addition} $
