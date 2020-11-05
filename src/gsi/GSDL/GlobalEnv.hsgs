@@ -15,6 +15,7 @@ gsparser_global_env = [gs:value|
     parser.env.generator.modify (parser.env.signature.insert (gsvar qq{∝}) (order-of-being.pattern : order-of-being.expr : nil)) $
     parser.env.missing-else.insert (gsvar qq{case}) expr.missing-case $
     parser.env.pattern.modify (parser.env.qlo.insert (gsvar qq{qq}) (λ 'env. parse-qq-pattern env)) $
+    parser.env.qlo.insert (gsvar qq{log}) (λ 'env. many symbol) $
     parser.env.qlo.insert (gsvar qq{qq}) (λ 'env. many symbol) $
     parser.env.qlo.insert (gsvar qq{r}) (λ 'env. symbol) $
     parser.env.signature.insert (gsvar qq{#}) (order-of-being.var-name : nil) $
