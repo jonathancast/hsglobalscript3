@@ -91,6 +91,7 @@ test_lambdas_hsgs
 echo '### log{} literals'
 
 test_log_literal
+test_log_backslash
 
 echo '## test-gsi'
 

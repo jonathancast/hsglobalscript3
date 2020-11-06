@@ -87,7 +87,7 @@ $gsdeclare fmt-list gsfmt_list
 gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
     case hsexpr.var 'v. (<>) v
     case hsexpr.string 's. (:) r{"} ∘ compose (map quote-if-needed s) ∘ (:) r{"}
-    case hsexpr.char 'r. (:) r{'} ∘ (:) r ∘ (:) r{'}
+    case hsexpr.char 'r. (:) r{'} ∘ quote-if-needed r ∘ (:) r{'}
     case hsexpr.list 'es. (:) r{\[} ∘ fmt-list es ∘ (:) r{\]}
     case hsexpr.int 'n. (<>) (fmt-decimal n)
     case hsexpr.app _ _. (:) r{\(} ∘ hsexpr.fmt e ∘ (:) r{\)}
@@ -96,6 +96,7 @@ gshsexpr_fmt_atom = [gs:value| λ 'e. analyze e.
 
 gsquote_if_needed = [gs:value| λ 'r. analyze r.
     case r{\n}. (<>) qq{\\n}
+    case r{\\}. (<>) qq{\\\\}
     case _. (:) r
 |]
 
