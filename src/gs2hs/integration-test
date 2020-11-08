@@ -92,6 +92,7 @@ echo '### log{} literals'
 
 test_log_literal
 test_log_backslash
+test_log_interpolation
 
 echo '## test-gsi'
 

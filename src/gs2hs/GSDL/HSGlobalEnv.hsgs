@@ -69,7 +69,7 @@ gshscompiler_global_env = [gs:value|
                     case qloitem.char 'r. right $ hsoutput.applyivarpos qq{GSI.String} qq{gsbcstringlit_w} pos (hsoutput.string (r : nil) : nil)
                     case qloitem.qchar 'r. either.for 'r1 ← hscompile-qchar r;.
                         right $ hsoutput.applyivarpos qq{GSI.String} qq{gsbcstringlit_w} pos (hsoutput.string (r1 : nil) : nil)
-                    case qloitem.interp 'pos 'e. hscompile-expr env hscompiler.supply.env.empty pos e
+                    case qloitem.interp 'pos1 'e. hscompile-expr env hscompiler.supply.env.empty pos1 e
                 )
                 qs
     ) $
@@ -80,6 +80,7 @@ gshscompiler_global_env = [gs:value|
                     case qloitem.char 'ch. output-char ch
                     case qloitem.qchar r{\\}. output-char r{\\}
                     case qloitem.qchar r{n}. output-char r{\n}
+                    case qloitem.interp 'pos1 'e. either.map (hsoutput.arg-expr pos1) $ hscompile-expr env hscompiler.supply.env.empty pos1 e
             )
             qs
     ) $
