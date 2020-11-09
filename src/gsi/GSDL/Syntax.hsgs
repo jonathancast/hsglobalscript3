@@ -311,22 +311,22 @@ gsexplicit_arg = [gs:value| λ 'env. parser.for
 
 $gsdeclare idmc-w gsidmc_w
 
-gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run (p env)) nil cl |]
+gsidmc = [gs:value| λ 'env. λ 'p. λ 'cl. idmc-w env (parser-run (p env)) (cl : nil) |]
 
 $gsdeclare qloitem gsqloitem
 
-gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'st. λ 'cl. analyze p.
-    case parser.prim.unit-plus 'x 'p1. (analyze st. case nil. parser.unit x case _. empty) <|> idmc-w env p1 st cl
+gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'st. analyze p.
+    case parser.prim.unit-plus 'x 'p1. (analyze st. case _ : nil. parser.unit x case _. empty) <|> idmc-w env p1 st
     case parser.prim.symbol-or-eof 'ek 'sk.
-        <|> (parser.eof *> idmc-w env ek st cl)
-        <|> (parser.for 'stq ← qloitem env st cl;. analyze sk (stq #x).
-            case right 'p1. idmc-w env p1 (stq #st) cl
+        <|> (parser.eof *> idmc-w env ek st)
+        <|> (parser.for 'stq ← qloitem env st;. analyze sk (stq #x).
+            case right 'p1. idmc-w env p1 (stq #st)
         )
     case parser.prim.fail nil nil. empty
 |]
 
-gsqloitem = [gs:value| λ 'env. λ 'st. λ 'cl.
-    <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r cl);. parser.unit 〈 'x ∝ qloitem.char r; 'st ∝ st; 〉)
+gsqloitem = [gs:value| λ 'env. λ 'st.
+    <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r (head.get-strict st));. parser.unit 〈 'x ∝ qloitem.char r; 'st ∝ st; 〉)
     <|> (parser.for 'r ← char r{\\} *> matching log{any character} (λ 'r. true);. parser.unit 〈 'x ∝ qloitem.qchar r; 'st ∝ st; 〉)
     <|> (parser.for _ ← char r{\§} *> char r{\(} *> whitespace; 'pos ← get-pos; 'p ← expr env; _ ← char r{\)};. parser.unit 〈 'x ∝ qloitem.interp pos (p #0); 'st ∝ st; 〉)
 |]
