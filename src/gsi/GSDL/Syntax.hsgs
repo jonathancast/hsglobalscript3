@@ -327,6 +327,8 @@ gsidmc_w = [gs:value| λ 'env. λ 'p. λ 'st. analyze p.
 
 gsqloitem = [gs:value| λ 'env. λ 'st.
     <|> (parser.for 'r ← matching log{normal character} (λ 'r. list.∉ rune.≡ r qq{\§\\(){}[]} && rune.≠ r (head.get-strict st));. parser.unit 〈 'x ∝ qloitem.char r; 'st ∝ st; 〉)
+    <|> (parser.for _ ← char r{\(};. parser.unit 〈 'x ∝ qloitem.char r{\(}; 'st ∝ r{\)} : st; 〉)
+    <|> (analyze st. case _ : nil. empty case 'cl : 'st1. parser.for _ ← char cl;. parser.unit 〈 'x ∝ qloitem.char cl; 'st ∝ st1; 〉)
     <|> (parser.for 'r ← char r{\\} *> matching log{any character} (λ 'r. true);. parser.unit 〈 'x ∝ qloitem.qchar r; 'st ∝ st; 〉)
     <|> (parser.for _ ← char r{\§} *> char r{\(} *> whitespace; 'pos ← get-pos; 'p ← expr env; _ ← char r{\)};. parser.unit 〈 'x ∝ qloitem.interp pos (p #0); 'st ∝ st; 〉)
 |]
