@@ -908,6 +908,7 @@ globalEnv = Env{
         ("gsvar.name", "GSI.GSI", "gsigsvar_name"),
         ("gsvar.≡", "GSI.GSI", "gsigsvar_eq"),
         ("gt", "GSI.OrderTotal", "gsord_gt"),
+        ("head.get-strict", "GSI.List", "gshead_get_strict"),
         ("head.modify-strict", "GSI.List", "gshead_modify_strict"),
         ("hscompile-arg", "GSDL.HSCompile", "gshscompile_arg"),
         ("hscompile-document", "GSDL.HSCompile", "gshscompile_document"),
