@@ -84,7 +84,7 @@ echo '### Different functions'
 test_undefined_function_hsgs
 test_undefined_argument_hsgs
 test_undefined_value_hsgs
-TODO=todo test_error_function_hsgs
+test_error_function_hsgs
 test_print_error_function_hsgs
 test_lambdas_hsgs
 
