@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gsvalue, gsmatch, gsfrom, gslambda, gsconst, gscompose, gsid, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpunit, gsinfalliblepattern) where
+module GSI.StdLib (gsvalue, gsmatch, gsfrom, gslambda, gsconst, gscompose, gsid, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpmonad, gsimpunit, gsinfalliblepattern) where
 
 import GSI.Util (StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
@@ -52,6 +52,12 @@ gsimpfor :: GSValue
 gsimpfor = $gslambda_value $ \ g -> $gsbcarg $ \ e -> $gsbcimpfor $ do
     env <- $gsbcimpbind $ $gsav g
     $gsbcimpbody $ $gsae $ $gsbcapply e [ $gsav env ]
+
+gsimpmonad = [gs:value| 〈 ('>>=) ∝ impbind; 'unit ∝ impunit; 〉 |]
+
+gsimpbind = $gslambda_value $ \ a -> $gsbcarg $ \ f -> $gsbcimpfor $ do
+    x <- $gsbcimpbind $ $gsav a
+    $gsbcimpbody $ $gsae $ $gsbcapply f [ $gsav x ]
 
 gsimpunit = $gslambda_value $ \ x -> $gsbcimpfor $ do $gsbcimpunit $ $gsav x
 

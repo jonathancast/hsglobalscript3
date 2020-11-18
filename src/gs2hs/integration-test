@@ -89,6 +89,10 @@ test_print_error_function_hsgs
 test_lambdas_hsgs
 test_lambda_stack_traces_hsgs
 
+echo '### Different kinds of generators'
+
+test_hsgs_exec_binds
+
 echo '### log{} literals'
 
 test_log_literal

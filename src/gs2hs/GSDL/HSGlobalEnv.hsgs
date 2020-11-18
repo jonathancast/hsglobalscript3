@@ -1,11 +1,20 @@
-module GSDL.HSGlobalEnv (gshsgs_parser_global_env, gshscompiler_global_env, gshscompiler_hsgs_global_env) where
+module GSDL.HSGlobalEnv (gshsgs_parser_global_env, gshsgs_annotator_global_env, gshscompiler_global_env, gshscompiler_hsgs_global_env) where
 
 $gsimports
 
 gshsgs_parser_global_env = [gs:value|
     parser.env.assoc.insert (gsvar qq{:}) assoc.right $
     parser.env.else-needs-comma.set false $
+    parser.env.signature.insert (gsvar qq{impfor}) (order-of-being.generator : order-of-being.open-expr : nil) $
+    parser.env.syntactic-category.insert (gsvar qq{impfor}) syntactic-category.lambda-like $
     parser.global-env
+|]
+
+gshsgs_annotator_global_env = [gs:value|
+    annotator.env.category.insert (gsvar qq{impfor}) (λ 'as. analyze as.
+        case (arg.expr _ (expr.generators 'p0 _)):_. just category.monadic : nil
+    ) $
+    annotator.global-env
 |]
 
 $gsdeclare hscompiler.env.supply.monad.simple-insert gshscompiler_env_supply_monad_simple_insert
@@ -21,6 +30,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.generator.modify (hscompiler.env.var.simple-insert (gsvar qq{←}) qq{GSI.StdLib} qq{gsfrom}) $
     hscompiler.env.generator.modify (hscompiler.env.var.simple-insert (gsvar qq{∝}) qq{GSI.StdLib} qq{gsmatch}) $
     hscompiler.env.supply.monad.simple-insert (gsvar qq{either.for}) qq{GSI.Either} qq{gseither_monad} $
+    hscompiler.env.supply.monad.simple-insert (gsvar qq{impfor}) qq{GSI.StdLib} qq{gsimpmonad} $
     hscompiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Addition} qq{gsaddition_plus} $
     hscompiler.env.var.simple-insert (gsvar qq{>>=}) qq{GSI.Monad} qq{gsmonad_bind} $
     hscompiler.env.var.simple-insert (gsvar qq{analyzeM}) qq{GSI.StdLib} qq{gsanalyzeM} $
@@ -36,6 +46,8 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{gsio.dir.read}) qq{GSI.Env} qq{gsdir_read} $
     hscompiler.env.var.simple-insert (gsvar qq{gsio.file.stat}) qq{GSI.Env} qq{gsfile_stat} $
     hscompiler.env.var.simple-insert (gsvar qq{gsio.monad}) qq{GSI.GSIO} qq{gsio_monad} $
+    hscompiler.env.var.simple-insert (gsvar qq{impfor}) qq{GSI.StdLib} qq{gsimpfor} $
+    hscompiler.env.var.simple-insert (gsvar qq{impunit}) qq{GSI.StdLib} qq{gsimpunit} $
     hscompiler.env.var.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust} $
     hscompiler.env.var.simple-insert (gsvar qq{log.fmt}) qq{GSI.Log} qq{gslog_fmt} $
     hscompiler.env.var.simple-insert (gsvar qq{mapM0}) qq{GSI.Monad} qq{gsmonad_mapM0} $
@@ -44,6 +56,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil} $
     hscompiler.env.var.simple-insert (gsvar qq{not}) qq{GSI.Bool} qq{gsnot} $
     hscompiler.env.var.simple-insert (gsvar qq{print-error}) qq{GSI.Env} qq{gsprintError} $
+    hscompiler.env.var.simple-insert (gsvar qq{print}) qq{GSI.Env} qq{gsprint} $
     hscompiler.env.var.simple-insert (gsvar qq{right}) qq{GSI.Either} qq{gsright} $
     hscompiler.env.var.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue} $
     hscompiler.env.var.simple-insert (gsvar qq{undefined}) qq{GSI.StdLib} qq{gsundefined} $
