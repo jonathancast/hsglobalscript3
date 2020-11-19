@@ -1,2 +1,4 @@
+import GSI.Env (runGSProgram)
 $gsimports
-[gs:expr hsvs=a,| impfor 'b ← a;. b |]
+
+main = runGSProgram [gs:value| λ _. impfor 's ← impunit qq{foo\n};. print s |]
