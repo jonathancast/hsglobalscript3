@@ -94,7 +94,7 @@ echo '### Different kinds of generators'
 
 test_hsgs_exec_binds
 test_hsgs_variable_binds
-ok_diff_compiled '-- variable definition matches --' hsgs2hs bound-variable-match.hsgs .hs runghc `{./test-ghcoptions}
+test_hsgs_variable_match
 ok_diff_compiled '-- variable binds are in scope in subsequent generators --' hsgs2hs bound-variable-bind-in-generator.hsgs .hs runghc `{./test-ghcoptions}
 ok_diff_compiled '-- variable binds are in scope in subsequent monadic generators --' hsgs2hs bound-variable-bind-in-monadic-generator.hsgs .hs runghc `{./test-ghcoptions}
 
