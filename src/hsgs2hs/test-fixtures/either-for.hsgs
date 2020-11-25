@@ -1,2 +1,4 @@
+import TestHSGS (printTestExpr)
 $gsimports
-[gs:expr hsvs=x,| either.for. x |]
+
+main = printTestExpr [gs:expr| either.for. right 〈〉 |]

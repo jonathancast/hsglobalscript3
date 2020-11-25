@@ -100,7 +100,7 @@ test_hsgs_variable_bind_in_scope_in_monadic_generator
 
 echo '### Different monads'
 
-ok_diff_compiler '-- either-for --' hsgs2hs either-for.hsgs either-for.hs
+ok_diff_compiled '-- either-for --' hsgs2hs either-for.hsgs .hs runghc `{./test-ghcoptions}
 
 echo '### Imperative programs'
 
