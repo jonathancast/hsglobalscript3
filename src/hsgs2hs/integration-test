@@ -100,7 +100,7 @@ test_hsgs_variable_bind_in_scope_in_monadic_generator
 
 echo '### Different monads'
 
-ok_diff '-- either-for --' test_gsi_impl either-for.gs
+test_either_for
 
 echo '### Imperative programs'
 
