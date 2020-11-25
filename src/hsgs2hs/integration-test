@@ -102,10 +102,6 @@ echo '### Different monads'
 
 test_either_for
 
-echo '### Imperative programs'
-
-ok_diff_compiler '-- impfor expressions --' hsgs2hs variable-impfor.hsgs variable-impfor.hs
-
 echo '### log{} literals'
 
 test_log_literal
