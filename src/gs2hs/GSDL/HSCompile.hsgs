@@ -198,12 +198,12 @@ gshscompile_generator_app = [gs:value| λ 'env. λ 'senv. λ 'pos. λ 'g. λ 'as
     case generator.app 'g0 'pos1 'g1. hscompile-generator-app env senv pos g0 (〈 '0 ∝ pos1; '1 ∝ g1; 〉 : as)
 |]
 
-gshscompile_generator_arg = [gs:value| λ 'env. λ 'senv. λ 'a. for 'pos ∝ a#0;. analyze a #1.
+gshscompile_generator_arg = [gs:value| λ 'env. λ 'senv. λ 'a. for 'pos ∝ a #0;. analyze a #1.
     case generator.pattern 'p _. either.for 'r ← hscompile-pat env pos p;. right $ hsoutput.arg-expr pos r
-    case generator.expr (expr.var 'v). (analyze hscompiler.env.constr.get v env.
-        case false. (analyze hscompiler.env.var.get v env.
-            case just 'p. right $ hsoutput.arg-var p
-        )
+    case generator.expr (expr.var 'v). (analyze hscompiler.env.var.get v env.
+        case just 'p. right $ hsoutput.arg-var $ analyze hscompiler.env.constr.get v env.
+            case false. p
+            case true. hsoutput.rehere-value pos (hsoutput.list nil) p
     )
     case generator.expr expr.monad. (analyze hscompiler.supply.env.monad.get senv.
         case just 'p. right $ hsoutput.arg-var p
