@@ -93,6 +93,7 @@ echo '### Different kinds of generators'
 
 test_hsgs_exec_binds
 test_hsgs_variable_binds
+test_hsgs_variable_match
 
 echo '### log{} literals'
 
