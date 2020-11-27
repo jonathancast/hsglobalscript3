@@ -62,7 +62,7 @@ gsadd_implicits_generator = [gs:value| λ 'pos. λ 'env. λ 'g. analyze g.
             case consume.monad. expr.monad
         ) $
             implicit.env.consumes.get v (implicit.env.generators.get env)
-    case generator.app 'g0 'pos1 'g1. generator.app (add-implicits-generator pos env g0) pos (add-implicits-generator pos1 env g1)
+    case generator.app 'g0 'pos1 'g1. generator.app (add-implicits-generator pos env g0) pos1 (add-implicits-generator pos1 env g1)
     case generator.pattern 'p 'mb. generator.pattern (add-implicits-pat env p) mb
     case generator.expr 'e. generator.expr (add-implicits-expr env e)
 |]
