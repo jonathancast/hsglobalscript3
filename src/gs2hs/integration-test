@@ -97,6 +97,10 @@ test_hsgs_variable_match
 test_hsgs_variable_bind_in_scope
 test_hsgs_variable_bind_in_scope_in_monadic_generator
 
+echo '### Different monads'
+
+test_either_for
+
 echo '### log{} literals'
 
 test_log_literal
