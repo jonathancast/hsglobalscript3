@@ -13,6 +13,7 @@ gsnatural_fmt_decimal_w = [gs:value| λ 'n. λ 's. for 'p ∝ natural.div-mod n 
     for 's1 ∝ rune.from-code-point (rune.code-point r{0} + p #1) : s;.
         analyze natural.≡ (p #0) 0.
             case true. s1
+            case false. fmt-decimal-w (p #0) s1
 |]
 
 gsnatural_read_decimal = [gs:value| λ 's. foldl (λ 'a. λ 'c. (10 * a) + (rune.code-point c - rune.code-point r{0})) 0 s |]
