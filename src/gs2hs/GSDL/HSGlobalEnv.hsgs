@@ -46,10 +46,12 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{gsio.dir.read}) qq{GSI.Env} qq{gsdir_read} $
     hscompiler.env.var.simple-insert (gsvar qq{gsio.file.stat}) qq{GSI.Env} qq{gsfile_stat} $
     hscompiler.env.var.simple-insert (gsvar qq{gsio.monad}) qq{GSI.GSIO} qq{gsio_monad} $
+    hscompiler.env.var.simple-insert (gsvar qq{gt}) qq{GSI.OrderTotal} qq{gsord_gt} $
     hscompiler.env.var.simple-insert (gsvar qq{impfor}) qq{GSI.StdLib} qq{gsimpfor} $
     hscompiler.env.var.simple-insert (gsvar qq{impunit}) qq{GSI.StdLib} qq{gsimpunit} $
     hscompiler.env.var.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust} $
     hscompiler.env.var.simple-insert (gsvar qq{log.fmt}) qq{GSI.Log} qq{gslog_fmt} $
+    hscompiler.env.var.simple-insert (gsvar qq{lt}) qq{GSI.OrderTotal} qq{gsord_lt} $
     hscompiler.env.var.simple-insert (gsvar qq{mapM0}) qq{GSI.Monad} qq{gsmonad_mapM0} $
     hscompiler.env.var.simple-insert (gsvar qq{map}) qq{GSI.List} qq{gsmap} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.addition}) qq{GSI.Natural} qq{gsnatural_addition} $
@@ -64,7 +66,9 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{value}) qq{GSI.StdLib} qq{gsvalue} $
     hscompiler.env.var.simple-insert (gsvar qq{λ}) qq{GSI.StdLib} qq{gslambda} $
     hscompiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{eq}) qq{GSI.OrderTotal} qq{gsord_eq_view} $
     hscompiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{gt}) qq{GSI.OrderTotal} qq{gsord_gt_view} $
     hscompiler.env.view.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust_view} $
     hscompiler.env.view.simple-insert (gsvar qq{lt}) qq{GSI.OrderTotal} qq{gsord_lt_view} $
     hscompiler.env.view.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil_view} $
