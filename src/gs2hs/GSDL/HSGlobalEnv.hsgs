@@ -54,6 +54,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{map}) qq{GSI.List} qq{gsmap} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.addition}) qq{GSI.Natural} qq{gsnatural_addition} $
     hscompiler.env.var.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil} $
+    hscompiler.env.var.simple-insert (gsvar qq{nothing}) qq{GSI.Maybe} qq{gsnothing} $
     hscompiler.env.var.simple-insert (gsvar qq{not}) qq{GSI.Bool} qq{gsnot} $
     hscompiler.env.var.simple-insert (gsvar qq{print-error}) qq{GSI.Env} qq{gsprintError} $
     hscompiler.env.var.simple-insert (gsvar qq{print}) qq{GSI.Env} qq{gsprint} $
@@ -65,6 +66,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
     hscompiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $
     hscompiler.env.view.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{lt}) qq{GSI.OrderTotal} qq{gsord_lt_view} $
     hscompiler.env.view.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil_view} $
     hscompiler.env.view.simple-insert (gsvar qq{nothing}) qq{GSI.Maybe} qq{gsnothing_view} $
     hscompiler.env.view.simple-insert (gsvar qq{right}) qq{GSI.Either} qq{gsright_view} $
@@ -132,6 +134,7 @@ gshscompiler_hsgs_global_env = [gs:value|
     hscompiler.env.unary.modify (hscompiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_unary_plus}) $
     hscompiler.env.var.simple-insert (gsvar qq{+}) qq{GSI.Natural} qq{gsnatural_add} $
     hscompiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
+    hscompiler.env.var.simple-insert (gsvar qq{impmapM}) qq{GS.Util} qq{gsimpmapM} $
     hscompiler.env.var.simple-insert (gsvar qq{≠}) qq{GSI.Rune} qq{gsrune_neq} $
     hscompiler.global-env
 |]
