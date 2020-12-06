@@ -34,6 +34,7 @@ echo '### Different kinds of expressions'
 test_number
 test_unbound_variable
 test_function_variable
+test_qualified_operator
 test_function_literal
 test_variable_function_body
 test_parameter_function_body

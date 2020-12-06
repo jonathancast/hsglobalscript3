@@ -521,7 +521,7 @@ ident_chars = [gs:value|
 
 gsconcat = [gs:value| foldr (<>) nil |]
 
-cont_component = [gs:value| parser.map2 (:) delimiter ident-component |]
+cont_component = [gs:value| parser.map2 (:) delimiter (ident-component <|> op-component) |]
 
 $gsdeclare ident-start-char ident_start_char
 $gsdeclare ident-comp-cont ident_comp_cont
