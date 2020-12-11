@@ -117,6 +117,12 @@ fn test_gsi_impl { ./test-gsi $* }
 test_non_existent_file
 test_gscalc_empty_file
 test_gscalc_comment
+test_number
+test_qq_literal
+test_unbound_variable
+test_function_variable
+test_gscalc_undefined_variable
+test_gscalc_function_application
 test_infix_with_explicit
 test_empty_structure_literal
 test_record_literal_field
