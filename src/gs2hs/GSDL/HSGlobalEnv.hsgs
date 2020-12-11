@@ -66,6 +66,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{undefined}) qq{GSI.StdLib} qq{gsundefined} $
     hscompiler.env.var.simple-insert (gsvar qq{value}) qq{GSI.StdLib} qq{gsvalue} $
     hscompiler.env.var.simple-insert (gsvar qq{λ}) qq{GSI.StdLib} qq{gslambda} $
+    hscompiler.env.var.simple-insert (gsvar qq{∘}) qq{GSI.StdLib} qq{gscompose} $
     hscompiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
     hscompiler.env.view.simple-insert (gsvar qq{eq}) qq{GSI.OrderTotal} qq{gsord_eq_view} $
     hscompiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $

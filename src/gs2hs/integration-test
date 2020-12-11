@@ -123,6 +123,7 @@ test_unbound_variable
 test_function_variable
 test_gscalc_undefined_variable
 test_gscalc_function_application
+test_infix_operator
 test_infix_with_explicit
 test_empty_structure_literal
 test_record_literal_field
