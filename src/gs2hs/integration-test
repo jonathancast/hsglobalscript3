@@ -124,6 +124,14 @@ test_number
 test_unbound_variable
 test_function_variable
 test_qualified_operator
+test_function_literal
+test_variable_function_body
+test_parameter_function_body
+
+echo '### Shadowing'
+
+test_parameter_shadows_global_variable
+test_parameter_shadows_parameter
 
 echo '### Unclassified tests'
 
@@ -132,11 +140,6 @@ test_gscalc_undefined_variable
 test_gscalc_function_application
 test_infix_operator
 test_infix_with_explicit
-test_function_literal
-test_variable_function_body
-test_parameter_function_body
-test_parameter_shadows_global_variable
-test_parameter_shadows_parameter
 test_gscalc_analyze_undefined
 test_empty_structure_literal
 test_record_literal_field
