@@ -14,6 +14,7 @@ gsprintv = [gs:value| λ 'x. impanalyzeM eval-sync x.
     case eval-state.error 'e. print qq{<Error: §(gsfmt-error e)>}
     case eval-state.whnf (whnf.natural 'n). print (natural.fmt-decimal n)
     case eval-state.whnf (whnf.constr 'pos (gsvar qq{:}) ('r : ('s : nil))). impfor _ ← print qq{qq\{}; _ ← gsprintstr x;. print qq{\}}
+    case eval-state.whnf (whnf.constr 'pos 'v nil). impfor _ ← print $ gsvar.fmt-atom v;. impunit 〈〉
     case eval-state.whnf (whnf.record 'pos 'fs). impfor
             _ ← print qq{\〈};
             _ ← impmapM
