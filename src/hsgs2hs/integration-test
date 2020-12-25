@@ -71,6 +71,7 @@ test_view_pattern_operator_hsgs_syntax
 echo '### r{} literals'
 
 test_r_literal
+test_r_pattern_hsgs_syntax
 
 echo '### qq{} literals'
 
