@@ -133,6 +133,13 @@ gshscompiler_global_env = [gs:value|
         )
         (p #0)
     )) $
+    hscompiler.env.pattern.modify (hscompiler.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'pos. λ 'qi. either.for
+            'ch1 ← analyze qi.
+                case qloitem.char 'ch. right ch
+                case qloitem.qchar 'ch. hscompile-qchar ch
+            ;
+        . right $ hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcrunepattern_w} pos (hsoutput.char ch1 : nil)
+    )) $
     hscompiler.env.empty
 |]
 

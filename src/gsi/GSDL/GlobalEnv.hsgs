@@ -72,6 +72,7 @@ gsannotator_global_env = [gs:value|
             '1 ∝ foldr (λ 'qia. λ 'bvs. qia #1 <> bvs) (maybe.out nil $ maybe.map (λ 'pa. pa #1) $ mbpa) qisa;
         〉
     )) $
+    annotator.env.pattern.modify (annotator.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'qi. annotate-pat-qloitem env qi)) $
     annotator.env.empty
 |]
 
@@ -100,6 +101,7 @@ gsimplicits_global_env = [gs:value|
         '0 ∝ map (add-implicits-pat-qloitem env) (p #0);
         '1 ∝ maybe.map (add-implicits-pat-qloitem env) (p #1);
     〉)) $
+    implicit.env.pattern.modify (implicit.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'qi. add-implicits-pat-qloitem env qi)) $
     implicit.env.empty
 |]
 
