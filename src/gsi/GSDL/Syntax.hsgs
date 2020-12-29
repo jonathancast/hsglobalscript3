@@ -179,6 +179,7 @@ gsexpr_function = [gs:value| λ 'env. parser.for 'p ← expr.atom true env;. exp
 $gsdeclare pat.atom gspat_atom
 
 $gsdeclare arg-operator arg_operator
+$gsdeclare var-name var_name
 
 gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
     <|> parser.unit 〈 '0 ∝ e; '1 ∝ s; 〉
@@ -192,7 +193,7 @@ gsexpr_function_w = [gs:value| λ 'env. λ 'e. λ 's.
                     <|> (parser.for
                             'op ← arg-operator env;
                             'a ← analyze parser.env.signature.get op env.
-                                case order-of-being.var-name : _. parser.for  'v ← ident;. parser.unit (arg.var-name v)
+                                case order-of-being.var-name : _. parser.for  'v ← var-name;. parser.unit (arg.var-name v)
                             ;
                         . parser.unit 〈 '0 ∝ arg.app (arg.var op) a; '1 ∝ nil; 〉
                     )
@@ -481,6 +482,11 @@ colon_paren = [gs:value| λ 'env. lexeme $ parser.for
         -- No need for negative look-ahead since there is a mandatory following space
         _ ← matching log{whitespace} is-space;
     . parser.unit v
+|]
+
+var_name = [gs:value|
+    <|> ident
+    <|> parens opname
 |]
 
 ident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
