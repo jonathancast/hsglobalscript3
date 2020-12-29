@@ -523,16 +523,107 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{||}) qq{GSI.Bool} qq{gsshort_circuit_or} $
     hscompiler.env.var.simple-insert (gsvar qq{λ}) qq{GSI.StdLib} qq{gslambda} $
     hscompiler.env.var.simple-insert (gsvar qq{∘}) qq{GSI.StdLib} qq{gscompose} $
-    hscompiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{ENOENT}) qq{GSI.Env} qq{gsENOENT_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{arg.app}) qq{GSDL.AST} qq{gsarg_app_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{arg.explicit}) qq{GSDL.AST} qq{gsarg_explicit_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{arg.expr}) qq{GSDL.AST} qq{gsarg_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{arg.var-name}) qq{GSDL.AST} qq{gsarg_var_name_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{arg.var}) qq{GSDL.AST} qq{gsarg_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{assoc.left}) qq{GSDL.AST} qq{gsassoc_left_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{assoc.non-assoc}) qq{GSDL.AST} qq{gsassoc_non_assoc_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{assoc.right}) qq{GSDL.AST} qq{gsassoc_right_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{category.fallible}) qq{GSDL.AST} qq{gscategory_fallible_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{category.monadic}) qq{GSDL.AST} qq{gscategory_monadic_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{consume.monad}) qq{GSDL.AST} qq{gsconsume_monad_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{dest-comp.char}) qq{GSDL.HSGS.AST} qq{gsdest_comp_char_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{dest-comp.expr}) qq{GSDL.HSGS.AST} qq{gsdest_comp_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{dest-comp.imports}) qq{GSDL.HSGS.AST} qq{gsdest_comp_imports_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{dest-comp.pos}) qq{GSDL.HSGS.AST} qq{gsdest_comp_pos_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{document.in}) qq{GSDL.AST} qq{gsdocument_in_view} $
     hscompiler.env.view.simple-insert (gsvar qq{eq}) qq{GSI.OrderTotal} qq{gsord_eq_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{eval-state.error}) qq{GSI.GSI} qq{gseval_state_error_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{eval-state.implementation-failure}) qq{GSI.GSI} qq{gseval_state_implementation_failure_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{eval-state.whnf}) qq{GSI.GSI} qq{gseval_state_whnf_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.app}) qq{GSDL.AST} qq{gsexpr_app_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.fallible-pat}) qq{GSDL.AST} qq{gsexpr_fallible_pat_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.generators}) qq{GSDL.AST} qq{gsexpr_generators_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.missing-case}) qq{GSDL.AST} qq{gsexpr_missing_case_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.monadic-generators}) qq{GSDL.AST} qq{gsexpr_monadic_generators_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.monad}) qq{GSDL.AST} qq{gsexpr_monad_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.natural}) qq{GSDL.AST} qq{gsexpr_natural_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.open-expr}) qq{GSDL.AST} qq{gsexpr_open_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.pat}) qq{GSDL.AST} qq{gsexpr_pat_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.qlo}) qq{GSDL.AST} qq{gsexpr_qlo_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.structure-literal}) qq{GSDL.AST} qq{gsexpr_structure_literal_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.unary}) qq{GSDL.AST} qq{gsexpr_unary_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.value-var}) qq{GSDL.AST} qq{gsexpr_value_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{expr.var}) qq{GSDL.AST} qq{gsexpr_var_view} $
     hscompiler.env.view.simple-insert (gsvar qq{false}) qq{GSI.Bool} qq{gsfalse_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{file.document}) qq{GSDL.AST} qq{gsfile_document_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{generator.app}) qq{GSDL.AST} qq{gsgenerator_app_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{generator.expr}) qq{GSDL.AST} qq{gsgenerator_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{generator.pattern}) qq{GSDL.AST} qq{gsgenerator_pattern_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{generator.var}) qq{GSDL.AST} qq{gsgenerator_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{gsvar}) qq{GSI.GSI} qq{gsigsvar_view} $
     hscompiler.env.view.simple-insert (gsvar qq{gt}) qq{GSI.OrderTotal} qq{gsord_gt_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.app}) qq{GSDL.HSGS.AST} qq{gshsexpr_app_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.char}) qq{GSDL.HSGS.AST} qq{gshsexpr_char_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.int}) qq{GSDL.HSGS.AST} qq{gshsexpr_int_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.lambda}) qq{GSDL.HSGS.AST} qq{gshsexpr_lambda_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.list}) qq{GSDL.HSGS.AST} qq{gshsexpr_list_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.string}) qq{GSDL.HSGS.AST} qq{gshsexpr_string_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsexpr.var}) qq{GSDL.HSGS.AST} qq{gshsexpr_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsfunction.in}) qq{GSDL.HSGS.AST} qq{gshsfunction_in_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsimport.type}) qq{GSDL.HSGS.AST} qq{gshsimport_type_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsimport.var}) qq{GSDL.HSGS.AST} qq{gshsimport_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{hsmodule.in}) qq{GSDL.HSGS.AST} qq{gshsmodule_in_view} $
     hscompiler.env.view.simple-insert (gsvar qq{just}) qq{GSI.Maybe} qq{gsjust_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{left}) qq{GSI.Either} qq{gsleft_view} $
     hscompiler.env.view.simple-insert (gsvar qq{lt}) qq{GSI.OrderTotal} qq{gsord_lt_view} $
     hscompiler.env.view.simple-insert (gsvar qq{nil}) qq{GSI.List} qq{gsnil_view} $
     hscompiler.env.view.simple-insert (gsvar qq{nothing}) qq{GSI.Maybe} qq{gsnothing_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{order-of-being.expr}) qq{GSDL.AST} qq{gsorder_of_being_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{order-of-being.generator}) qq{GSDL.AST} qq{gsorder_of_being_generator_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{order-of-being.open-expr}) qq{GSDL.AST} qq{gsorder_of_being_open_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{order-of-being.pattern}) qq{GSDL.AST} qq{gsorder_of_being_pattern_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{order-of-being.value-var}) qq{GSDL.AST} qq{gsorder_of_being_value_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{order-of-being.var-name}) qq{GSDL.AST} qq{gsorder_of_being_var_name_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{ordered-map.empty}) qq{GSI.Map} qq{gsordered_map_empty_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{parser.prim.fail}) qq{GSI.Parser} qq{gsprim_fail_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{parser.prim.symbol-or-eof}) qq{GSI.Parser} qq{gsprim_symbol_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{parser.prim.unit-plus}) qq{GSI.Parser} qq{gsprim_unit_plus_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{pat.app}) qq{GSDL.AST} qq{gspat_app_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{pat.discard}) qq{GSDL.AST} qq{gspat_discard_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{pat.qlo}) qq{GSDL.AST} qq{gspat_qlo_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{pat.var}) qq{GSDL.AST} qq{gspat_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{pat.view}) qq{GSDL.AST} qq{gspat_view_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{qloitem.char}) qq{GSDL.AST} qq{gsqloitem_char_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{qloitem.interp}) qq{GSDL.AST} qq{gsqloitem_interp_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{qloitem.qchar}) qq{GSDL.AST} qq{gsqloitem_qchar_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{quote-param.hsvs}) qq{GSDL.HSGS.AST} qq{gsquote_param_hsvs_view} $
     hscompiler.env.view.simple-insert (gsvar qq{right}) qq{GSI.Either} qq{gsright_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{source-comp.char}) qq{GSDL.HSGS.AST} qq{gssource_comp_char_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{source-comp.declare}) qq{GSDL.HSGS.AST} qq{gssource_comp_declare_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{source-comp.expr}) qq{GSDL.HSGS.AST} qq{gssource_comp_expr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{source-comp.imports}) qq{GSDL.HSGS.AST} qq{gssource_comp_imports_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{source-comp.pos}) qq{GSDL.HSGS.AST} qq{gssource_comp_pos_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{source-comp.value}) qq{GSDL.HSGS.AST} qq{gssource_comp_value_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{syntactic-category.arg-operator}) qq{GSDL.AST} qq{gssyntactic_category_arg_operator_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{syntactic-category.lambda-like}) qq{GSDL.AST} qq{gssyntactic_category_lambda_like_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{syntactic-category.variable}) qq{GSDL.AST} qq{gssyntactic_category_variable_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{syntactic-category.where}) qq{GSDL.AST} qq{gssyntactic_category_where_view} $
     hscompiler.env.view.simple-insert (gsvar qq{true}) qq{GSI.Bool} qq{gstrue_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{type.app}) qq{GSDL.AST} qq{gstype_app_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{type.const}) qq{GSDL.AST} qq{gstype_const_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{type.forall}) qq{GSDL.AST} qq{gstype_forall_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{type.function}) qq{GSDL.AST} qq{gstype_function_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{type.signature}) qq{GSDL.AST} qq{gstype_signature_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{type.unifiable-var}) qq{GSDL.AST} qq{gstype_unifiable_var_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{whnf.constr}) qq{GSI.GSI} qq{gswhnf_constr_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{whnf.function}) qq{GSI.GSI} qq{gswhnf_function_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{whnf.natural}) qq{GSI.GSI} qq{gswhnf_natural_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{whnf.record}) qq{GSI.GSI} qq{gswhnf_record_view} $
+    hscompiler.env.view.simple-insert (gsvar qq{whnf.rune}) qq{GSI.GSI} qq{gswhnf_rune_view} $
     hscompiler.env.arg-var.insert (gsvar qq{#}) (λ 'env. λ 'pos. λ 'f. λ 'as. analyze as.
         case arg.var-name 'v : nil. either.for 'p ← hscompile-arg nothing env (arg.expr pos f);. right $
             hsoutput.applyivarpos qq{GSI.ByteCode} qq{gsbcfield_w} pos (p : hsoutput.gsvar v : nil)
@@ -607,6 +698,7 @@ gshscompiler_hsgs_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{-}) qq{GSI.Natural} qq{gsnatural_subtract} $
     hscompiler.env.var.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons} $
     hscompiler.env.var.simple-insert (gsvar qq{≠}) qq{GSI.Rune} qq{gsrune_neq} $
+    hscompiler.env.view.simple-insert (gsvar qq{:}) qq{GSI.List} qq{gscons_view} $
     hscompiler.global-env
 |]
 
