@@ -10,6 +10,8 @@ import System.IO (openFile, IOMode(ReadMode), hSetEncoding, utf8, hGetContents)
 
 import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
+import GSI.Message (Message)
+import GSI.RTS (OPort)
 import GSI.ThreadType (Thread)
 import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsav, gsae)
 import API (apiImplementationFailure)
@@ -27,9 +29,9 @@ gsio_monad = GSRecord $gshere $ Map.fromList [
 gsio_file_read :: GSValue
 gsio_file_read = $gsimpprim gsioprim_file_read
 
-gsioprim_file_read :: Pos -> Thread -> GSValue -> IO GSValue
-gsioprim_file_read pos t fn = do
-    fns <- gsapiEvalString $gshere fn
+gsioprim_file_read :: OPort Message -> Pos -> Thread -> GSValue -> IO GSValue
+gsioprim_file_read msg pos t fn = do
+    fns <- gsapiEvalString msg $gshere fn
     mbs <- try $ do
         ifh <- openFile fns ReadMode
         hSetEncoding ifh utf8

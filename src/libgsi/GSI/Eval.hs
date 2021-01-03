@@ -5,8 +5,9 @@ module GSI.Eval (GSResult(..), eval, evalSync, stCode) where
 import Control.Concurrent (MVar, forkIO, modifyMVar)
 
 import GSI.Util (StackTrace(..), gshere)
-import GSI.RTS (Event, newEvent, await)
+import GSI.RTS (Event, newEvent, await, OPort)
 import GSI.Error (GSError(..))
+import GSI.Message (Message)
 import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnter, aceEnterThunkState, aceUpdate, aceArg, aceField, aceEmptyStack)
@@ -16,8 +17,8 @@ data GSResult
   | GSIndirection GSValue
   | GSWHNF
 
-eval :: [StackTrace] -> MVar (GSThunkState) -> IO GSResult
-eval cs mv = modifyMVar mv $ \ st -> case st of
+eval :: OPort Message -> [StackTrace] -> MVar (GSThunkState) -> IO GSResult
+eval msg cs mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr{} -> startEval st
     GSTSIntExpr{} -> startEval st
     GSApply{} -> startEval st
@@ -28,19 +29,19 @@ eval cs mv = modifyMVar mv $ \ st -> case st of
   where
     startEval st = do
         e <- newEvent
-        forkIO $ aceEnterThunkState cs st (aceUpdate mv aceEmptyStack)
+        forkIO $ aceEnterThunkState msg cs st (aceUpdate mv aceEmptyStack)
         return (GSTSStack e, GSStack e)
 
-evalSync :: [StackTrace] -> MVar (GSThunkState) -> IO GSValue
-evalSync cs mv = do
-    st <- eval cs mv
+evalSync :: OPort Message -> [StackTrace] -> MVar (GSThunkState) -> IO GSValue
+evalSync msg cs mv = do
+    st <- eval msg cs mv
     case st of
-        GSStack b -> await b *> evalSync cs mv
+        GSStack b -> await b *> evalSync msg cs mv
         GSIndirection v -> case v of
             GSImplementationFailure{} -> return v
             GSInvalidProgram{} -> return v
             GSError{} -> return v
-            GSThunk th -> evalSync cs th
+            GSThunk th -> evalSync msg cs th
             GSConstr{} -> return v
             GSRecord{} -> return v
             GSNatural{} -> return v

@@ -22,6 +22,8 @@ import qualified Data.Map as Map
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom, fmtVarBindAtom)
 import GSI.Error (GSError(..), GSException(..), fmtError)
+import GSI.Message (Message)
+import GSI.RTS (OPort)
 import GSI.Value (GSValue(..), GSExpr, GSIntArg(..), GSIntExpr(..), GSBCO(..), GSExternal(..), gslambda_value, gsconstr, gsrecord, gsimpprim, gsthunk_w, gsintthunk_w, gsapply_w, gsfield_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
 import GSI.ThreadType (Thread)
 import GSI.Thread (createThread, execMainThread)
@@ -43,15 +45,15 @@ gsi_monad = GSRecord $gshere $ Map.fromList [
 
 gsigsinject = $gslambda_value $ \ v -> $gsbcexternal v
 
-gsigsthunk = $gsimpprim $ \ pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
-    pos1 <- gsapiEvalPos pos0 pos1v
-    e <- gsapiEvalExternal pos0 ev :: IO GSExpr
+gsigsthunk = $gsimpprim $ \ msg pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
+    pos1 <- gsapiEvalPos msg pos0 pos1v
+    e <- gsapiEvalExternal msg pos0 ev :: IO GSExpr
     r <- gsthunk_w pos1 e
     return $ gsexternal r
 
-gsigsintthunk = $gsimpprim $ \ pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
-    pos1 <- gsapiEvalPos pos0 pos1v
-    e <- gsapiEvalExternal pos0 ev :: IO GSIntExpr
+gsigsintthunk = $gsimpprim $ \ msg pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
+    pos1 <- gsapiEvalPos msg pos0 pos1v
+    e <- gsapiEvalExternal msg pos0 ev :: IO GSIntExpr
     r <- gsintthunk_w pos1 e
     return $ gsexternal r
 
@@ -111,10 +113,10 @@ gsigsintbcdiscardpattern = $gslambda_value $ \ posv ->
 gsigsapply :: GSValue
 gsigsapply = $gsimpprim gsiprimgsapply
 
-gsiprimgsapply :: Pos -> Thread -> GSValue -> GSValue -> IO GSValue
-gsiprimgsapply pos t fv asv = do
-    f <- gsapiEvalExternal pos fv :: IO GSValue
-    as <- (gsapiEvalList pos asv >>= mapM (\ av -> gsapiEvalExternal pos av >>= \ a -> return a)) :: IO [GSValue]
+gsiprimgsapply :: OPort Message -> Pos -> Thread -> GSValue -> GSValue -> IO GSValue
+gsiprimgsapply msg pos t fv asv = do
+    f <- gsapiEvalExternal msg pos fv :: IO GSValue
+    as <- (gsapiEvalList msg pos asv >>= mapM (\ av -> gsapiEvalExternal msg pos av >>= \ a -> return a)) :: IO [GSValue]
     gsexternal <$> gsapply_w pos f as
 
 gsigsbcarg = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcevalpos ($gsav posv) $ \ pos ->
@@ -180,35 +182,35 @@ gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcex
 gsigsvar_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ v ->
     $gsbcapply sk [ $gsav ($gsstring (varName v)) ]
 
-gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: GSValue) -> $gsbcimpprim $ \ pos t -> w pos v where
-    w :: Pos -> GSValue -> IO GSValue
-    w _ (GSError e) = return $ $gsconstr (gsvar "error") [ gsexternal e ]
-    w _ (GSImplementationFailure pos err) = return $ $gsconstr (gsvar "implementation-failure") [ gsexternal pos, $gsstring err ]
-    w _ v@GSNatural{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ v@GSRune{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ v@GSConstr{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ v@GSRecord{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w pos (GSThunk ts) = do
-        v' <- evalSync [StackTrace pos []] ts
-        w pos v'
-    w _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
+gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: GSValue) -> $gsbcimpprim $ \ msg pos t -> w msg pos v where
+    w :: OPort Message -> Pos -> GSValue -> IO GSValue
+    w _ _ (GSError e) = return $ $gsconstr (gsvar "error") [ gsexternal e ]
+    w _ _ (GSImplementationFailure pos err) = return $ $gsconstr (gsvar "implementation-failure") [ gsexternal pos, $gsstring err ]
+    w _ _ v@GSNatural{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSRune{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSConstr{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSRecord{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w msg pos (GSThunk ts) = do
+        v' <- evalSync msg [StackTrace pos []] ts
+        w msg pos v'
+    w _ _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
 
-gsiprimcreateThread :: Pos -> Thread -> GSValue -> IO GSValue
-gsiprimcreateThread pos t vv = do
-    v <- gsapiEvalExternal pos vv
-    t <- createThread pos v Nothing
+gsiprimcreateThread :: OPort Message -> Pos -> Thread -> GSValue -> IO GSValue
+gsiprimcreateThread msg pos t vv = do
+    v <- gsapiEvalExternal msg pos vv
+    t <- createThread msg pos v Nothing
     return $ GSExternal $ toExternal t
 
 gsiexecMainThread :: GSValue
 gsiexecMainThread = $gsimpprim gsiprimexecMainThread
 
-gsiprimexecMainThread :: Pos -> Thread -> GSValue -> IO GSValue
-gsiprimexecMainThread pos tself tprogv = do
-    tprog <- gsapiEvalExternal pos tprogv
+gsiprimexecMainThread :: OPort Message -> Pos -> Thread -> GSValue -> IO GSValue
+gsiprimexecMainThread msg pos tself tprogv = do
+    tprog <- gsapiEvalExternal msg pos tprogv
     mb <- try $ execMainThread tprog :: IO (Either SomeException ())
     case mb of
         Left e | Just e' <- fromException e -> case e' :: GSException of

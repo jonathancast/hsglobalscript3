@@ -24,7 +24,8 @@ import Language.Haskell.TH.Lib (appE, conE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
 import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
-import GSI.RTS (Event)
+import GSI.Message (Message)
+import GSI.RTS (Event, OPort)
 import GSI.Syn (GSVar, fmtVarAtom)
 import GSI.ThreadType (Thread)
 
@@ -56,7 +57,7 @@ data GSValue
 data GSBCO
   = GSRawExpr GSExpr
   | GSIntExpr GSIntExpr
-  | GSImp (Thread -> IO GSValue)
+  | GSImp (OPort Message -> Thread -> IO GSValue)
   | GSLambda (GSValue -> GSBCO)
 
 data GSIntArg
@@ -80,7 +81,7 @@ data GSArg
   = GSArgExpr Pos GSExpr
   | GSArgVar GSValue
 
-newtype GSExpr = GSExpr { runGSExpr :: forall a. [StackTrace] -> GSExprCont a -> IO a }
+newtype GSExpr = GSExpr { runGSExpr :: forall a. OPort Message -> [StackTrace] -> GSExprCont a -> IO a }
 
 data GSExprCont a = GSExprCont {
     gsreturn :: GSValue -> IO a,
@@ -90,25 +91,25 @@ data GSExprCont a = GSExprCont {
 type GSThunk = MVar GSThunkState
 
 data GSThunkState
-  = GSTSExpr (forall a. [StackTrace] -> GSExprCont a -> IO a)
+  = GSTSExpr (forall a. OPort Message -> [StackTrace] -> GSExprCont a -> IO a)
   | GSTSIntExpr GSIntExpr
   | GSApply Pos GSValue [GSValue]
   | GSTSField Pos GSVar GSValue
   | GSTSStack Event
   | GSTSIndirection GSValue
 
-newtype GSBCImp a = GSBCImp { runGSBCImp :: Thread -> IO a }
+newtype GSBCImp a = GSBCImp { runGSBCImp :: OPort Message -> Thread -> IO a }
 
 instance Functor GSBCImp where
-    fmap f ax = GSBCImp $ \ t -> fmap f $ runGSBCImp ax t
+    fmap f ax = GSBCImp $ \ msg t -> fmap f $ runGSBCImp ax msg t
 
 instance Applicative GSBCImp where
-    pure x = GSBCImp (const $ pure x)
-    af <*> ax = GSBCImp $ \ t -> runGSBCImp af t <*> runGSBCImp ax t
+    pure x = GSBCImp (\ msg t -> pure x)
+    af <*> ax = GSBCImp $ \ msg t -> runGSBCImp af msg t <*> runGSBCImp ax msg t
 
 instance Monad GSBCImp where
-    return x = GSBCImp (const $ return x)
-    a >>= f = GSBCImp $ \ t -> runGSBCImp a t >>= \ x -> runGSBCImp (f x) t
+    return x = GSBCImp (\ msg t -> return x)
+    a >>= f = GSBCImp $ \ msg t -> runGSBCImp a msg t >>= \ x -> runGSBCImp (f x) msg t
 
 gsimpfor = varE 'gsimpfor_w `appE` gshere
 
@@ -159,7 +160,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ cs sk -> e (StackTrace pos [] : cs) sk
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ msg cs sk -> e msg (StackTrace pos [] : cs) sk
 
 gsintthunk_w :: Pos -> GSIntExpr -> IO GSValue
 gsintthunk_w pos i = fmap GSThunk $ newMVar $ GSTSIntExpr i
@@ -185,17 +186,17 @@ gsrehere_w pos cs v = GSImplementationFailure $gshere $ "gsrehere_w " ++ gsvCode
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
-gsimpprim_w :: GSImpPrimType f => Pos -> (Pos -> Thread -> f) -> GSValue
-gsimpprim_w pos f = GSClosure [StackTrace pos []] (gsimpprim_ww (f pos))
+gsimpprim_w :: GSImpPrimType f => Pos -> (OPort Message -> Pos -> Thread -> f) -> GSValue
+gsimpprim_w pos f = GSClosure [StackTrace pos []] (gsimpprim_ww (\ msg -> f msg pos))
 
 class GSImpPrimType f where
-    gsimpprim_ww :: (Thread -> f) -> GSBCO
+    gsimpprim_ww :: (OPort Message -> Thread -> f) -> GSBCO
 
 instance GSImpPrimType (IO GSValue) where
     gsimpprim_ww f = GSImp f
 
 instance GSImpPrimType f => GSImpPrimType (GSValue -> f) where
-    gsimpprim_ww f = GSLambda $ \ x -> gsimpprim_ww (flip f x)
+    gsimpprim_ww f = GSLambda $ \ x -> gsimpprim_ww (\ msg t -> f msg t x)
 
 gsexternal :: GSExternal e => e -> GSValue
 gsexternal = GSExternal . toExternal
