@@ -26,7 +26,7 @@ main = runTestTT $ TestList $ [
         let col = 1
         th <- getThunk =<< gsapply_w (Pos file line col) (gsundefined_value_w (Pos file line col)) []
         op <- bitBucketOPort
-        st <- eval op [] th
+        st <- eval op Nothing [] th
         case st of
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
@@ -36,7 +36,7 @@ main = runTestTT $ TestList $ [
         let line = 1
         let col = 1
         op <- bitBucketOPort
-        v <- evalSync op [] =<< getThunk =<< gsapply_w (Pos file line col) (gsundefined_value_w (Pos file line col)) []
+        v <- evalSync op Nothing [] =<< getThunk =<< gsapply_w (Pos file line col) (gsundefined_value_w (Pos file line col)) []
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file line col)
@@ -46,7 +46,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         th <- getThunk =<< (gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1))
         op <- bitBucketOPort
-        st <- eval op [] th
+        st <- eval op Nothing [] th
         case st of
             GSIndirection v -> case v of
                 GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
@@ -58,7 +58,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         op <- bitBucketOPort
-        st <- eval op [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
+        st <- eval op Nothing [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
         case st of
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
@@ -67,7 +67,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         th <- getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
         op <- bitBucketOPort
-        st <- eval op [] th
+        st <- eval op Nothing [] th
         case st of
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
@@ -76,7 +76,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         op <- bitBucketOPort
-        v <- evalSync op [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
+        v <- evalSync op Nothing [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
@@ -85,7 +85,7 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         op <- bitBucketOPort
-        v <- evalSync op [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
+        v <- evalSync op Nothing [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos $ msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
@@ -102,7 +102,7 @@ main = runTestTT $ TestList $ [
     TestCase $ do
         let file = "test-file.gs"
         op <- bitBucketOPort
-        v <- evalSync op [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcrehere_w (Pos file 3 1) $ gsbcundefined_w (Pos file 4 1))) [gsundefined_value_w (Pos file 4 1)]
+        v <- evalSync op Nothing  [] =<< getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcrehere_w (Pos file 3 1) $ gsbcundefined_w (Pos file 4 1))) [gsundefined_value_w (Pos file 4 1)]
         case v of
             GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
             GSError (GSErrUnimpl (StackTrace pos _)) -> assertEqual "The returned error has the right location" pos (Pos file 3 1)
@@ -113,14 +113,14 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         let line = 1
         op <- bitBucketOPort
-        t <- createThread op $gshere (gsundefined_value_w (Pos file line 1)) Nothing
+        t <- createThread op Nothing $gshere (gsundefined_value_w (Pos file line 1)) Nothing
         return ()
     ,
     TestCase $ do
         let file = "test-file.gs"
         let line = 1
         op <- bitBucketOPort
-        t <- createThread op $gshere (gsundefined_value_w (Pos file line 1)) Nothing
+        t <- createThread op Nothing $gshere (gsundefined_value_w (Pos file line 1)) Nothing
         mb <- try $ execMainThread t
         case mb of
             Right _ -> assertFailure "execMainThread should throw an exception when the thread's code is undefined"

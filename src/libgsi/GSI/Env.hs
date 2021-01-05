@@ -23,6 +23,7 @@ import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtInvalidProgram, fmtError)
 import GSI.Message (Message, msgCode)
+import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort, newEvent, wakeup, await, awaitAny, newChannel, iportReadable, tryReadIPort)
 import GSI.Value (GSValue(..), gslambda_value, gsapply, gsimpprim, gsundefined_value, gsvCode)
 import GSI.Functions (gsbool, gslist, gsstring)
@@ -41,7 +42,7 @@ runGSProgram a = do
     msgDone <- newEvent
     (msgi, msgo) <- newChannel
     forkIO $ logCatcher msgi mainDone msgDone
-    t <- createThread msgo $gshere prog Nothing
+    t <- createThread msgo Nothing $gshere prog Nothing
     execMainThread t
         `finally` (wakeup mainDone *> await msgDone)
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
@@ -58,13 +59,13 @@ stderrLogCatcher msg mainDone done = do
 
 stderrLog m = hPutStrLn stderr $ "Unknown log message " ++ msgCode m
 
-gsabend = $gsimpprim $ \ msg pos t  sv -> do
-    s <- gsapiEvalString msg $gshere sv
+gsabend = $gsimpprim $ \ msg pc pos t  sv -> do
+    s <- gsapiEvalString msg pc $gshere sv
     throwIO (GSExcAbend pos s) :: IO GSValue
 
 gsfile_stat :: GSValue
-gsfile_stat = $gsimpprim $ \ msg pos t fn -> do
-    fns <- gsapiEvalString msg pos fn
+gsfile_stat = $gsimpprim $ \ msg pc pos t fn -> do
+    fns <- gsapiEvalString msg pc pos fn
     mbst <- try $ getFileStatus fns
     case mbst of
         Left e | Just e1 <- fromException e, isDoesNotExistError e1 ->
@@ -76,19 +77,19 @@ gsfile_stat = $gsimpprim $ \ msg pos t fn -> do
           ] ]
 
 gsfile_read :: GSValue
-gsfile_read = $gsimpprim $ \ msg pos t fn -> do
-    fns <- gsapiEvalString msg pos fn
+gsfile_read = $gsimpprim $ \ msg pc pos t fn -> do
+    fns <- gsapiEvalString msg pc pos fn
     mbs <- try $ readFile fns
     case mbs of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimfileRead " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
         Right s -> $gslazystring s
 
-gsfile_write = $gsimpprim $ \ msg pos t fn s -> do
-    fns <- gsapiEvalString msg pos fn
-    withFile fns WriteMode $ \ h -> gsprimprint h msg pos t s
+gsfile_write = $gsimpprim $ \ msg pc pos t fn s -> do
+    fns <- gsapiEvalString msg pc pos fn
+    withFile fns WriteMode $ \ h -> gsprimprint h msg pc pos t s
 
-gsdir_read = $gsimpprim $ \ msg pos t fn -> do
-    fns <- gsapiEvalString msg pos fn
+gsdir_read = $gsimpprim $ \ msg pc pos t fn -> do
+    fns <- gsapiEvalString msg pc pos fn
     mbas <- try $ getDirectoryContents fns
     case mbas of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsdir_read " ++ show fns ++ " (getDirectoryContents returned Left (" ++ show e ++ ")) next"
@@ -100,48 +101,48 @@ gsprint = $gsimpprim (gsprimprint stdout)
 gsprintError :: GSValue
 gsprintError = $gsimpprim (gsprimprint stderr)
 
-gsprimprint :: Handle -> OPort Message -> Pos -> Thread -> GSValue -> IO GSValue
-gsprimprint h msg pos t (GSThunk th) = do
-    v <- evalSync msg [StackTrace $gshere [StackTrace pos []]] th
-    gsprimprint h msg pos t v
-gsprimprint h msg pos t (GSInvalidProgram err) = do
+gsprimprint :: Handle -> OPort Message -> Maybe ProfCounter -> Pos -> Thread -> GSValue -> IO GSValue
+gsprimprint h msg pc pos t (GSThunk th) = do
+    v <- evalSync msg pc [StackTrace $gshere [StackTrace pos []]] th
+    gsprimprint h msg pc pos t v
+gsprimprint h msg pc pos t (GSInvalidProgram err) = do
     hPutStrLn stderr $ fmtInvalidProgram err
     return $ $gsundefined_value
-gsprimprint h msg pos t (GSImplementationFailure pos1 msgs) = do
+gsprimprint h msg pc pos t (GSImplementationFailure pos1 msgs) = do
     hPutStrLn stderr $ fmtPos pos1 $ msgs
     return $ $gsundefined_value
-gsprimprint h msg pos t (GSError err) = do
+gsprimprint h msg pc pos t (GSError err) = do
     hPutStrLn stderr $ fmtError err
     return $ $gsundefined_value
-gsprimprint h msg pos t (GSConstr pos1 c []) | c == gsvar "nil" =
+gsprimprint h msg pc pos t (GSConstr pos1 c []) | c == gsvar "nil" =
     return $ $gsundefined_value
-gsprimprint h msg pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
+gsprimprint h msg pc pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
     hPutChar h ch
-    gsprimprint h msg pos t s
-gsprimprint h msg pos t (GSConstr pos1 c [ GSThunk th, s ]) | c == gsvar ":" = do
-    v <- evalSync msg [StackTrace $gshere [StackTrace pos []]] th
-    gsprimprint h msg pos t (GSConstr pos1 c [ v, s ])
-gsprimprint h msg pos t (GSConstr pos1 c [ GSImplementationFailure pos2 msgs, s ]) | c == gsvar ":" = do
+    gsprimprint h msg pc pos t s
+gsprimprint h msg pc pos t (GSConstr pos1 c [ GSThunk th, s ]) | c == gsvar ":" = do
+    v <- evalSync msg pc [StackTrace $gshere [StackTrace pos []]] th
+    gsprimprint h msg pc pos t (GSConstr pos1 c [ v, s ])
+gsprimprint h msg pc pos t (GSConstr pos1 c [ GSImplementationFailure pos2 msgs, s ]) | c == gsvar ":" = do
     hPutStrLn stderr $ fmtPos pos2 $ msgs
-    gsprimprint h msg pos t s
-gsprimprint h msg pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
+    gsprimprint h msg pc pos t s
+gsprimprint h msg pc pos t (GSConstr pos1 c [ ch, s ]) | c == gsvar ":" = do
     hPutStrLn stderr $ fmtPos $gshere $ "gsprimprint (" ++ gsvCode ch ++ " : _) next"
-    gsprimprint h msg pos t s
-gsprimprint h msg pos t (GSConstr pos1 c as) =
+    gsprimprint h msg pc pos t s
+gsprimprint h msg pc pos t (GSConstr pos1 c as) =
     $apiImplementationFailure $ "gsprimprint " ++ fmtVarAtom c " next"
-gsprimprint h msg pos t msgv =
+gsprimprint h msg pc pos t msgv =
     $apiImplementationFailure $ "gsprimprint " ++ gsvCode msgv ++ " next"
 
-gsenv_var_get = $gsimpprim $ \ msg pos t nm -> do
-    nmhs <- gsapiEvalString msg pos nm
+gsenv_var_get = $gsimpprim $ \ msg pc pos t nm -> do
+    nmhs <- gsapiEvalString msg pc pos nm
     mb <- try $ getEnv nmhs
     case mb of
         Right valhs -> return $ $gsstring valhs
         Left (e::SomeException) -> $apiImplementationFailure $ "gsenv_var_get: getEnv threw " ++ displayException e ++ " next"
 
-gssystem = $gsimpprim $ \ msg pos t args -> do
-    argshs0 <- gsapiEvalList msg pos args
-    argshs <- mapM (gsapiEvalString msg pos) argshs0
+gssystem = $gsimpprim $ \ msg pc pos t args -> do
+    argshs0 <- gsapiEvalList msg pc pos args
+    argshs <- mapM (gsapiEvalString msg pc pos) argshs0
     case argshs of
         cmd:argshs' -> do
             mb <- try $ withCreateProcess (proc cmd argshs') $ \ _ _ _ ph -> waitForProcess ph
