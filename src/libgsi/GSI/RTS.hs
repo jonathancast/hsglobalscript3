@@ -1,4 +1,4 @@
-module GSI.RTS (Event, newEvent, await, awaitAny, wakeup, OPort, newChannel, bitBucketOPort, iportReadable, tryReadIPort) where
+module GSI.RTS (Event, newEvent, await, awaitAny, wakeup, OPort, newChannel, bitBucketOPort, writeOPort, iportReadable, tryReadIPort) where
 
 import Control.Monad (forM_)
 
