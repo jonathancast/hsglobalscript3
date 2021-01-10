@@ -69,3 +69,4 @@ src/mdl/mdlc$
 src/mdl/mdlc.hs$
 bin/mdlc$
 stage1
+.*\.prof$

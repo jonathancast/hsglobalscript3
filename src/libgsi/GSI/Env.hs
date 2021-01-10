@@ -9,7 +9,7 @@ import Control.Monad (forever)
 import Control.Concurrent (forkIO)
 import Control.Exception (SomeException, try, catch, finally, throwIO, fromException, displayException)
 
-import System.IO (Handle, IOMode(..), withFile, hPutStrLn, hPutChar, stdout, stderr)
+import System.IO (Handle, IOMode(..), openFile, hClose, withFile, hPutStrLn, hPutChar, stdout, stderr)
 import System.IO.Error (isDoesNotExistError)
 import System.Directory (getDirectoryContents)
 import System.Environment (getArgs, getEnv)
@@ -19,11 +19,11 @@ import System.Posix.Files (getFileStatus, isDirectory, modificationTime)
 
 import System.Process (withCreateProcess, proc, waitForProcess)
 
-import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
+import GSI.Util (Pos, StackTrace(..), gshere, fmtPos, fmtStackTrace)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Error (GSException(..), fmtInvalidProgram, fmtError)
-import GSI.Message (Message, msgCode)
-import GSI.Prof (ProfCounter)
+import GSI.Message (Message(..), msgCode)
+import GSI.Prof (ProfCounter, newProfCounter)
 import GSI.RTS (OPort, newEvent, wakeup, await, awaitAny, newChannel, iportReadable, tryReadIPort)
 import GSI.Value (GSValue(..), gslambda_value, gsapply, gsimpprim, gsundefined_value, gsvCode)
 import GSI.Functions (gsbool, gslist, gsstring)
@@ -37,27 +37,39 @@ import GSI.Functions (gslazylist, gslazystring, gsapiEvalList, gsapiEvalString)
 runGSProgram a = do
     as <- $gslist . map $gsstring <$> getArgs
     prog <- $gsapply a [as]
-    logCatcher <- return stderrLogCatcher
+    gsprof <- getEnv "GSPROF" `catch` \ e -> if isDoesNotExistError e then return "" else throwIO e
+    pc <- getProfCounter gsprof
+    logCatcher <- getLogCatcher gsprof
     mainDone <- newEvent
     msgDone <- newEvent
     (msgi, msgo) <- newChannel
     forkIO $ logCatcher msgi mainDone msgDone
-    t <- createThread msgo Nothing $gshere prog Nothing
+    t <- createThread msgo pc $gshere prog Nothing
     execMainThread t
         `finally` (wakeup mainDone *> await msgDone)
   `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
 
-stderrLogCatcher msg mainDone done = do
+getProfCounter "" = return Nothing
+getProfCounter gsprof = Just <$> newProfCounter
+
+getLogCatcher gsprof = do
+    mbh <- case gsprof of
+        "" -> return Nothing
+        _ -> Just <$> openFile (gsprof ++ ".prof") AppendMode
+    return $ stderrLogCatcher mbh
+
+stderrLogCatcher mbprof msg mainDone done = do
     msgReady <- iportReadable msg
     awaitAny [ msgReady, mainDone ]
     mbm <- tryReadIPort msg
     case mbm of
-        Nothing -> wakeup done
+        Nothing -> maybe (return ()) hClose mbprof *> wakeup done
         Just m -> do
-            stderrLog m  `catch` \ (e :: SomeException) -> hPutStrLn stderr (displayException e)
-            stderrLogCatcher msg mainDone done
+            stderrLog mbprof m  `catch` \ (e :: SomeException) -> hPutStrLn stderr (displayException e)
+            stderrLogCatcher mbprof msg mainDone done
 
-stderrLog m = hPutStrLn stderr $ "Unknown log message " ++ msgCode m
+stderrLog (Just h) (MsgProfile st) = hPutStrLn h $ fmtStackTrace st "Prof"
+stderrLog _ m = hPutStrLn stderr $ "Unknown log message " ++ msgCode m
 
 gsabend = $gsimpprim $ \ msg pc pos t  sv -> do
     s <- gsapiEvalString msg pc $gshere sv
