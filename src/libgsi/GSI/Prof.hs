@@ -11,12 +11,15 @@ import GSI.Util (StackTrace)
 import GSI.Message (Message(..))
 import GSI.RTS (OPort, writeOPort)
 
+useProfiling = True
+
 type ProfCounter = MVar (UTCTime, Int)
 
 increment :: NominalDiffTime
 increment = 0.001
 
 prof :: Maybe ProfCounter -> OPort Message -> StackTrace -> IO ()
+prof _ _ _ | not useProfiling = return ()
 prof Nothing _ _ = return ()
 prof (Just mv) msg st = join $ modifyMVar mv $ \ (ts, n) -> if n > 1000
     then do
