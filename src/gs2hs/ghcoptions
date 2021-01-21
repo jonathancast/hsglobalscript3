@@ -3,3 +3,4 @@
 $HSGLOBALSCRIPT/ghcoptions
 9 echo -i$HSGLOBALSCRIPT/src/libgsi
 9 echo -i$HSGLOBALSCRIPT/src/gsi
+9 echo -O2
