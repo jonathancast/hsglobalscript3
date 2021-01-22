@@ -46,6 +46,7 @@ test_lexical_variable_hsgs_syntax
 test_empty_structure_literal
 test_record_literal_field
 test_record_literal_operator_field
+test_record_literal_number_field
 test_field_extraction
 test_field_extraction_operator
 test_field_extraction_variable

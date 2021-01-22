@@ -406,12 +406,14 @@ gspat_function_w = [gs:value| λ 'env. λ 'p.
 $gsdeclare idmc-pat gsidmc_pat
 
 $gsdeclare opname opname
+$gsdeclare numname numname
 
 gspat_atom = [gs:value| λ 'env.
     <|> (parser.for _ ← lexeme (char r{_});. parser.unit pat.discard)
     <|> (parser.for 'v ← var env;. parser.unit (pat.view v))
     <|> (parser.for 'v ← char r{'} *> ident;. parser.unit (pat.var v))
     <|> (parser.for 'v ← parens (char r{'} *> opname);. parser.unit (pat.var v))
+    <|> (parser.for 'v ← char r{'} *> numname;. parser.unit (pat.var v))
     <|> (lexeme $ parser.for
             'v ← parser.map gsvar ident-chars;
             'p ← analyze parser.env.qlo.get v (parser.env.pattern.get env).
@@ -493,6 +495,10 @@ ident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
 
 opname = [gs:value| lexeme $ parser.map gsvar op-chars |]
 
+$gsdeclare num-chars num_chars
+
+numname = [gs:value| lexeme $ parser.map gsvar num-chars |]
+
 operator = [gs:value| λ 'env. lexeme $ parser.for
         'o ← parser.map gsvar op-chars;
         _ ← analyze parser.env.syntactic-category.get o env.
@@ -524,6 +530,10 @@ $gsdeclare concat gsconcat
 ident_chars = [gs:value|
     parser.map2 (<>) ident-component (parser.map concat (max-many cont-component))
 |]
+
+$gsdeclare num-component num_component
+
+num_chars = [gs:value| num-component <* not-followed-by delimiter |]
 
 gsconcat = [gs:value| foldr (<>) nil |]
 
@@ -561,6 +571,11 @@ op_component = [gs:value| parser.for
     . parser.unit s
 |]
 
+$gsdeclare num-start-char num_start_char
+$gsdeclare num-cont-char num_cont_char
+
+num_component = [gs:value| parser.map2 (:) num-start-char (max-many num-cont-char) |]
+
 delimiter = [gs:value| matching log{delimiter} (λ 'c. rune.≡ c r{-} || rune.≡ c r{.}) |]
 
 ident_start_char = [gs:value| matching log{ident start character} is-lower |]
@@ -569,6 +584,9 @@ ident_up_cont_char = [gs:value| matching log{ident cont character} (λ 'c. is-up
 
 op_start_char = [gs:value| matching log{op start character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘} || is-non-ascii-symbol c) |]
 op_cont_char = [gs:value| matching log{op cont character} (λ 'c. list.∈ rune.≡ c qq{~!@#$%^&*:-+=|\\<>?/∘}) |]
+
+num_start_char = [gs:value| matching log{op start character} (λ 'c. is-ascii-digit c) |]
+num_cont_char = [gs:value| matching log{op cont character} (λ 'c. is-ascii-digit c) |]
 
 natural = [gs:value| lexeme $ parser.map natural.read-decimal $ many1 $ matching log{digit} is-ascii-digit |]
 
