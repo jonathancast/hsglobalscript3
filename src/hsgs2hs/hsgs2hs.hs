@@ -1066,7 +1066,7 @@ globalEnv = Env{
         ("order-of-being.value-var", "GSDL.AST", "gsorder_of_being_value_var"),
         ("order-of-being.var-name", "GSDL.AST", "gsorder_of_being_var_name"),
         ("order-of-being.≡", "GSDL.AST", "gsorder_of_being_eq"),
-        ("ordered-map.empty", "GSI.Map", "gsordered_map_prim_empty"),
+        ("ordered-map.empty", "GSI.Map", "gsordered_map_empty"),
         ("ordered-map.get", "GSI.Map", "gsordered_map_get"),
         ("ordered-map.insert", "GSI.Map", "gsordered_map_insert"),
         ("ordered-map.keys", "GSI.Map", "gsordered_map_keys"),
