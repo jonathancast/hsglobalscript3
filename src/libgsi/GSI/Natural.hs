@@ -10,9 +10,7 @@ import GSI.ByteCode (gsbcarg, gsbcforce, gsbcenter, gsbcnatural, gsbcconstr, gsb
 
 gsnatural_unary_plus = $gslambda_value $ \ n -> $gsbcenter n
 
-gsnatural_add = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
-    (GSNatural n0hs, GSNatural n1hs) -> $gsbcenter $ GSNatural $ n0hs + n1hs
-    _ -> $gsbcimplementationfailure $ "gsnatural_add " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
+gsnatural_add = gsnatural_op (+)
 
 gsnatural_addition = GSRecord $gshere $ Map.fromList [
     (gsvar "0", GSNatural 0),
@@ -31,15 +29,17 @@ gsnatural_subtract_maybe = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcfor
         False -> $gsbcconstr (gsvar "nothing") []
     _ -> $gsbcimplementationfailure $ "gsnatural_subtract_maybe " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
 
-gsnatural_multiply = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
-    (GSNatural n0hs, GSNatural n1hs) -> $gsbcenter $ GSNatural $ n0hs * n1hs
-    _ -> $gsbcimplementationfailure $ "gsnatural_multiply " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
+gsnatural_multiply = gsnatural_op (*)
 
 gsnatural_div_mod = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) -> case n1hs == 0 of
         False -> $gsbcrecord [ (gsvar "0", $gsav $ GSNatural $ n0hs `div` n1hs), (gsvar "1", $gsav $ GSNatural $ n0hs `mod` n1hs) ]
         True -> $gsbcimplementationfailure $ "gsnatural_div_mod n0hs 0 next"
     _ -> $gsbcimplementationfailure $ "gsnatural_div_mod " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
+
+gsnatural_op f = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
+    (GSNatural n0hs, GSNatural n1hs) -> $gsbcenter $ GSNatural $ f n0hs n1hs
+    _ -> $gsbcimplementationfailure $ "gsnatural_op " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
 
 gsnatural_eq = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) ->
