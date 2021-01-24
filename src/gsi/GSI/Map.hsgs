@@ -1,16 +1,16 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_keys, gsordered_map_values, gsordered_map_union, gsordered_map_to_list, gsordered_map_empty, gsordered_map_empty_view) where
+module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_keys, gsordered_map_values, gsordered_map_union, gsordered_map_to_list, gsordered_map_prim_empty, gsordered_map_prim_empty_view) where
 
 import GSI.Syn (gsvar)
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 
-$gsdeclare prim.empty gsordered_map_empty
+$gsdeclare prim.empty gsordered_map_prim_empty
 $gsdeclare prim.branch gsordered_map_prim_branch
 
-$gsdeclare view empty gsordered_map_empty_view
-$gsdeclare view branch gsordered_map_branch_view
+$gsdeclare view empty gsordered_map_prim_empty_view
+$gsdeclare view branch gsordered_map_prim_branch_view
 
 gsordered_map_insert = [gs:value| λ 'cmp. λ 'k. λ 'v. λ 'm. analyze m.
     case empty. prim.branch k v prim.empty prim.empty
@@ -84,8 +84,8 @@ gsordered_map_to_list = [gs:value| λ 'm. analyze m.
     case empty. nil
 |]
 
-gsordered_map_empty = $gsconstr (gsvar "empty") []
+gsordered_map_prim_empty = $gsconstr (gsvar "empty") []
 gsordered_map_prim_branch = $gslambda_value $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ l -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav k, $gsav v, $gsav l, $gsav r ]
 
-gsordered_map_empty_view = $gsbcconstr_view "empty"
-gsordered_map_branch_view = $gsbcconstr_view "branch"
+gsordered_map_prim_empty_view = $gsbcconstr_view "empty"
+gsordered_map_prim_branch_view = $gsbcconstr_view "branch"
