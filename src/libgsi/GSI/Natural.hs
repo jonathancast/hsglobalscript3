@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_addition, gsnatural_subtract, gsnatural_subtract_maybe, gsnatural_multiply, gsnatural_div_mod, gsnatural_eq, gsnatural_neq, gsnatural_cmp) where
+module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_addition, gsnatural_subtract, gsnatural_subtract_maybe, gsnatural_multiply, gsnatural_div_mod, gsnatural_eq, gsnatural_neq, gsnatural_gt, gsnatural_cmp) where
 
 import qualified Data.Map as Map
 
@@ -50,6 +50,11 @@ gsnatural_neq = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n
     (GSNatural n0hs, GSNatural n1hs) ->
         if n0hs /= n1hs then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
     _ -> $gsbcimplementationfailure $ "gsnatural_neq " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
+
+gsnatural_gt = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
+    (GSNatural n0hs, GSNatural n1hs) ->
+        if n0hs > n1hs then $gsbcconstr (gsvar "true") [] else $gsbcconstr (gsvar "false") []
+    _ -> $gsbcimplementationfailure $ "gsnatural_eq " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
 
 gsnatural_cmp = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) -> case n0hs `compare` n1hs of

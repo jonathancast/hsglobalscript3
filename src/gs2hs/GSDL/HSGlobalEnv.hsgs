@@ -327,6 +327,7 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.var.simple-insert (gsvar qq{maybe.out}) qq{GSI.Maybe} qq{gsmaybe_out} $
     hscompiler.env.var.simple-insert (gsvar qq{monad.>>=}) qq{GSI.Monad} qq{gsmonad_bind} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.<=>}) qq{GSI.Natural} qq{gsnatural_cmp} $
+    hscompiler.env.var.simple-insert (gsvar qq{natural.>}) qq{GSI.Natural} qq{gsnatural_gt} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.addition}) qq{GSI.Natural} qq{gsnatural_addition} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.div-mod}) qq{GSI.Natural} qq{gsnatural_div_mod} $
     hscompiler.env.var.simple-insert (gsvar qq{natural.fmt-decimal}) qq{GSI.Format} qq{gsnatural_fmt_decimal} $
