@@ -1316,7 +1316,6 @@ globalEnv = Env{
         ("order-of-being.pattern", "GSDL.AST", "gsorder_of_being_pattern_view"),
         ("order-of-being.value-var", "GSDL.AST", "gsorder_of_being_value_var_view"),
         ("order-of-being.var-name", "GSDL.AST", "gsorder_of_being_var_name_view"),
-        ("ordered-map.empty", "GSI.Map", "gsordered_map_prim_empty_view"),
         ("parser.prim.fail", "GSI.Parser", "gsprim_fail_view"),
         ("parser.prim.symbol-or-eof", "GSI.Parser", "gsprim_symbol_view"),
         ("parser.prim.unit-plus", "GSI.Parser", "gsprim_unit_plus_view"),

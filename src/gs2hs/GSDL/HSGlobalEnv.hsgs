@@ -588,7 +588,6 @@ gshscompiler_global_env = [gs:value|
     hscompiler.env.view.simple-insert (gsvar qq{order-of-being.pattern}) qq{GSDL.AST} qq{gsorder_of_being_pattern_view} $
     hscompiler.env.view.simple-insert (gsvar qq{order-of-being.value-var}) qq{GSDL.AST} qq{gsorder_of_being_value_var_view} $
     hscompiler.env.view.simple-insert (gsvar qq{order-of-being.var-name}) qq{GSDL.AST} qq{gsorder_of_being_var_name_view} $
-    hscompiler.env.view.simple-insert (gsvar qq{ordered-map.empty}) qq{GSI.Map} qq{gsordered_map_prim_empty_view} $
     hscompiler.env.view.simple-insert (gsvar qq{parser.prim.fail}) qq{GSI.Parser} qq{gsprim_fail_view} $
     hscompiler.env.view.simple-insert (gsvar qq{parser.prim.symbol-or-eof}) qq{GSI.Parser} qq{gsprim_symbol_view} $
     hscompiler.env.view.simple-insert (gsvar qq{parser.prim.unit-plus}) qq{GSI.Parser} qq{gsprim_unit_plus_view} $
