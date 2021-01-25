@@ -123,6 +123,7 @@ expr env = empty
     exprArg = empty
         <|> ArgExpr <$> getPos <*> exprAtom
         <|> ArgField <$> getPos <*> (keywordOp "#" *> field)
+        <|> ArgStrict <$> getPos <*> (keywordOp "!" *> exprAtom)
 
 quoteItems :: Env -> [Char] -> Parser Char [QLOItem]
 quoteItems env qs = empty
@@ -219,6 +220,7 @@ data Expr
 data Arg
   = ArgExpr Pos Expr
   | ArgField Pos String
+  | ArgStrict Pos Expr
 
 data QLOItem
   = QChar Pos Char
@@ -487,6 +489,7 @@ qloiCode QInterpExpr{} = "QInterpExpr"
 argCode :: Arg -> String
 argCode ArgExpr{} = "ArgExpr"
 argCode ArgField{} = "ArgField"
+argCode ArgStrict{} = "ArgStrict"
 
 patCode :: Pattern -> String
 patCode PView{} = "PView"

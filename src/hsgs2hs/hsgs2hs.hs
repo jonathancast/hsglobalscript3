@@ -321,6 +321,18 @@ compileExpr env (EApp f (ArgField pos1 m)) = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcfield_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` isf,
         HSVar "gsbcfield_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` (HSVar "gsvar" `HSApp` HSString m)
       )
+compileExpr env (EApp f (ArgStrict pos1 e)) = do
+    (isf, hsef) <- compileExpr env f
+    (isa, hsea) <- compileArg env pos1 e Nothing Nothing
+    hsv <- getGenSym
+    return (
+        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcforce_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcapp_w", HSIType "GSI.Value" "GSArg" ]
+            `Set.union` isf `Set.union` isa
+        ,
+        HSVar "gsbcforce_w" `HSApp` hspos pos1 `HSApp` hsea `HSApp` (
+            HSLambda [hsv] $ HSVar "gsbcapp_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` HSList [ HSConstr "GSArgVar" `HSApp` HSVar hsv ]
+        )
+      )
 compileExpr env (EApp f a) = $gsfatal $ "compileExpr (EApp f " ++ argCode a ++ ") next"
 compileExpr env (EGens gs pos1) = compileGens env gs pos1
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
