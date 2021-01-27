@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcrehere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclet, gsbclet_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcrehere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -173,9 +173,12 @@ runGSArg msg pc c1 (GSArgExpr pos' e') sk = runGSExpr e' msg pc [c1] sk
 runGSArg msg pc c1 (GSArgVar v) sk = aceEnter msg pc [c1] v sk
 runGSArg msg pc c1 a sk = gsthrow sk $ $gsimplementationfailure $ "runGSArg " ++ argCode a ++ " next"
 
-gsbclet_w :: Pos -> GSExpr -> (GSValue -> GSExpr) -> GSExpr
-gsbclet_w pos e k = gsbcprof_w pos $ GSExpr $ \ msg pc cs sk -> do
-    v <- gsthunk_w pos e
+gsbclet = varE 'gsbclet_w `appE` gshere
+
+gsbclet_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
+gsbclet_w pos (GSArgVar v) k = k v
+gsbclet_w pos (GSArgExpr pos1 e) k = gsbcprof_w pos $ GSExpr $ \ msg pc cs sk -> do
+    v <- gsthunk_w pos1 e
     runGSExpr (k v) msg pc [StackTrace pos cs] sk
 
 gsbcimpfor = varE 'gsbcimpfor_w `appE` gshere
@@ -303,7 +306,7 @@ gsbcviewpattern_w pos v ps = gsbcprof_w pos $ gsbcarg_w $gshere $ \ x -> gsbcapp
     $gsav (GSConstr $gshere (gsvar "0") []),
     $gsae $ (foldr
         (\ p k r -> gsbcarg_w $gshere $ \ x0 ->
-            k $ gsbclet_w $gshere r $ \ rv -> gsbclet_w $gshere (gsbcapparg_w $gshere p [ $gsav x0 ]) $ \ px0 ->
+            k $ gsbclet_w $gshere ($gsae r) $ \ rv -> gsbclet_w $gshere ($gsae $ gsbcapparg_w $gshere p [ $gsav x0 ]) $ \ px0 ->
                 (gsbcprim_w $gshere gsparand rv px0)
         )
         (\ r -> r)
