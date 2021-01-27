@@ -8,7 +8,7 @@ import Control.Monad (forM)
 import Control.Monad.State.Strict (MonadState(..), StateT, evalStateT)
 import Control.Monad.Trans (MonadTrans(..))
 
-import Data.List (isSuffixOf)
+import Data.List (isSuffixOf, zip4)
 
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -458,19 +458,24 @@ compileApp env (EVar pos f) as = do
     cats <- case Map.lookup f (gscategories env) of
         Nothing -> return []
         Just catsM -> catsM as
-    inas' <- mapM (\ ((pos1, st, e), s, c) -> case st of
-        False -> compileArg env pos1 e s c
-        True -> $gsfatal "compileApp strict argument next"
-      ) (zip3 inas (sig ++ repeat Nothing) (cats ++ repeat Nothing))
-    return (
+    inahsxs <- mapM (\ _ -> getGenSym) inas
+    inaks <- mapM (\ ((pos1, st, e), hsx, s, c) -> do
+        (isa, hsa) <- compileArg env pos1 e s c
+        case st of
+            False -> return $ \ (ise, hse) -> (
+                Set.fromList [ HSIVar "GSI.ByteCode" "gsbclet_w", HSIType "GSI.Util" "Pos" ] `Set.union` isa `Set.union` ise,
+                HSVar "gsbclet_w" `HSApp` hspos pos1 `HSApp` hsa `HSApp` HSLambda [hsx] hse
+              )
+            True -> $gsfatal "compileApp strict argument next"
+      ) (zip4 inas inahsxs (sig ++ repeat Nothing) (cats ++ repeat Nothing))
+    return $ foldr (.) id inaks $ (
         Set.unions $
             isctxt :
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
             isf :
-            map (\ (is, _) -> is) as0 ++
-            map (\ (is, _) -> is) inas'
+            map (\ (is, _) -> is) as0
         ,
-        ctxt (HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ (_, a) -> a) inas'))
+        ctxt (HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ hsx -> HSConstr "GSArgVar" `HSApp` HSVar hsx) inahsxs))
       )
 compileApp env (EUnary pos f) as = do
     (isf, ef) <- case Map.lookup f (gsunaries env) of
