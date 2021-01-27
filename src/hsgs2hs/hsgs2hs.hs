@@ -314,7 +314,7 @@ compileExpr env (EQLO pos0 "r" [QQChar pos1 ch]) = $gsfatal $ "compileExpr env (
 compileExpr env (EQLO pos0 "r" [qi]) = $gsfatal $ "compileExpr env (EQLO pos0 \"r\" [" ++ qloiCode qi ++ "]) next"
 compileExpr env (EQLO pos0 "r" (qi:qis)) = $gsfatal $ "compileExpr env (EQLO pos0 \"r\" (qi:qis)) next"
 compileExpr env (EQLO pos0 q s) = $gsfatal $ "compileExpr (EQLO pos " ++ show q ++ " s) next"
-compileExpr env (EApp f (ArgExpr pos1 e)) = compileApp env f [(pos1, e)]
+compileExpr env (EApp f (ArgExpr pos1 e)) = compileApp env f [(pos1, False, e)]
 compileExpr env (EApp f (ArgField pos1 m)) = do
     (isf, hsef) <- compileArg env pos1 f Nothing Nothing
     return (
@@ -367,8 +367,8 @@ compileOpenArg env pos fvs e = do
         HSConstr "GSArgExpr" `HSApp` hspos pos `HSApp` hse
       )
 
-compileApp :: Env -> Expr -> [(Pos, Expr)] -> StateT Integer (Either String) (Set HSImport, HSExpr)
-compileApp env (EVar pos "value") ((_, EVar pos1 f):[]) = do
+compileApp :: Env -> Expr -> [(Pos, Bool, Expr)] -> StateT Integer (Either String) (Set HSImport, HSExpr)
+compileApp env (EVar pos "value") ((_, _, EVar pos1 f):[]) = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
@@ -380,11 +380,15 @@ compileApp env (EVar pos "value") ((_, EVar pos1 f):[]) = do
         ,
         HSVar "gsbcenter_w" `HSApp` hspos pos1 `HSApp` ef
       )
-compileApp env (EVar pos "value") ((_, EVar pos1 f):as) = do
+compileApp env (EVar pos "value") ((_, _, EVar pos1 f):as) = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    as' <- mapM (\ ((pos2, e), s, c) -> compileArg env pos2 e s c) (zip3 as (repeat Nothing) (repeat Nothing))
+    as' <- mapM (\ ((pos2, st, e), s, c) -> case st of
+            False -> compileArg env pos2 e s c
+            True -> $gsfatal "compileApp: strict arguments next"
+        )
+        (zip3 as (repeat Nothing) (repeat Nothing))
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -393,11 +397,15 @@ compileApp env (EVar pos "value") ((_, EVar pos1 f):as) = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos1 `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
       )
-compileApp env (EVar pos "view") ((_, EVar pos1 v):as) = do
+compileApp env (EVar pos "view") ((_, False, EVar pos1 v):as) = do
     (isv, ev) <- case Map.lookup v (gsviews env) of
         Nothing -> lift $ Left $ fmtPos pos $ "view " ++ v ++ " not in scope"
         Just (isv, ev) -> return (isv, ev)
-    as' <- mapM (\ ((pos2, e), s, c) -> compileArg env pos2 e s c) (zip3 as (repeat Nothing) (repeat Nothing))
+    as' <- mapM (\ ((pos2, st, e), s, c) -> case st of
+            False -> compileArg env pos2 e s c
+            True -> $gsfatal "compileApp strict argument next"
+        )
+        (zip3 as (repeat Nothing) (repeat Nothing))
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -406,6 +414,7 @@ compileApp env (EVar pos "view") ((_, EVar pos1 v):as) = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos1 `HSApp` ev `HSApp` HSList (map (\ (_, a) -> a) as')
       )
+compileApp env (EVar pos "view") ((_, True, EVar pos1 v):as) = $gsfatal "compileApp strict view name (huh?) next"
 compileApp env (EVar pos f) as = do
     (isf, ef) <- case Map.lookup f (gsvars env) of
         Nothing -> lift $ Left $ fmtPos pos $ f ++ " not in scope"
@@ -418,7 +427,10 @@ compileApp env (EVar pos f) as = do
     let outas = case constrarity of
             Nothing -> []
             Just n -> drop n as
-    outas' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing Nothing) outas
+    outas' <- mapM (\ (pos1, st, e) -> case st of
+        False -> compileArg env pos1 e Nothing Nothing
+        True -> $gsfatal $ "compileApp strict arguments next"
+      ) outas
     let (isctxt, ctxt) =
             (case outas' of
                 [] -> id
@@ -446,7 +458,10 @@ compileApp env (EVar pos f) as = do
     cats <- case Map.lookup f (gscategories env) of
         Nothing -> return []
         Just catsM -> catsM as
-    inas' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 inas (sig ++ repeat Nothing) (cats ++ repeat Nothing))
+    inas' <- mapM (\ ((pos1, st, e), s, c) -> case st of
+        False -> compileArg env pos1 e s c
+        True -> $gsfatal "compileApp strict argument next"
+      ) (zip3 inas (sig ++ repeat Nothing) (cats ++ repeat Nothing))
     return (
         Set.unions $
             isctxt :
@@ -461,7 +476,10 @@ compileApp env (EUnary pos f) as = do
     (isf, ef) <- case Map.lookup f (gsunaries env) of
         Nothing -> lift $ Left $ fmtPos pos $ "unary " ++ f ++ " not in scope"
         Just (isf, ef) -> return (isf, ef)
-    as' <- mapM (\ (pos1, e) -> compileArg env pos1 e Nothing Nothing) as
+    as' <- mapM (\ (pos1, st, e) -> case st of
+        False -> compileArg env pos1 e Nothing Nothing
+        True -> $gsfatal $ "compileApp strict argument next"
+      ) as
     return (
         Set.unions $
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
@@ -470,10 +488,13 @@ compileApp env (EUnary pos f) as = do
         ,
         HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as')
       )
-compileApp env (EApp f (ArgExpr pos a)) as = compileApp env f ((pos, a):as)
+compileApp env (EApp f (ArgExpr pos a)) as = compileApp env f ((pos, False, a):as)
 compileApp env e@(EApp f (ArgField pos m)) as = do
     (isf, ef) <- compileExpr env e
-    as' <- mapM (\ ((pos1, e), s, c) -> compileArg env pos1 e s c) (zip3 as (repeat Nothing) (repeat Nothing))
+    as' <- mapM (\ ((pos1, st, e), s, c) -> case st of
+        False -> compileArg env pos1 e s c
+        True -> $gsfatal $ "compileApp strict argument next"
+      ) (zip3 as (repeat Nothing) (repeat Nothing))
     return (
         Set.unions $
             Set.fromList [HSIVar "GSI.ByteCode" "gsbcapp_w", HSIType "GSI.Util" "Pos" ] :
@@ -1368,23 +1389,23 @@ globalEnv = Env{
     ],
     gssignatures = Map.fromList [
         ("λ", \ as -> case as of
-            (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
+            (_, _, EPat p) : (_, _, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
             _ -> return []
         ),
         ("case", \ as -> case as of
-            (_, EPat p) : (_, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
+            (_, _, EPat p) : (_, _, EOpen b) : _ -> return [ Nothing, Just (SigOpen (boundVars p)) ]
             _ -> return []
         ),
         ("for", \ as -> case as of
-            (_, EGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
+            (_, _, EGens gs _) : (_, _, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
             _ -> return []
         ),
         ("impfor", \ as -> case as of
-            (_, EImpGens gs _) : (_, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
+            (_, _, EImpGens gs _) : (_, _, EOpen b) : _ -> return [ Nothing, Just $ SigOpen $ gensBoundVars $ map (\ (_, g) -> g) gs ]
             _ -> return []
         ),
         ("either.for", \ as -> case as of
-            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
+            (_, _, EMonadGens gs _) : (_, _, EOpen b) : _ -> return [
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSI.Either" "gsright", HSVar "gsright"),
                     gsbind = (Set.singleton $ HSIVar "GSI.Either" "gseither_bind", HSVar "gseither_bind"),
@@ -1395,7 +1416,7 @@ globalEnv = Env{
             _ -> return []
         ),
         ("parser.for", \ as -> case as of
-            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
+            (_, _, EMonadGens gs _) : (_, _, EOpen b) : _ -> return [
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_unit", HSVar "gsparser_unit"),
                     gsbind = (Set.singleton $ HSIVar "GSI.Parser" "gsparser_bind", HSVar "gsparser_bind"),
@@ -1406,7 +1427,7 @@ globalEnv = Env{
             _ -> return []
         ),
         ("type-checker.for", \ as -> case as of
-            (_, EMonadGens gs _) : (_, EOpen b) : _ -> return [
+            (_, _, EMonadGens gs _) : (_, _, EOpen b) : _ -> return [
                 Just $ SigMonad SM{
                     gsunit = (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_unit", HSVar "gstype_checker_unit"),
                     gsbind = (Set.singleton $ HSIVar "GSDL.TypeChecker" "gstype_checker_bind", HSVar "gstype_checker_bind"),
@@ -1419,7 +1440,7 @@ globalEnv = Env{
     ],
     gscategories = Map.fromList [
         ("case", \ as -> case as of
-            (_, EPat p) : (_, EOpen b) : _ -> return [ Just Fallible, Nothing ]
+            (_, _, EPat p) : (_, _, EOpen b) : _ -> return [ Just Fallible, Nothing ]
             _ -> return []
         )
     ],
@@ -1435,8 +1456,8 @@ globalEnv = Env{
 
 data Env = Env {
     gsconsumes :: Map String [Consume],
-    gssignatures :: Map String ([(Pos, Expr)] -> Compiler [Maybe Signature]),
-    gscategories :: Map String ([(Pos, Expr)] -> Compiler [Maybe Category]),
+    gssignatures :: Map String ([(Pos, Bool, Expr)] -> Compiler [Maybe Signature]),
+    gscategories :: Map String ([(Pos, Bool, Expr)] -> Compiler [Maybe Category]),
     gsunaries :: Map String (Set HSImport, HSExpr),
     gsvars :: Map String (Set HSImport, HSExpr),
     gsviews :: Map String (Set HSImport, HSExpr),
