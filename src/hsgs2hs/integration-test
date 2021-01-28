@@ -24,7 +24,7 @@ echo '### Different kinds of interpolations'
 
 test_hsgs_variable_expressions
 test_hsgs_variable_values
-test_hsgs_application_values
+test_hsgs_application_values_let_output
 
 echo '### Different kinds of declarations'
 

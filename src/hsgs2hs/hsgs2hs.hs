@@ -321,18 +321,7 @@ compileExpr env (EApp f (ArgField pos1 m)) = do
         Set.fromList [ HSIVar "GSI.ByteCode" "gsbcfield_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.Syn" "gsvar" ] `Set.union` isf,
         HSVar "gsbcfield_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` (HSVar "gsvar" `HSApp` HSString m)
       )
-compileExpr env (EApp f (ArgStrict pos1 e)) = do
-    (isf, hsef) <- compileExpr env f
-    (isa, hsea) <- compileArg env pos1 e Nothing Nothing
-    hsv <- getGenSym
-    return (
-        Set.fromList [ HSIVar "GSI.ByteCode" "gsbcforce_w", HSIType "GSI.Util" "Pos", HSIVar "GSI.ByteCode" "gsbcapp_w", HSIType "GSI.Value" "GSArg" ]
-            `Set.union` isf `Set.union` isa
-        ,
-        HSVar "gsbcforce_w" `HSApp` hspos pos1 `HSApp` hsea `HSApp` (
-            HSLambda [hsv] $ HSVar "gsbcapp_w" `HSApp` hspos pos1 `HSApp` hsef `HSApp` HSList [ HSConstr "GSArgVar" `HSApp` HSVar hsv ]
-        )
-      )
+compileExpr env (EApp f (ArgStrict pos1 e)) = compileApp env f [(pos1, True, e)]
 compileExpr env (EApp f a) = $gsfatal $ "compileExpr (EApp f " ++ argCode a ++ ") next"
 compileExpr env (EGens gs pos1) = compileGens env gs pos1
 compileExpr env e = $gsfatal $ "compileExpr " ++ eCode e ++ " next"
@@ -431,23 +420,22 @@ compileApp env (EVar pos f) as = do
         False -> compileArg env pos1 e Nothing Nothing
         True -> $gsfatal $ "compileApp strict arguments next"
       ) outas
-    let (isctxt, ctxt) =
+    let ctxt =
             (case outas' of
                 [] -> id
-                _ -> \ (is, f) -> (
-                    Set.unions $ Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapp_w", HSIType "GSI.Util" "Pos" ] : is : map (\ (isa, _) -> isa) outas',
-                    \ hse -> HSVar "gsbcapp_w" `HSApp` hspos pos `HSApp` f hse `HSApp` HSList (map (\ (_, a) -> a) outas')
+                _ -> \ (hsis, hse) -> (
+                    Set.unions $ Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapp_w", HSIType "GSI.Util" "Pos" ] : hsis : map (\ (isa, _) -> isa) outas',
+                    HSVar "gsbcapp_w" `HSApp` hspos pos `HSApp` hse `HSApp` HSList (map (\ (_, a) -> a) outas')
                   )
-            ) $
+            ) .
             (if isConstr then
-                \ (is, f) -> (
-                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrehere_w", HSIType "GSI.Util" "Pos" ] `Set.union` is,
-                    \ hse -> HSVar "gsbcrehere_w" `HSApp` hspos pos `HSApp` (f hse)
+                \ (hsis, hse) -> (
+                    Set.fromList [ HSIVar "GSI.ByteCode" "gsbcrehere_w", HSIType "GSI.Util" "Pos" ] `Set.union` hsis,
+                    HSVar "gsbcrehere_w" `HSApp` hspos pos `HSApp` hse
                 )
             else
                 id
-            ) $
-                (Set.empty, id)
+            )
     as0 <- case Map.lookup f (gsconsumes env) of
         Nothing -> return []
         Just ims -> forM ims $ \ im -> case im of
@@ -466,16 +454,18 @@ compileApp env (EVar pos f) as = do
                 Set.fromList [ HSIVar "GSI.ByteCode" "gsbclet_w", HSIType "GSI.Util" "Pos" ] `Set.union` isa `Set.union` ise,
                 HSVar "gsbclet_w" `HSApp` hspos pos1 `HSApp` hsa `HSApp` HSLambda [hsx] hse
               )
-            True -> $gsfatal "compileApp strict argument next"
+            True -> return $ \ (ise, hse) -> (
+                Set.fromList [ HSIVar "GSI.ByteCode" "gsbcforce_w", HSIType "GSI.Util" "Pos" ] `Set.union` isa `Set.union` ise,
+                HSVar "gsbcforce_w" `HSApp` hspos pos1 `HSApp` hsa `HSApp` HSLambda [hsx] hse
+              )
       ) (zip4 inas inahsxs (sig ++ repeat Nothing) (cats ++ repeat Nothing))
-    return $ foldr (.) id inaks $ (
+    return $ ctxt $ foldr (.) id inaks $ (
         Set.unions $
-            isctxt :
             Set.fromList [ HSIVar "GSI.ByteCode" "gsbcapply_w", HSIType "GSI.Util" "Pos" ] :
             isf :
             map (\ (is, _) -> is) as0
         ,
-        ctxt (HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ hsx -> HSConstr "GSArgVar" `HSApp` HSVar hsx) inahsxs))
+        HSVar "gsbcapply_w" `HSApp` hspos pos `HSApp` ef `HSApp` HSList (map (\ (_, a) -> a) as0 ++ map (\ hsx -> HSConstr "GSArgVar" `HSApp` HSVar hsx) inahsxs)
       )
 compileApp env (EUnary pos f) as = do
     (isf, ef) <- case Map.lookup f (gsunaries env) of
