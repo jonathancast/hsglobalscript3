@@ -1075,6 +1075,7 @@ globalEnv = Env{
         ("maybe.out", "GSI.Maybe", "gsmaybe_out"),
         ("monad.>>=", "GSI.Monad", "gsmonad_bind"),
         ("natural.+", "GSI.Natural", "gsnatural_add"),
+        ("natural.<", "GSI.Natural", "gsnatural_lt"),
         ("natural.<=>", "GSI.Natural", "gsnatural_cmp"),
         ("natural.>", "GSI.Natural", "gsnatural_gt"),
         ("natural.addition", "GSI.Natural", "gsnatural_addition"),
