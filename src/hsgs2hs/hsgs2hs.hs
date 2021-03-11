@@ -170,6 +170,7 @@ compileValue env pos e@(EVar pos1 v) = case v `Map.member` gsconsumes env || v `
             Nothing -> compileError pos1 $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
         return (isv, ev)
+compileValue env pos (ENumber _ n) = return (Set.fromList [ HSIType "GSI.Value" "GSValue" ], HSConstr "GSNatural" `HSApp` HSInteger n)
 compileValue env pos e@EGens{} = compileThunk env pos e
 compileValue env pos e@EApp{} = compileThunk env pos e
 compileValue env pos e = $gsfatal $ "compileValue " ++ eCode e ++ " next"
