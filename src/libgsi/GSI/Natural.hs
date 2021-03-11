@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_addition, gsnatural_subtract, gsnatural_subtract_maybe, gsnatural_multiply, gsnatural_div_mod, gsnatural_eq, gsnatural_neq, gsnatural_lt, gsnatural_gt, gsnatural_cmp) where
+module GSI.Natural (gsnatural_unary_plus, gsnatural_add, gsnatural_addition, gsnatural_subtract, gsnatural_subtract_maybe, gsnatural_multiply, gsnatural_div_mod, gsnatural_max, gsnatural_eq, gsnatural_neq, gsnatural_lt, gsnatural_gt, gsnatural_cmp) where
 
 import qualified Data.Map as Map
 
@@ -40,6 +40,8 @@ gsnatural_div_mod = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gs
 gsnatural_op f = $gslambda_value $ \ n0 -> $gsbcarg $ \ n1 -> $gsbcforce ($gsav n0) $ \ n0_0 -> $gsbcforce ($gsav n1) $ \ n1_0 -> case (n0_0, n1_0) of
     (GSNatural n0hs, GSNatural n1hs) -> $gsbcenter $ GSNatural $ f n0hs n1hs
     _ -> $gsbcimplementationfailure $ "gsnatural_op " ++ gsvCode n0_0 ++ ' ' : gsvCode n1_0 ++ " next"
+
+gsnatural_max = gsnatural_op max
 
 gsnatural_eq = gsnatural_rel (==)
 

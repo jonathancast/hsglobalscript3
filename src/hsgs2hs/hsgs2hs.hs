@@ -1081,6 +1081,7 @@ globalEnv = Env{
         ("natural.addition", "GSI.Natural", "gsnatural_addition"),
         ("natural.div-mod", "GSI.Natural", "gsnatural_div_mod"),
         ("natural.fmt-decimal", "GSI.Format", "gsnatural_fmt_decimal"),
+        ("natural.max", "GSI.Natural", "gsnatural_max"),
         ("natural.read-decimal", "GSI.Format", "gsnatural_read_decimal"),
         ("natural.≡", "GSI.Natural", "gsnatural_eq"),
         ("nil", "GSI.List", "gsnil"),
