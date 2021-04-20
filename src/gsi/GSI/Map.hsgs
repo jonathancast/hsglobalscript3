@@ -13,17 +13,17 @@ $gsdeclare view empty gsordered_map_empty_view
 $gsdeclare view branch gsordered_map_branch_view
 
 gsordered_map_insert = [gs:value| λ 'cmp. λ 'k. λ 'v. λ 'm. analyze m.
-    case empty. branch k v empty empty
-    case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
-        case lt. branch k1 v1 (ordered-map.insert cmp k v l) r
-        case eq. branch k v l r
-        case gt. branch k1 v1 l (ordered-map.insert cmp k v r)
+    case empty. branch empty k v empty
+    case branch 'l 'k1 'v1 'r. (analyze cmp k k1.
+        case lt. branch (ordered-map.insert cmp k v l) k1 v1 r
+        case eq. branch l k v r
+        case gt. branch l k1 v1 (ordered-map.insert cmp k v r)
     )
 |]
 
 gsordered_map_get = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
     case empty. nothing
-    case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
+    case branch 'l 'k1 'v1 'r. (analyze cmp k k1.
         case lt. ordered-map.get cmp k l
         case eq. just v1
         case gt. ordered-map.get cmp k r
@@ -34,19 +34,23 @@ $gsdeclare split-lt gssplit_lt
 $gsdeclare split-gt gssplit_gt
 
 gsordered_map_union = [gs:value| λ 'cmp. λ 'm0. λ 'm1. analyze m0.
-    case branch 'k0 'v0 'l0 'r0. (analyze m1.
-        case branch 'k1 'v1 'l1 'r1. (analyze cmp k0 k1.
-            case lt. branch k0 v0
+    case branch 'l0 'k0 'v0 'r0. (analyze m1.
+        case branch 'l1 'k1 'v1 'r1. (analyze cmp k0 k1.
+            case lt. branch
                 (ordered-map.∪ cmp l0 (split-lt cmp k0 l1))
-                (branch k1 v1
+                k0 v0
+                (branch
                     (ordered-map.∪ cmp (split-lt cmp k1 r0) (split-gt cmp k0 l1))
+                    k1 v1
                     (ordered-map.∪ cmp (split-gt cmp k1 r0) r1)
                 )
-            case gt. branch k0 v0
-                (branch k1 v1
+            case gt. branch
+                (branch
                     (ordered-map.∪ cmp (split-lt cmp k1 l0) l1)
+                    k1 v1
                     (ordered-map.∪ cmp (split-gt cmp k1 l0) (split-lt cmp k0 r1))
                 )
+                k0 v0
                 (ordered-map.∪ cmp r0 (split-gt cmp k0 r1))
         )
     )
@@ -55,37 +59,37 @@ gsordered_map_union = [gs:value| λ 'cmp. λ 'm0. λ 'm1. analyze m0.
 
 gssplit_lt = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
     case empty. empty
-    case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
+    case branch 'l 'k1 'v1 'r. (analyze cmp k k1.
         case lt. split-lt cmp k l
-        case gt. branch k1 v1 l (split-lt cmp k r)
+        case gt. branch l k1 v1 (split-lt cmp k r)
     )
 |]
 
 gssplit_gt = [gs:value| λ 'cmp. λ 'k. λ 'm. analyze m.
     case empty. empty
-    case branch 'k1 'v1 'l 'r. (analyze cmp k k1.
-        case lt. branch k1 v1 (split-gt cmp k l) r
+    case branch 'l 'k1 'v1 'r. (analyze cmp k k1.
+        case lt. branch (split-gt cmp k l) k1 v1 r
         case gt. split-gt cmp k r
     )
 |]
 
 gsordered_map_keys = [gs:value| λ 'm. analyze m.
-    case branch 'k _ 'l 'r. ordered-map.keys l <> k : ordered-map.keys r
+    case branch 'l 'k _ 'r. ordered-map.keys l <> k : ordered-map.keys r
     case empty. nil
 |]
 
 gsordered_map_values = [gs:value| λ 'm. analyze m.
-    case branch _ 'v 'l 'r. ordered-map.values l <> v : ordered-map.values r
+    case branch 'l _ 'v 'r. ordered-map.values l <> v : ordered-map.values r
     case empty. nil
 |]
 
 gsordered_map_to_list = [gs:value| λ 'm. analyze m.
-    case branch 'k 'v 'l 'r. ordered-map.to-list l <> 〈 '0 ∝ k; '1 ∝ v; 〉 : ordered-map.to-list r
+    case branch 'l 'k 'v 'r. ordered-map.to-list l <> 〈 '0 ∝ k; '1 ∝ v; 〉 : ordered-map.to-list r
     case empty. nil
 |]
 
 gsordered_map_empty = $gsconstr (gsvar "empty") []
-gsordered_map_branch = $gslambda_value $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ l -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav k, $gsav v, $gsav l, $gsav r ]
+gsordered_map_branch = $gslambda_value $ \ l -> $gsbcarg $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav l, $gsav k, $gsav v, $gsav r ]
 
 gsordered_map_empty_view = $gsbcconstr_view "empty"
 gsordered_map_branch_view = $gsbcconstr_view "branch"
