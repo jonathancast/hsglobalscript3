@@ -88,8 +88,93 @@ gsordered_map_to_list = [gs:value| λ 'm. analyze m.
     case empty. nil
 |]
 
-gsordered_map_empty = $gsconstr (gsvar "empty") []
-gsordered_map_branch = $gslambda_value $ \ l -> $gsbcarg $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav l, $gsav k, $gsav v, $gsav r ]
+$gsdeclare prim.empty gsordered_map_prim_empty
+$gsdeclare prim.branch gsordered_map_prim_branch
 
-gsordered_map_empty_view = $gsbcconstr_view "empty"
-gsordered_map_branch_view = $gsbcconstr_view "branch"
+$gsdeclare view prim.empty gsordered_map_prim_empty_view
+$gsdeclare view prim.branch gsordered_map_prim_branch_view
+
+gsordered_map_empty = [gs:value| prim.empty |]
+
+$gsdeclare size gssize
+$gsdeclare size.<=> gssize_compare
+
+$gsdeclare balance-factor gsbalance_factor
+
+$gsdeclare mkbranch gsmkbranch
+
+-- Credit to §link{Implementing sets efficiently in a functional language}{https://groups.csail.mit.edu/mac/users/adams/BB/}
+-- Need to produce §gs{l <> (k ⇒ v) @ r}
+gsordered_map_branch = [gs:value| λ 'l. λ 'k. λ 'v. λ 'r. analyze size.<=> l r.
+    case eq. mkbranch l k v r
+     case lt. (analyze natural.< (size l + size r) 3 || natural.≤ (size r - 1) (size l * balance-factor).
+         case false. (analyze r.
+             case branch 'lr 'kr 'vr 'rr. branch (branch l k v lr) kr vr rr
+         )
+         case true. (analyze r.
+             case branch 'lr 'kr 'vr 'rr. (analyze natural.< (size lr) (size rr).
+                 case true. mkbranch (mkbranch l k v lr) kr vr rr
+                 case false. (analyze lr.
+                     case branch 'llr 'klr 'vlr 'rlr. mkbranch (mkbranch l k v llr) klr vlr (mkbranch rlr kr vr rr)
+                 )
+             )
+         )
+     )
+    case gt. (analyze natural.< (size l + size r) 3 || natural.≤ (size l - 1) (size r * balance-factor).
+        case false. (analyze l.
+            case branch 'll 'kl 'vl 'rl. branch ll kl vl (branch rl k v r)
+        )
+        case true. (analyze l.
+            case branch 'll 'kl 'vl 'rl. (analyze natural.< (size rl) (size ll).
+                case true. mkbranch ll kl vl (mkbranch rl k v r)
+                case false. (analyze rl.
+                    case branch 'lrl 'krl 'vrl 'rrl. mkbranch (mkbranch ll kl vl lrl) krl vrl (mkbranch rrl k v r)
+                )
+            )
+        )
+     )
+|]
+
+-- We have:
+-- §gs{size l > size r * balance-factor}
+-- §gs{l} is too big
+-- §gs{l} is one too big means
+-- §gs{size l - 1 ≤ size r * balance-factor}
+-- §gs{r} is one too small means
+-- §gs{size l ≤ (size r + 1) * balance-factor}
+-- §gs{size l ≤ size r * balance-factor + balance-factor}
+-- §gs{size l - balance-factor ≤ size r * balance-factor}
+-- Now, §gs{balance-factor ≥ 1} so §gs{size l - balance-factor ≤ size l - 1}
+-- So we always have §gs{size l - 1 ≤ size r * balance-factor} if we're within one step of being balanced
+
+gsmkbranch = [gs:value| λ 'l. λ 'k. λ 'v. λ 'r. prim.branch !(size l + size r + 1) l k v r |]
+
+gssize = [gs:value| λ 'm. analyze m.
+    case prim.branch 's _ _ _ _. s
+    case prim.empty. 0
+|]
+
+gssize_compare = [gs:value| λ 'l. λ 'r. analyze natural.< (size l + size r) 2.
+    case true. eq
+    case false. (analyze natural.< (size l * balance-factor) (size r).
+        case true. lt
+        case false. (analyze natural.> (size l) (size r * balance-factor).
+            case true. gt
+            case false. eq
+        )
+    )
+|]
+
+gsbalance_factor = [gs:value| 4 |]
+
+gsordered_map_empty_view = gsordered_map_prim_empty_view
+gsordered_map_branch_view = [gs:value| λ 'ek. λ 'sk. λ 'm. analyze m.
+    case prim.branch _ 'l 'k 'v 'r. sk l k v r
+    case prim.empty. ek
+|]
+
+gsordered_map_prim_empty = $gsconstr (gsvar "empty") []
+gsordered_map_prim_branch = $gslambda_value $ \ d -> $gsbcarg $ \ l -> $gsbcarg $ \ k -> $gsbcarg $ \ v -> $gsbcarg $ \ r -> $gsbcconstr (gsvar "branch") [ $gsav d, $gsav l, $gsav k, $gsav v, $gsav r ]
+
+gsordered_map_prim_empty_view = $gsbcconstr_view "empty"
+gsordered_map_prim_branch_view = $gsbcconstr_view "branch"
