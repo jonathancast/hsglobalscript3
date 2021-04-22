@@ -409,6 +409,7 @@ $gsdeclare opname opname
 $gsdeclare numname numname
 
 gspat_atom = [gs:value| λ 'env.
+    <|> (parens (pat env))
     <|> (parser.for _ ← lexeme (char r{_});. parser.unit pat.discard)
     <|> (parser.for 'v ← var env;. parser.unit (pat.view v))
     <|> (parser.for 'v ← char r{'} *> ident;. parser.unit (pat.var v))
