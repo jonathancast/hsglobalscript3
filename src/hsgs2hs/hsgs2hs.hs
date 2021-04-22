@@ -1084,6 +1084,7 @@ globalEnv = Env{
         ("natural.max", "GSI.Natural", "gsnatural_max"),
         ("natural.read-decimal", "GSI.Format", "gsnatural_read_decimal"),
         ("natural.≡", "GSI.Natural", "gsnatural_eq"),
+        ("natural.≤", "GSI.Natural", "gsnatural_le"),
         ("nil", "GSI.List", "gsnil"),
         ("not", "GSI.Bool", "gsnot"),
         ("not-followed-by", "GSI.Parser", "gsparser_not_followed_by"),
