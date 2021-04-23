@@ -68,5 +68,5 @@ src/gs2hs/gsioc.hs$
 src/mdl/mdlc$
 src/mdl/mdlc.hs$
 bin/mdlc$
-stage1
+^stage1$
 .*\.prof$
