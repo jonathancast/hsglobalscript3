@@ -153,6 +153,9 @@ gstype_checker_global_env = [gs:value|
                 type.function (type.open-expr (type.consts qq{σ}) (type.consts qq{β})) $
                     type.function (type.consts qq{α}) (type.consts qq{β})
     ) $
+    type.env.type.insert (gsvar qq{value}) (
+        type.forall (gsvar qq{α}) kind.pointed $ type.function (type.consts qq{α}) $ type.consts qq{α}
+    ) $
     type.env.type.insert (gsvar qq{gsvar}) (
         type.function (type.app (type.consts qq{list.t}) (type.consts qq{rune.t})) $ type.consts qq{gsvar.t}
     ) $
