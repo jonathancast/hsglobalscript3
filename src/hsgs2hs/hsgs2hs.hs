@@ -1094,6 +1094,7 @@ globalEnv = Env{
         ("ord.<|>", "GSI.OrderTotal", "gsord_or"),
         ("order-of-being.<=>", "GSDL.AST", "gsorder_of_being_cmp"),
         ("order-of-being.expr", "GSDL.AST", "gsorder_of_being_expr"),
+        ("order-of-being.fmt", "GSDL.AST", "gsorder_of_being_fmt"),
         ("order-of-being.generator", "GSDL.AST", "gsorder_of_being_generator"),
         ("order-of-being.open-expr", "GSDL.AST", "gsorder_of_being_open_expr"),
         ("order-of-being.pattern", "GSDL.AST", "gsorder_of_being_pattern"),
