@@ -187,7 +187,8 @@ gsorder_of_being_eq = [gs:value| λ 'o0. λ 'o1. natural.≡ (order-of-being.to-
 gsorder_of_being_cmp = [gs:value| λ 'o0. λ 'o1. natural.<=> (order-of-being.to-code o0) (order-of-being.to-code o1) |]
 
 gsorder_of_being_to_code = [gs:value| λ 'o. analyze o.
-    case order-of-being.pattern. 0
+    case order-of-being.generator. 0
+    case order-of-being.pattern. 1
 |]
 
 gsorder_of_being_fmt = [gs:value| λ 'o. analyze o.
