@@ -373,6 +373,9 @@ gsgenerator = [gs:value| λ 'env.
                 case 'o : 's1. (analyze order-of-being.≡ o (p0 #0).
                     case true. parser.unit s1
                 )
+                case nil. (analyze order-of-being.≡ order-of-being.generator (p0 #0).
+                    case false. parser.fail log{§(log.str (gsvar.fmt-atom op)) not allowed in generator after §(log.str (order-of-being.fmt (p0 #0)))}
+                )
             ;
             'pos1 ← get-pos;
             'g1 ← analyze s1.
