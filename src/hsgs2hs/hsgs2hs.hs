@@ -1184,6 +1184,7 @@ globalEnv = Env{
         ("rune.≡", "GSI.Rune", "gsruneEq"),
         ("source-comp.char", "GSDL.HSGS.AST", "gssource_comp_char"),
         ("source-comp.declare", "GSDL.HSGS.AST", "gssource_comp_declare"),
+        ("source-comp.declare-view", "GSDL.HSGS.AST", "gssource_comp_declare_view_constr"),
         ("source-comp.expr", "GSDL.HSGS.AST", "gssource_comp_expr"),
         ("source-comp.imports", "GSDL.HSGS.AST", "gssource_comp_imports"),
         ("source-comp.pos", "GSDL.HSGS.AST", "gssource_comp_pos"),

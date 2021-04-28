@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSDL.HSGS.AST (
-    gssource_comp_char, gssource_comp_pos, gssource_comp_imports, gssource_comp_declare, gssource_comp_value, gssource_comp_expr, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_imports_view, gssource_comp_declare_view, gssource_comp_value_view, gssource_comp_expr_view,
+    gssource_comp_char, gssource_comp_pos, gssource_comp_imports, gssource_comp_declare, gssource_comp_declare_view_constr, gssource_comp_value, gssource_comp_expr, gssource_comp_char_view, gssource_comp_pos_view, gssource_comp_imports_view, gssource_comp_declare_view, gssource_comp_value_view, gssource_comp_expr_view,
     gsquote_param_hsvs, gsquote_param_hsvs_view,
     gsdest_comp_char, gsdest_comp_pos, gsdest_comp_imports, gsdest_comp_expr, gsdest_comp_char_view, gsdest_comp_pos_view, gsdest_comp_imports_view, gsdest_comp_expr_view,
     gshsmodule_fmt,
@@ -21,6 +21,7 @@ gssource_comp_char = $gslambda_value $ \ ch -> $gsbcconstr (gsvar "char") [ $gsa
 gssource_comp_pos = $gslambda_value $ \ pos -> $gsbcconstr (gsvar "pos") [ $gsav pos ]
 gssource_comp_imports = $gsconstr (gsvar "imports") []
 gssource_comp_declare = $gslambda_value $ \ gsv -> $gsbcarg $ \ hsv -> $gsbcconstr (gsvar "declare") [ $gsav gsv, $gsav hsv ]
+gssource_comp_declare_view_constr = $gslambda_value $ \ gsv -> $gsbcarg $ \ hsv -> $gsbcconstr (gsvar "declare-view") [ $gsav gsv, $gsav hsv ]
 gssource_comp_value = $gslambda_value $ \ pos0 -> $gsbcarg $ \ ps -> $gsbcarg $ \ pos1 -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "value") [ $gsav pos0, $gsav ps, $gsav pos1, $gsav e ]
 gssource_comp_expr = $gslambda_value $ \ ps -> $gsbcarg $ \ pos -> $gsbcarg $ \ e -> $gsbcconstr (gsvar "expr") [ $gsav ps, $gsav pos, $gsav e ]
 
