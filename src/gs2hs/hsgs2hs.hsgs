@@ -64,6 +64,7 @@ gscompile_source = [gs:value| λ 'i. λ 'env. analyze i.
     case source-comp.char 'c : 'i1. either.map ((:) (dest-comp.char c)) (compile-source i1 env)
     case source-comp.imports : 'i1. either.map ((:) dest-comp.imports) (compile-source i1 env)
     case source-comp.declare 'gsv 'hsv : 'i1. compile-source i1 (hscompiler.env.var.insert gsv 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var hsv; 〉 env)
+    case source-comp.declare-view 'gsv 'hsv : 'i1. compile-source i1 (hscompiler.env.view.insert gsv 〈 '0 ∝ ordered-set.empty; '1 ∝ hsexpr.var hsv; 〉 env)
     case source-comp.pos 'pos : 'i1. either.map ((:) (dest-comp.pos pos)) (compile-source i1 env)
     case source-comp.value 'pos0 'ps 'pos1 'e : 'i1. either.for
             'ea ← right $ annotate-expr hsgs.annotator.global-env e;
