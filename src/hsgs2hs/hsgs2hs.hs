@@ -1368,6 +1368,7 @@ globalEnv = Env{
         ("right", "GSI.Either", "gsright_view"),
         ("source-comp.char", "GSDL.HSGS.AST", "gssource_comp_char_view"),
         ("source-comp.declare", "GSDL.HSGS.AST", "gssource_comp_declare_view"),
+        ("source-comp.declare-view", "GSDL.HSGS.AST", "gssource_comp_declare_view_view"),
         ("source-comp.expr", "GSDL.HSGS.AST", "gssource_comp_expr_view"),
         ("source-comp.imports", "GSDL.HSGS.AST", "gssource_comp_imports_view"),
         ("source-comp.pos", "GSDL.HSGS.AST", "gssource_comp_pos_view"),
