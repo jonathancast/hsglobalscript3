@@ -108,7 +108,14 @@ gshscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
             ;
         . hscompile-args pos p as senv env
     )
-    case expr.app 'f1 'a. hscompile-app env pos f1 (a:as)
+    case expr.app 'f1 'a. (analyze a.
+        case arg.expr _ _. hscompile-app env pos f1 (a:as)
+        case arg.app 'af 'ax. (either.for
+                'senv ← right $ hscompiler.supply.env.empty;
+                'p ← hscompile-custom-app env pos f1 af (ax : nil);
+            . hscompile-args pos p as senv env
+        )
+    )
 |]
 
 gshscompile_args = [gs:value| λ 'pos. λ 'p. λ 'as. λ 'senv. λ 'env1. either.for 'as1 ← either.mapM (hscompile-arg senv env1) as;. right $
