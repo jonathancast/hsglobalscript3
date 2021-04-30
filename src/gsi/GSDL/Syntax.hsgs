@@ -493,6 +493,7 @@ colon_paren = [gs:value| λ 'env. lexeme $ parser.for
 var_name = [gs:value|
     <|> ident
     <|> parens opname
+    <|> numname
 |]
 
 ident = [gs:value| lexeme $ parser.map gsvar ident-chars |]
