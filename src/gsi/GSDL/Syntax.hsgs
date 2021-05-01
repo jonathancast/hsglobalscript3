@@ -538,7 +538,7 @@ ident_chars = [gs:value|
 
 $gsdeclare num-component num_component
 
-num_chars = [gs:value| num-component <* not-followed-by delimiter |]
+num_chars = [gs:value| num-component <* not-followed-by cont-component |]
 
 gsconcat = [gs:value| foldr (<>) nil |]
 
