@@ -110,6 +110,7 @@ gshscompile_app = [gs:value| λ 'env. λ 'pos. λ 'f. λ 'as. analyze f.
     )
     case expr.app 'f1 'a. (analyze a.
         case arg.expr _ _. hscompile-app env pos f1 (a:as)
+        case arg.explicit _ _. hscompile-app env pos f1 (a:as)
         case arg.app 'af 'ax. (either.for
                 'senv ← right $ hscompiler.supply.env.empty;
                 'p ← hscompile-custom-app env pos f1 af (ax : nil);
