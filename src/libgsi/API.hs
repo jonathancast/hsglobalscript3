@@ -11,7 +11,7 @@ import GSI.Error (GSException(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSExprCont(..), gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread)
 
@@ -30,7 +30,7 @@ apiCall msg pc pos v t = do
 
 apiCallExpr :: OPort Message -> Maybe ProfCounter -> Pos -> GSExpr -> Thread -> IO GSValue
 apiCallExpr msg pc pos (GSExpr e) t = do
-    v <- e msg pc [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
+    v <- e (GSEvalState msg pc) [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
     apiCall msg pc pos v t
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere

@@ -14,7 +14,7 @@ import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (newEvent, wakeup, await, OPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsrehere_w, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsrehere_w, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
 
 aceEnter :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSValue -> GSExprCont a -> IO a
 aceEnter msg pc cs v@GSInvalidProgram{} sk = gsthrow sk v
@@ -38,7 +38,7 @@ aceEnter msg pc cs v@GSRune{} sk = gsreturn sk v
 aceEnter msg pc cs v@GSNatural{} sk = gsreturn sk v
 aceEnter msg pc cs v@GSRational{} sk = gsreturn sk v
 aceEnter msg pc cs0 v@(GSClosure cs1 bco) sk = case bco of
-    GSRawExpr e -> runGSExpr e msg pc (cs1 ++ cs0) sk
+    GSRawExpr e -> runGSExpr e (GSEvalState msg pc) (cs1 ++ cs0) sk
     GSImp{} -> gsreturn sk v
     GSLambda{} -> gsreturn sk v
     _ -> gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = GSCLosure " ++ bcoCode bco ++") next"
@@ -59,7 +59,7 @@ aceEnterIntExpr msg pc cs (GSIntWithHere pos k) sk =
     aceEnterIntExpr msg pc [StackTrace pos cs] k $ aceArg msg pc (StackTrace pos cs) [gsexternal $ StackTrace pos cs] $ sk
 aceEnterIntExpr msg pc cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
 aceEnterIntExpr msg pc cs (GSIntGEnter pos v) sk = aceEnter msg pc [StackTrace pos cs] v sk
-aceEnterIntExpr msg pc cs (GSIntBEnter pos e) sk = runGSExpr e msg pc [StackTrace pos cs] sk
+aceEnterIntExpr msg pc cs (GSIntBEnter pos e) sk = runGSExpr e (GSEvalState msg pc) [StackTrace pos cs] sk
 aceEnterIntExpr msg pc cs (GSIntEApply pos f as) sk = do
     avs <- mapM gsintprepare as
     aceEnterIntExpr msg pc [StackTrace pos cs] f (aceArg msg pc (StackTrace pos cs) avs sk)
@@ -82,7 +82,7 @@ aceUpdate mv sk = GSExprCont{
 
 aceForce :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> (GSValue -> GSExpr) -> GSExprCont a -> GSExprCont a
 aceForce msg pc cs k sk = GSExprCont {
-    gsreturn = \ v -> runGSExpr (k v) msg pc cs sk,
+    gsreturn = \ v -> runGSExpr (k v) (GSEvalState msg pc) cs sk,
     gsthrow = gsthrow sk
   }
 
@@ -96,7 +96,7 @@ aceArg msg pc c1 as sk = GSExprCont {
 gsapplyFunction :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSValue -> [GSValue] -> GSExprCont a -> IO a
 gsapplyFunction msg pc c1 v [] sk = gsreturn sk v
 gsapplyFunction msg pc c1 (GSClosure cs (GSLambda f)) (a:as) sk = case f a of
-    GSRawExpr e -> runGSExpr e msg pc (cs ++ [c1]) (aceArg msg pc c1 as sk)
+    GSRawExpr e -> runGSExpr e (GSEvalState msg pc) (cs ++ [c1]) (aceArg msg pc c1 as sk)
     bco@GSImp{} -> gsapplyFunction  msg pc c1 (GSClosure (cs ++ [c1]) bco) as sk
     bco@GSLambda{} -> gsapplyFunction msg pc c1 (GSClosure cs bco) as sk
     bco -> gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (result is " ++ bcoCode bco ++ ") next"

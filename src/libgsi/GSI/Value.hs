@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
+    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsrecord, gsrecord_w, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
@@ -82,7 +82,7 @@ data GSArg
   = GSArgExpr Pos GSExpr
   | GSArgVar GSValue
 
-newtype GSExpr = GSExpr { runGSExpr :: forall a. OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSExprCont a -> IO a }
+newtype GSExpr = GSExpr { runGSExpr :: forall a. GSEvalState -> [StackTrace] -> GSExprCont a -> IO a }
 
 data GSExprCont a = GSExprCont {
     gsreturn :: GSValue -> IO a,
@@ -90,6 +90,8 @@ data GSExprCont a = GSExprCont {
   }
 
 type GSThunk = MVar GSThunkState
+
+data GSEvalState = GSEvalState { msgChannel :: OPort Message, profCounter :: Maybe ProfCounter }
 
 data GSThunkState
   = GSTSExpr (forall a. OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSExprCont a -> IO a)
@@ -161,7 +163,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ msg pc cs sk -> e msg pc (StackTrace pos [] : cs) sk
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ msg pc cs sk -> e (GSEvalState msg pc) (StackTrace pos [] : cs) sk
 
 gsintthunk_w :: Pos -> GSIntExpr -> IO GSValue
 gsintthunk_w pos i = fmap GSThunk $ newMVar $ GSTSIntExpr i
