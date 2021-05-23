@@ -152,16 +152,16 @@ gsbcprim_w pos f = gsbcprim_ww pos (\ msg pc -> f msg pc pos)
 gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
 
 class GSBCImpPrimType f r where
-    gsbcimpprim_ww :: Pos -> (OPort Message -> Maybe ProfCounter -> Thread -> f) -> r
+    gsbcimpprim_ww :: Pos -> (GSEvalState -> Thread -> f) -> r
 
 instance GSBCImpPrimType (IO GSValue) GSExpr where
     gsbcimpprim_ww pos f = GSExpr $ \ evs cs sk -> gsreturn sk $ GSClosure [StackTrace pos []] (GSImp f)
 
 instance GSBCImpPrimType f r => GSBCImpPrimType (GSValue -> f) (GSValue -> r) where
-    gsbcimpprim_ww pos f v = gsbcimpprim_ww pos (\ msg pc t -> f msg pc t v)
+    gsbcimpprim_ww pos f v = gsbcimpprim_ww pos (\ evs t -> f evs t v)
 
-gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (OPort Message -> Maybe ProfCounter -> Pos -> Thread -> f) -> r
-gsbcimpprim_w pos f = gsbcimpprim_ww pos (\ msg pc -> f msg pc pos)
+gsbcimpprim_w :: GSBCImpPrimType f r => Pos -> (GSEvalState -> Pos -> Thread -> f) -> r
+gsbcimpprim_w pos f = gsbcimpprim_ww pos (\ evs -> f evs pos)
 
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
@@ -251,25 +251,25 @@ gsbcemptymonadgen_w pos gsunit = gsbcprof_w pos $ gsbcapparg_w pos gsunit [ $gsa
 gsbcimplet = varE 'gsbcimplet_w `appE` gshere
 
 gsbcimplet_w :: Pos -> GSArg -> GSBCImp GSValue
-gsbcimplet_w pos a = GSBCImp $ \ _ _ _ -> gsprepare_w pos a
+gsbcimplet_w pos a = GSBCImp $ \ _ _ -> gsprepare_w pos a
 
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 
 gsbcimpbind_w :: Pos -> GSArg -> GSBCImp GSValue
-gsbcimpbind_w pos (GSArgVar v) = GSBCImp $ \ msg pc t -> apiCall msg pc pos v t
-gsbcimpbind_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ msg pc t -> apiCallExpr msg pc pos0 e t
-gsbcimpbind_w pos a = GSBCImp $ \ msg pc t -> $apiImplementationFailure $ "gsbcimpbind_w " ++ argCode a ++ " next"
+gsbcimpbind_w pos (GSArgVar v) = GSBCImp $ \ evs t -> apiCall (msgChannel evs) (profCounter evs) pos v t
+gsbcimpbind_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ evs t -> apiCallExpr (msgChannel evs) (profCounter evs) pos0 e t
+gsbcimpbind_w pos a = GSBCImp $ \ evs t -> $apiImplementationFailure $ "gsbcimpbind_w " ++ argCode a ++ " next"
 
 gsbcimpbody = varE 'gsbcimpbody_w `appE` gshere
 
 gsbcimpbody_w :: Pos -> GSArg -> GSBCImp GSValue
-gsbcimpbody_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ msg pc t -> apiCallExpr msg pc pos0 e t
-gsbcimpbody_w pos a = GSBCImp $ \ msg pc t -> $apiImplementationFailure $ "gsbcimpbody_w " ++ argCode a ++ " next"
+gsbcimpbody_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ evs t -> apiCallExpr (msgChannel evs) (profCounter evs) pos0 e t
+gsbcimpbody_w pos a = GSBCImp $ \ evs t -> $apiImplementationFailure $ "gsbcimpbody_w " ++ argCode a ++ " next"
 
 gsbcimpunit = varE 'gsbcimpunit_w `appE` gshere
 
 gsbcimpunit_w :: Pos -> GSArg -> GSBCImp GSValue
-gsbcimpunit_w pos a = GSBCImp $ \ msg pc t -> gsprepare_w pos a
+gsbcimpunit_w pos a = GSBCImp $ \ evs t -> gsprepare_w pos a
 
 gsbccomposeimpgen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
 gsbccomposeimpgen_w pos gen0 gen1 = gsbcprof_w pos $ gsbcimpfor_w pos $ do

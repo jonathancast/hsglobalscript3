@@ -58,7 +58,7 @@ data GSValue
 data GSBCO
   = GSRawExpr GSExpr
   | GSIntExpr GSIntExpr
-  | GSImp (OPort Message -> Maybe ProfCounter -> Thread -> IO GSValue)
+  | GSImp (GSEvalState -> Thread -> IO GSValue)
   | GSLambda (GSValue -> GSBCO)
 
 data GSIntArg
@@ -101,18 +101,18 @@ data GSThunkState
   | GSTSStack Event
   | GSTSIndirection GSValue
 
-newtype GSBCImp a = GSBCImp { runGSBCImp :: OPort Message -> Maybe ProfCounter -> Thread -> IO a }
+newtype GSBCImp a = GSBCImp { runGSBCImp :: GSEvalState -> Thread -> IO a }
 
 instance Functor GSBCImp where
-    fmap f ax = GSBCImp $ \ msg pc t -> fmap f $ runGSBCImp ax msg pc t
+    fmap f ax = GSBCImp $ \ evs t -> fmap f $ runGSBCImp ax evs t
 
 instance Applicative GSBCImp where
-    pure x = GSBCImp (\ msg pc t -> pure x)
-    af <*> ax = GSBCImp $ \ msg pc t -> runGSBCImp af msg pc t <*> runGSBCImp ax msg pc t
+    pure x = GSBCImp (\ evs t -> pure x)
+    af <*> ax = GSBCImp $ \ evs t -> runGSBCImp af evs t <*> runGSBCImp ax evs t
 
 instance Monad GSBCImp where
-    return x = GSBCImp (\ msg pc t -> return x)
-    a >>= f = GSBCImp $ \ msg pc t -> runGSBCImp a msg pc t >>= \ x -> runGSBCImp (f x) msg pc t
+    return x = GSBCImp (\ evs t -> return x)
+    a >>= f = GSBCImp $ \ evs t -> runGSBCImp a evs t >>= \ x -> runGSBCImp (f x) evs t
 
 gsimpfor = varE 'gsimpfor_w `appE` gshere
 
@@ -189,17 +189,17 @@ gsrehere_w pos cs v = GSImplementationFailure $gshere $ "gsrehere_w " ++ gsvCode
 
 gsimpprim = varE 'gsimpprim_w `appE` gshere
 
-gsimpprim_w :: GSImpPrimType f => Pos -> (OPort Message -> Maybe ProfCounter -> Pos -> Thread -> f) -> GSValue
-gsimpprim_w pos f = GSClosure [StackTrace pos []] (gsimpprim_ww (\ msg pc -> f msg pc pos))
+gsimpprim_w :: GSImpPrimType f => Pos -> (GSEvalState -> Pos -> Thread -> f) -> GSValue
+gsimpprim_w pos f = GSClosure [StackTrace pos []] (gsimpprim_ww (\ evs -> f evs pos))
 
 class GSImpPrimType f where
-    gsimpprim_ww :: (OPort Message -> Maybe ProfCounter -> Thread -> f) -> GSBCO
+    gsimpprim_ww :: (GSEvalState -> Thread -> f) -> GSBCO
 
 instance GSImpPrimType (IO GSValue) where
     gsimpprim_ww f = GSImp f
 
 instance GSImpPrimType f => GSImpPrimType (GSValue -> f) where
-    gsimpprim_ww f = GSLambda $ \ x -> gsimpprim_ww (\ msg pc t -> f msg pc t x)
+    gsimpprim_ww f = GSLambda $ \ x -> gsimpprim_ww (\ evs t -> f evs t x)
 
 gsexternal :: GSExternal e => e -> GSValue
 gsexternal = GSExternal . toExternal

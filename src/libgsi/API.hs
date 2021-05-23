@@ -23,7 +23,7 @@ apiCall msg pc pos (GSThunk th) t = do
     v <- evalSync msg pc [StackTrace pos []] th
     apiCall msg pc pos v t
 apiCall msg pc pos0 (GSClosure cs bco) t = case bco of
-    GSImp a -> a msg pc t
+    GSImp a -> a (GSEvalState msg pc) t
     _ -> throwIO $ GSExcImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is (GSClosure cs " ++ bcoCode bco ++ ")) next"
 apiCall msg pc pos v t = do
     throwIO $ GSExcImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"

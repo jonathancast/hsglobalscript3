@@ -14,7 +14,7 @@ import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
 import GSI.ThreadType (Thread)
-import GSI.Value (GSValue(..), gslambda_value, gsimpprim, gsav, gsae)
+import GSI.Value (GSValue(..), GSEvalState(..), gslambda_value, gsimpprim, gsav, gsae)
 import API (apiImplementationFailure)
 import GSI.Functions (gslazystring, gsapiEvalString)
 import GSI.ByteCode (gsbcarg, gsbcapply, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit)
@@ -30,9 +30,9 @@ gsio_monad = GSRecord $gshere $ Map.fromList [
 gsio_file_read :: GSValue
 gsio_file_read = $gsimpprim gsioprim_file_read
 
-gsioprim_file_read :: OPort Message -> Maybe ProfCounter -> Pos -> Thread -> GSValue -> IO GSValue
-gsioprim_file_read msg pc pos t fn = do
-    fns <- gsapiEvalString msg pc $gshere fn
+gsioprim_file_read :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
+gsioprim_file_read evs pos t fn = do
+    fns <- gsapiEvalString (msgChannel evs) (profCounter evs) $gshere fn
     mbs <- try $ do
         ifh <- openFile fns ReadMode
         hSetEncoding ifh utf8

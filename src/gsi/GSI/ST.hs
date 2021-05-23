@@ -10,7 +10,7 @@ import GSI.Syn (gsvar)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExternal(..), gslambda_value, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
+import GSI.Value (GSValue(..), GSEvalState(..), GSExternal(..), gslambda_value, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, whichExternal)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcevalexternal, gsbcapply, gsbcconstr, gsbcprim)
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread, ThreadState(..), threadStateCode)
@@ -33,22 +33,22 @@ gsprim_st_run msg pc pos a = do
 
 gsstrefnew = $gsimpprim gsprim_st_ref_new
 
-gsprim_st_ref_new :: OPort Message -> Maybe ProfCounter -> Pos -> Thread -> GSValue -> IO GSValue
-gsprim_st_ref_new msg pc pos t x = gsexternal . GSSTRef <$> newIORef x
+gsprim_st_ref_new :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
+gsprim_st_ref_new evs pos t x = gsexternal . GSSTRef <$> newIORef x
 
 gsstgetvar = $gslambda_value $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> $gsbcapply ($gsimpprim gsprim_st_get_var) [ $gsav v0 ]
 
-gsprim_st_get_var :: OPort Message -> Maybe ProfCounter -> Pos -> Thread -> GSValue -> IO GSValue
-gsprim_st_get_var msg pc pos t (GSExternal e) | Just (GSSTRef r) <- fromExternal e = readIORef r
-gsprim_st_get_var msg pc pos t (GSExternal e) = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ whichExternal e ++ " next"
-gsprim_st_get_var msg pc pos t v = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ gsvCode v ++ " next"
+gsprim_st_get_var :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
+gsprim_st_get_var evs pos t (GSExternal e) | Just (GSSTRef r) <- fromExternal e = readIORef r
+gsprim_st_get_var evs pos t (GSExternal e) = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ whichExternal e ++ " next"
+gsprim_st_get_var evs pos t v = $apiImplementationFailure $ "gsprim_st_get_var pos t " ++ gsvCode v ++ " next"
 
 gsstsetvar = $gslambda_value $ \ x -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> $gsbcapply ($gsimpprim gsprim_st_set_var) [ $gsav x, $gsav v0 ]
 
-gsprim_st_set_var :: OPort Message -> Maybe ProfCounter -> Pos -> Thread -> GSValue -> GSValue -> IO GSValue
-gsprim_st_set_var msg pc pos t x (GSExternal e) | Just (GSSTRef r) <- fromExternal e = writeIORef r x >> return (GSRecord $gshere Map.empty)
-gsprim_st_set_var msg pc pos t x (GSExternal e) = $apiImplementationFailure $ "gsprim_st_set_var pos t " ++ whichExternal e ++ " next"
-gsprim_st_set_var msg pc pos t x v = $apiImplementationFailure $ "gsprim_st_set_var pos t " ++ gsvCode v ++ " next"
+gsprim_st_set_var :: GSEvalState -> Pos -> Thread -> GSValue -> GSValue -> IO GSValue
+gsprim_st_set_var evs pos t x (GSExternal e) | Just (GSSTRef r) <- fromExternal e = writeIORef r x >> return (GSRecord $gshere Map.empty)
+gsprim_st_set_var evs pos t x (GSExternal e) = $apiImplementationFailure $ "gsprim_st_set_var pos t " ++ whichExternal e ++ " next"
+gsprim_st_set_var evs pos t x v = $apiImplementationFailure $ "gsprim_st_set_var pos t " ++ gsvCode v ++ " next"
 
 gsstrefeq = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->
     $gsbcevalexternal ($gsav v0) $ \ (v00 :: GSSTRef) -> $gsbcevalexternal ($gsav v1) $ \ v10 -> case v00 == v10 of
