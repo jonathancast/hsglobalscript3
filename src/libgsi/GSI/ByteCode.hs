@@ -102,7 +102,7 @@ gsbcruntimetypeerror_w pos ctxt act exp = gsbcprof_w pos $ GSExpr $ \ evs cs sk 
 gsbcimplementationfailure = varE 'gsbcimplementationfailure_w `appE` gshere
 
 gsbcimplementationfailure_w :: Pos -> String -> GSExpr
-gsbcimplementationfailure_w pos msgs = gsbcprof_w pos $ GSExpr $ \ vs cs sk -> gsthrow sk $ GSImplementationFailure pos msgs
+gsbcimplementationfailure_w pos msgs = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> gsthrow sk $ GSImplementationFailure pos msgs
 
 gsbcarg = varE 'gsbcarg_w `appE` gshere
 
