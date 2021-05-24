@@ -47,26 +47,26 @@ aceEnter evs cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr =
 
 aceEnterThunkState :: GSEvalState -> [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
 aceEnterThunkState evs cs (GSTSExpr expr) sk = expr (msgChannel evs) (profCounter evs) cs sk
-aceEnterThunkState evs cs (GSTSIntExpr e) sk = aceEnterIntExpr (msgChannel evs) (profCounter evs) cs e sk
+aceEnterThunkState evs cs (GSTSIntExpr e) sk = aceEnterIntExpr evs cs e sk
 aceEnterThunkState evs cs (GSApply pos fn args) sk =
     aceEnter evs (StackTrace pos [] : cs) fn (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos []) args sk)
 aceEnterThunkState evs cs (GSTSField pos f r) sk =
     aceEnter evs (StackTrace pos [] : cs) r (aceField (msgChannel evs) (profCounter evs) (StackTrace pos []) f sk)
 aceEnterThunkState evs cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
 
-aceEnterIntExpr :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSIntExpr -> GSExprCont a -> IO a
-aceEnterIntExpr msg pc cs (GSIntWithHere pos k) sk =
-    aceEnterIntExpr msg pc [StackTrace pos cs] k $ aceArg msg pc (StackTrace pos cs) [gsexternal $ StackTrace pos cs] $ sk
-aceEnterIntExpr msg pc cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
-aceEnterIntExpr msg pc cs (GSIntGEnter pos v) sk = aceEnter (GSEvalState msg pc) [StackTrace pos cs] v sk
-aceEnterIntExpr msg pc cs (GSIntBEnter pos e) sk = runGSExpr e (GSEvalState msg pc) [StackTrace pos cs] sk
-aceEnterIntExpr msg pc cs (GSIntEApply pos f as) sk = do
+aceEnterIntExpr :: GSEvalState -> [StackTrace] -> GSIntExpr -> GSExprCont a -> IO a
+aceEnterIntExpr evs cs (GSIntWithHere pos k) sk =
+    aceEnterIntExpr evs [StackTrace pos cs] k $ aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) [gsexternal $ StackTrace pos cs] $ sk
+aceEnterIntExpr evs cs (GSIntUndefined pos) sk = gsthrow sk $ GSError $ GSErrUnimpl $ StackTrace pos cs
+aceEnterIntExpr evs cs (GSIntGEnter pos v) sk = aceEnter evs [StackTrace pos cs] v sk
+aceEnterIntExpr evs cs (GSIntBEnter pos e) sk = runGSExpr e evs [StackTrace pos cs] sk
+aceEnterIntExpr evs cs (GSIntEApply pos f as) sk = do
     avs <- mapM gsintprepare as
-    aceEnterIntExpr msg pc [StackTrace pos cs] f (aceArg msg pc (StackTrace pos cs) avs sk)
-aceEnterIntExpr msg pc cs (GSIntGApply pos f as) sk = do
+    aceEnterIntExpr evs [StackTrace pos cs] f (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) avs sk)
+aceEnterIntExpr evs cs (GSIntGApply pos f as) sk = do
     avs <- mapM gsintprepare as
-    aceEnter (GSEvalState msg pc) [StackTrace pos cs] f (aceArg msg pc (StackTrace pos cs) avs sk)
-aceEnterIntExpr msg pc cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterIntExpr " ++ iexprCode e ++ " next"
+    aceEnter evs [StackTrace pos cs] f (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) avs sk)
+aceEnterIntExpr evs cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterIntExpr " ++ iexprCode e ++ " next"
 
 aceUpdate :: MVar (GSThunkState) -> GSExprCont a -> GSExprCont a
 aceUpdate mv sk = GSExprCont{

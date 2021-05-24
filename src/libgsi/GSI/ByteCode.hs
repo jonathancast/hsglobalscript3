@@ -29,7 +29,7 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr, GSEvalState(..)
 import GSI.Functions (gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceEnterIntExpr, aceForce, aceArg, aceField, aceReHere, aceAttachLog)
+import ACE (aceEnter, aceForce, aceArg, aceField, aceReHere, aceAttachLog)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined :: StackTrace -> GSExpr
