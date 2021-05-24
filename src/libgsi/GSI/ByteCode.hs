@@ -126,14 +126,14 @@ gsbcapply = varE 'gsbcapply_w `appE` gshere
 gsbcapply_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcapply_w pos f args = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnter evs [ StackTrace pos cs ] f (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) asv sk)
+    aceEnter evs [ StackTrace pos cs ] f (aceArg evs (StackTrace pos cs) asv sk)
 
 gsbcapp = varE 'gsbcapp_w `appE` gshere
 
 gsbcapp_w :: Pos -> GSExpr -> [GSArg] -> GSExpr
 gsbcapp_w pos f args = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    runGSExpr f evs [StackTrace pos cs] (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) asv sk)
+    runGSExpr f evs [StackTrace pos cs] (aceArg evs (StackTrace pos cs) asv sk)
 
 gsbcapparg_w :: Pos -> GSArg -> [GSArg] -> GSExpr
 gsbcapparg_w pos (GSArgVar f) as = gsbcapply_w pos f as
