@@ -173,7 +173,7 @@ gsbcimpprim_w pos f = gsbcimpprim_ww pos (\ evs -> f evs pos)
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbcforce_w pos e k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg (msgChannel evs) (profCounter evs) c1 e (aceForce (msgChannel evs) (profCounter evs) cs k sk)
+gsbcforce_w pos e k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg (msgChannel evs) (profCounter evs) c1 e (aceForce evs cs k sk)
 
 runGSArg :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSArg ->  GSExprCont a -> IO a
 runGSArg msg pc c1 (GSArgExpr pos' e') sk = runGSExpr e' (GSEvalState msg pc) [c1] sk
