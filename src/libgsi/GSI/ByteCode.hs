@@ -108,12 +108,12 @@ gsbcarg = varE 'gsbcarg_w `appE` gshere
 
 gsbcarg_w :: Pos -> (GSValue -> GSExpr) -> GSExpr
 gsbcarg_w pos fn = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
-    aceEnter (msgChannel evs) (profCounter evs) [ StackTrace pos cs ] (GSClosure [StackTrace pos cs] (GSLambda (GSRawExpr . fn))) sk
+    aceEnter evs [ StackTrace pos cs ] (GSClosure [StackTrace pos cs] (GSLambda (GSRawExpr . fn))) sk
 
 gsbcenter = varE 'gsbcenter_w `appE` gshere
 
 gsbcenter_w :: Pos -> GSValue -> GSExpr
-gsbcenter_w pos v = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> aceEnter (msgChannel evs) (profCounter evs) [ StackTrace pos cs ] v sk
+gsbcenter_w pos v = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> aceEnter evs [ StackTrace pos cs ] v sk
 
 gsbcenterarg = varE 'gsbcenterarg_w `appE` gshere
 
@@ -126,7 +126,7 @@ gsbcapply = varE 'gsbcapply_w `appE` gshere
 gsbcapply_w :: Pos -> GSValue -> [GSArg] -> GSExpr
 gsbcapply_w pos f args = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
     asv <- mapM (gsprepare_w pos) args
-    aceEnter (msgChannel evs) (profCounter evs) [ StackTrace pos cs ] f (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) asv sk)
+    aceEnter evs [ StackTrace pos cs ] f (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos cs) asv sk)
 
 gsbcapp = varE 'gsbcapp_w `appE` gshere
 
@@ -148,7 +148,7 @@ class GSBCPrimType f r where
 instance GSBCPrimType (IO GSValue) GSExpr where
     gsbcprim_ww pos f = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
         v <- f (msgChannel evs) (profCounter evs)
-        aceEnter (msgChannel evs) (profCounter evs) [ StackTrace pos cs ] v sk
+        aceEnter evs [ StackTrace pos cs ] v sk
 
 instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
     gsbcprim_ww pos f v = gsbcprim_ww pos (\ msg pc -> f msg pc v)
@@ -177,7 +177,7 @@ gsbcforce_w pos e k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTra
 
 runGSArg :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSArg ->  GSExprCont a -> IO a
 runGSArg msg pc c1 (GSArgExpr pos' e') sk = runGSExpr e' (GSEvalState msg pc) [c1] sk
-runGSArg msg pc c1 (GSArgVar v) sk = aceEnter msg pc [c1] v sk
+runGSArg msg pc c1 (GSArgVar v) sk = aceEnter (GSEvalState msg pc) [c1] v sk
 runGSArg msg pc c1 a sk = gsthrow sk $ $gsimplementationfailure $ "runGSArg " ++ argCode a ++ " next"
 
 gsbclet = varE 'gsbclet_w `appE` gshere
