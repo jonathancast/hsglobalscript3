@@ -13,7 +13,7 @@ import GSI.RTS (OPort, newEvent, wakeup, await)
 import GSI.Error (GSError, GSException(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..))
+import GSI.Value (GSValue(..), GSEvalState(..))
 import GSI.Eval (GSResult(..), stCode)
 import GSI.ThreadType (Thread(..), ThreadState(..), threadStateCode)
 import API (apiCall)
@@ -30,7 +30,7 @@ createThread msg pc pos v mbp = do
             wait = w
           }
         tid <- forkIO $ do
-            mb <- try $ apiCall msg pc pos v t
+            mb <- try $ apiCall (GSEvalState msg pc) pos v t
             state t `modifyMVar_` \ _ -> case mb of
                 Left (e :: SomeException) -> case fromException e of
                     Just (GSExcError err) -> return $ ThreadStateError err

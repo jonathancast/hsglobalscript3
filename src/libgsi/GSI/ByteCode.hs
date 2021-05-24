@@ -263,7 +263,7 @@ gsbcimplet_w pos a = GSBCImp $ \ _ _ -> gsprepare_w pos a
 gsbcimpbind = varE 'gsbcimpbind_w `appE` gshere
 
 gsbcimpbind_w :: Pos -> GSArg -> GSBCImp GSValue
-gsbcimpbind_w pos (GSArgVar v) = GSBCImp $ \ evs t -> apiCall (msgChannel evs) (profCounter evs) pos v t
+gsbcimpbind_w pos (GSArgVar v) = GSBCImp $ \ evs t -> apiCall evs pos v t
 gsbcimpbind_w pos0 (GSArgExpr pos1 e) = GSBCImp $ \ evs t -> apiCallExpr (msgChannel evs) (profCounter evs) pos0 e t
 gsbcimpbind_w pos a = GSBCImp $ \ evs t -> $apiImplementationFailure $ "gsbcimpbind_w " ++ argCode a ++ " next"
 

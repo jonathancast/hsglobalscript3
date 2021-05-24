@@ -15,23 +15,23 @@ import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCon
 import GSI.Eval (evalSync)
 import GSI.ThreadType (Thread)
 
-apiCall :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> Thread -> IO GSValue
-apiCall msg pc pos0 (GSImplementationFailure pos1 e) t = throwIO $ GSExcImplementationFailure pos1 e
-apiCall msg pc pos (GSInvalidProgram err) t = throwIO $ GSExcInvalidProgram err
-apiCall msg pc pos (GSError err) t = throwIO $ GSExcError err
-apiCall msg pc pos (GSThunk th) t = do
-    v <- evalSync msg pc [StackTrace pos []] th
-    apiCall msg pc pos v t
-apiCall msg pc pos0 (GSClosure cs bco) t = case bco of
-    GSImp a -> a (GSEvalState msg pc) t
+apiCall :: GSEvalState -> Pos -> GSValue -> Thread -> IO GSValue
+apiCall evs pos0 (GSImplementationFailure pos1 e) t = throwIO $ GSExcImplementationFailure pos1 e
+apiCall evs pos (GSInvalidProgram err) t = throwIO $ GSExcInvalidProgram err
+apiCall evs pos (GSError err) t = throwIO $ GSExcError err
+apiCall evs pos (GSThunk th) t = do
+    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    apiCall evs pos v t
+apiCall evs pos0 (GSClosure cs bco) t = case bco of
+    GSImp a -> a evs t
     _ -> throwIO $ GSExcImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is (GSClosure cs " ++ bcoCode bco ++ ")) next"
-apiCall msg pc pos v t = do
+apiCall evs pos v t = do
     throwIO $ GSExcImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
 apiCallExpr :: OPort Message -> Maybe ProfCounter -> Pos -> GSExpr -> Thread -> IO GSValue
 apiCallExpr msg pc pos (GSExpr e) t = do
     v <- e (GSEvalState msg pc) [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
-    apiCall msg pc pos v t
+    apiCall (GSEvalState msg pc) pos v t
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
 
