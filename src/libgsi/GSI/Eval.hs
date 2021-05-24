@@ -9,7 +9,7 @@ import GSI.RTS (Event, newEvent, await, OPort)
 import GSI.Error (GSError(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSEvalState(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnterThunkState, aceUpdate, aceArg, aceField, aceEmptyStack)
 
@@ -19,7 +19,7 @@ data GSResult
   | GSWHNF
 
 eval :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> MVar (GSThunkState) -> IO GSResult
-eval msg sc cs mv = modifyMVar mv $ \ st -> case st of
+eval msg pc cs mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr{} -> startEval st
     GSTSIntExpr{} -> startEval st
     GSApply{} -> startEval st
@@ -30,7 +30,7 @@ eval msg sc cs mv = modifyMVar mv $ \ st -> case st of
   where
     startEval st = do
         e <- newEvent
-        forkIO $ aceEnterThunkState msg sc cs st (aceUpdate mv aceEmptyStack)
+        forkIO $ aceEnterThunkState (GSEvalState msg pc) cs st (aceUpdate mv aceEmptyStack)
         return (GSTSStack e, GSStack e)
 
 evalSync :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> MVar (GSThunkState) -> IO GSValue

@@ -31,7 +31,7 @@ aceEnter evs cs (GSThunk mv) sk = join $ modifyMVar mv $ \ st -> case st of
   where
     doEval st = do
         e <- newEvent
-        return (GSTSStack e, aceEnterThunkState (msgChannel evs) (profCounter evs) cs st (aceUpdate mv sk))
+        return (GSTSStack e, aceEnterThunkState evs cs st (aceUpdate mv sk))
 aceEnter evs cs v@GSConstr{} sk = gsreturn sk v
 aceEnter evs cs v@GSRecord{} sk = gsreturn sk v
 aceEnter evs cs v@GSRune{} sk = gsreturn sk v
@@ -45,14 +45,14 @@ aceEnter evs cs0 v@(GSClosure cs1 bco) sk = case bco of
 aceEnter evs cs v@GSExternal{} sk = gsreturn sk v
 aceEnter evs cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next"
 
-aceEnterThunkState :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
-aceEnterThunkState msg pc cs (GSTSExpr expr) sk = expr msg pc cs sk
-aceEnterThunkState msg pc cs (GSTSIntExpr e) sk = aceEnterIntExpr msg pc cs e sk
-aceEnterThunkState msg pc cs (GSApply pos fn args) sk =
-    aceEnter (GSEvalState msg pc) (StackTrace pos [] : cs) fn (aceArg msg pc (StackTrace pos []) args sk)
-aceEnterThunkState msg pc cs (GSTSField pos f r) sk =
-    aceEnter (GSEvalState msg pc) (StackTrace pos [] : cs) r (aceField msg pc (StackTrace pos []) f sk)
-aceEnterThunkState msg pc cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
+aceEnterThunkState :: GSEvalState -> [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
+aceEnterThunkState evs cs (GSTSExpr expr) sk = expr (msgChannel evs) (profCounter evs) cs sk
+aceEnterThunkState evs cs (GSTSIntExpr e) sk = aceEnterIntExpr (msgChannel evs) (profCounter evs) cs e sk
+aceEnterThunkState evs cs (GSApply pos fn args) sk =
+    aceEnter evs (StackTrace pos [] : cs) fn (aceArg (msgChannel evs) (profCounter evs) (StackTrace pos []) args sk)
+aceEnterThunkState evs cs (GSTSField pos f r) sk =
+    aceEnter evs (StackTrace pos [] : cs) r (aceField (msgChannel evs) (profCounter evs) (StackTrace pos []) f sk)
+aceEnterThunkState evs cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
 
 aceEnterIntExpr :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSIntExpr -> GSExprCont a -> IO a
 aceEnterIntExpr msg pc cs (GSIntWithHere pos k) sk =
