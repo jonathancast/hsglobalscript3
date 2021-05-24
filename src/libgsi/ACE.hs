@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module ACE (aceEnter, aceEnterThunkState, aceEnterIntExpr, aceUpdate, aceForce, aceArg, aceField, aceReHere, aceEmptyStack) where
+module ACE (aceEnter, aceEnterThunkState, aceEnterIntExpr, aceUpdate, aceForce, aceArg, aceField, aceReHere, aceAttachLog, aceEmptyStack) where
 
 import qualified Data.Map as Map
 
@@ -11,7 +11,7 @@ import Control.Concurrent (MVar, modifyMVar)
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
-import GSI.Message (Message)
+import GSI.Message (Message, GSMessageClass)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (newEvent, wakeup, await, OPort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsrehere_w, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
@@ -129,6 +129,15 @@ aceReHere :: Pos -> [StackTrace] -> GSExprCont a -> GSExprCont a
 aceReHere pos cs sk = GSExprCont{
     gsreturn = \ r -> gsreturn sk $ gsrehere_w pos cs r,
     gsthrow = \ e -> gsthrow sk $ gsrehere_w pos cs e
+  }
+
+aceAttachLog :: Message -> GSExprCont a -> GSExprCont a
+aceAttachLog msg sk = GSExprCont{
+    gsreturn = \ r -> case r of
+        _ -> gsthrow sk $ $gsimplementationfailure $ "aceAttachLog " ++ gsvCode r ++ " next"
+      ,
+    gsthrow = \ e -> case e of
+        _ -> gsthrow sk $ $gsimplementationfailure $ "aceAttachLog " ++ gsvCode e ++ " next"
   }
 
 aceEmptyStack :: GSExprCont ()
