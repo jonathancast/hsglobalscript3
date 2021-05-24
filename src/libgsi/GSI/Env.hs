@@ -43,7 +43,7 @@ runGSProgram a = do
     mainDone <- newEvent
     msgDone <- newEvent
     (msgi, msgo) <- newChannel
-    forkIO $ logCatcher msgi mainDone msgDone
+    forkIO $ logCatcher msgi mainDone msgDone `catch` \ (e :: SomeException) -> hPutStrLn stderr (displayException e)
     t <- createThread msgo pc $gshere prog Nothing
     execMainThread t
         `finally` (wakeup mainDone *> await msgDone)
