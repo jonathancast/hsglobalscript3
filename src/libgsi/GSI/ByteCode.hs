@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, MultiParamTypeClasses, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.ByteCode (
-    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclet, gsbclet_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcrehere_w, gsbcat_w, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
+    gsbcundefined, gsbcundefined_w, gsbcarg, gsbcarg_w, gsbcenter, gsbcenter_w, gsbcenterarg, gsbcenterarg_w, gsbcapply, gsbcapply_w, gsbcapp, gsbcapp_w, gsbcprim, gsbcprim_w, gsbcimpprim, gsbcimpprim_w, gsbcforce, gsbcforce_w, gsbclet, gsbclet_w, gsbclfield, gsbclfield_w, gsbcfield, gsbcfield_w, gsbcevalexternal, gsbcevalexternal_w, gsbcrune, gsbcrune_w, gsbcnatural, gsbcnatural_w, gsbcbool, gsbcbool_w, gsbcrecord, gsbcrecord_w, gsbcconstr, gsbcconstr_w, gsbcexternal, gsbcexternal_w, gsbcchar_w, gsbcrehere_w, gsbcat_w, gsbcattachlog, gsbcerror, gsbcruntimetypeerror, gsbcruntimetypeerror_w, gsbcimplementationfailure, gsbcimplementationfailure_w,
     gsbccomposegen_w, gsbcvarmatch_w, gsbcemptygen_w,
     gsbccomposemonadgen_w, gsbcexecgen_w, gsbcvarbind_w, gsbcemptymonadgen_w,
     gsbcevalnatural, gsbcevalnatural_w, gsbcfmterrormsg, gsbcfmterrormsg_w,
@@ -22,14 +22,14 @@ import Language.Haskell.TH.Lib (appE, varE)
 import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, fmtCallers, filename, line, col)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
 import GSI.Error (GSError(..), GSInvalidProgram(..))
-import GSI.Message (Message)
+import GSI.Message (Message(..), GSMessageClass(..), mkMessage, msgClassCode)
 import GSI.Prof (ProfCounter, prof)
-import GSI.RTS (OPort)
+import GSI.RTS (OPort, writeOPort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr, GSEvalState(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, whichExternal, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsfmterrormsg)
 import GSI.ThreadType (Thread)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
-import ACE (aceEnter, aceEnterIntExpr, aceForce, aceArg, aceField, aceReHere)
+import ACE (aceEnter, aceEnterIntExpr, aceForce, aceArg, aceField, aceReHere, aceAttachLog)
 import API (apiCall, apiCallExpr, apiImplementationFailure)
 
 gsbcundefined :: StackTrace -> GSExpr
@@ -82,6 +82,13 @@ gsbcexternal_w pos e = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> gsreturn sk $ GS
 
 gsbcchar_w :: Pos -> Char -> GSExpr
 gsbcchar_w pos ch = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> gsreturn sk $ GSRune ch
+
+gsbcattachlog = varE 'gsbcattachlog_w `appE` gshere
+
+gsbcattachlog_w pos cls msgv a = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
+    let msg = mkMessage (StackTrace pos cs) cls msgv
+    msgChannel evs `writeOPort` msg
+    runGSExpr (gsbcenterarg_w pos a) evs cs $ aceAttachLog msg sk
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
