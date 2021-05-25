@@ -107,6 +107,7 @@ gsimplicits_global_env = [gs:value|
 
 gsvalidator_global_env = [gs:value|
     foldr (λ 'v. λ 'f. validator.env.in-scope.insert v ∘ f) id (type.env.vars type-checker.global-env) $
+    validator.env.qlo.insert (gsvar qq{log}) (λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉) $
     validator.env.qlo.insert (gsvar qq{r}) (λ 'env. λ 'pos. λ 'qi. validate-qloitem env pos qi) $
     validator.env.qlo.insert (gsvar qq{qq}) (λ 'env. λ 'pos. λ 'qs. either.for _ ← either.mapM (validate-qloitem env pos) qs;. right 〈〉) $
     validator.env.empty
