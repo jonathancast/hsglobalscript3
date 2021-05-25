@@ -390,6 +390,16 @@ gstype_checker_global_env = [gs:value|
                 ;
             . type-checker.unit 〈 '0 ∝ rty; '1 ∝ as; 〉
     ) $
+    type.env.qlo.insert (gsvar qq{log}) (λ 'pos. λ 'qs. λ 'tye. type-checker.for
+            _ ← type-checker.unify pos (type.consts qq{log.t}) tye;
+            'qsa ← type-checker.mapM
+                (λ 'qi. analyze qi.
+                    case qloitem.char 'ch. type-checker.unit (qloitem.char ch)
+                )
+                qs
+            ;
+        . type-checker.unit qsa
+    ) $
     type.env.qlo.insert (gsvar qq{r}) (λ 'pos. λ 'qi. λ 'tye. type-checker.for
             _ ← type-checker.unify pos (type.consts qq{rune.t}) tye;
             'qa ← analyze qi.
