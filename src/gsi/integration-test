@@ -11,9 +11,11 @@ GLOBALSCRIPT=$HSGLOBALSCRIPT
 
 echo '## test-gsi'
 
+start=`{9 date -n}
+
+PROG=test-gsi
 fn test_gsi_impl { ./test-gsi $* }
 
-start=`{9 date -n}
 test_non_existent_file
 test_gscalc_empty_file
 test_gscalc_comment
@@ -39,6 +41,7 @@ echo `{echo `{9 date -n} '-' $start | hoc}^s
 
 echo '## gsi'
 
+PROG=gsi
 fn test_gsi_impl { ./gsi $* }
 
 start=`{9 date -n}
@@ -50,6 +53,7 @@ echo `{echo `{9 date -n} '-' $start | hoc}^s
 
 echo '## test-gsi'
 
+PROG=gsi-test-gsi
 fn test_gsi_impl { ./test-gsi.gsi.gs $* }
 
 start=`{9 date -n}
