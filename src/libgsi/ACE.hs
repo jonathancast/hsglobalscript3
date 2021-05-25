@@ -89,22 +89,22 @@ aceForce evs cs k sk = GSExprCont {
 aceArg :: GSEvalState -> StackTrace -> [GSValue] -> GSExprCont a -> GSExprCont a
 aceArg evs c1 [] sk = sk
 aceArg evs c1 as sk = GSExprCont {
-    gsreturn = \ v -> gsapplyFunction (msgChannel evs) (profCounter evs) c1 v as sk,
+    gsreturn = \ v -> gsapplyFunction evs c1 v as sk,
     gsthrow = gsthrow sk
   }
 
-gsapplyFunction :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSValue -> [GSValue] -> GSExprCont a -> IO a
-gsapplyFunction msg pc c1 v [] sk = gsreturn sk v
-gsapplyFunction msg pc c1 (GSClosure cs (GSLambda f)) (a:as) sk = case f a of
-    GSRawExpr e -> runGSExpr e (GSEvalState msg pc) (cs ++ [c1]) (aceArg (GSEvalState msg pc) c1 as sk)
-    bco@GSImp{} -> gsapplyFunction  msg pc c1 (GSClosure (cs ++ [c1]) bco) as sk
-    bco@GSLambda{} -> gsapplyFunction msg pc c1 (GSClosure cs bco) as sk
+gsapplyFunction :: GSEvalState -> StackTrace -> GSValue -> [GSValue] -> GSExprCont a -> IO a
+gsapplyFunction evs c1 v [] sk = gsreturn sk v
+gsapplyFunction evs c1 (GSClosure cs (GSLambda f)) (a:as) sk = case f a of
+    GSRawExpr e -> runGSExpr e evs (cs ++ [c1]) (aceArg evs c1 as sk)
+    bco@GSImp{} -> gsapplyFunction evs c1 (GSClosure (cs ++ [c1]) bco) as sk
+    bco@GSLambda{} -> gsapplyFunction evs c1 (GSClosure cs bco) as sk
     bco -> gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (result is " ++ bcoCode bco ++ ") next"
-gsapplyFunction msg pc c1 (GSClosure cs (GSImp _)) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSImp " ++ fmtCallers cs "") "function"
-gsapplyFunction msg pc c1 (GSClosure cs bco) as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (GSClosure cs " ++ bcoCode bco ++ ") next"
-gsapplyFunction msg pc c1 (GSConstr pos _ _) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSConstr " ++ fmtPos pos "") "closure"
-gsapplyFunction msg pc c1 (GSRecord pos _) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSRecord " ++ fmtPos pos "") "closure"
-gsapplyFunction msg pc c1 f as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction " ++ gsvCode f ++ ") next"
+gsapplyFunction evs c1 (GSClosure cs (GSImp _)) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSImp " ++ fmtCallers cs "") "function"
+gsapplyFunction evs c1 (GSClosure cs bco) as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction (GSClosure cs " ++ bcoCode bco ++ ") next"
+gsapplyFunction evs c1 (GSConstr pos _ _) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSConstr " ++ fmtPos pos "") "closure"
+gsapplyFunction evs c1 (GSRecord pos _) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSRecord " ++ fmtPos pos "") "closure"
+gsapplyFunction evs c1 f as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction " ++ gsvCode f ++ ") next"
 
 aceField :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSVar -> GSExprCont a -> GSExprCont a
 aceField msg pc c1 f sk = GSExprCont{
