@@ -37,6 +37,11 @@ test_discard_pattern
 test_view_pattern
 test_view_pattern_arg
 test_r_literal
+
+echo '### log{} literals'
+
+test_log_literal
+
 echo `{echo `{9 date -n} '-' $start | hoc}^s
 
 echo '## gsi'
