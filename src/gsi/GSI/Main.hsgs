@@ -108,6 +108,13 @@ gscompiler_global_env = [gs:value|
     compiler.env.view.insert (gsvar qq{nothing}) (gsinject (view nothing)) $
     compiler.env.view.insert (gsvar qq{right}) (gsinject (view right)) $
     compiler.env.view.insert (gsvar qq{true}) (gsinject (view true)) $
+    compiler.env.qlo.insert (gsvar qq{log}) (λ 'pos. λ 'env. λ 'qs. foldr
+        (λ 'qi. λ 's. analyze qi.
+            case qloitem.char 'ch. gsbcapply pos (gsinject log.<>) (gsav (gsinject (log.char ch)) : gsae pos s : nil)
+        )
+        (gsbcenter pos (gsinject log.nil))
+        qs
+    ) $
     compiler.env.qlo.insert (gsvar qq{r}) (λ 'pos. λ 'env. λ 'qi. analyze qi.
         case qloitem.char 'ch. gsbcenter pos (gsinject ch)
     ) $
