@@ -134,6 +134,7 @@ aceReHere pos cs sk = GSExprCont{
 aceAttachLog :: Message -> GSExprCont a -> GSExprCont a
 aceAttachLog msg sk = GSExprCont{
     gsreturn = \ r -> case r of
+        GSNatural msgs n -> gsreturn sk $ GSNatural (msg : msgs) n
         _ -> gsthrow sk $ $gsimplementationfailure $ "aceAttachLog " ++ gsvCode r ++ " next"
       ,
     gsthrow = \ e -> case e of
