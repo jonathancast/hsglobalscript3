@@ -50,7 +50,7 @@ data GSValue
   | GSClosure [StackTrace] GSBCO
   | GSConstr Pos GSVar [GSValue]
   | GSRecord Pos GSValueEnv
-  | GSNatural Integer
+  | GSNatural [Message] Integer
   | GSRational Rational
   | GSRune Char
   | GSExternal SomeGSExternal

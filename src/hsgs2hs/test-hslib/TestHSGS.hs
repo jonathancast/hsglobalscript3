@@ -53,7 +53,7 @@ formatTestValueAtom msg pc v@GSConstr{} k = formatTestValue msg pc v $ \ ds -> k
 formatTestValueAtom msg pc (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
     False -> formatFields msg pc (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
-formatTestValueAtom msg pc (GSNatural n) k = k $ shows n
+formatTestValueAtom msg pc (GSNatural _ n) k = k $ shows n
 formatTestValueAtom msg pc (GSRune r) k
     | r `elem` "/\\§()[]{}\n\t" = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom (GSRune "++) . shows r . (") next>"++)
     | otherwise = k $ ("r/"++) . (r:) . ('/':)

@@ -52,7 +52,7 @@ gsbcrune_w pos r = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> gsreturn sk $ GSRune
 gsbcnatural = varE 'gsbcnatural_w `appE` gshere
 
 gsbcnatural_w :: Pos -> Integer -> GSExpr
-gsbcnatural_w pos n = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> gsreturn sk $ GSNatural n
+gsbcnatural_w pos n = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> gsreturn sk $ GSNatural [] n
 
 gsbcrecord = varE 'gsbcrecord_w `appE` gshere
 
@@ -218,7 +218,7 @@ gsbcevalnatural = varE 'gsbcevalnatural_w `appE` gshere
 
 gsbcevalnatural_w :: Pos -> GSArg -> (Integer -> GSExpr) -> GSExpr
 gsbcevalnatural_w pos na k = gsbcprof_w pos $ gsbcforce_w pos na $ \ nv -> case nv of
-    GSNatural n -> k n
+    GSNatural _ n -> k n
     _ -> gsbcimplementationfailure_w $gshere $ "gsbcevalnatural_w " ++ gsvCode nv ++ " next"
 
 gsbcfmterrormsg = varE 'gsbcfmterrormsg_w `appE` gshere

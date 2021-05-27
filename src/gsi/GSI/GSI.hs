@@ -94,7 +94,7 @@ gsigsintbceapply = $gslambda_value $ \ posv -> $gsbcarg $ \ fv -> $gsbcarg $ \ a
 
 gsigsintbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcevalnatural ($gsav nv) $ \ n ->
-        $gsbcexternal $ GSIntGEnter pos (GSNatural n)
+        $gsbcexternal $ GSIntGEnter pos (GSNatural [] n)
 
 gsigsintbcundefined = $gslambda_value $ \ posv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcexternal $ GSIntUndefined pos
@@ -145,7 +145,7 @@ gsigsbcundefined = $gslambda_value $ \ posv -> $gsbcevalpos ($gsav posv) $ \ pos
 
 gsigsbcnatural = $gslambda_value $ \ posv -> $gsbcarg $ \ nv ->
     $gsbcevalpos ($gsav posv) $ \ pos -> $gsbcforce ($gsav nv) $ \ nv0 -> case nv0 of
-        GSNatural n -> $gsbcexternal $ gsbcnatural_w pos n
+        GSNatural _ n -> $gsbcexternal $ gsbcnatural_w pos n
         _ -> $gsbcimplementationfailure $ "gsigsbcnatural " ++ gsvCode nv0 ++ " next"
 
 gsigsbcenter = $gslambda_value $ \ posv -> $gsbcarg $ \ vv ->
@@ -268,7 +268,7 @@ gseval_state_implementation_failure_view = $gsbcconstr_view "implementation-fail
 gseval_state_whnf_view = $gsbcconstr_view "whnf"
 
 gswhnf_natural_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of
-    (GSExternal e) | Just (GSNatural n) <- fromExternal e -> $gsbcapply sk [ $gsav $ GSNatural n ]
+    (GSExternal e) | Just (GSNatural _ n) <- fromExternal e -> $gsbcapply sk [ $gsav $ GSNatural [] n ]
     _ -> $gsbcenter ek
 
 gswhnf_rune_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ v -> $gsbcforce ($gsav v) $ \ v0 -> case v0 of

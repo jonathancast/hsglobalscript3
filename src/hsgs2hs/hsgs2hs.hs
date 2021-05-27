@@ -170,7 +170,7 @@ compileValue env pos e@(EVar pos1 v) = case v `Map.member` gsconsumes env || v `
             Nothing -> compileError pos1 $ v ++ " not in scope"
             Just (isv, ev) -> return (isv, ev)
         return (isv, ev)
-compileValue env pos (ENumber _ n) = return (Set.fromList [ HSIType "GSI.Value" "GSValue" ], HSConstr "GSNatural" `HSApp` HSInteger n)
+compileValue env pos (ENumber _ n) = return (Set.fromList [ HSIType "GSI.Value" "GSValue" ], HSConstr "GSNatural" `HSApp` HSList [] `HSApp` HSInteger n)
 compileValue env pos e@EGens{} = compileThunk env pos e
 compileValue env pos e@EApp{} = compileThunk env pos e
 compileValue env pos e = $gsfatal $ "compileValue " ++ eCode e ++ " next"
@@ -198,7 +198,7 @@ compileArg env pos (EVar pos1 v) s Nothing = case v `Map.member` gsconsumes env 
     True -> compileExprToArg env pos (EVar pos1 v)
 compileArg env pos (ENumber _ n) s Nothing = return (
     Set.fromList [ HSIType "GSI.Value" "GSArg", HSIType "GSI.Value" "GSValue" ],
-    HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSInteger n)
+    HSConstr "GSArgVar" `HSApp` (HSConstr "GSNatural" `HSApp` HSList [] `HSApp` HSInteger n)
   )
 compileArg env pos (EPat p) s Nothing = lift $ compilePatArg env pos p
 compileArg env pos (EPat p) s (Just Fallible) = lift $ compileFalliblePatArg env pos p

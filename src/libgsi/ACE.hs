@@ -114,8 +114,8 @@ aceField msg pc c1 f sk = GSExprCont{
             Nothing -> gsthrow sk $ $gsimplementationfailure $ (fmtPos pos1 . ("missing field "++) . fmtVarAtom f) $ ""
         GSExternal e | Just (Pos fn l c) <- fromExternal e -> case f of
             _ | f == gsvar "filename" -> gsreturn sk $ foldr (\ ch sv -> GSConstr $gshere (gsvar ":") [ GSRune ch, sv ]) (GSConstr $gshere (gsvar "nil") []) fn
-            _ | f == gsvar "line" -> gsreturn sk $ GSNatural l
-            _ | f == gsvar "col" -> gsreturn sk $ GSNatural c
+            _ | f == gsvar "line" -> gsreturn sk $ GSNatural [] l
+            _ | f == gsvar "col" -> gsreturn sk $ GSNatural [] c
             _ -> gsthrow sk $ $gsimplementationfailure $ "aceField pos " ++ fmtVarAtom f " next"
         GSExternal e -> gsthrow sk $ $gsimplementationfailure $ "aceField " ++ whichExternal e ++ " next"
         GSClosure cs bco -> gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 ("aceField" ++ ' ' : fmtVarAtom f "") ("GSClosure at " ++ fmtCallers cs "") "record"

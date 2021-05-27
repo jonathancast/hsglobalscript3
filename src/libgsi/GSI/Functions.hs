@@ -61,7 +61,7 @@ gsevalNatural :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Inte
 gsevalNatural msg pc pos (GSThunk th) = do
     v <- evalSync msg pc [StackTrace pos []] th
     gsevalNatural msg pc pos v
-gsevalNatural msg pc pos (GSNatural n) = return n
+gsevalNatural msg pc pos (GSNatural _ n) = return n
 gsevalNatural msg pc pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalNatural " ++ gsvCode v ++ " next"
 

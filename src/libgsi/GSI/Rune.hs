@@ -26,7 +26,7 @@ gsrune_code_point = $gslambda_value $ \ r -> $gsbcforce ($gsav r) $ \ r0 -> case
     _ -> $gsbcimplementationfailure $ "gsrune_code_point " ++ gsvCode r0 ++ " next"
 
 gsrune_from_code_point = $gslambda_value $ \ n -> $gsbcforce ($gsav n) $ \ n0 -> case n0 of
-    GSNatural n0hs -> $gsbcrune $ chr $ fromInteger n0hs
+    GSNatural _ n0hs -> $gsbcrune $ chr $ fromInteger n0hs
     _ -> $gsbcimplementationfailure $ "gsrune_from_code_point " ++ gsvCode n0 ++ " next"
 
 gsrune_compare = $gslambda_value $ \ c0 -> $gsbcarg $ \ c1 -> $gsbcforce ($gsav c0) $ \ c0_0 -> $gsbcforce ($gsav c1) $ \ c1_0 -> case (c0_0, c1_0) of
