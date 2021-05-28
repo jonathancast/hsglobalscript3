@@ -15,7 +15,7 @@ import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSEvalState, GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -161,13 +161,13 @@ fmtErrorShort (GSErrError pos err) = return $ fmtPos pos $ "Error: " ++ err
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 
-gsfmterrormsg_w :: Pos -> OPort Message -> GSValue -> IO String
-gsfmterrormsg_w pos msg msgv = do
+gsfmterrormsg_w :: Pos -> GSEvalState -> GSValue -> IO String
+gsfmterrormsg_w pos evs msgv = do
     msgt <- $gsapply msgv [ GSRecord $gshere (Map.fromList [
         (gsvar "paragraph-constituents", GSConstr $gshere (gsvar "nil") [])
       ]) ]
     msg_pcs <- $gsfield (gsvar "paragraph-constituents") msgt
-    gsfmterrormsg_ww msg pos id msg_pcs
+    gsfmterrormsg_ww (msgChannel evs) pos id msg_pcs
 
 gsfmterrormsg_ww :: OPort Message -> Pos -> (String -> String) -> GSValue -> IO String
 gsfmterrormsg_ww msg pos ds (GSThunk th) = do

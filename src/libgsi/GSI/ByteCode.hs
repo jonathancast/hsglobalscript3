@@ -224,7 +224,7 @@ gsbcfmterrormsg = varE 'gsbcfmterrormsg_w `appE` gshere
 gsbcfmterrormsg_w :: Pos -> GSArg -> (String -> GSExpr) -> GSExpr
 gsbcfmterrormsg_w pos msga k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
     msgv <- gsprepare_w pos msga
-    msgs <- $gsfmterrormsg (msgChannel evs) msgv
+    msgs <- $gsfmterrormsg evs msgv
     runGSExpr (k msgs) evs cs sk
 
 gsbccomposegen_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
