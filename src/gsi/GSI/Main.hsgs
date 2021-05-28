@@ -74,6 +74,7 @@ gscompiler_global_env = [gs:value|
     compiler.env.value.insert (gsvar qq{gsio.monad}) (gsinject gsio.monad) $
     compiler.env.value.insert (gsvar qq{gsmain}) (gsinject gsmain) $
     compiler.env.value.insert (gsvar qq{gsvar}) (gsinject gsvar) $
+    compiler.env.value.insert (gsvar qq{info}) (gsinject info) $
     compiler.env.value.insert (gsvar qq{just}) (gsinject just) $
     compiler.env.value.insert (gsvar qq{load-document}) (gsinject load-document) $
     compiler.env.value.insert (gsvar qq{log.fmt}) (gsinject log.fmt) $

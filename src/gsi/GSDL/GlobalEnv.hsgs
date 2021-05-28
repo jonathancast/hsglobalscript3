@@ -377,6 +377,10 @@ gstype_checker_global_env = [gs:value|
     type.env.type.insert (gsvar qq{log.fmt}) (
         type.function (type.consts qq{log.t}) $ type.app (type.consts qq{list.t}) (type.consts qq{rune.t})
     ) $
+    type.env.type.insert (gsvar qq{info}) (
+        type.forall (gsvar qq{α}) kind.pointed $
+            type.function (type.consts qq{log.t}) $ type.function (type.consts qq{α}) $ type.consts qq{α}
+    ) $
     type.env.arg-var-type.insert (gsvar qq{#}) (λ 'pos. λ 'r. λ 'as. λ 'tye. analyze as.
         case arg.var-name 'v : nil. type-checker.for
                 'tyr ← type-checker.new-unifiable-var;
