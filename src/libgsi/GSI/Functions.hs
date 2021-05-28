@@ -201,17 +201,17 @@ gsfmterrormsg_ww _ pos ds msg =
 --     §item Evaluates thunks
 --     §item Prints errors
 -- §end
-gsfmterrorvalue :: OPort Message -> Pos -> GSValue -> IO (String -> String)
-gsfmterrorvalue msg pos (GSThunk th) = do
-    v <- evalSync msg Nothing [StackTrace pos []] th
-    gsfmterrorvalue msg pos v
-gsfmterrorvalue msg pos v@GSImplementationFailure{} = gsfmterrorvalueAtom msg pos v
-gsfmterrorvalue msg pos v@GSError{} = gsfmterrorvalueAtom msg pos v
-gsfmterrorvalue msg pos (GSExternal e) | Just v <- fromExternal e = return $ ("<gsvar "++) . fmtVarAtom v . ('>':)
-gsfmterrorvalue msg pos v@GSRecord{} = gsfmterrorvalueAtom msg pos v
-gsfmterrorvalue msg pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorvalueAtom msg pos v
-gsfmterrorvalue msg pos (GSConstr pos1 c as) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM (gsfmterrorvalueAtom msg pos) as
-gsfmterrorvalue msg pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
+gsfmterrorvalue :: GSEvalState -> Pos -> GSValue -> IO (String -> String)
+gsfmterrorvalue evs pos (GSThunk th) = do
+    v <- evalSync (msgChannel evs) Nothing [StackTrace pos []] th
+    gsfmterrorvalue evs pos v
+gsfmterrorvalue evs pos v@GSImplementationFailure{} = gsfmterrorvalueAtom (msgChannel evs) pos v
+gsfmterrorvalue evs pos v@GSError{} = gsfmterrorvalueAtom (msgChannel evs) pos v
+gsfmterrorvalue evs pos (GSExternal e) | Just v <- fromExternal e = return $ ("<gsvar "++) . fmtVarAtom v . ('>':)
+gsfmterrorvalue evs pos v@GSRecord{} = gsfmterrorvalueAtom (msgChannel evs) pos v
+gsfmterrorvalue evs pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorvalueAtom (msgChannel evs) pos v
+gsfmterrorvalue evs pos (GSConstr pos1 c as) = foldl (\ s s' -> s . (' ':) . s') (fmtVarAtom c) <$> mapM (gsfmterrorvalueAtom (msgChannel evs) pos) as
+gsfmterrorvalue evs pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue "++) . (gsvCode x++) . (" next"++) . ('>':)
 
 gsfmterrorvalueAtom :: OPort Message -> Pos -> GSValue -> IO (String -> String)
 gsfmterrorvalueAtom msg pos (GSThunk th) = do
@@ -222,11 +222,11 @@ gsfmterrorvalueAtom msg pos0 (GSError err) = do errs <- fmtError err; return $ (
 gsfmterrorvalueAtom msg pos0 (GSRune ch) | not (ch `elem` "\\/§()[]{}") = return $ ("r/"++) . (ch:) . ("/"++)
 gsfmterrorvalueAtom msg pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorString msg pos ("qq{"++) v
 gsfmterrorvalueAtom msg pos v@(GSConstr pos1 c []) = return $ fmtVarAtom c
-gsfmterrorvalueAtom msg pos v@GSConstr{} = gsfmterrorvalue msg pos v >>= \ ds -> return $ ('(':) . ds . (')':)
+gsfmterrorvalueAtom msg pos v@GSConstr{} = gsfmterrorvalue (GSEvalState msg Nothing) pos v >>= \ ds -> return $ ('(':) . ds . (')':)
 gsfmterrorvalueAtom msg pos (GSRecord pos1 m) = do
     vdss <- mapM
         (\ (x, v) -> do
-            vds <- gsfmterrorvalue msg pos1 v
+            vds <- gsfmterrorvalue (GSEvalState msg Nothing) pos1 v
             return $ fmtVarBindAtom x . (" ∝ "++) . vds . ("; "++)
         )
         (Map.toList m)
@@ -249,7 +249,7 @@ gsfmterrorString msg pos ds x = gsfmterrorStringTerm $ ds . ("§(<"++) . fmtPos 
 
 gsfmterrorStringExpr :: OPort Message -> Pos -> (String -> String) -> GSValue -> IO (String -> String)
 gsfmterrorStringExpr msg pos ds v = do
-    ds1 <- gsfmterrorvalue msg pos v
+    ds1 <- gsfmterrorvalue (GSEvalState msg Nothing) pos v
     gsfmterrorStringTerm $ ds . ("§("++) . ds1 . (')':)
 
 gsfmterrorStringTerm :: (String -> String) -> IO (String -> String)
