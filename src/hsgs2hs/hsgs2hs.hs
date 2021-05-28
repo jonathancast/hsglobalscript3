@@ -1033,6 +1033,7 @@ globalEnv = Env{
         ("implicits.global-env", "GSDL.GlobalEnv", "gsimplicits_global_env"),
         ("impmapM", "GS.Util", "gsimpmapM"),
         ("impunit", "GSI.StdLib", "gsimpunit"),
+        ("info", "GSI.StdLib", "gsinfo"),
         ("instantiate", "GSDL.TypeChecker", "gstype_checker_instantiate"),
         ("interpolation", "GSDL.HSGS.Syntax", "interpolation"),
         ("is-ascii-digit", "GSI.Rune", "gsis_ascii_digit"),
@@ -1449,6 +1450,7 @@ globalEnv = Env{
     ],
     gsconstrs = Set.fromList [
         "error",
+        "info",
         "undefined",
         "λ"
     ],

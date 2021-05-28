@@ -1,10 +1,11 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
-module GSI.StdLib (gsvalue, gsmatch, gsfrom, gslambda, gsconst, gscompose, gsid, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpmonad, gsimpunit, gsinfalliblepattern) where
+module GSI.StdLib (gsvalue, gsmatch, gsfrom, gslambda, gsconst, gscompose, gsid, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gsinfo, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpmonad, gsimpunit, gsinfalliblepattern) where
 
 import GSI.Util (StackTrace(..), gshere)
 import GSI.Syn (gsvar, fmtVarAtom)
+import GSI.Message (GSMessageClass(..))
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsvenvUnion, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcat_w, gsbcarg, gsbcapply, gsbcforce, gsbcenter, gsbcconstr, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcat_w, gsbcarg, gsbcapply, gsbcforce, gsbcenter, gsbcconstr, gsbcattachlog, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
 import GSI.BCFunctions (gsbcevalstacktrace)
 $gsimports
 
@@ -60,6 +61,8 @@ gsimpbind = $gslambda_value $ \ a -> $gsbcarg $ \ f -> $gsbcimpfor $ do
     $gsbcimpbody $ $gsae $ $gsbcapply f [ $gsav x ]
 
 gsimpunit = $gslambda_value $ \ x -> $gsbcimpfor $ do $gsbcimpunit $ $gsav x
+
+gsinfo = $gslambda_value $ \ msgv -> $gsbcarg $ \ x -> $gsbcattachlog GSInfo msgv ($gsav x)
 
 gserror = $gslambda_value $ \ msgv -> $gsbcfmterrormsg ($gsav msgv) $ \ msg_s -> $gsbcerror msg_s
 
