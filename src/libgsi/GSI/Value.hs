@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..),
+    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..), Thread(..), ThreadState(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsrecord, gsrecord_w, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
@@ -9,7 +9,7 @@ module GSI.Value (
     gsrehere_w,
     gsvenvUnion,
     fmtExternal,
-    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, whichExternal
+    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, threadStateCode, whichExternal
   ) where
 
 import Data.Map (Map)
@@ -28,7 +28,6 @@ import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (Event, OPort)
 import GSI.Syn (GSVar, fmtVarAtom)
-import GSI.ThreadType (Thread)
 
 -- BIG IMPORTANT NOTE:
 -- §begin§note
@@ -113,6 +112,19 @@ instance Applicative GSBCImp where
 instance Monad GSBCImp where
     return x = GSBCImp (\ evs t -> return x)
     a >>= f = GSBCImp $ \ evs t -> runGSBCImp a evs t >>= \ x -> runGSBCImp (f x) evs t
+
+data Thread = Thread {
+    state :: MVar ThreadState,
+    wait :: Event
+  }
+
+data ThreadState
+  = ThreadStateRunning
+  | ThreadStateInvalidProgram GSInvalidProgram
+  | ThreadStateError GSError
+  | ThreadStateImplementationFailure Pos String
+  | ThreadStateAbend Pos String
+  | ThreadStateSuccess
 
 gsimpfor = varE 'gsimpfor_w `appE` gshere
 
@@ -297,3 +309,11 @@ gstsCode GSApply{} = "GSApply"
 gstsCode GSTSField{} = "GSTSField"
 gstsCode GSTSStack{} = "GSTSStack"
 gstsCode GSTSIndirection{} = "GSTSIndirection"
+
+threadStateCode :: ThreadState -> String
+threadStateCode ThreadStateRunning{} = "ThreadStateRunning"
+threadStateCode ThreadStateInvalidProgram{} = "ThreadStateInvalidProgram"
+threadStateCode ThreadStateError{} = "ThreadStateError"
+threadStateCode ThreadStateImplementationFailure{} = "ThreadStateImplementationFailure"
+threadStateCode ThreadStateAbend{} = "ThreadStateAbend"
+threadStateCode ThreadStateSuccess{} = "ThreadStateSuccess"

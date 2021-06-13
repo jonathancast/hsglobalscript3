@@ -11,9 +11,8 @@ import GSI.Error (GSException(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), Thread, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
-import GSI.ThreadType (Thread)
 
 apiCall :: GSEvalState -> Pos -> GSValue -> Thread -> IO GSValue
 apiCall evs pos0 (GSImplementationFailure pos1 e) t = throwIO $ GSExcImplementationFailure pos1 e
