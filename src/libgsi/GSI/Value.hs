@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, Rank2Types, FlexibleInstances, ExistentialQuantification #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Value (
-    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..), Thread(..), ThreadState(..),
+    GSValue(..), GSValueEnv, GSThunk(..), GSBCO(..), GSExpr(..), GSIntArg(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSArg(..), GSThunkState(..), GSBCImp(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), Thread(..), ThreadState(..),
     gsundefined_value_w, gsapply, gsapply_w, gsfield, gsfield_w, gsconstr, gsrecord, gsrecord_w, gsundefined_value, gsimplementationfailure, gslambda_value, gslambda_w, gsexternal,
     gsprepare, gsprepare_w, gsintprepare, gsav, gsargvar_w, gsae, gsargexpr_w,
     gsthunk, gsthunk_w, gsintthunk_w,
@@ -9,7 +9,8 @@ module GSI.Value (
     gsrehere_w,
     gsvenvUnion,
     fmtExternal,
-    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, threadStateCode, whichExternal
+    fmtInvalidProgram, fmtInvalidProgramShort, fmtError, fmtErrorShort,
+    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, errCode, threadStateCode, whichExternal
   ) where
 
 import Data.Map (Map)
@@ -19,11 +20,11 @@ import Data.Functor.Identity (Identity(..))
 import Data.Typeable (Typeable(..), cast, typeRep)
 
 import Control.Concurrent (MVar, newMVar)
+import Control.Exception (Exception(..))
 
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
-import GSI.Util (Pos, StackTrace(..), gshere, gsfatal)
-import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
+import GSI.Util (Pos, StackTrace(..), gshere, gsfatal, fmtPos, fmtStackTrace)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (Event, OPort)
@@ -112,6 +113,30 @@ instance Applicative GSBCImp where
 instance Monad GSBCImp where
     return x = GSBCImp (\ evs t -> return x)
     a >>= f = GSBCImp $ \ evs t -> runGSBCImp a evs t >>= \ x -> runGSBCImp (f x) evs t
+
+data GSException
+  = GSExcError GSError
+  | GSExcInvalidProgram GSInvalidProgram
+  | GSExcImplementationFailure Pos String
+  | GSExcAbend Pos String
+  deriving (Typeable, Show)
+
+instance Exception GSException where
+    displayException (GSExcError e) = fmtError e
+    displayException (GSExcInvalidProgram ip) = fmtInvalidProgram ip
+    displayException (GSExcImplementationFailure pos err) = fmtPos pos err
+    displayException (GSExcAbend pos err) = fmtPos pos err
+
+data GSError
+  = GSErrUnimpl StackTrace
+  | GSErrUnimplField Pos GSVar
+  | GSErrInsufficientCases Pos String
+  | GSErrError Pos String
+  deriving (Show)
+
+data GSInvalidProgram
+  = GSIPRuntimeTypeError StackTrace String String String
+  deriving (Show)
 
 data Thread = Thread {
     state :: MVar ThreadState,
@@ -238,11 +263,9 @@ whichExternal :: SomeGSExternal -> String
 whichExternal (SomeGSExternal e) = externalType (Identity e)
 
 -- ↓ Instances that are here because we depend on the modules the types are in
-instance GSExternal GSError
 instance GSExternal GSVar
 instance GSExternal Pos
 instance GSExternal StackTrace
-instance GSExternal Thread
 
 -- ↓ Instances that are here because they go here
 instance GSExternal GSArg
@@ -250,6 +273,8 @@ instance GSExternal GSExpr
 instance GSExternal GSIntArg
 instance GSExternal GSIntExpr
 instance GSExternal GSBCO
+instance GSExternal GSError
+instance GSExternal Thread
 
 instance GSExternal GSValue where
     fmtExternal_w v = return $ ("GSValue"++) . (' ':) . gsvFmt v
@@ -261,6 +286,24 @@ gsvFmt :: GSValue -> String -> String
 gsvFmt (GSClosure _ bco) = ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':)
 gsvFmt (GSConstr _ c as) = ('(':) . ("GSConstr _ "++) . fmtVarAtom c . (" _ "++) . (')':)
 gsvFmt v = (gsvCode v++)
+
+fmtInvalidProgram :: GSInvalidProgram -> String
+fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
+
+fmtInvalidProgramShort :: GSInvalidProgram -> String
+fmtInvalidProgramShort (GSIPRuntimeTypeError (StackTrace pos _) ctxt act exp) = fmtPos pos $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
+
+fmtError :: GSError -> String
+fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
+fmtError (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
+fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
+fmtError (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
+
+fmtErrorShort :: GSError -> String
+fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = fmtPos pos "Undefined"
+fmtErrorShort (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
+fmtErrorShort (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
+fmtErrorShort (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
 
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
@@ -309,6 +352,12 @@ gstsCode GSApply{} = "GSApply"
 gstsCode GSTSField{} = "GSTSField"
 gstsCode GSTSStack{} = "GSTSStack"
 gstsCode GSTSIndirection{} = "GSTSIndirection"
+
+errCode :: GSError -> String
+errCode GSErrUnimpl{} = "GSErrUnimpl"
+errCode GSErrUnimplField{} = "GSErrUnimplField"
+errCode GSErrInsufficientCases{} = "GSErrInsufficientCases"
+errCode GSErrError{} = "GSErrError"
 
 threadStateCode :: ThreadState -> String
 threadStateCode ThreadStateRunning{} = "ThreadStateRunning"

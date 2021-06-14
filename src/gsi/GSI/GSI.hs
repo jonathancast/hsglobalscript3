@@ -21,11 +21,10 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos, StackTrace(..), fmtPos, gshere)
 import GSI.Syn (GSVar, gsvar, varName, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (GSError(..), GSException(..), fmtError)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr, GSEvalState(..), GSIntArg(..), GSIntExpr(..), GSBCO(..), GSEvalState(..), GSExternal(..), Thread, gslambda_value, gsconstr, gsrecord, gsimpprim, gsthunk_w, gsintthunk_w, gsapply_w, gsfield_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, gsvCode, bcoCode, whichExternal)
+import GSI.Value (GSValue(..), GSExpr, GSEvalState(..), GSIntArg(..), GSIntExpr(..), GSBCO(..), GSEvalState(..), GSExternal(..), GSError(..), GSException(..), Thread, gslambda_value, gsconstr, gsrecord, gsimpprim, gsthunk_w, gsintthunk_w, gsapply_w, gsfield_w, gsundefined_value, gsundefined_value_w, gsexternal, gsav, gsae, gsargexpr_w, gsvFmt, fmtError, gsvCode, bcoCode, whichExternal)
 import GSI.Thread (createThread, execMainThread)
 import API (apiImplementationFailure)
 import GSI.Eval (evalSync)

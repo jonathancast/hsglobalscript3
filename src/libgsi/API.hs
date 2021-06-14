@@ -7,11 +7,10 @@ import Control.Exception (throwIO)
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere)
-import GSI.Error (GSException(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), Thread, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSException(..), Thread, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 
 apiCall :: GSEvalState -> Pos -> GSValue -> Thread -> IO GSValue

@@ -10,11 +10,10 @@ import Control.Concurrent (MVar, modifyMVar)
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Error (GSError(..), GSInvalidProgram(..), errCode)
 import GSI.Message (Message, GSMessageClass)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (newEvent, wakeup, await, OPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSThunkState(..), GSExternal(..), gsintprepare, gsexternal, gsrehere_w, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr(..), GSEvalState(..), GSExprCont(..), GSThunkState(..), GSExternal(..), GSError(..), GSInvalidProgram(..), gsintprepare, gsexternal, gsrehere_w, gsimplementationfailure, whichExternal, gsvCode, bcoCode, gstsCode, iexprCode, errCode)
 
 aceEnter :: GSEvalState -> [StackTrace] -> GSValue -> GSExprCont a -> IO a
 aceEnter evs cs v@GSInvalidProgram{} sk = gsthrow sk v

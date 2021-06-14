@@ -6,9 +6,8 @@ import Control.Exception (displayException, fromException, try)
 import Test.HUnit
 
 import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
-import GSI.Error (GSError(..), GSException(..))
 import GSI.RTS (bitBucketOPort)
-import GSI.Value (GSValue(..), GSArg(..), GSExternal(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSArg(..), GSExternal(..), GSError(..), GSException(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, whichExternal, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcrehere_w, gsbcforce_w, gsbcundefined_w, gsbcenter_w, gsbcrecord_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)

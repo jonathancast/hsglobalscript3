@@ -10,10 +10,9 @@ import Control.Exception (SomeException, Exception(..), throwIO, throw, try)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.RTS (OPort, newEvent, wakeup, await)
-import GSI.Error (GSError, GSException(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..), GSEvalState(..), Thread(..), ThreadState(..), threadStateCode)
+import GSI.Value (GSValue(..), GSEvalState(..), GSError, GSException(..), Thread(..), ThreadState(..), threadStateCode)
 import GSI.Eval (GSResult(..), stCode)
 import API (apiCall)
 

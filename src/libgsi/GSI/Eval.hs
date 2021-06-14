@@ -6,10 +6,9 @@ import Control.Concurrent (MVar, forkIO, modifyMVar)
 
 import GSI.Util (StackTrace(..), gshere)
 import GSI.RTS (Event, newEvent, await, OPort)
-import GSI.Error (GSError(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSEvalState(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSEvalState(..), GSThunkState(..), GSError(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnterThunkState, aceUpdate, aceField, aceEmptyStack)
 

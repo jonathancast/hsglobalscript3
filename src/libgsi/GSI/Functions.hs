@@ -12,11 +12,10 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (GSError(..), GSInvalidProgram(..), GSException(..), fmtError)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, fmtError, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 

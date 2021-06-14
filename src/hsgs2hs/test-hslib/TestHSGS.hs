@@ -7,11 +7,10 @@ import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Error (fmtErrorShort, fmtInvalidProgram, fmtInvalidProgramShort)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort, bitBucketOPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, fmtErrorShort, fmtInvalidProgram, fmtInvalidProgramShort, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 
 printTestExpr :: GSExpr -> IO ()

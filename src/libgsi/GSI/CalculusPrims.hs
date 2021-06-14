@@ -7,11 +7,10 @@ import Control.Concurrent (readMVar)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
 import GSI.RTS (OPort, awaitAny)
-import GSI.Error (GSError(..))
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter, newProfCounter)
 import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), gsimplementationfailure, gsvCode, whichExternal, fmtExternal)
+import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), GSError(..), gsimplementationfailure, gsvCode, whichExternal, fmtExternal)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 
 gsparand :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> GSValue -> IO GSValue
