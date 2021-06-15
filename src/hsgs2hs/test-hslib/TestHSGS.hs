@@ -10,8 +10,9 @@ import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort, bitBucketOPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, fmtErrorShort, fmtInvalidProgram, fmtInvalidProgramShort, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
+import GSI.Functions (fmtErrorShort, fmtInvalidProgram)
 
 printTestExpr :: GSExpr -> IO ()
 printTestExpr e = $gsthunk e >>= printTestValue

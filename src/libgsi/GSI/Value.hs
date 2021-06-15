@@ -9,8 +9,7 @@ module GSI.Value (
     gsrehere_w,
     gsvenvUnion,
     fmtExternal,
-    fmtInvalidProgram, fmtInvalidProgramShort, fmtError, fmtErrorShort,
-    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, errCode, threadStateCode, whichExternal
+    gsvFmt, gsvCode, bcoCode, iexprCode, argCode, gstsCode, gsexcCode, errCode, threadStateCode, whichExternal
   ) where
 
 import Data.Map (Map)
@@ -122,10 +121,6 @@ data GSException
   deriving (Typeable, Show)
 
 instance Exception GSException where
-    displayException (GSExcError e) = fmtError e
-    displayException (GSExcInvalidProgram ip) = fmtInvalidProgram ip
-    displayException (GSExcImplementationFailure pos err) = fmtPos pos err
-    displayException (GSExcAbend pos err) = fmtPos pos err
 
 data GSError
   = GSErrUnimpl StackTrace
@@ -287,24 +282,6 @@ gsvFmt (GSClosure _ bco) = ('(':) . ("GSClosure _ "++) . (bcoCode bco++) . (')':
 gsvFmt (GSConstr _ c as) = ('(':) . ("GSConstr _ "++) . fmtVarAtom c . (" _ "++) . (')':)
 gsvFmt v = (gsvCode v++)
 
-fmtInvalidProgram :: GSInvalidProgram -> String
-fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
-
-fmtInvalidProgramShort :: GSInvalidProgram -> String
-fmtInvalidProgramShort (GSIPRuntimeTypeError (StackTrace pos _) ctxt act exp) = fmtPos pos $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
-
-fmtError :: GSError -> String
-fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
-fmtError (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
-fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
-fmtError (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
-
-fmtErrorShort :: GSError -> String
-fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = fmtPos pos "Undefined"
-fmtErrorShort (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
-fmtErrorShort (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
-fmtErrorShort (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
-
 gsvCode :: GSValue -> String
 gsvCode GSImplementationFailure{} = "GSImplementationFailure"
 gsvCode GSInvalidProgram{} = "GSInvalidProgram"
@@ -352,6 +329,12 @@ gstsCode GSApply{} = "GSApply"
 gstsCode GSTSField{} = "GSTSField"
 gstsCode GSTSStack{} = "GSTSStack"
 gstsCode GSTSIndirection{} = "GSTSIndirection"
+
+gsexcCode :: GSException -> String
+gsexcCode GSExcError{} = "GSExcError"
+gsexcCode GSExcInvalidProgram{} = "GSExcInvalidProgram"
+gsexcCode GSExcImplementationFailure{} = "GSExcImplementationFailure"
+gsexcCode GSExcAbend{} = "GSExcAbend"
 
 errCode :: GSError -> String
 errCode GSErrUnimpl{} = "GSErrUnimpl"

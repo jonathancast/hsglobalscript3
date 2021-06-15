@@ -12,7 +12,7 @@ import GSI.Util (Pos, gsfatal, gshere)
 import GSI.RTS (OPort, newEvent, wakeup, await)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..), GSEvalState(..), GSError, GSException(..), Thread(..), ThreadState(..), threadStateCode)
+import GSI.Value (GSValue(..), GSEvalState(..), GSError, GSException(..), Thread(..), ThreadState(..), gsexcCode, threadStateCode)
 import GSI.Eval (GSResult(..), stCode)
 import API (apiCall)
 
@@ -35,7 +35,8 @@ createThread msg pc pos v mbp = do
                     Just (GSExcInvalidProgram err) -> return $ ThreadStateInvalidProgram err
                     Just (GSExcImplementationFailure pos err) -> return $ ThreadStateImplementationFailure pos err
                     Just (GSExcAbend pos err) -> return $ ThreadStateAbend pos err
-                    _ -> return $ ThreadStateImplementationFailure $gshere $ "Thread execution threw unknown exception " ++ displayException e
+                    Just exc -> return $ ThreadStateImplementationFailure $gshere $ "Thread execution threw unknown exception " ++ gsexcCode exc
+                    Nothing -> return $ ThreadStateImplementationFailure $gshere $ "Thread execution threw unknown exception " ++ displayException e
                 Right v -> do
                     maybe (return ()) (`updatePromise` v) mbp
                     return ThreadStateSuccess

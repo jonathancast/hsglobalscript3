@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
-module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazylist, gslazylist_w, gslazystring, gslazystring_w, gsbool, gsapiEval, gsapiEvalPos, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmterrormsg) where
+module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazylist, gslazylist_w, gslazystring, gslazystring_w, gsbool, gsapiEval, gsapiEvalPos, gsapiEvalList, gsapiEvalString, gsapiEvalNatural, gsapiEvalExternal, gsfmtException, fmtInvalidProgram, fmtInvalidProgramShort, fmtError, fmtErrorShort, gsfmterrormsg) where
 
 import Data.Proxy (Proxy(..))
 
@@ -10,12 +10,12 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import qualified Data.Map as Map
 
-import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos)
+import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos, fmtStackTrace)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, fmtError, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -134,6 +134,29 @@ gsapiEvalExternal msg pc pos v = gsevalForApi $ gsevalExternal msg pc pos v
 
 gsevalForApi :: IO a -> IO a
 gsevalForApi ev = ev
+
+gsfmtException (GSExcError e) = fmtError e
+gsfmtException (GSExcInvalidProgram ip) = fmtInvalidProgram ip
+gsfmtException (GSExcImplementationFailure pos err) = fmtPos pos err
+gsfmtException (GSExcAbend pos err) = fmtPos pos err
+
+fmtInvalidProgram :: GSInvalidProgram -> String
+fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
+
+fmtInvalidProgramShort :: GSInvalidProgram -> String
+fmtInvalidProgramShort (GSIPRuntimeTypeError (StackTrace pos _) ctxt act exp) = fmtPos pos $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
+
+fmtError :: GSError -> String
+fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
+fmtError (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
+fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
+fmtError (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
+
+fmtErrorShort :: GSError -> String
+fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = fmtPos pos "Undefined"
+fmtErrorShort (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
+fmtErrorShort (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
+fmtErrorShort (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 

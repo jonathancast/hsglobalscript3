@@ -24,13 +24,13 @@ import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Message (Message(..), msgCode)
 import GSI.Prof (ProfCounter, newProfCounter)
 import GSI.RTS (OPort, newEvent, wakeup, await, awaitAny, newChannel, iportReadable, tryReadIPort)
-import GSI.Value (GSValue(..), GSEvalState(..), GSException(..), Thread, gslambda_value, gsapply, gsimpprim, gsundefined_value, fmtInvalidProgram, fmtError, gsvCode)
-import GSI.Functions (gsbool, gslist, gsstring)
+import GSI.Value (GSValue(..), GSEvalState(..), GSException(..), Thread, gslambda_value, gsapply, gsimpprim, gsundefined_value, gsvCode)
+import GSI.Functions (gsbool, gslist, gsstring, fmtInvalidProgram, fmtError)
 import GSI.ByteCode (gsbcarg, gsbcconstr_view)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
-import GSI.Functions (gslazylist, gslazystring, gsapiEvalList, gsapiEvalString)
+import GSI.Functions (gslazylist, gslazystring, gsapiEvalList, gsapiEvalString, gsfmtException)
 
 runGSProgram a = do
     as <- $gslist . map $gsstring <$> getArgs
@@ -41,11 +41,14 @@ runGSProgram a = do
     mainDone <- newEvent
     msgDone <- newEvent
     (msgi, msgo) <- newChannel
-    forkIO $ logCatcher msgi mainDone msgDone `catch` \ (e :: SomeException) -> hPutStrLn stderr (displayException e)
+    forkIO $ logCatcher msgi mainDone msgDone
+        `catch` (\ (e :: GSException) -> hPutStrLn stderr (gsfmtException e))
+        `catch` (\ (e :: SomeException) -> hPutStrLn stderr (displayException e))
     t <- createThread msgo pc $gshere prog Nothing
     execMainThread t
         `finally` (wakeup mainDone *> await msgDone)
-  `catch` \ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1) -- Because Haskell is a conspiracy to avoid good error messages
+  `catch` (\ (e :: GSException) -> hPutStrLn stderr (gsfmtException e) >> exitWith (ExitFailure 1))
+  `catch` (\ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1)) -- Because Haskell is a conspiracy to avoid good error messages
 
 getProfCounter "" = return Nothing
 getProfCounter gsprof = Just <$> newProfCounter
