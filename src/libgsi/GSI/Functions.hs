@@ -135,10 +135,11 @@ gsapiEvalExternal msg pc pos v = gsevalForApi $ gsevalExternal msg pc pos v
 gsevalForApi :: IO a -> IO a
 gsevalForApi ev = ev
 
-gsfmtException (GSExcError e) = fmtError e
-gsfmtException (GSExcInvalidProgram ip) = fmtInvalidProgram ip
-gsfmtException (GSExcImplementationFailure pos err) = fmtPos pos err
-gsfmtException (GSExcAbend pos err) = fmtPos pos err
+gsfmtException :: GSException -> IO String
+gsfmtException (GSExcError e) = return $ fmtError e
+gsfmtException (GSExcInvalidProgram ip) = return $ fmtInvalidProgram ip
+gsfmtException (GSExcImplementationFailure pos err) = return $ fmtPos pos err
+gsfmtException (GSExcAbend pos err) = return $ fmtPos pos err
 
 fmtInvalidProgram :: GSInvalidProgram -> String
 fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp

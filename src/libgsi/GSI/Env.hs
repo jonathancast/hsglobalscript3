@@ -42,12 +42,12 @@ runGSProgram a = do
     msgDone <- newEvent
     (msgi, msgo) <- newChannel
     forkIO $ logCatcher msgi mainDone msgDone
-        `catch` (\ (e :: GSException) -> hPutStrLn stderr (gsfmtException e))
+        `catch` (\ (e :: GSException) -> gsfmtException e >>= hPutStrLn stderr)
         `catch` (\ (e :: SomeException) -> hPutStrLn stderr (displayException e))
     t <- createThread msgo pc $gshere prog Nothing
     execMainThread t
         `finally` (wakeup mainDone *> await msgDone)
-  `catch` (\ (e :: GSException) -> hPutStrLn stderr (gsfmtException e) >> exitWith (ExitFailure 1))
+  `catch` (\ (e :: GSException) -> gsfmtException e >>= hPutStrLn stderr >> exitWith (ExitFailure 1))
   `catch` (\ e -> hPutStrLn stderr (displayException (e :: SomeException)) >> exitWith (ExitFailure 1)) -- Because Haskell is a conspiracy to avoid good error messages
 
 getProfCounter "" = return Nothing
