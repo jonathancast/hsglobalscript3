@@ -64,7 +64,7 @@ gsimpunit = $gslambda_value $ \ x -> $gsbcimpfor $ do $gsbcimpunit $ $gsav x
 
 gsinfo = $gslambda_value $ \ msgv -> $gsbcarg $ \ x -> $gsbcattachlog GSInfo msgv ($gsav x)
 
-gserror = $gslambda_value $ \ msgv -> $gsbcfmterrormsg ($gsav msgv) $ \ msg_s -> $gsbcerror msg_s
+gserror = $gslambda_value $ \ msgv -> $gsbcerror msgv
 
 gsundefined = $gsundefined_value
 

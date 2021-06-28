@@ -90,8 +90,8 @@ gsbcattachlog_w pos cls msgv a = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
 
 gsbcerror = varE 'gsbcerror_w `appE` gshere
 
-gsbcerror_w :: Pos -> String -> GSExpr
-gsbcerror_w pos msg = gsbcprof_w pos $ GSExpr $ \ _ _ sk -> gsthrow sk $ GSError (GSErrError pos msg)
+gsbcerror_w :: Pos -> GSValue -> GSExpr
+gsbcerror_w pos msg = gsbcprof_w pos $ gsbcfmterrormsg_w pos ($gsav msg) $ \ msgs -> GSExpr $ \ _ _ sk -> gsthrow sk $ GSError (GSErrError pos msgs)
 
 gsbcruntimetypeerror = varE 'gsbcruntimetypeerror_w `appE` gshere
 gsbcruntimetypeerror_w :: Pos -> String -> String -> String -> GSExpr
