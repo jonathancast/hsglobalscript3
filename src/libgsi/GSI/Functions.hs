@@ -15,7 +15,7 @@ import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSExprCont(..), GSExternal(..), GSEvalState, GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -135,11 +135,11 @@ gsapiEvalExternal msg pc pos v = gsevalForApi $ gsevalExternal msg pc pos v
 gsevalForApi :: IO a -> IO a
 gsevalForApi ev = ev
 
-gsfmtException :: GSException -> IO String
-gsfmtException (GSExcError e) = fmtError e
-gsfmtException (GSExcInvalidProgram ip) = return $ fmtInvalidProgram ip
-gsfmtException (GSExcImplementationFailure pos err) = return $ fmtPos pos err
-gsfmtException (GSExcAbend pos err) = return $ fmtPos pos err
+gsfmtException :: GSEvalState -> GSException -> IO String
+gsfmtException evs (GSExcError e) = fmtError e
+gsfmtException evs (GSExcInvalidProgram ip) = return $ fmtInvalidProgram ip
+gsfmtException evs (GSExcImplementationFailure pos err) = return $ fmtPos pos err
+gsfmtException evs (GSExcAbend pos err) = return $ fmtPos pos err
 
 fmtInvalidProgram :: GSInvalidProgram -> String
 fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
