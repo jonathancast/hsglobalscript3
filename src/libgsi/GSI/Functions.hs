@@ -153,11 +153,11 @@ fmtError (GSErrUnimplField pos f) = return $ fmtPos pos . ("Undefined field "++)
 fmtError (GSErrInsufficientCases pos err) = return $ fmtPos pos $ "Missing case: " ++ err
 fmtError (GSErrError pos err) = return $ fmtPos pos $ "Error: " ++ err
 
-fmtErrorShort :: GSError -> String
-fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = fmtPos pos "Undefined"
-fmtErrorShort (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
-fmtErrorShort (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
-fmtErrorShort (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
+fmtErrorShort :: GSError -> IO String
+fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = return $ fmtPos pos "Undefined"
+fmtErrorShort (GSErrUnimplField pos f) = return $ fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
+fmtErrorShort (GSErrInsufficientCases pos err) = return $ fmtPos pos $ "Missing case: " ++ err
+fmtErrorShort (GSErrError pos err) = return $ fmtPos pos $ "Error: " ++ err
 
 gsfmterrormsg = varE 'gsfmterrormsg_w `appE` gshere
 

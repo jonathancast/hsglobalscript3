@@ -41,7 +41,7 @@ formatTestValue msg pc v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestV
 
 formatTestValueAtom :: OPort Message -> Maybe ProfCounter -> GSValue -> ((String -> String) -> IO a) -> IO a
 formatTestValueAtom msg pc (GSImplementationFailure pos msgs) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msgs++) . ('>':)
-formatTestValueAtom msg pc (GSError err) k = k $ ('<':) . (fmtErrorShort err++) . ('>':)
+formatTestValueAtom msg pc (GSError err) k = do errs <- fmtErrorShort err; k $ ('<':) . (errs++) . ('>':)
 formatTestValueAtom msg pc (GSInvalidProgram err) k = k $ ('<':) . (fmtInvalidProgram err++) . ('>':)
 formatTestValueAtom msg pc (GSThunk ts) k = do
     v <- evalSync msg pc [StackTrace $gshere []] ts
