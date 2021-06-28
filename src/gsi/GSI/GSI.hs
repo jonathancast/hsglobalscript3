@@ -219,7 +219,8 @@ gsiprimexecMainThread evs pos tself tprogv = do
         Left e -> $apiImplementationFailure $ "execMainThread threw unknown exception " ++ show e ++ " next"
         Right () -> $apiImplementationFailure $ "gsiexecMainThread next"
 
-gsigsfmtError = $gslambda_value $ \ e -> $gsbcevalexternal ($gsav e) $ \ hse -> $gsbcstringlit (fmtError hse)
+gsigsfmtError = $gslambda_value $ \ e -> $gsbcevalexternal ($gsav e) $ \ hse -> $gsbcimpprim $ \ evs pos t ->
+    do es <- fmtError hse; return $ $gsstring es
 
 gsigsvar_compare = $gslambda_value $ \ v0 -> $gsbcarg $ \ v1 ->  $gsbcforce ($gsav v0) $ \ v0v -> $gsbcforce ($gsav v1) $ \ v1v -> case (v0v, v1v) of
     (GSExternal v0e, GSExternal v1e)

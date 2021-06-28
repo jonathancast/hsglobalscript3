@@ -125,7 +125,7 @@ gsprimprint h evs pos t (GSImplementationFailure pos1 msgs) = do
     hPutStrLn stderr $ fmtPos pos1 $ msgs
     return $ $gsundefined_value
 gsprimprint h evs pos t (GSError err) = do
-    hPutStrLn stderr $ fmtError err
+    hPutStrLn stderr =<< fmtError err
     return $ $gsundefined_value
 gsprimprint h evs pos t (GSConstr pos1 c []) | c == gsvar "nil" =
     return $ $gsundefined_value

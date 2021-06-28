@@ -136,7 +136,7 @@ gsevalForApi :: IO a -> IO a
 gsevalForApi ev = ev
 
 gsfmtException :: GSException -> IO String
-gsfmtException (GSExcError e) = return $ fmtError e
+gsfmtException (GSExcError e) = fmtError e
 gsfmtException (GSExcInvalidProgram ip) = return $ fmtInvalidProgram ip
 gsfmtException (GSExcImplementationFailure pos err) = return $ fmtPos pos err
 gsfmtException (GSExcAbend pos err) = return $ fmtPos pos err
@@ -147,11 +147,11 @@ fmtInvalidProgram (GSIPRuntimeTypeError st ctxt act exp) = fmtStackTrace st $ "I
 fmtInvalidProgramShort :: GSInvalidProgram -> String
 fmtInvalidProgramShort (GSIPRuntimeTypeError (StackTrace pos _) ctxt act exp) = fmtPos pos $ "In " ++ ctxt ++ ", found " ++ act ++ "; expected " ++ exp
 
-fmtError :: GSError -> String
-fmtError (GSErrUnimpl st) = fmtStackTrace st "Undefined"
-fmtError (GSErrUnimplField pos f) = fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
-fmtError (GSErrInsufficientCases pos err) = fmtPos pos $ "Missing case: " ++ err
-fmtError (GSErrError pos err) = fmtPos pos $ "Error: " ++ err
+fmtError :: GSError -> IO String
+fmtError (GSErrUnimpl st) = return $ fmtStackTrace st "Undefined"
+fmtError (GSErrUnimplField pos f) = return $ fmtPos pos . ("Undefined field "++) . fmtVarAtom f $ ""
+fmtError (GSErrInsufficientCases pos err) = return $ fmtPos pos $ "Missing case: " ++ err
+fmtError (GSErrError pos err) = return $ fmtPos pos $ "Error: " ++ err
 
 fmtErrorShort :: GSError -> String
 fmtErrorShort (GSErrUnimpl (StackTrace pos _)) = fmtPos pos "Undefined"
@@ -173,13 +173,14 @@ gsfmterrormsg_ww :: OPort Message -> Pos -> (String -> String) -> GSValue -> IO 
 gsfmterrormsg_ww msg pos ds (GSThunk th) = do
     v <- evalSync msg Nothing [StackTrace pos []] th
     gsfmterrormsg_ww msg pos ds v
-gsfmterrormsg_ww msg pos ds (GSError err) = return $ (ds . ("<Error: "++) . (fmtError err++) . ('>':)) $ ""
+gsfmterrormsg_ww msg pos ds (GSError err) = do errs <- fmtError err; return $ (ds . ("<Error: "++) . (errs++) . ('>':)) $ ""
 gsfmterrormsg_ww _ pos0 ds (GSImplementationFailure pos1 msg) = return $ (ds . ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)) $ ""
 gsfmterrormsg_ww msg pos0 ds (GSConstr pos1 c [ GSThunk pcth, msg1 ]) | c == gsvar ":" = do
     pcv <- evalSync msg Nothing [StackTrace pos0 []] pcth
     gsfmterrormsg_ww msg pos0 ds (GSConstr pos1 c [ pcv, msg1 ])
-gsfmterrormsg_ww msg pos0 ds (GSConstr pos1 c [ GSError err, msg1 ]) | c == gsvar ":" =
-    gsfmterrormsg_ww msg pos0 (ds . ("<Error: "++) . (fmtError err++) . ('>':)) msg1
+gsfmterrormsg_ww msg pos0 ds (GSConstr pos1 c [ GSError err, msg1 ]) | c == gsvar ":" = do
+    errs <- fmtError err
+    gsfmterrormsg_ww msg pos0 (ds . ("<Error: "++) . (errs++) . ('>':)) msg1
 gsfmterrormsg_ww msg pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ GSRune ch ], msg1 ]) | c1 == gsvar ":" && c2 == gsvar "char" =
     gsfmterrormsg_ww msg pos0 (ds . (ch:)) msg1
 gsfmterrormsg_ww msg pos0 ds (GSConstr pos1 c1 [ GSConstr pos2 c2 [ ch ], msg1 ]) | c1 == gsvar ":" && c2 == gsvar "char" =
@@ -218,7 +219,7 @@ gsfmterrorvalueAtom msg pos (GSThunk th) = do
     v <- evalSync msg Nothing [StackTrace pos []] th
     gsfmterrorvalueAtom msg pos v
 gsfmterrorvalueAtom _ pos0 (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
-gsfmterrorvalueAtom msg pos0 (GSError err) = return $ ('<':) . (fmtError err ++) . ('>':)
+gsfmterrorvalueAtom msg pos0 (GSError err) = do errs <- fmtError err; return $ ('<':) . (errs ++) . ('>':)
 gsfmterrorvalueAtom msg pos0 (GSRune ch) | not (ch `elem` "\\/§()[]{}") = return $ ("r/"++) . (ch:) . ("/"++)
 gsfmterrorvalueAtom msg pos v@(GSConstr pos1 c [ GSRune{}, _ ]) | c == gsvar ":" = gsfmterrorString msg pos ("qq{"++) v
 gsfmterrorvalueAtom msg pos v@(GSConstr pos1 c []) = return $ fmtVarAtom c
