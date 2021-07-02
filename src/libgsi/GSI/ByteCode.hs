@@ -201,7 +201,7 @@ gsbclfield_w pos f r k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
 gsbcfield_w :: Pos -> GSArg -> GSVar -> GSExpr
-gsbcfield_w pos a f = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg (msgChannel evs) (profCounter evs) c1 a (aceField (msgChannel evs) (profCounter evs) c1 f sk)
+gsbcfield_w pos a f = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg (msgChannel evs) (profCounter evs) c1 a (aceField evs c1 f sk)
 
 gsbcevalexternal = varE 'gsbcevalexternal_w `appE` gshere
 

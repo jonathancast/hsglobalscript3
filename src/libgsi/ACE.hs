@@ -50,7 +50,7 @@ aceEnterThunkState evs cs (GSTSIntExpr e) sk = aceEnterIntExpr evs cs e sk
 aceEnterThunkState evs cs (GSApply pos fn args) sk =
     aceEnter evs (StackTrace pos [] : cs) fn (aceArg evs (StackTrace pos []) args sk)
 aceEnterThunkState evs cs (GSTSField pos f r) sk =
-    aceEnter evs (StackTrace pos [] : cs) r (aceField (msgChannel evs) (profCounter evs) (StackTrace pos []) f sk)
+    aceEnter evs (StackTrace pos [] : cs) r (aceField evs (StackTrace pos []) f sk)
 aceEnterThunkState evs cs st sk = gsthrow sk $ $gsimplementationfailure $ "aceEnterThunkState (thunk: " ++ gstsCode st ++ ") next"
 
 aceEnterIntExpr :: GSEvalState -> [StackTrace] -> GSIntExpr -> GSExprCont a -> IO a
@@ -105,11 +105,11 @@ gsapplyFunction evs c1 (GSConstr pos _ _) as sk = gsthrow sk $ GSInvalidProgram 
 gsapplyFunction evs c1 (GSRecord pos _) as sk = gsthrow sk $ GSInvalidProgram $ GSIPRuntimeTypeError c1 "gsapplyFunction" ("GSRecord " ++ fmtPos pos "") "closure"
 gsapplyFunction evs c1 f as sk = gsthrow sk $ $gsimplementationfailure $ "gsapplyFunction " ++ gsvCode f ++ ") next"
 
-aceField :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSVar -> GSExprCont a -> GSExprCont a
-aceField msg pc c1 f sk = GSExprCont{
+aceField :: GSEvalState -> StackTrace -> GSVar -> GSExprCont a -> GSExprCont a
+aceField evs c1 f sk = GSExprCont{
     gsreturn = \ r -> case r of
         GSRecord pos1 fs -> case Map.lookup f fs of
-            Just v -> aceEnter (GSEvalState msg pc) [c1] v sk
+            Just v -> aceEnter evs [c1] v sk
             Nothing -> gsthrow sk $ $gsimplementationfailure $ (fmtPos pos1 . ("missing field "++) . fmtVarAtom f) $ ""
         GSExternal e | Just (Pos fn l c) <- fromExternal e -> case f of
             _ | f == gsvar "filename" -> gsreturn sk $ foldr (\ ch sv -> GSConstr $gshere (gsvar ":") [ GSRune ch, sv ]) (GSConstr $gshere (gsvar "nil") []) fn

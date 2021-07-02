@@ -10,7 +10,7 @@ import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSEvalState(..), GSThunkState(..), GSError(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
-import ACE (aceEnterThunkState, aceUpdate, aceField, aceEmptyStack)
+import ACE (aceEnterThunkState, aceUpdate, aceEmptyStack)
 
 data GSResult
   = GSStack Event
