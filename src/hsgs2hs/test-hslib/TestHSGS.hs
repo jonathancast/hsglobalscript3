@@ -10,7 +10,7 @@ import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort, bitBucketOPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr, gsthunk, gsvCode, bcoCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr, GSEvalState(..), gsthunk, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.Functions (fmtErrorShort, fmtInvalidProgram)
 
@@ -47,7 +47,7 @@ formatTestValueAtom msg pc (GSThunk ts) k = do
     v <- evalSync msg pc [StackTrace $gshere []] ts
     formatTestValueAtom msg pc v k
 formatTestValueAtom msg pc (GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" =
-    formatChar (GSRune ch) $ \ chds -> formatString msg pc s $ \ sds -> k (("qq{"++) . chds . sds . ('}':))
+    formatChar (GSRune ch) $ \ chds -> formatString (GSEvalState msg pc) s $ \ sds -> k (("qq{"++) . chds . sds . ('}':))
 formatTestValueAtom msg pc (GSConstr pos c []) k = k $ fmtVarAtom c
 formatTestValueAtom msg pc v@GSConstr{} k = formatTestValue msg pc v $ \ ds -> k $ ('(':) . ds . (')':)
 formatTestValueAtom msg pc (GSRecord _ fs) k = case Map.null fs of
@@ -74,14 +74,14 @@ formatChar (GSRune '\\') k = k $ ("\\\\"++)
 formatChar (GSRune ch) k = k $ (ch:)
 formatChar v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatChar "++) . (gsvCode v++) . (" next>"++)
 
-formatString :: OPort Message -> Maybe ProfCounter -> GSValue -> ((String -> String) -> IO a) -> IO a
-formatString msg pc (GSThunk ts) k = do
-    v <- evalSync msg pc [StackTrace $gshere []] ts
-    formatString msg pc v k
-formatString msg pc (GSConstr _ c [ r0, s1 ]) k | c == gsvar ":" = formatChar r0 $ \ r0ds -> formatString msg pc s1 $ \ s1ds -> k $ r0ds . s1ds
-formatString msg pc (GSConstr _ c []) k | c == gsvar "nil" = k $ id
-formatString msg pc (GSConstr _ c as) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatString "++) . fmtVarAtom c . (" next>"++)
-formatString msg pc v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatString "++) . (gsvCode v++) . (" next>"++)
+formatString :: GSEvalState -> GSValue -> ((String -> String) -> IO a) -> IO a
+formatString evs (GSThunk ts) k = do
+    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] ts
+    formatString evs v k
+formatString evs (GSConstr _ c [ r0, s1 ]) k | c == gsvar ":" = formatChar r0 $ \ r0ds -> formatString evs s1 $ \ s1ds -> k $ r0ds . s1ds
+formatString evs (GSConstr _ c []) k | c == gsvar "nil" = k $ id
+formatString evs (GSConstr _ c as) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatString "++) . fmtVarAtom c . (" next>"++)
+formatString evs v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatString "++) . (gsvCode v++) . (" next>"++)
 
 printStackTrace :: GSValue -> IO ()
 printStackTrace v = bitBucketOPort >>= \ msg -> w msg Nothing v
