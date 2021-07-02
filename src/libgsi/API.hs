@@ -26,10 +26,10 @@ apiCall evs pos0 (GSClosure cs bco) t = case bco of
 apiCall evs pos v t = do
     throwIO $ GSExcImplementationFailure $gshere $ "runThread (state is ThreadStateRunning; code is non-empty; next statement is " ++ gsvCode v ++ ") next"
 
-apiCallExpr :: OPort Message -> Maybe ProfCounter -> Pos -> GSExpr -> Thread -> IO GSValue
-apiCallExpr msg pc pos (GSExpr e) t = do
-    v <- e (GSEvalState msg pc) [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
-    apiCall (GSEvalState msg pc) pos v t
+apiCallExpr :: GSEvalState -> Pos -> GSExpr -> Thread -> IO GSValue
+apiCallExpr evs pos (GSExpr e) t = do
+    v <- e evs [StackTrace pos []] GSExprCont{ gsreturn = return, gsthrow = return }
+    apiCall evs pos v t
 
 apiImplementationFailure = varE 'apiImplementationFailure_w `appE` gshere
 
