@@ -181,19 +181,19 @@ gsigsvar = $gslambda_value $ \ v -> $gsbcevalstring ($gsav v) $ \ v_s -> $gsbcex
 gsigsvar_view = $gslambda_value $ \ ek -> $gsbcarg $ \ sk -> $gsbcarg $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ v ->
     $gsbcapply sk [ $gsav ($gsstring (varName v)) ]
 
-gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: GSValue) -> $gsbcimpprim $ \ evs pos t -> w (msgChannel evs) (profCounter evs) pos v where
-    w :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO GSValue
-    w _ _ _ (GSError e) = return $ $gsconstr (gsvar "error") [ gsexternal e ]
-    w _ _ _ (GSImplementationFailure pos err) = return $ $gsconstr (gsvar "implementation-failure") [ gsexternal pos, $gsstring err ]
-    w _ _ _ v@GSNatural{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ _ _ v@GSRune{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ _ _ v@GSConstr{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ _ _ v@GSRecord{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w _ _ _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
-    w msg pc pos (GSThunk ts) = do
-        v' <- evalSync msg pc [StackTrace pos []] ts
-        w msg pc pos v'
-    w _ _ _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
+gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: GSValue) -> $gsbcimpprim $ \ evs pos t -> w evs pos v where
+    w :: GSEvalState -> Pos -> GSValue -> IO GSValue
+    w _ _ (GSError e) = return $ $gsconstr (gsvar "error") [ gsexternal e ]
+    w _ _ (GSImplementationFailure pos err) = return $ $gsconstr (gsvar "implementation-failure") [ gsexternal pos, $gsstring err ]
+    w _ _ v@GSNatural{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSRune{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSConstr{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSRecord{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w _ _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
+    w evs pos (GSThunk ts) = do
+        v' <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] ts
+        w evs pos v'
+    w _ _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
 
 gsicreateThread :: GSValue
 gsicreateThread = $gsimpprim gsiprimcreateThread
