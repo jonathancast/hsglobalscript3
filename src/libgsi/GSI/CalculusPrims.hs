@@ -17,7 +17,7 @@ gsparand :: GSEvalState -> Pos -> GSValue -> GSValue -> IO GSValue
 gsparand evs pos (GSConstr pos1 cx []) _ | cx == gsvar "0" = return $ GSConstr pos (gsvar "0") []
 gsparand evs pos _ (GSConstr pos1 cy []) | cy == gsvar "0" = return $ GSConstr pos (gsvar "0") []
 gsparand evs pos (GSThunk xs) (GSThunk ys) = do
-    (xv, yv) <- gspareval (msgChannel evs) (profCounter evs) pos xs ys
+    (xv, yv) <- gspareval evs pos xs ys
     gsparand evs pos xv yv
 gsparand evs pos (GSThunk xs) y = do
     xv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] xs
@@ -40,7 +40,7 @@ gsparand evs pos x y = return $ $gsimplementationfailure $ "gsparand " ++ gsvCod
 
 gsmergeenv :: GSEvalState -> Pos -> GSValue -> GSValue -> IO GSValue
 gsmergeenv evs pos (GSThunk xs) (GSThunk ys) = do
-    (xv, yv) <- gspareval (msgChannel evs) (profCounter evs) pos xs ys
+    (xv, yv) <- gspareval evs pos xs ys
     gsmergeenv evs pos xv yv
 gsmergeenv evs pos (GSThunk xs) y = do
     xv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] xs
@@ -54,12 +54,12 @@ gsmergeenv evs pos ex@GSError{} ey = return ex
 gsmergeenv evs pos (GSRecord _ ex) (GSRecord _ ey) = return $ GSRecord pos (Map.union ex ey)
 gsmergeenv evs pos ex ey = return $ $gsimplementationfailure $ "gsmergeenv " ++ gsvCode ex ++ ' ' : gsvCode ey ++ " next"
 
-gspareval :: OPort Message -> Maybe ProfCounter -> Pos -> GSThunk -> GSThunk -> IO (GSValue, GSValue)
-gspareval msg pc pos xs ys = do
-    xpc <- maybe (return Nothing) (fmap Just . const newProfCounter) pc
-    ypc <- maybe (return Nothing) (fmap Just . const newProfCounter) pc
-    xr <- eval msg xpc [StackTrace pos []] xs
-    yr <- eval msg ypc [StackTrace pos []] ys
+gspareval :: GSEvalState -> Pos -> GSThunk -> GSThunk -> IO (GSValue, GSValue)
+gspareval evs pos xs ys = do
+    xpc <- maybe (return Nothing) (fmap Just . const newProfCounter) (profCounter evs)
+    ypc <- maybe (return Nothing) (fmap Just . const newProfCounter) (profCounter evs)
+    xr <- eval (msgChannel evs) xpc [StackTrace pos []] xs
+    yr <- eval (msgChannel evs) ypc [StackTrace pos []] ys
     case (xr, yr) of
         (GSStack ex, GSStack ey) -> do
             awaitAny [ ex, ey ]
