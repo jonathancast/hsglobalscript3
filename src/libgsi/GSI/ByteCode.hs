@@ -151,8 +151,8 @@ instance GSBCPrimType (IO GSValue) GSExpr where
 instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
     gsbcprim_ww pos f v = gsbcprim_ww pos (\ msg pc -> f msg pc v)
 
-gsbcprim_w :: GSBCPrimType f r => Pos -> (OPort Message -> Maybe ProfCounter -> Pos -> f) -> r
-gsbcprim_w pos f = gsbcprim_ww pos (\ msg pc -> f msg pc pos)
+gsbcprim_w :: GSBCPrimType f r => Pos -> (GSEvalState -> Pos -> f) -> r
+gsbcprim_w pos f = gsbcprim_ww pos (\ msg pc -> f (GSEvalState msg pc) pos)
 
 gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
 

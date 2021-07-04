@@ -18,10 +18,10 @@ import API (apiImplementationFailure)
 
 gsstrun = $gslambda_value $ \ a -> $gsbcprim gsprim_st_run a
 
-gsprim_st_run :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO GSValue
-gsprim_st_run msg pc pos a = do
+gsprim_st_run :: GSEvalState -> Pos -> GSValue -> IO GSValue
+gsprim_st_run evs pos a = do
     pr <- createPromise
-    t <- createThread msg pc pos a (Just pr)
+    t <- createThread (msgChannel evs) (profCounter evs) pos a (Just pr)
     st <- waitThread t
     case st of
         ThreadStateInvalidProgram err -> return $ GSInvalidProgram err
