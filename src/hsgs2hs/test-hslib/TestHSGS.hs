@@ -21,46 +21,46 @@ printTestValue :: GSValue -> IO ()
 printTestValue v = bitBucketOPort >>= \ msg -> formatTestValue (GSEvalState msg Nothing) v (putStrLn . ($ ""))
 
 formatTestValue :: GSEvalState -> GSValue -> ((String -> String) -> IO a) -> IO a
-formatTestValue evs v@GSImplementationFailure{} k = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
-formatTestValue evs v@GSError{} k = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
-formatTestValue evs v@GSInvalidProgram{} k = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
+formatTestValue evs v@GSImplementationFailure{} k = formatTestValueAtom evs v k
+formatTestValue evs v@GSError{} k = formatTestValueAtom evs v k
+formatTestValue evs v@GSInvalidProgram{} k = formatTestValueAtom evs v k
 formatTestValue evs (GSThunk ts) k = do
     v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] ts
     formatTestValue evs v k
 formatTestValue evs (GSClosure _ GSLambda{}) k = k $ ("<function>"++)
 formatTestValue evs (GSClosure _ bco) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue (GSClosure _ "++) . (bcoCode bco++) . (") next>"++)
-formatTestValue evs v@GSRecord{} k = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
-formatTestValue evs v@GSNatural{} k = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
-formatTestValue evs v@GSRune{} k = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
+formatTestValue evs v@GSRecord{} k = formatTestValueAtom evs v k
+formatTestValue evs v@GSNatural{} k = formatTestValueAtom evs v k
+formatTestValue evs v@GSRune{} k = formatTestValueAtom evs v k
 formatTestValue evs v@(GSConstr pos c [ GSThunk chts, s ]) k | c == gsvar ":" = do
     chv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] chts
     formatTestValue evs (GSConstr pos (gsvar ":") [ chv, s ]) k
-formatTestValue evs v@(GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" = formatTestValueAtom (msgChannel evs) (profCounter evs) v k
+formatTestValue evs v@(GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" = formatTestValueAtom evs v k
 formatTestValue evs (GSConstr _ v as) k = formatArgs (msgChannel evs) (profCounter evs) as $ \ ds -> k (fmtVarAtom v . ds)
 formatTestValue evs v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "++) . (gsvCode v++) . (" next>"++)
 
-formatTestValueAtom :: OPort Message -> Maybe ProfCounter -> GSValue -> ((String -> String) -> IO a) -> IO a
-formatTestValueAtom msg pc (GSImplementationFailure pos msgs) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msgs++) . ('>':)
-formatTestValueAtom msg pc (GSError err) k = do errs <- fmtErrorShort err; k $ ('<':) . (errs++) . ('>':)
-formatTestValueAtom msg pc (GSInvalidProgram err) k = k $ ('<':) . (fmtInvalidProgram err++) . ('>':)
-formatTestValueAtom msg pc (GSThunk ts) k = do
-    v <- evalSync msg pc [StackTrace $gshere []] ts
-    formatTestValueAtom msg pc v k
-formatTestValueAtom msg pc (GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" =
-    formatChar (GSRune ch) $ \ chds -> formatString (GSEvalState msg pc) s $ \ sds -> k (("qq{"++) . chds . sds . ('}':))
-formatTestValueAtom msg pc (GSConstr pos c []) k = k $ fmtVarAtom c
-formatTestValueAtom msg pc v@GSConstr{} k = formatTestValue (GSEvalState msg pc) v $ \ ds -> k $ ('(':) . ds . (')':)
-formatTestValueAtom msg pc (GSRecord _ fs) k = case Map.null fs of
+formatTestValueAtom :: GSEvalState -> GSValue -> ((String -> String) -> IO a) -> IO a
+formatTestValueAtom evs (GSImplementationFailure pos msgs) k = k $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msgs++) . ('>':)
+formatTestValueAtom evs (GSError err) k = do errs <- fmtErrorShort err; k $ ('<':) . (errs++) . ('>':)
+formatTestValueAtom evs (GSInvalidProgram err) k = k $ ('<':) . (fmtInvalidProgram err++) . ('>':)
+formatTestValueAtom evs (GSThunk ts) k = do
+    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] ts
+    formatTestValueAtom evs v k
+formatTestValueAtom evs (GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" =
+    formatChar (GSRune ch) $ \ chds -> formatString evs s $ \ sds -> k (("qq{"++) . chds . sds . ('}':))
+formatTestValueAtom evs (GSConstr pos c []) k = k $ fmtVarAtom c
+formatTestValueAtom evs v@GSConstr{} k = formatTestValue evs v $ \ ds -> k $ ('(':) . ds . (')':)
+formatTestValueAtom evs (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
-    False -> formatFields msg pc (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
-formatTestValueAtom msg pc (GSNatural _ n) k = k $ shows n
-formatTestValueAtom msg pc (GSRune r) k
+    False -> formatFields (msgChannel evs) (profCounter evs) (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
+formatTestValueAtom evs (GSNatural _ n) k = k $ shows n
+formatTestValueAtom evs (GSRune r) k
     | r `elem` "/\\§()[]{}\n\t" = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom (GSRune "++) . shows r . (") next>"++)
     | otherwise = k $ ("r/"++) . (r:) . ('/':)
-formatTestValueAtom msg pc v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
+formatTestValueAtom evs v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
 
 formatArgs :: OPort Message -> Maybe ProfCounter -> [GSValue] -> ((String -> String) -> IO a) -> IO a
-formatArgs msg pc (x:xn) k = formatTestValueAtom msg pc x $ \ xds -> formatArgs msg pc xn $ \ xnds -> k $ (' ':) . xds . xnds
+formatArgs msg pc (x:xn) k = formatTestValueAtom (GSEvalState msg pc) x $ \ xds -> formatArgs msg pc xn $ \ xnds -> k $ (' ':) . xds . xnds
 formatArgs msg pc [] k = k id
 
 formatFields :: OPort Message -> Maybe ProfCounter -> [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
