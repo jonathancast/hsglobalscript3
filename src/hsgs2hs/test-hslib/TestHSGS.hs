@@ -36,7 +36,7 @@ formatTestValue evs v@(GSConstr pos c [ GSThunk chts, s ]) k | c == gsvar ":" = 
     chv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] chts
     formatTestValue evs (GSConstr pos (gsvar ":") [ chv, s ]) k
 formatTestValue evs v@(GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" = formatTestValueAtom evs v k
-formatTestValue evs (GSConstr _ v as) k = formatArgs (msgChannel evs) (profCounter evs) as $ \ ds -> k (fmtVarAtom v . ds)
+formatTestValue evs (GSConstr _ v as) k = formatArgs evs as $ \ ds -> k (fmtVarAtom v . ds)
 formatTestValue evs v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue "++) . (gsvCode v++) . (" next>"++)
 
 formatTestValueAtom :: GSEvalState -> GSValue -> ((String -> String) -> IO a) -> IO a
@@ -59,9 +59,9 @@ formatTestValueAtom evs (GSRune r) k
     | otherwise = k $ ("r/"++) . (r:) . ('/':)
 formatTestValueAtom evs v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom "++) . (gsvCode v++) . (" next>"++)
 
-formatArgs :: OPort Message -> Maybe ProfCounter -> [GSValue] -> ((String -> String) -> IO a) -> IO a
-formatArgs msg pc (x:xn) k = formatTestValueAtom (GSEvalState msg pc) x $ \ xds -> formatArgs msg pc xn $ \ xnds -> k $ (' ':) . xds . xnds
-formatArgs msg pc [] k = k id
+formatArgs :: GSEvalState -> [GSValue] -> ((String -> String) -> IO a) -> IO a
+formatArgs evs (x:xn) k = formatTestValueAtom evs x $ \ xds -> formatArgs evs xn $ \ xnds -> k $ (' ':) . xds . xnds
+formatArgs evs [] k = k id
 
 formatFields :: OPort Message -> Maybe ProfCounter -> [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
 formatFields msg pc ((v, x):fs) k = formatTestValue (GSEvalState msg pc) x $ \ xds -> formatFields msg pc fs $ \ fsds ->
