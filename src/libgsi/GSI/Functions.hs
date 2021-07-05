@@ -56,12 +56,12 @@ gsevalChar evs pos (GSRune ch) = return ch
 gsevalChar evs pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
 
-gsevalNatural :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Integer
-gsevalNatural msg pc pos (GSThunk th) = do
-    v <- evalSync msg pc [StackTrace pos []] th
-    gsevalNatural msg pc pos v
-gsevalNatural msg pc pos (GSNatural _ n) = return n
-gsevalNatural msg pc pos v =
+gsevalNatural :: GSEvalState -> Pos -> GSValue -> IO Integer
+gsevalNatural evs pos (GSThunk th) = do
+    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    gsevalNatural evs pos v
+gsevalNatural evs pos (GSNatural _ n) = return n
+gsevalNatural evs pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalNatural " ++ gsvCode v ++ " next"
 
 gsevalList :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO [GSValue]
@@ -127,7 +127,7 @@ gsapiEvalString :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO St
 gsapiEvalString msg pc pos fnv = gsevalForApi $ gsevalString msg pc pos fnv
 
 gsapiEvalNatural :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Integer
-gsapiEvalNatural msg pc pos fnv = gsevalForApi $ gsevalNatural msg pc pos fnv
+gsapiEvalNatural msg pc pos fnv = gsevalForApi $ gsevalNatural (GSEvalState msg pc) pos fnv
 
 gsapiEvalExternal :: GSExternal a => OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO a
 gsapiEvalExternal msg pc pos v = gsevalForApi $ gsevalExternal msg pc pos v
