@@ -48,12 +48,12 @@ gsbool b = case b of
     False -> GSConstr $gshere (gsvar "false") []
     True -> GSConstr $gshere (gsvar "true") []
 
-gsevalChar :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Char
-gsevalChar msg pc pos (GSThunk th) = do
-    v <- evalSync msg pc [StackTrace pos []] th
-    gsevalChar msg pc pos v
-gsevalChar msg pc pos (GSRune ch) = return ch
-gsevalChar msg pc pos v =
+gsevalChar :: GSEvalState -> Pos -> GSValue -> IO Char
+gsevalChar evs pos (GSThunk th) = do
+    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    gsevalChar evs pos v
+gsevalChar evs pos (GSRune ch) = return ch
+gsevalChar evs pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalChar " ++ gsvCode v ++ " next"
 
 gsevalNatural :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Integer
@@ -100,7 +100,7 @@ gsevalString msg pc pos v = gsevalString_w msg pc pos id v where
         v <- evalSync msg pc [StackTrace pos []] th
         gsevalString_w msg pc pos ds v
     gsevalString_w msg pc pos ds (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
-        ch <- gsevalChar msg pc pos chv
+        ch <- gsevalChar (GSEvalState msg pc) pos chv
         gsevalString_w msg pc pos (ds . (ch:)) sv
     gsevalString_w msg pc pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return $ ds ""
     gsevalString_w msg pc pos ds (GSConstr pos1 c as) =
