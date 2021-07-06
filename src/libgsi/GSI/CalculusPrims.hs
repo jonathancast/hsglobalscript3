@@ -58,8 +58,8 @@ gspareval :: GSEvalState -> Pos -> GSThunk -> GSThunk -> IO (GSValue, GSValue)
 gspareval evs pos xs ys = do
     xpc <- maybe (return Nothing) (fmap Just . const newProfCounter) (profCounter evs)
     ypc <- maybe (return Nothing) (fmap Just . const newProfCounter) (profCounter evs)
-    xr <- eval (msgChannel evs) xpc [StackTrace pos []] xs
-    yr <- eval (msgChannel evs) ypc [StackTrace pos []] ys
+    xr <- eval evs{profCounter = xpc} [StackTrace pos []] xs
+    yr <- eval evs{profCounter = ypc} [StackTrace pos []] ys
     case (xr, yr) of
         (GSStack ex, GSStack ey) -> do
             awaitAny [ ex, ey ]

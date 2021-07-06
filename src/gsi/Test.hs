@@ -7,7 +7,7 @@ import Test.HUnit
 
 import GSI.Util (Pos(Pos), StackTrace(..), gshere, gsfatal, fmtPos)
 import GSI.RTS (bitBucketOPort)
-import GSI.Value (GSValue(..), GSArg(..), GSExternal(..), GSError(..), GSException(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSArg(..), GSExternal(..), GSError(..), GSException(..), GSEvalState(..), gsundefined_value_w, gsapply_w, gslambda_w, gsthunk_w, gsargexpr_w, gsimpfor_w, whichExternal, gsvCode)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)
 import GSI.ByteCode (gsbcrehere_w, gsbcforce_w, gsbcundefined_w, gsbcenter_w, gsbcrecord_w, gsbcimpbody_w)
 import GSI.Thread (createThread, execMainThread)
@@ -25,7 +25,7 @@ main = runTestTT $ TestList $ [
         let col = 1
         th <- getThunk =<< gsapply_w (Pos file line col) (gsundefined_value_w (Pos file line col)) []
         op <- bitBucketOPort
-        st <- eval op Nothing [] th
+        st <- eval (GSEvalState op Nothing) [] th
         case st of
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
@@ -45,7 +45,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         th <- getThunk =<< (gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1))
         op <- bitBucketOPort
-        st <- eval op Nothing [] th
+        st <- eval (GSEvalState op Nothing) [] th
         case st of
             GSIndirection v -> case v of
                 GSImplementationFailure pos msg -> assertFailure $ fmtPos pos msg
@@ -57,7 +57,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         fn <- gsthunk_w (Pos file 2 1) $ gsbcundefined_w (Pos file 3 1)
         op <- bitBucketOPort
-        st <- eval op Nothing [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
+        st <- eval (GSEvalState op Nothing) [] =<< getThunk =<< gsapply_w (Pos file 1 1) fn [gsundefined_value_w (Pos file 4 1)]
         case st of
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"
@@ -66,7 +66,7 @@ main = runTestTT $ TestList $ [
         let file = "test-file.gs"
         th <- getThunk =<< gsapply_w (Pos file 1 1) (gslambda_w (Pos file 2 1) $ (\ (x :: GSValue) -> gsbcundefined_w (Pos file 3 1))) [gsundefined_value_w (Pos file 4 1)]
         op <- bitBucketOPort
-        st <- eval op Nothing [] th
+        st <- eval (GSEvalState op Nothing) [] th
         case st of
             GSStack _ -> return ()
             _ -> assertFailure $ "Got " ++ stCode st ++ "; expected stack"

@@ -17,8 +17,8 @@ data GSResult
   | GSIndirection GSValue
   | GSWHNF
 
-eval :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> MVar (GSThunkState) -> IO GSResult
-eval msg pc cs mv = modifyMVar mv $ \ st -> case st of
+eval :: GSEvalState -> [StackTrace] -> MVar (GSThunkState) -> IO GSResult
+eval evs cs mv = modifyMVar mv $ \ st -> case st of
     GSTSExpr{} -> startEval st
     GSTSIntExpr{} -> startEval st
     GSApply{} -> startEval st
@@ -29,12 +29,12 @@ eval msg pc cs mv = modifyMVar mv $ \ st -> case st of
   where
     startEval st = do
         e <- newEvent
-        forkIO $ aceEnterThunkState (GSEvalState msg pc) cs st (aceUpdate mv aceEmptyStack)
+        forkIO $ aceEnterThunkState evs cs st (aceUpdate mv aceEmptyStack)
         return (GSTSStack e, GSStack e)
 
 evalSync :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> MVar (GSThunkState) -> IO GSValue
 evalSync msg sc cs mv = do
-    st <- eval msg sc cs mv
+    st <- eval (GSEvalState msg sc) cs mv
     case st of
         GSStack b -> await b *> evalSync msg sc cs mv
         GSIndirection v -> case v of
