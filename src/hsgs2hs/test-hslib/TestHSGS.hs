@@ -7,9 +7,8 @@ import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.RTS (OPort, bitBucketOPort)
+import GSI.RTS (bitBucketOPort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr, GSEvalState(..), gsthunk, gsvCode, bcoCode)
 import GSI.Eval (evalSync)
 import GSI.Functions (fmtErrorShort, fmtInvalidProgram)
