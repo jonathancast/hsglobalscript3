@@ -52,7 +52,7 @@ formatTestValueAtom evs (GSConstr pos c []) k = k $ fmtVarAtom c
 formatTestValueAtom evs v@GSConstr{} k = formatTestValue evs v $ \ ds -> k $ ('(':) . ds . (')':)
 formatTestValueAtom evs (GSRecord _ fs) k = case Map.null fs of
     True -> k $ ("〈〉"++)
-    False -> formatFields (msgChannel evs) (profCounter evs) (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
+    False -> formatFields evs (Map.assocs fs) $ \ ds -> k $ ('〈':) . (' ':) . ds . ('〉':)
 formatTestValueAtom evs (GSNatural _ n) k = k $ shows n
 formatTestValueAtom evs (GSRune r) k
     | r `elem` "/\\§()[]{}\n\t" = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValueAtom (GSRune "++) . shows r . (") next>"++)
@@ -63,10 +63,10 @@ formatArgs :: GSEvalState -> [GSValue] -> ((String -> String) -> IO a) -> IO a
 formatArgs evs (x:xn) k = formatTestValueAtom evs x $ \ xds -> formatArgs evs xn $ \ xnds -> k $ (' ':) . xds . xnds
 formatArgs evs [] k = k id
 
-formatFields :: OPort Message -> Maybe ProfCounter -> [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
-formatFields msg pc ((v, x):fs) k = formatTestValue (GSEvalState msg pc) x $ \ xds -> formatFields msg pc fs $ \ fsds ->
+formatFields :: GSEvalState -> [(GSVar, GSValue)] -> ((String -> String) -> IO a) -> IO a
+formatFields evs ((v, x):fs) k = formatTestValue evs x $ \ xds -> formatFields evs fs $ \ fsds ->
     k $ fmtVarBindAtom v . (" = "++) . xds . ("; "++) . fsds
-formatFields msg pc [] k = k id
+formatFields evs [] k = k id
 
 formatChar :: GSValue -> ((String -> String) -> IO a) -> IO a
 formatChar (GSRune '\n') k = k $ ("\\n"++)
