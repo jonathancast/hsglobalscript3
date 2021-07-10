@@ -1,12 +1,11 @@
 {-# LANGUAGE TemplateHaskell, ScopedTypeVariables #-}
 module GSI.StdLib (gsvalue, gsmatch, gsfrom, gslambda, gsconst, gscompose, gsid, gsapply_fn, gsanalyze, gsanalyzeM, gsimpanalyzeM, gscase, gsinfo, gserror, gsundefined, gsrecord_and, gsfor, gsimpfor, gsimpmonad, gsimpunit, gsinfalliblepattern) where
 
-import GSI.Util (StackTrace(..), gshere)
-import GSI.Syn (gsvar, fmtVarAtom)
+import GSI.Util (gshere)
+import GSI.Syn (fmtVarAtom) -- §hs{gsvar} is imported implicitly by gsimports
 import GSI.Message (GSMessageClass(..))
 import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsvenvUnion, gsav, gsae, gsvCode)
-import GSI.ByteCode (gsbcat_w, gsbcarg, gsbcapply, gsbcforce, gsbcenter, gsbcconstr, gsbcattachlog, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcfmterrormsg, gsbcimplementationfailure)
-import GSI.BCFunctions (gsbcevalstacktrace)
+import GSI.ByteCode (gsbcarg, gsbcapply, gsbcforce, gsbcenter, gsbcconstr, gsbcattachlog, gsbcerror, gsbcimpfor, gsbcimpbind, gsbcimpbody, gsbcimpunit, gsbcimplementationfailure)
 $gsimports
 
 gsvalue = $gslambda_value $ \ v -> $gsbcenter v

@@ -6,9 +6,8 @@ import qualified Data.Map as Map
 import Control.Concurrent (readMVar)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos)
-import GSI.RTS (OPort, awaitAny)
-import GSI.Message (Message)
-import GSI.Prof (ProfCounter, newProfCounter)
+import GSI.RTS (awaitAny)
+import GSI.Prof (newProfCounter)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Value (GSValue(..), GSThunk(..), GSThunkState(..), GSError(..), GSEvalState(..), gsimplementationfailure, gsvCode, whichExternal, fmtExternal)
 import GSI.Eval (GSResult(..), eval, evalSync, stCode)

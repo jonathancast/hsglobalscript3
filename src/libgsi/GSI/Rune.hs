@@ -4,7 +4,7 @@ module GSI.Rune (gsis_ascii_digit, gsis_lower, gsis_upper, gsis_letter, gsis_spa
 import Data.Char (isAscii, isDigit, isLower, isUpper, isLetter, isSpace, isSymbol, chr, ord)
 
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
+import GSI.Value (GSValue(..), gslambda_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcconstr, gsbcnatural, gsbcrune, gsbcimplementationfailure)
 
 gsis_ascii_digit = hspred2gspred isDigit

@@ -13,7 +13,7 @@ module GSDL.TypeChecker (
   ) where
 
 import GSI.Value (gslambda_value, gsav)
-import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
+import GSI.ByteCode (gsbcconstr, gsbcconstr_view)
 $gsimports
 
 $gsdeclare type-checker.unify-do-var gstype_checker_unify_do_var

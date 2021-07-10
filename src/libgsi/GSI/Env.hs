@@ -4,8 +4,6 @@ module GSI.Env (runGSProgram, gsabend, gsfile_stat, gsfile_read, gsfile_write, g
 
 import qualified Data.Map as Map
 
-import Control.Monad (forever)
-
 import Control.Concurrent (forkIO)
 import Control.Exception (SomeException, try, catch, finally, throwIO, fromException, displayException)
 
@@ -22,11 +20,11 @@ import System.Process (withCreateProcess, proc, waitForProcess)
 import GSI.Util (Pos, StackTrace(..), gshere, fmtPos, fmtStackTrace)
 import GSI.Syn (gsvar, fmtVarAtom)
 import GSI.Message (Message(..), msgCode)
-import GSI.Prof (ProfCounter, newProfCounter)
-import GSI.RTS (OPort, newEvent, wakeup, await, awaitAny, newChannel, iportReadable, tryReadIPort)
-import GSI.Value (GSValue(..), GSEvalState(..), GSException(..), Thread, gslambda_value, gsapply, gsimpprim, gsundefined_value, gsvCode)
+import GSI.Prof (newProfCounter)
+import GSI.RTS (newEvent, wakeup, await, awaitAny, newChannel, iportReadable, tryReadIPort)
+import GSI.Value (GSValue(..), GSEvalState(..), GSException(..), Thread, gsapply, gsimpprim, gsundefined_value, gsvCode)
 import GSI.Functions (gsbool, gslist, gsstring, fmtInvalidProgram, fmtError)
-import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+import GSI.ByteCode (gsbcconstr_view)
 import GSI.Thread (createThread, execMainThread)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)

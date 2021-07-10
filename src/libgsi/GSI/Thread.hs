@@ -2,18 +2,15 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 module GSI.Thread (createThread, execMainThread, waitThread, createPromise, readPromise) where
 
-import Control.Monad (join)
-
 import Control.Concurrent (forkIO)
-import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar, modifyMVar_, putMVar, readMVar)
-import Control.Exception (SomeException, Exception(..), throwIO, throw, try)
+import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar_, putMVar, readMVar)
+import Control.Exception (SomeException, Exception(..), throwIO, try)
 
 import GSI.Util (Pos, gsfatal, gshere)
 import GSI.RTS (OPort, newEvent, wakeup, await)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..), GSEvalState(..), GSError, GSException(..), Thread(..), ThreadState(..), gsexcCode, threadStateCode)
-import GSI.Eval (GSResult(..), stCode)
+import GSI.Value (GSValue(..), GSEvalState(..), GSException(..), Thread(..), ThreadState(..), gsexcCode, threadStateCode)
 import API (apiCall)
 
 data Promise = Promise (MVar GSValue)

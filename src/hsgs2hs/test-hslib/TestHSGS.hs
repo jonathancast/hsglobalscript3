@@ -1,13 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 module TestHSGS (printTestExpr, printTestValue, printStackTrace) where
 
-import Control.Monad (forever)
-
 import qualified Data.Map as Map
 
 import GSI.Util (StackTrace(..), gshere, fmtPos, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Prof (ProfCounter)
 import GSI.RTS (bitBucketOPort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr, GSEvalState(..), gsthunk, gsvCode, bcoCode)
 import GSI.Eval (evalSync)

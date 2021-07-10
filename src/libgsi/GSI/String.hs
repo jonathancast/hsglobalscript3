@@ -4,10 +4,10 @@ module GSI.String (gsbcstring, gsbcstring_w, gsbcstringlit, gsbcstringlit_w, gsf
 import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, gshere)
-import GSI.Syn (gsvar, fmtVarAtom)
-import GSI.Value (GSValue(..), GSArg, GSExpr, gslambda_value, gsae, gsav, gsvCode)
+import GSI.Syn (gsvar)
+import GSI.Value (GSValue(..), GSArg, GSExpr, gslambda_value, gsae, gsav)
 import GSI.Functions (gsstring)
-import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcenter, gsbcenterarg, gsbcforce, gsbcevalnatural, gsbcimplementationfailure)
+import GSI.ByteCode (gsbcapply, gsbcconstr, gsbcenter, gsbcenterarg, gsbcevalnatural)
 import GSI.List (gsappend, gscons, gsnil)
 
 gsbcstring = varE 'gsbcstring_w `appE` gshere

@@ -1,9 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Either (gseither_for, gseither_monad, gseither_bind, gseither_map, gseither_map2, gseither_mapM, gsleft, gsright, gsleft_view, gsright_view) where
 
-import GSI.Syn (gsvar)
+-- §hs{gsvar} is imported by gsimports
 import GSI.Value (GSValue, gslambda_value, gsav)
-import GSI.ByteCode (gsbcarg, gsbcapply, gsbcconstr, gsbcconstr_view)
+import GSI.ByteCode (gsbcconstr, gsbcconstr_view)
 $gsimports
 
 gseither_for = [gs:value| λ 'gen. λ 'k. either.>>= gen k |]

@@ -19,12 +19,12 @@ import qualified Data.Map as Map
 
 import Language.Haskell.TH.Lib (appE, varE)
 
-import GSI.Util (Pos, StackTrace(..), gsfatal, gshere, fmtPos, fmtCallers, filename, line, col)
+import GSI.Util (Pos, StackTrace(..), gshere, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Message (Message(..), GSMessageClass(..), mkMessage, msgClassCode)
+import GSI.Message (Message(..), mkMessage)
 import GSI.Prof (ProfCounter, prof)
 import GSI.RTS (OPort, writeOPort)
-import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSIntExpr, GSEvalState(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), GSError(..), GSInvalidProgram(..), Thread, gsimplementationfailure, gsundefined_value_w, gslambda_value, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, gsexternal, whichExternal, gsae, gsav, gsvCode, argCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), GSError(..), GSInvalidProgram(..), Thread, gsimplementationfailure, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, whichExternal, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsfmterrormsg)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
 import ACE (aceEnter, aceForce, aceArg, aceField, aceReHere, aceAttachLog)

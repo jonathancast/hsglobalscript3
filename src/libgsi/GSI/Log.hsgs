@@ -4,11 +4,10 @@ module GSI.Log (gsbclog, gsbclog_w, gsbclogstring, gsbclogstring_w, gslog_str, g
 import Language.Haskell.TH.Lib (varE, appE)
 
 import GSI.Util (Pos, gshere)
-import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda_value, gsundefined_value, gsae, gsav)
-import GSI.ByteCode (gsbcarg, gsbcenter, gsbcapply, gsbcapply_w, gsbcconstr, gsbcconstr_view, gsbcrecord, gsbclfield)
-import GSI.StdLib (gscompose)
-import GSI.List (gscons)
+-- §hs{gsvar} is imported by gsimports
+import GSI.Value (GSValue(..), GSExpr, GSArg, gslambda_value, gsae, gsav)
+import GSI.ByteCode (gsbcenter, gsbcconstr, gsbcconstr_view) -- §hs{gsbcapply_w} is imported by gsimports
+-- §hs{gscompose} is imported by gsimports
 $gsimports
 
 gsbclog = varE 'gsbclog_w `appE` gshere

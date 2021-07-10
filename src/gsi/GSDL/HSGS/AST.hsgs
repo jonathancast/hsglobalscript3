@@ -12,7 +12,7 @@ module GSDL.HSGS.AST (
     gshsoutput_gsvar, gshsoutput_rehere, gshsoutput_rehere_value, gshsoutput_apply, gshsoutput_applyivar, gshsoutput_applyivarpos, gshsoutput_applyiconstr, gshsoutput_app, gshsoutput_lambda, gshsoutput_list, gshsoutput_ivar, gshsoutput_iconstr, gshsoutput_var, gshsoutput_int, gshsoutput_string, gshsoutput_char, gshsoutput_arg_var, gshsoutput_arg_expr, gshsoutput_pos
   ) where
 
-import GSI.Syn (gsvar)
+-- §hs{gsvar} is imported by gsimports
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports

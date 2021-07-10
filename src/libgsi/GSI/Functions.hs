@@ -4,7 +4,7 @@ module GSI.Functions (gslist, gslist_w, gsstring, gsstring_w, gslazylist, gslazy
 
 import Data.Proxy (Proxy(..))
 
-import Control.Exception (Exception(..), throwIO, try)
+import Control.Exception (throwIO)
 
 import Language.Haskell.TH.Lib (appE, varE)
 
@@ -15,7 +15,7 @@ import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsundefined_value, gsimplementationfailure, gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 

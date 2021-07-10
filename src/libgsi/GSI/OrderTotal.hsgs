@@ -1,9 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.OrderTotal (gsord_or, gsord_lt, gsord_eq, gsord_gt, gsord_lt_view, gsord_eq_view, gsord_gt_view) where
 
-import GSI.Syn (gsvar)
+-- §hs{gsvar} is imported implicitly by gsimports
 import GSI.Value (gsconstr)
-import GSI.ByteCode (gsbcarg, gsbcconstr_view)
+import GSI.ByteCode (gsbcconstr_view)
 $gsimports
 
 gsord_or = [gs:value| λ 'o0. λ 'o1. analyze o0.

@@ -2,8 +2,8 @@
 module GSI.List (gsappend, gsconcat, gsbigcompose, gsfoldl, gsfoldr, gsmap, gsfilter, gsrepeat, gsreplicate, gszip, gsmap2, gsmap3, gstake, gsdrop, gssplit_on, gstokens_modify, gslist_eq, gslist_compare, gslist_forall, gslist_exists, gslist_member, gslist_not_member, gshead_get_strict, gshead_modify_strict, gstail_modify, gslast_strict, gslast_modify, gslist_singleton, gscons, gsnil, gscons_view, gsnil_view) where
 
 import GSI.Util (gshere)
-import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), gslambda_value, gsav)
+-- §hs{gsvar} is imported by gsimports
+import GSI.Value (gslambda_value, gsav) -- §hs{GSValue} is imported by gsimports
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports
 

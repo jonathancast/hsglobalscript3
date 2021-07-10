@@ -4,11 +4,11 @@ module GSI.Eval (GSResult(..), eval, evalSync, stCode) where
 
 import Control.Concurrent (MVar, forkIO, modifyMVar)
 
-import GSI.Util (StackTrace(..), gshere)
+import GSI.Util (StackTrace(..))
 import GSI.RTS (Event, newEvent, await, OPort)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
-import GSI.Value (GSValue(..), GSBCO(..), GSExprCont(..), GSEvalState(..), GSThunkState(..), GSError(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
+import GSI.Value (GSValue(..), GSBCO(..), GSEvalState(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnterThunkState, aceUpdate, aceEmptyStack)
 

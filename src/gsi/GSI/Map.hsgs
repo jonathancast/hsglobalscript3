@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GSI.Map (gsordered_map_insert, gsordered_map_get, gsordered_map_keys, gsordered_map_values, gsordered_map_union, gsordered_map_to_list, gsordered_map_empty) where
 
-import GSI.Syn (gsvar)
+-- §hs{gsvar} is imported by gsimports
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports

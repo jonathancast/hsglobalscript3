@@ -5,14 +5,10 @@ import Data.IORef (IORef, newIORef, readIORef, writeIORef)
 
 import qualified Data.Map as Map
 
-import GSI.Util (Pos, StackTrace(..), gshere)
+import GSI.Util (Pos, gshere)
 import GSI.Syn (gsvar)
-import GSI.Message (Message)
-import GSI.Prof (ProfCounter)
-import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSEvalState(..), GSExternal(..), Thread, ThreadState(..), gslambda_value, gsimpprim, gsexternal, gsundefined_value, gsimplementationfailure, gsav, gsvCode, threadStateCode, whichExternal)
+import GSI.Value (GSValue(..), GSEvalState(..), GSExternal(..), Thread, ThreadState(..), gslambda_value, gsimpprim, gsexternal, gsimplementationfailure, gsav, gsvCode, threadStateCode, whichExternal)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcevalexternal, gsbcapply, gsbcconstr, gsbcprim)
-import GSI.Eval (evalSync)
 import GSI.Thread (createThread, waitThread, createPromise, readPromise)
 import API (apiImplementationFailure)
 

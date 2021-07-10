@@ -27,7 +27,7 @@ module GSDL.AST (
     gsassoc_non_assoc, gsassoc_left, gsassoc_right, gsassoc_non_assoc_view, gsassoc_left_view, gsassoc_right_view
   ) where
 
-import GSI.Syn (gsvar)
+-- §hs{gsvar} is imported by gsimports
 import GSI.Value (gslambda_value, gsconstr, gsav)
 import GSI.ByteCode (gsbcarg, gsbcconstr, gsbcconstr_view)
 $gsimports

@@ -23,7 +23,7 @@ import Control.Exception (Exception(..))
 
 import Language.Haskell.TH.Lib (appE, conE, varE)
 
-import GSI.Util (Pos, StackTrace(..), gshere, gsfatal, fmtPos, fmtStackTrace)
+import GSI.Util (Pos, StackTrace(..), gshere)
 import GSI.Message (Message)
 import GSI.Prof (ProfCounter)
 import GSI.RTS (Event, OPort)

@@ -5,7 +5,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (gshere)
 import GSI.Syn (gsvar)
-import GSI.Value (GSValue(..), gslambda_value, gsundefined_value, gsav, gsvCode)
+import GSI.Value (GSValue(..), gslambda_value, gsav, gsvCode)
 import GSI.ByteCode (gsbcarg, gsbcforce, gsbcenter, gsbcnatural, gsbcconstr, gsbcrecord, gsbcimplementationfailure)
 
 gsnatural_unary_plus = $gslambda_value $ \ n -> $gsbcenter n
