@@ -28,7 +28,7 @@ gsio_file_read = $gsimpprim gsioprim_file_read
 
 gsioprim_file_read :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
 gsioprim_file_read evs pos t fn = do
-    fns <- gsapiEvalString (msgChannel evs) (profCounter evs) $gshere fn
+    fns <- gsapiEvalString evs $gshere fn
     mbs <- try $ do
         ifh <- openFile fns ReadMode
         hSetEncoding ifh utf8

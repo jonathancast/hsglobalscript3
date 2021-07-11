@@ -42,14 +42,14 @@ gsi_monad = GSRecord $gshere $ Map.fromList [
 gsigsinject = $gslambda_value $ \ v -> $gsbcexternal v
 
 gsigsthunk = $gsimpprim $ \ evs pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
-    pos1 <- gsapiEvalPos (msgChannel evs) (profCounter evs) pos0 pos1v
-    e <- gsapiEvalExternal (msgChannel evs) (profCounter evs) pos0 ev :: IO GSExpr
+    pos1 <- gsapiEvalPos evs pos0 pos1v
+    e <- gsapiEvalExternal evs pos0 ev :: IO GSExpr
     r <- gsthunk_w pos1 e
     return $ gsexternal r
 
 gsigsintthunk = $gsimpprim $ \ evs pos0 th (pos1v :: GSValue) (ev :: GSValue) -> do
-    pos1 <- gsapiEvalPos (msgChannel evs) (profCounter evs) pos0 pos1v
-    e <- gsapiEvalExternal (msgChannel evs) (profCounter evs) pos0 ev :: IO GSIntExpr
+    pos1 <- gsapiEvalPos evs pos0 pos1v
+    e <- gsapiEvalExternal evs pos0 ev :: IO GSIntExpr
     r <- gsintthunk_w pos1 e
     return $ gsexternal r
 
@@ -111,8 +111,8 @@ gsigsapply = $gsimpprim gsiprimgsapply
 
 gsiprimgsapply :: GSEvalState -> Pos -> Thread -> GSValue -> GSValue -> IO GSValue
 gsiprimgsapply evs pos t fv asv = do
-    f <- gsapiEvalExternal (msgChannel evs) (profCounter evs) pos fv :: IO GSValue
-    as <- (gsapiEvalList (msgChannel evs) (profCounter evs) pos asv >>= mapM (\ av -> gsapiEvalExternal (msgChannel evs) (profCounter evs) pos av >>= \ a -> return a)) :: IO [GSValue]
+    f <- gsapiEvalExternal evs pos fv :: IO GSValue
+    as <- (gsapiEvalList evs pos asv >>= mapM (\ av -> gsapiEvalExternal evs pos av >>= \ a -> return a)) :: IO [GSValue]
     gsexternal <$> gsapply_w pos f as
 
 gsigsbcarg = $gslambda_value $ \ posv -> $gsbcarg $ \ kv -> $gsbcevalpos ($gsav posv) $ \ pos ->
@@ -197,7 +197,7 @@ gsicreateThread = $gsimpprim gsiprimcreateThread
 
 gsiprimcreateThread :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
 gsiprimcreateThread evs pos t vv = do
-    v <- gsapiEvalExternal (msgChannel evs) (profCounter evs) pos vv
+    v <- gsapiEvalExternal evs pos vv
     t <- createThread (msgChannel evs) (profCounter evs) pos v Nothing
     return $ GSExternal $ toExternal t
 
@@ -206,7 +206,7 @@ gsiexecMainThread = $gsimpprim gsiprimexecMainThread
 
 gsiprimexecMainThread :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
 gsiprimexecMainThread evs pos tself tprogv = do
-    tprog <- gsapiEvalExternal (msgChannel evs) (profCounter evs) pos tprogv
+    tprog <- gsapiEvalExternal evs pos tprogv
     mb <- try $ execMainThread tprog :: IO (Either SomeException ())
     case mb of
         Left e | Just e' <- fromException e -> case e' :: GSException of

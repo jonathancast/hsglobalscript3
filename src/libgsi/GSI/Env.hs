@@ -71,12 +71,12 @@ stderrLog (Just h) (MsgProfile st) = hPutStrLn h $ fmtStackTrace st "Prof"
 stderrLog _ m = hPutStrLn stderr $ "Unknown log message " ++ msgCode m
 
 gsabend = $gsimpprim $ \ evs pos t  sv -> do
-    s <- gsapiEvalString (msgChannel evs) (profCounter evs) $gshere sv
+    s <- gsapiEvalString evs $gshere sv
     throwIO (GSExcAbend pos s) :: IO GSValue
 
 gsfile_stat :: GSValue
 gsfile_stat = $gsimpprim $ \ evs pos t fn -> do
-    fns <- gsapiEvalString (msgChannel evs) (profCounter evs) pos fn
+    fns <- gsapiEvalString evs pos fn
     mbst <- try $ getFileStatus fns
     case mbst of
         Left e | Just e1 <- fromException e, isDoesNotExistError e1 ->
@@ -89,18 +89,18 @@ gsfile_stat = $gsimpprim $ \ evs pos t fn -> do
 
 gsfile_read :: GSValue
 gsfile_read = $gsimpprim $ \ evs pos t fn -> do
-    fns <- gsapiEvalString (msgChannel evs) (profCounter evs) pos fn
+    fns <- gsapiEvalString evs pos fn
     mbs <- try $ readFile fns
     case mbs of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsprimfileRead " ++ show fns ++ " (readFile returned Left (" ++ show e ++ ")) next"
         Right s -> $gslazystring s
 
 gsfile_write = $gsimpprim $ \ evs pos t fn s -> do
-    fns <- gsapiEvalString (msgChannel evs) (profCounter evs) pos fn
+    fns <- gsapiEvalString evs pos fn
     withFile fns WriteMode $ \ h -> gsprimprint h evs pos t s
 
 gsdir_read = $gsimpprim $ \ evs pos t fn -> do
-    fns <- gsapiEvalString (msgChannel evs) (profCounter evs) pos fn
+    fns <- gsapiEvalString evs pos fn
     mbas <- try $ getDirectoryContents fns
     case mbas of
         Left (e :: SomeException) -> $apiImplementationFailure $ "gsdir_read " ++ show fns ++ " (getDirectoryContents returned Left (" ++ show e ++ ")) next"
@@ -145,15 +145,15 @@ gsprimprint h evs pos t msgv =
     $apiImplementationFailure $ "gsprimprint " ++ gsvCode msgv ++ " next"
 
 gsenv_var_get = $gsimpprim $ \ evs pos t nm -> do
-    nmhs <- gsapiEvalString (msgChannel evs) (profCounter evs) pos nm
+    nmhs <- gsapiEvalString evs pos nm
     mb <- try $ getEnv nmhs
     case mb of
         Right valhs -> return $ $gsstring valhs
         Left (e::SomeException) -> $apiImplementationFailure $ "gsenv_var_get: getEnv threw " ++ displayException e ++ " next"
 
 gssystem = $gsimpprim $ \ evs pos t args -> do
-    argshs0 <- gsapiEvalList (msgChannel evs) (profCounter evs) pos args
-    argshs <- mapM (gsapiEvalString (msgChannel evs) (profCounter evs) pos) argshs0
+    argshs0 <- gsapiEvalList evs pos args
+    argshs <- mapM (gsapiEvalString evs pos) argshs0
     case argshs of
         cmd:argshs' -> do
             mb <- try $ withCreateProcess (proc cmd argshs') $ \ _ _ _ ph -> waitForProcess ph

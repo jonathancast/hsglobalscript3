@@ -12,10 +12,7 @@ import qualified Data.Map as Map
 
 import GSI.Util (Pos(..), StackTrace(..), gshere, fmtPos, fmtStackTrace)
 import GSI.Syn (gsvar, fmtVarAtom, fmtVarBindAtom)
-import GSI.Message (Message)
-import GSI.Prof (ProfCounter)
-import GSI.RTS (OPort)
-import GSI.Value (GSValue(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
+import GSI.Value (GSValue(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSExternal(..), GSError(..), GSInvalidProgram(..), GSException(..), GSEvalState(..), gsapply, gsfield, gsthunk_w, fmtExternal, whichExternal, gsvCode)
 import GSI.Eval (evalSync)
 import API (apiImplementationFailure)
 
@@ -64,73 +61,73 @@ gsevalNatural evs pos (GSNatural _ n) = return n
 gsevalNatural evs pos v =
     throwIO $ GSExcImplementationFailure $gshere $ "gsevalNatural " ++ gsvCode v ++ " next"
 
-gsevalList :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO [GSValue]
-gsevalList msg pc pos v = gsevalList_w msg pc pos id v where
-    gsevalList_w msg pc pos ds (GSThunk ts) = do
-        v <- evalSync msg pc  [StackTrace pos []] ts
-        gsevalList_w msg pc pos ds v
-    gsevalList_w msg pc pos ds (GSError err) = throwIO $ GSExcError err
-    gsevalList_w msg pc pos ds (GSConstr pos1 c [x, xn]) | c == gsvar ":" = gsevalList_w msg pc pos (ds . (x:)) xn
-    gsevalList_w msg pc pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return (ds [])
-    gsevalList_w msg pc pos ds (GSConstr pos1 c as) = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ fmtVarAtom c " next"
-    gsevalList_w msg pc pos ds v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ gsvCode v ++ " next"
+gsevalList :: GSEvalState -> Pos -> GSValue -> IO [GSValue]
+gsevalList evs pos v = gsevalList_w pos id v where
+    gsevalList_w pos ds (GSThunk ts) = do
+        v <- evalSync (msgChannel evs) (profCounter evs)  [StackTrace pos []] ts
+        gsevalList_w pos ds v
+    gsevalList_w pos ds (GSError err) = throwIO $ GSExcError err
+    gsevalList_w pos ds (GSConstr pos1 c [x, xn]) | c == gsvar ":" = gsevalList_w pos (ds . (x:)) xn
+    gsevalList_w pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return (ds [])
+    gsevalList_w pos ds (GSConstr pos1 c as) = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ fmtVarAtom c " next"
+    gsevalList_w pos ds v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalList " ++ gsvCode v ++ " next"
 
-gsapiEval :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO GSValue
-gsapiEval msg pc pos (GSThunk th) = do
-    v' <- evalSync msg pc [StackTrace pos []] th
-    gsapiEval msg pc pos v'
-gsapiEval msg pc pos v@GSRecord{} = return v
-gsapiEval msg pc pos v = $apiImplementationFailure $ "gsapiEval " ++ gsvCode v ++ " next"
+gsapiEval :: GSEvalState -> Pos -> GSValue -> IO GSValue
+gsapiEval evs pos (GSThunk th) = do
+    v' <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    gsapiEval evs pos v'
+gsapiEval evs pos v@GSRecord{} = return v
+gsapiEval evs pos v = $apiImplementationFailure $ "gsapiEval " ++ gsvCode v ++ " next"
 
-gsapiEvalPos :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Pos
-gsapiEvalPos msg pc pos (GSThunk th) = do
-    v' <- evalSync msg pc [StackTrace pos []] th
-    gsapiEvalPos msg pc pos v'
-gsapiEvalPos msg pc pos v@GSRecord{} = do
-    filename <- gsapiEvalString msg pc pos =<< $gsfield (gsvar "filename") v
-    line <- gsapiEvalNatural msg pc pos =<< $gsfield (gsvar "line") v
-    col <- gsapiEvalNatural msg pc pos =<< $gsfield (gsvar "col") v
+gsapiEvalPos :: GSEvalState -> Pos -> GSValue -> IO Pos
+gsapiEvalPos evs pos (GSThunk th) = do
+    v' <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    gsapiEvalPos evs pos v'
+gsapiEvalPos evs pos v@GSRecord{} = do
+    filename <- gsapiEvalString evs pos =<< $gsfield (gsvar "filename") v
+    line <- gsapiEvalNatural evs pos =<< $gsfield (gsvar "line") v
+    col <- gsapiEvalNatural evs pos =<< $gsfield (gsvar "col") v
     return $ Pos filename line col
-gsapiEvalPos msg pc pos v = $apiImplementationFailure $ "gsapiEvalPos " ++ gsvCode v ++ " next"
+gsapiEvalPos evs pos v = $apiImplementationFailure $ "gsapiEvalPos " ++ gsvCode v ++ " next"
 
-gsevalString :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO String
-gsevalString msg pc pos v = gsevalString_w msg pc pos id v where
-    gsevalString_w msg pc pos ds (GSError err) = throwIO $ GSExcError err
-    gsevalString_w msg pc pos ds (GSThunk th) = do
-        v <- evalSync msg pc [StackTrace pos []] th
-        gsevalString_w msg pc pos ds v
-    gsevalString_w msg pc pos ds (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
-        ch <- gsevalChar (GSEvalState msg pc) pos chv
-        gsevalString_w msg pc pos (ds . (ch:)) sv
-    gsevalString_w msg pc pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return $ ds ""
-    gsevalString_w msg pc pos ds (GSConstr pos1 c as) =
+gsevalString :: GSEvalState -> Pos -> GSValue -> IO String
+gsevalString evs pos v = gsevalString_w pos id v where
+    gsevalString_w pos ds (GSError err) = throwIO $ GSExcError err
+    gsevalString_w pos ds (GSThunk th) = do
+        v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+        gsevalString_w pos ds v
+    gsevalString_w pos ds (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
+        ch <- gsevalChar evs pos chv
+        gsevalString_w pos (ds . (ch:)) sv
+    gsevalString_w pos ds (GSConstr pos1 c []) | c == gsvar "nil" = return $ ds ""
+    gsevalString_w pos ds (GSConstr pos1 c as) =
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ fmtVarAtom c " next"
-    gsevalString_w msg pc pos ds v =
+    gsevalString_w pos ds v =
         throwIO $ GSExcImplementationFailure $gshere $ "gsevalString " ++ gsvCode v ++ " next"
 
-gsevalExternal :: forall a. GSExternal a => OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO a
-gsevalExternal msg pc pos (GSThunk ts) = do
-    v <- evalSync msg pc [StackTrace pos []] ts
-    gsevalExternal msg pc pos v
-gsevalExternal msg pc pos (GSError err) = throwIO $ GSExcError err
-gsevalExternal msg pc pos (GSInvalidProgram ip) = throwIO $ GSExcInvalidProgram ip
-gsevalExternal msg pc pos (GSExternal e) = case fromExternal e of
+gsevalExternal :: forall a. GSExternal a => GSEvalState -> Pos -> GSValue -> IO a
+gsevalExternal evs pos (GSThunk ts) = do
+    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] ts
+    gsevalExternal evs pos v
+gsevalExternal evs pos (GSError err) = throwIO $ GSExcError err
+gsevalExternal evs pos (GSInvalidProgram ip) = throwIO $ GSExcInvalidProgram ip
+gsevalExternal evs pos (GSExternal e) = case fromExternal e of
     Nothing -> throwIO $ GSExcInvalidProgram $ GSIPRuntimeTypeError (StackTrace pos []) "gsevalExternal" (whichExternal e) (externalType (Proxy :: Proxy a))
     Just x -> return x
-gsevalExternal msg pc _ (GSImplementationFailure pos1 err) = throwIO $ GSExcImplementationFailure pos1 err
-gsevalExternal msg pc pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
+gsevalExternal evs _ (GSImplementationFailure pos1 err) = throwIO $ GSExcImplementationFailure pos1 err
+gsevalExternal evs pos v = throwIO $ GSExcImplementationFailure $gshere $ "gsevalExternal " ++ gsvCode v ++ " next"
 
-gsapiEvalList :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO [GSValue]
-gsapiEvalList msg pc pos xnv = gsevalForApi $ gsevalList msg pc pos xnv
+gsapiEvalList :: GSEvalState -> Pos -> GSValue -> IO [GSValue]
+gsapiEvalList evs pos xnv = gsevalForApi $ gsevalList evs pos xnv
 
-gsapiEvalString :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO String
-gsapiEvalString msg pc pos fnv = gsevalForApi $ gsevalString msg pc pos fnv
+gsapiEvalString :: GSEvalState -> Pos -> GSValue -> IO String
+gsapiEvalString evs pos fnv = gsevalForApi $ gsevalString evs pos fnv
 
-gsapiEvalNatural :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO Integer
-gsapiEvalNatural msg pc pos fnv = gsevalForApi $ gsevalNatural (GSEvalState msg pc) pos fnv
+gsapiEvalNatural :: GSEvalState -> Pos -> GSValue -> IO Integer
+gsapiEvalNatural evs pos fnv = gsevalForApi $ gsevalNatural evs pos fnv
 
-gsapiEvalExternal :: GSExternal a => OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> IO a
-gsapiEvalExternal msg pc pos v = gsevalForApi $ gsevalExternal msg pc pos v
+gsapiEvalExternal :: GSExternal a => GSEvalState -> Pos -> GSValue -> IO a
+gsapiEvalExternal evs pos v = gsevalForApi $ gsevalExternal evs pos v
 
 gsevalForApi :: IO a -> IO a
 gsevalForApi ev = ev
