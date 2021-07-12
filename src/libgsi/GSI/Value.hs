@@ -93,7 +93,7 @@ type GSThunk = MVar GSThunkState
 data GSEvalState = GSEvalState { msgChannel :: OPort Message, profCounter :: Maybe ProfCounter }
 
 data GSThunkState
-  = GSTSExpr (forall a. OPort Message -> Maybe ProfCounter -> [StackTrace] -> GSExprCont a -> IO a)
+  = GSTSExpr (forall a. GSEvalState -> [StackTrace] -> GSExprCont a -> IO a)
   | GSTSIntExpr GSIntExpr
   | GSApply Pos GSValue [GSValue]
   | GSTSField Pos GSVar GSValue
@@ -195,7 +195,7 @@ gsargexpr_w pos e = GSArgExpr pos e
 gsthunk = varE 'gsthunk_w `appE` gshere
 
 gsthunk_w :: Pos -> GSExpr -> IO GSValue
-gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ msg pc cs sk -> e (GSEvalState msg pc) (StackTrace pos [] : cs) sk
+gsthunk_w pos (GSExpr e) = fmap GSThunk $ newMVar $ GSTSExpr $ \ evs cs sk -> e evs (StackTrace pos [] : cs) sk
 
 gsintthunk_w :: Pos -> GSIntExpr -> IO GSValue
 gsintthunk_w pos i = fmap GSThunk $ newMVar $ GSTSIntExpr i

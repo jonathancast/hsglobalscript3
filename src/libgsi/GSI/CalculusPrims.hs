@@ -19,10 +19,10 @@ gsparand evs pos (GSThunk xs) (GSThunk ys) = do
     (xv, yv) <- gspareval evs pos xs ys
     gsparand evs pos xv yv
 gsparand evs pos (GSThunk xs) y = do
-    xv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] xs
+    xv <- evalSync evs [StackTrace pos []] xs
     gsparand evs pos xv y
 gsparand evs pos x (GSThunk ys) = do
-    yv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] ys
+    yv <- evalSync evs [StackTrace pos []] ys
     gsparand evs pos x yv
 gsparand evs pos x@GSImplementationFailure{} _ = return x
 gsparand evs pos x@GSError{} _ = return x
@@ -42,10 +42,10 @@ gsmergeenv evs pos (GSThunk xs) (GSThunk ys) = do
     (xv, yv) <- gspareval evs pos xs ys
     gsmergeenv evs pos xv yv
 gsmergeenv evs pos (GSThunk xs) y = do
-    xv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] xs
+    xv <- evalSync evs [StackTrace pos []] xs
     gsmergeenv evs pos xv y
 gsmergeenv evs pos x (GSThunk ys) = do
-    yv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] ys
+    yv <- evalSync evs [StackTrace pos []] ys
     gsmergeenv evs pos x yv
 gsmergeenv evs pos ex@GSImplementationFailure{} ey = return ex
 gsmergeenv evs pos ex ey@GSImplementationFailure{} = return ey
@@ -73,7 +73,7 @@ gspriminsufficientcases evs pos v@GSError{} = return v
 gspriminsufficientcases evs pos v@GSImplementationFailure{} = return v
 gspriminsufficientcases evs pos v@GSInvalidProgram{} = return v
 gspriminsufficientcases evs pos (GSThunk th) = do
-    v <- evalSync (msgChannel evs) Nothing [StackTrace pos []] th
+    v <- evalSync evs{profCounter = Nothing} [StackTrace pos []] th
     gspriminsufficientcases evs pos v
 gspriminsufficientcases evs pos v@GSConstr{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account
 gspriminsufficientcases evs pos v@GSRecord{} = GSError . GSErrInsufficientCases pos . ($ "") <$> fmtValue v -- Buggy buggy should take imported-as names into account

@@ -15,7 +15,7 @@ apiCall evs pos0 (GSImplementationFailure pos1 e) t = throwIO $ GSExcImplementat
 apiCall evs pos (GSInvalidProgram err) t = throwIO $ GSExcInvalidProgram err
 apiCall evs pos (GSError err) t = throwIO $ GSExcError err
 apiCall evs pos (GSThunk th) t = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    v <- evalSync evs [StackTrace pos []] th
     apiCall evs pos v t
 apiCall evs pos0 (GSClosure cs bco) t = case bco of
     GSImp a -> a evs t

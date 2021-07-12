@@ -47,7 +47,7 @@ gsbool b = case b of
 
 gsevalChar :: GSEvalState -> Pos -> GSValue -> IO Char
 gsevalChar evs pos (GSThunk th) = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    v <- evalSync evs [StackTrace pos []] th
     gsevalChar evs pos v
 gsevalChar evs pos (GSRune ch) = return ch
 gsevalChar evs pos v =
@@ -55,7 +55,7 @@ gsevalChar evs pos v =
 
 gsevalNatural :: GSEvalState -> Pos -> GSValue -> IO Integer
 gsevalNatural evs pos (GSThunk th) = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    v <- evalSync evs [StackTrace pos []] th
     gsevalNatural evs pos v
 gsevalNatural evs pos (GSNatural _ n) = return n
 gsevalNatural evs pos v =
@@ -64,7 +64,7 @@ gsevalNatural evs pos v =
 gsevalList :: GSEvalState -> Pos -> GSValue -> IO [GSValue]
 gsevalList evs pos v = gsevalList_w pos id v where
     gsevalList_w pos ds (GSThunk ts) = do
-        v <- evalSync (msgChannel evs) (profCounter evs)  [StackTrace pos []] ts
+        v <- evalSync evs  [StackTrace pos []] ts
         gsevalList_w pos ds v
     gsevalList_w pos ds (GSError err) = throwIO $ GSExcError err
     gsevalList_w pos ds (GSConstr pos1 c [x, xn]) | c == gsvar ":" = gsevalList_w pos (ds . (x:)) xn
@@ -74,14 +74,14 @@ gsevalList evs pos v = gsevalList_w pos id v where
 
 gsapiEval :: GSEvalState -> Pos -> GSValue -> IO GSValue
 gsapiEval evs pos (GSThunk th) = do
-    v' <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    v' <- evalSync evs [StackTrace pos []] th
     gsapiEval evs pos v'
 gsapiEval evs pos v@GSRecord{} = return v
 gsapiEval evs pos v = $apiImplementationFailure $ "gsapiEval " ++ gsvCode v ++ " next"
 
 gsapiEvalPos :: GSEvalState -> Pos -> GSValue -> IO Pos
 gsapiEvalPos evs pos (GSThunk th) = do
-    v' <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+    v' <- evalSync evs [StackTrace pos []] th
     gsapiEvalPos evs pos v'
 gsapiEvalPos evs pos v@GSRecord{} = do
     filename <- gsapiEvalString evs pos =<< $gsfield (gsvar "filename") v
@@ -94,7 +94,7 @@ gsevalString :: GSEvalState -> Pos -> GSValue -> IO String
 gsevalString evs pos v = gsevalString_w pos id v where
     gsevalString_w pos ds (GSError err) = throwIO $ GSExcError err
     gsevalString_w pos ds (GSThunk th) = do
-        v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] th
+        v <- evalSync evs [StackTrace pos []] th
         gsevalString_w pos ds v
     gsevalString_w pos ds (GSConstr pos1 c [ chv, sv ]) | c == gsvar ":" = do
         ch <- gsevalChar evs pos chv
@@ -107,7 +107,7 @@ gsevalString evs pos v = gsevalString_w pos id v where
 
 gsevalExternal :: forall a. GSExternal a => GSEvalState -> Pos -> GSValue -> IO a
 gsevalExternal evs pos (GSThunk ts) = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] ts
+    v <- evalSync evs [StackTrace pos []] ts
     gsevalExternal evs pos v
 gsevalExternal evs pos (GSError err) = throwIO $ GSExcError err
 gsevalExternal evs pos (GSInvalidProgram ip) = throwIO $ GSExcInvalidProgram ip
@@ -168,12 +168,12 @@ gsfmterrormsg_w pos evs msgv = do
 
 gsfmterrormsg_ww :: GSEvalState -> Pos -> (String -> String) -> GSValue -> IO String
 gsfmterrormsg_ww evs pos ds (GSThunk th) = do
-    v <- evalSync (msgChannel evs) Nothing [StackTrace pos []] th
+    v <- evalSync evs{profCounter = Nothing} [StackTrace pos []] th
     gsfmterrormsg_ww evs pos ds v
 gsfmterrormsg_ww evs pos ds (GSError err) = do errs <- fmtError err; return $ (ds . ("<Error: "++) . (errs++) . ('>':)) $ ""
 gsfmterrormsg_ww _ pos0 ds (GSImplementationFailure pos1 msg) = return $ (ds . ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)) $ ""
 gsfmterrormsg_ww evs pos0 ds (GSConstr pos1 c [ GSThunk pcth, msg1 ]) | c == gsvar ":" = do
-    pcv <- evalSync (msgChannel evs) Nothing [StackTrace pos0 []] pcth
+    pcv <- evalSync evs{profCounter = Nothing} [StackTrace pos0 []] pcth
     gsfmterrormsg_ww evs pos0 ds (GSConstr pos1 c [ pcv, msg1 ])
 gsfmterrormsg_ww evs pos0 ds (GSConstr pos1 c [ GSError err, msg1 ]) | c == gsvar ":" = do
     errs <- fmtError err
@@ -201,7 +201,7 @@ gsfmterrormsg_ww _ pos ds msg =
 -- §end
 gsfmterrorvalue :: GSEvalState -> Pos -> GSValue -> IO (String -> String)
 gsfmterrorvalue evs pos (GSThunk th) = do
-    v <- evalSync (msgChannel evs) Nothing [StackTrace pos []] th
+    v <- evalSync evs{profCounter = Nothing} [StackTrace pos []] th
     gsfmterrorvalue evs pos v
 gsfmterrorvalue evs pos v@GSImplementationFailure{} = gsfmterrorvalueAtom evs pos v
 gsfmterrorvalue evs pos v@GSError{} = gsfmterrorvalueAtom evs pos v
@@ -213,7 +213,7 @@ gsfmterrorvalue evs pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorvalue
 
 gsfmterrorvalueAtom :: GSEvalState -> Pos -> GSValue -> IO (String -> String)
 gsfmterrorvalueAtom evs pos (GSThunk th) = do
-    v <- evalSync (msgChannel evs) Nothing [StackTrace pos []] th
+    v <- evalSync evs{profCounter = Nothing} [StackTrace pos []] th
     gsfmterrorvalueAtom evs pos v
 gsfmterrorvalueAtom _ pos0 (GSImplementationFailure pos1 msg) = return $ ("<Implementation Failure: "++) . (fmtPos pos1) . (msg++) . ('>':)
 gsfmterrorvalueAtom evs pos0 (GSError err) = do errs <- fmtError err; return $ ('<':) . (errs ++) . ('>':)
@@ -234,7 +234,7 @@ gsfmterrorvalueAtom evs pos x = return $ ('<':) . fmtPos $gshere . ("gsfmterrorv
 
 gsfmterrorString :: GSEvalState -> Pos -> (String -> String) -> GSValue -> IO (String -> String)
 gsfmterrorString evs pos ds (GSThunk th) = do
-    v <- evalSync (msgChannel evs) Nothing [StackTrace pos []] th
+    v <- evalSync evs{profCounter = Nothing} [StackTrace pos []] th
     gsfmterrorString evs pos ds v
 gsfmterrorString evs pos ds v@(GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" && ch `elem` "\\§()[]{}" = gsfmterrorString evs pos (ds . ('\\':) . (ch:)) s
 gsfmterrorString evs pos ds v@(GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = gsfmterrorString evs pos (ds . (ch:)) s

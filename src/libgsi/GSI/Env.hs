@@ -42,7 +42,7 @@ runGSProgram a = do
     forkIO $ logCatcher msgi mainDone msgDone
         `catch` (\ (e :: GSException) -> gsfmtException (GSEvalState msgo Nothing) e >>= hPutStrLn stderr)
         `catch` (\ (e :: SomeException) -> hPutStrLn stderr (displayException e))
-    t <- createThread msgo pc $gshere prog Nothing
+    t <- createThread (GSEvalState msgo pc) $gshere prog Nothing
     execMainThread t
         `catch` (\ (e :: GSException) -> gsfmtException (GSEvalState msgo Nothing) e >>= hPutStrLn stderr >> exitWith (ExitFailure 1))
         `finally` (wakeup mainDone *> await msgDone)
@@ -114,7 +114,7 @@ gsprintError = $gsimpprim (gsprimprint stderr)
 
 gsprimprint :: Handle -> GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
 gsprimprint h evs pos t (GSThunk th) = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere [StackTrace pos []]] th
+    v <- evalSync evs [StackTrace $gshere [StackTrace pos []]] th
     gsprimprint h evs pos t v
 gsprimprint h evs pos t (GSInvalidProgram err) = do
     hPutStrLn stderr $ fmtInvalidProgram err
@@ -131,7 +131,7 @@ gsprimprint h evs pos t (GSConstr pos1 c [ GSRune ch, s ]) | c == gsvar ":" = do
     hPutChar h ch
     gsprimprint h evs pos t s
 gsprimprint h evs pos t (GSConstr pos1 c [ GSThunk th, s ]) | c == gsvar ":" = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere [StackTrace pos []]] th
+    v <- evalSync evs [StackTrace $gshere [StackTrace pos []]] th
     gsprimprint h evs pos t (GSConstr pos1 c [ v, s ])
 gsprimprint h evs pos t (GSConstr pos1 c [ GSImplementationFailure pos2 msgs, s ]) | c == gsvar ":" = do
     hPutStrLn stderr $ fmtPos pos2 $ msgs

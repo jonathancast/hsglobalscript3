@@ -44,7 +44,7 @@ aceEnter evs cs v@GSExternal{} sk = gsreturn sk v
 aceEnter evs cs e sk = gsthrow sk $ $gsimplementationfailure $ "aceEnter (expr = " ++ gsvCode e ++") next"
 
 aceEnterThunkState :: GSEvalState -> [StackTrace] -> GSThunkState -> GSExprCont a -> IO a
-aceEnterThunkState evs cs (GSTSExpr expr) sk = expr (msgChannel evs) (profCounter evs) cs sk
+aceEnterThunkState evs cs (GSTSExpr expr) sk = expr evs cs sk
 aceEnterThunkState evs cs (GSTSIntExpr e) sk = aceEnterIntExpr evs cs e sk
 aceEnterThunkState evs cs (GSApply pos fn args) sk =
     aceEnter evs (StackTrace pos [] : cs) fn (aceArg evs (StackTrace pos []) args sk)

@@ -7,16 +7,14 @@ import Control.Concurrent.MVar (MVar, newEmptyMVar, newMVar, modifyMVar_, putMVa
 import Control.Exception (SomeException, Exception(..), throwIO, try)
 
 import GSI.Util (Pos, gsfatal, gshere)
-import GSI.RTS (OPort, newEvent, wakeup, await)
-import GSI.Message (Message)
-import GSI.Prof (ProfCounter)
+import GSI.RTS (newEvent, wakeup, await)
 import GSI.Value (GSValue(..), GSEvalState(..), GSException(..), Thread(..), ThreadState(..), gsexcCode, threadStateCode)
 import API (apiCall)
 
 data Promise = Promise (MVar GSValue)
 
-createThread :: OPort Message -> Maybe ProfCounter -> Pos -> GSValue -> Maybe Promise -> IO Thread
-createThread msg pc pos v mbp = do
+createThread :: GSEvalState -> Pos -> GSValue -> Maybe Promise -> IO Thread
+createThread evs pos v mbp = do
     rec
         w <- newEvent
         sv <- newMVar ThreadStateRunning
@@ -25,7 +23,7 @@ createThread msg pc pos v mbp = do
             wait = w
           }
         tid <- forkIO $ do
-            mb <- try $ apiCall (GSEvalState msg pc) pos v t
+            mb <- try $ apiCall evs pos v t
             state t `modifyMVar_` \ _ -> case mb of
                 Left (e :: SomeException) -> case fromException e of
                     Just (GSExcError err) -> return $ ThreadStateError err

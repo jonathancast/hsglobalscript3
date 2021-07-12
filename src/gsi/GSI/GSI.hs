@@ -188,7 +188,7 @@ gsieval_sync = $gslambda_value $ \ vv -> $gsbcevalexternal ($gsav vv) $ \ (v :: 
     w _ _ v@GSRecord{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
     w _ _ v@GSClosure{} = return $ $gsconstr (gsvar "whnf") [ gsexternal v ]
     w evs pos (GSThunk ts) = do
-        v' <- evalSync (msgChannel evs) (profCounter evs) [StackTrace pos []] ts
+        v' <- evalSync evs [StackTrace pos []] ts
         w evs pos v'
     w _ _ v = $apiImplementationFailure $ "gsieval_sync " ++ gsvCode v ++ " next"
 
@@ -198,7 +198,7 @@ gsicreateThread = $gsimpprim gsiprimcreateThread
 gsiprimcreateThread :: GSEvalState -> Pos -> Thread -> GSValue -> IO GSValue
 gsiprimcreateThread evs pos t vv = do
     v <- gsapiEvalExternal evs pos vv
-    t <- createThread (msgChannel evs) (profCounter evs) pos v Nothing
+    t <- createThread evs pos v Nothing
     return $ GSExternal $ toExternal t
 
 gsiexecMainThread :: GSValue

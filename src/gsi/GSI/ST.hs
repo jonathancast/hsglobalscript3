@@ -17,7 +17,7 @@ gsstrun = $gslambda_value $ \ a -> $gsbcprim gsprim_st_run a
 gsprim_st_run :: GSEvalState -> Pos -> GSValue -> IO GSValue
 gsprim_st_run evs pos a = do
     pr <- createPromise
-    t <- createThread (msgChannel evs) (profCounter evs) pos a (Just pr)
+    t <- createThread evs pos a (Just pr)
     st <- waitThread t
     case st of
         ThreadStateInvalidProgram err -> return $ GSInvalidProgram err

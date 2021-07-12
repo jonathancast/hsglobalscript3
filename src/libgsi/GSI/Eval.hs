@@ -5,9 +5,7 @@ module GSI.Eval (GSResult(..), eval, evalSync, stCode) where
 import Control.Concurrent (MVar, forkIO, modifyMVar)
 
 import GSI.Util (StackTrace(..))
-import GSI.RTS (Event, newEvent, await, OPort)
-import GSI.Message (Message)
-import GSI.Prof (ProfCounter)
+import GSI.RTS (Event, newEvent, await)
 import GSI.Value (GSValue(..), GSBCO(..), GSEvalState(..), GSThunkState(..), gsimplementationfailure, gsvCode, bcoCode, gstsCode)
 
 import ACE (aceEnterThunkState, aceUpdate, aceEmptyStack)
@@ -32,16 +30,16 @@ eval evs cs mv = modifyMVar mv $ \ st -> case st of
         forkIO $ aceEnterThunkState evs cs st (aceUpdate mv aceEmptyStack)
         return (GSTSStack e, GSStack e)
 
-evalSync :: OPort Message -> Maybe ProfCounter -> [StackTrace] -> MVar (GSThunkState) -> IO GSValue
-evalSync msg sc cs mv = do
-    st <- eval (GSEvalState msg sc) cs mv
+evalSync :: GSEvalState -> [StackTrace] -> MVar (GSThunkState) -> IO GSValue
+evalSync evs cs mv = do
+    st <- eval evs cs mv
     case st of
-        GSStack b -> await b *> evalSync msg sc cs mv
+        GSStack b -> await b *> evalSync evs cs mv
         GSIndirection v -> case v of
             GSImplementationFailure{} -> return v
             GSInvalidProgram{} -> return v
             GSError{} -> return v
-            GSThunk th -> evalSync msg sc cs th
+            GSThunk th -> evalSync evs cs th
             GSConstr{} -> return v
             GSRecord{} -> return v
             GSNatural{} -> return v

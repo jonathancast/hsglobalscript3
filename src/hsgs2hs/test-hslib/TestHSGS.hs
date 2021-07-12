@@ -21,7 +21,7 @@ formatTestValue evs v@GSImplementationFailure{} k = formatTestValueAtom evs v k
 formatTestValue evs v@GSError{} k = formatTestValueAtom evs v k
 formatTestValue evs v@GSInvalidProgram{} k = formatTestValueAtom evs v k
 formatTestValue evs (GSThunk ts) k = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] ts
+    v <- evalSync evs [StackTrace $gshere []] ts
     formatTestValue evs v k
 formatTestValue evs (GSClosure _ GSLambda{}) k = k $ ("<function>"++)
 formatTestValue evs (GSClosure _ bco) k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatTestValue (GSClosure _ "++) . (bcoCode bco++) . (") next>"++)
@@ -29,7 +29,7 @@ formatTestValue evs v@GSRecord{} k = formatTestValueAtom evs v k
 formatTestValue evs v@GSNatural{} k = formatTestValueAtom evs v k
 formatTestValue evs v@GSRune{} k = formatTestValueAtom evs v k
 formatTestValue evs v@(GSConstr pos c [ GSThunk chts, s ]) k | c == gsvar ":" = do
-    chv <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] chts
+    chv <- evalSync evs [StackTrace $gshere []] chts
     formatTestValue evs (GSConstr pos (gsvar ":") [ chv, s ]) k
 formatTestValue evs v@(GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" = formatTestValueAtom evs v k
 formatTestValue evs (GSConstr _ v as) k = formatArgs evs as $ \ ds -> k (fmtVarAtom v . ds)
@@ -40,7 +40,7 @@ formatTestValueAtom evs (GSImplementationFailure pos msgs) k = k $ ('<':) . fmtP
 formatTestValueAtom evs (GSError err) k = do errs <- fmtErrorShort err; k $ ('<':) . (errs++) . ('>':)
 formatTestValueAtom evs (GSInvalidProgram err) k = k $ ('<':) . (fmtInvalidProgram err++) . ('>':)
 formatTestValueAtom evs (GSThunk ts) k = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] ts
+    v <- evalSync evs [StackTrace $gshere []] ts
     formatTestValueAtom evs v k
 formatTestValueAtom evs (GSConstr _ c [ GSRune ch, s ]) k | c == gsvar ":" =
     formatChar (GSRune ch) $ \ chds -> formatString evs s $ \ sds -> k (("qq{"++) . chds . sds . ('}':))
@@ -72,7 +72,7 @@ formatChar v k = k $ ('<':) . fmtPos $gshere . ("unimpl: formatChar "++) . (gsvC
 
 formatString :: GSEvalState -> GSValue -> ((String -> String) -> IO a) -> IO a
 formatString evs (GSThunk ts) k = do
-    v <- evalSync (msgChannel evs) (profCounter evs) [StackTrace $gshere []] ts
+    v <- evalSync evs [StackTrace $gshere []] ts
     formatString evs v k
 formatString evs (GSConstr _ c [ r0, s1 ]) k | c == gsvar ":" = formatChar r0 $ \ r0ds -> formatString evs s1 $ \ s1ds -> k $ r0ds . s1ds
 formatString evs (GSConstr _ c []) k | c == gsvar "nil" = k $ id
@@ -83,7 +83,7 @@ printStackTrace :: GSValue -> IO ()
 printStackTrace v = bitBucketOPort >>= \ msg -> w msg Nothing v
   where
     w msg pc (GSThunk ts) = do
-        v <- evalSync msg pc [StackTrace $gshere []] ts
+        v <- evalSync (GSEvalState msg pc) [StackTrace $gshere []] ts
         w msg pc v
     w _ pc (GSImplementationFailure pos msg) = putStr $ ('<':) . fmtPos pos . ("Implementation Failure: "++) . (msg++) . ('>':) $ "\n"
     w _ pc (GSClosure cs _) = putStr $ fmtCallers cs "\n"

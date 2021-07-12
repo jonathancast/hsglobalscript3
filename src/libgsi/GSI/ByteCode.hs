@@ -21,9 +21,9 @@ import Language.Haskell.TH.Lib (appE, varE)
 
 import GSI.Util (Pos, StackTrace(..), gshere, fmtCallers)
 import GSI.Syn (GSVar, gsvar, fmtVarAtom)
-import GSI.Message (Message(..), mkMessage)
-import GSI.Prof (ProfCounter, prof)
-import GSI.RTS (OPort, writeOPort)
+import GSI.Message (mkMessage)
+import GSI.Prof (prof)
+import GSI.RTS (writeOPort)
 import GSI.Value (GSValue(..), GSBCO(..), GSExpr(..), GSEvalState(..), GSExprCont(..), GSExternal(..), GSArg(..), GSBCImp(..), GSError(..), GSInvalidProgram(..), Thread, gsimplementationfailure, gslambda_w, gsprepare_w, gsthunk_w, gsfield_w, gsimpfor_w, whichExternal, gsae, gsav, gsvCode, argCode)
 import GSI.Functions (gsfmterrormsg)
 import GSI.CalculusPrims (gsparand, gsmergeenv)
@@ -141,18 +141,18 @@ gsbcapparg_w pos f as = gsbcimplementationfailure_w $gshere $ "gsbcapparg_w pos 
 gsbcprim = varE 'gsbcprim_w `appE` gshere
 
 class GSBCPrimType f r where
-    gsbcprim_ww :: Pos -> (OPort Message -> Maybe ProfCounter -> f) -> r
+    gsbcprim_ww :: Pos -> (GSEvalState -> f) -> r
 
 instance GSBCPrimType (IO GSValue) GSExpr where
     gsbcprim_ww pos f = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
-        v <- f (msgChannel evs) (profCounter evs)
+        v <- f evs
         aceEnter evs [ StackTrace pos cs ] v sk
 
 instance GSBCPrimType f r => GSBCPrimType (GSValue -> f) (GSValue -> r) where
-    gsbcprim_ww pos f v = gsbcprim_ww pos (\ msg pc -> f msg pc v)
+    gsbcprim_ww pos f v = gsbcprim_ww pos (\ evs -> f evs v)
 
 gsbcprim_w :: GSBCPrimType f r => Pos -> (GSEvalState -> Pos -> f) -> r
-gsbcprim_w pos f = gsbcprim_ww pos (\ msg pc -> f (GSEvalState msg pc) pos)
+gsbcprim_w pos f = gsbcprim_ww pos (\ evs -> f evs pos)
 
 gsbcimpprim = varE 'gsbcimpprim_w `appE` gshere
 
@@ -171,12 +171,12 @@ gsbcimpprim_w pos f = gsbcimpprim_ww pos (\ evs -> f evs pos)
 gsbcforce = varE 'gsbcforce_w `appE` gshere
 
 gsbcforce_w :: Pos -> GSArg -> (GSValue -> GSExpr) -> GSExpr
-gsbcforce_w pos e k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg (msgChannel evs) (profCounter evs) c1 e (aceForce evs cs k sk)
+gsbcforce_w pos e k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg evs c1 e (aceForce evs cs k sk)
 
-runGSArg :: OPort Message -> Maybe ProfCounter -> StackTrace -> GSArg ->  GSExprCont a -> IO a
-runGSArg msg pc c1 (GSArgExpr pos' e') sk = runGSExpr e' (GSEvalState msg pc) [c1] sk
-runGSArg msg pc c1 (GSArgVar v) sk = aceEnter (GSEvalState msg pc) [c1] v sk
-runGSArg msg pc c1 a sk = gsthrow sk $ $gsimplementationfailure $ "runGSArg " ++ argCode a ++ " next"
+runGSArg :: GSEvalState -> StackTrace -> GSArg ->  GSExprCont a -> IO a
+runGSArg evs c1 (GSArgExpr pos' e') sk = runGSExpr e' evs [c1] sk
+runGSArg evs c1 (GSArgVar v) sk = aceEnter evs [c1] v sk
+runGSArg evs c1 a sk = gsthrow sk $ $gsimplementationfailure $ "runGSArg " ++ argCode a ++ " next"
 
 gsbclet = varE 'gsbclet_w `appE` gshere
 
@@ -201,7 +201,7 @@ gsbclfield_w pos f r k = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> do
 gsbcfield = varE 'gsbcfield_w `appE` gshere
 
 gsbcfield_w :: Pos -> GSArg -> GSVar -> GSExpr
-gsbcfield_w pos a f = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg (msgChannel evs) (profCounter evs) c1 a (aceField evs c1 f sk)
+gsbcfield_w pos a f = gsbcprof_w pos $ GSExpr $ \ evs cs sk -> let c1 = StackTrace pos cs in runGSArg evs c1 a (aceField evs c1 f sk)
 
 gsbcevalexternal = varE 'gsbcevalexternal_w `appE` gshere
 
